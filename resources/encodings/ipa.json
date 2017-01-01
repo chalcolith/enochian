@@ -1,0 +1,352 @@
+﻿{
+  "id": "International Phonetic Alphabet",
+  "description": "Encodes features for strings of IPA in Unicode (see https://westonruter.github.io/ipa-chart/keyboard/ for the Unicode values).",
+  "changes": "Initial version 2016-12-31.",
+
+  "patterns": [
+    {
+      "text": "_ʼ",
+      "features": [ "+CG" ]
+    },
+    {
+      "text": "_ʰ",
+      "features": [ "+SG" ]
+    },
+    {
+      "text": "_̪",
+      "features": [ "+Dist" ]
+    },
+    {
+      "text": "_̃",
+      "features": [ "+Nasal" ]
+    },
+    {
+      "text": "_̥",
+      "features": [ "-Voice" ]
+    },
+    {
+      "text": "_̩",
+      "features": [ "+Syll" ]
+    },
+    {
+      "text": "_ʷ",
+      "features": [ "+Labial" ]
+    },
+    {
+      "text": "_ʲ",
+      "features": [ "+Dorsal", "+High", "-Low", "-Back", "+Tense" ]
+    },
+    {
+      "text": "_ˠ",
+      "features": [ "+Dorsal", "-High", "-Low", "+Back", "-Tense" ]
+    },
+    {
+      "text": "_ˤ",
+      "features": [ "+Phar" ]
+    },
+    {
+      "text": "t",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "d",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "s",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "z",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɬ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "+SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɮ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "θ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ð",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʃ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʒ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "c",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɟ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ç",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʝ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "p",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "b",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "f",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "v",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɸ",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "β",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "k",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "g",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "x",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɣ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "q",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɢ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "χ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʁ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ħ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "+Phar", "-ATR", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʕ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "h",
+      "features": [ "-Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "-Phar", "-Voice", "+SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɦ",
+      "features": [ "-Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "-Phar", "+Voice", "+SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʔ",
+      "features": [ "-Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "+CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "t͡ʃ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "d͡ʒ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "t͡s",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "d͡z",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "k͡x",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "-Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "p͡f",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
+    },
+    {
+      "text": "m",
+      "features": [ "+Cons", "+Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "n",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "+Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "ŋ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "ɳ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "+Dorsal", "-High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "ɲ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "ɴ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      "text": "l",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "+Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʎ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "r",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɹ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʀ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "j",
+      "features": [ "-Cons", "+Son", "-Syll", "-Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "w",
+      "features": [ "-Cons", "+Son", "-Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "i",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "y",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɪ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʏ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "u",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɯ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʊ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "e",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "-Low", "-Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ø",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "-Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɛ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "-Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "œ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "o",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɤ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɔ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʌ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "æ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "a",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɶ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɒ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "+Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɑ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ə",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɐ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "+Back", "-Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ɨ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "text": "ʉ",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    }
+  ]
+}

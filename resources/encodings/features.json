@@ -1,0 +1,43 @@
+{
+  "id": "Phonological Features - Default",
+
+  "plusValue": 1.0,
+  "minusValue": -1.0,
+
+  "features": [
+    "Syllabic,Syll",
+    "Consonantal,Cons",
+    "Approximant",
+    "Sonorant,Son",
+    
+    "Voice",
+    "SpreadGlottis,SG",
+    "ConstrictedGlottis,CG",
+
+    "Continuant,Cont",
+    "Nasal",
+    "Strident",
+    "Lateral",
+    "DelayedRelease,DelRel",
+
+    "Labial,Lab",
+    "Round",
+    "Coronal,Cor",
+    "Anterior,Ant",
+    "Distributed,Dist",
+    "Dorsal",
+    "High",
+    "Low",
+    "Back",
+    "Tense",
+    "Pharyngeal,Phar",
+    "AdvancedTongueRoot,ATR",
+    "RetractedTongueRoot,RTR",
+    "Glottal",
+
+    "Close",
+    "Front",
+    "Raised",
+    "Retracted"
+  ]
+}
