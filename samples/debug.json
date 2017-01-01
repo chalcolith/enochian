@@ -1,0 +1,16 @@
+{
+  "id": "Debug Test Flow",
+
+  "steps": [
+    {
+      "type": "DebugReport",
+
+      "properties": {
+        "features": "encodings/features.json",
+        "encodings": [
+          { "patterns": "encodings/ipa.json" }
+        ]
+      }
+    }
+  ]
+}
