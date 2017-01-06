@@ -1,13 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace Enochian.UnitTests
 {
-    static class ConfigurableExtensions
+    static class Extensions
     {
+        public static ExpandoObject Init(this ExpandoObject expando, object obj)
+        {
+            var dict = expando as IDictionary<string, object>;
+            var props = obj.GetType().GetTypeInfo()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+                .Where(prop => prop.CanRead);
+            foreach (var prop in props)
+            {
+                dict[prop.Name] = prop.GetValue(obj, null);
+            }
+            return expando;
+        }
+
         public static void ConfigWith<T>(this T value, dynamic config)
             where T : Configurable
         {

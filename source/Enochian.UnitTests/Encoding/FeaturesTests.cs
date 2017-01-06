@@ -1,13 +1,14 @@
-﻿using Enochian.Encoding;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using System.Text;
-using Xunit;
-using Xunit.Abstractions;
+using Enochian.Encoding;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Enochian.UnitTests.Encoding
 {
+    [TestClass]
     public class FeaturesTests
     {
         const double plusValue = 10.0;
@@ -23,36 +24,57 @@ namespace Enochian.UnitTests.Encoding
 
         public FeaturesTests()
         {
-            dynamic config = new ExpandoObject();
-            config.Id = "Features Tests";
-            config.Description = "";
-            config.Changes = "";
-            config.PlusValue = plusValue;
-            config.MinusValue = minusValue;
-            config.Features = featureNames;
-
+            dynamic config = new ExpandoObject().Init(new
+            {
+                Id = "Features Tests",
+                Description = "",
+                Changes = "",
+                PlusValue = plusValue,
+                MinusValue = minusValue,
+                Features = featureNames
+            });
             featuresUnderTest = new Features();
             featuresUnderTest.ConfigWith((object)config);
         }
 
-        public static TheoryData<IList<string>, double[]> GetFeatureVectorData()
+        #region Tests
+
+        static readonly Tuple<string[], double[]>[] featureVectorData_Valid =
         {
-            return new TheoryData<IList<string>, double[]>
+            Tuple.Create(new [] { "+Alpha", "-Charlie" }, new [] { plusValue, unsetValue, minusValue }),
+            Tuple.Create(new string[] { }, new[] { unsetValue, unsetValue, unsetValue }),
+        };
+
+        static readonly Tuple<string[], double[]>[] featureVectorData_Invalid =
+        {
+            Tuple.Create(new[] { "Foobar" }, new[] { unsetValue, unsetValue, unsetValue }),
+        };
+
+        [TestMethod]
+        public void GetFeatureVector()
+        {
+            string expectedError = null;
+            Action<string[], double[]> test = (featureSpec, expected) =>
             {
-                { new [] { "+Alpha", "-Charlie" }, new [] { plusValue, unsetValue, minusValue } },
-                { new string[] { }, new[] { unsetValue, unsetValue, unsetValue } },
+                double[] actual = null;
+                AssertUtils.WithErrors(
+                    errors => actual = featuresUnderTest.GetFeatureVector(featureSpec, errors),
+                    () =>
+                    {
+                        Assert.IsNotNull(actual);
+                        AssertUtils.SequenceEquals(expected, actual);
+                    },
+                    expectedError);
             };
+
+            foreach (var fv in featureVectorData_Valid)
+                test(fv.Item1, fv.Item2);
+
+            expectedError = "invalid feature specification";
+            foreach (var fv in featureVectorData_Invalid)
+                test(fv.Item1, fv.Item2);
         }
 
-        [Theory]
-        [MemberData(nameof(GetFeatureVectorData))]
-        public void GetFeatureVector(IList<string> featureSpec, double[] expected)
-        {
-            var errors = new List<string>();
-            var actual = featuresUnderTest.GetFeatureVector(featureSpec, errors);
-            Assert.NotNull(actual);
-            Assert.Equal(featureNames.Length, actual.Length);
-            Assert.Equal(expected, actual);
-        }
+        #endregion
     }
 }

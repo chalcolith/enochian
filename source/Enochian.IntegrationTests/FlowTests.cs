@@ -1,11 +1,12 @@
 using System;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Enochian.IntegrationTests
 {
+    [TestClass]
     public class FlowTests
     {
-        [Fact]
+        [TestMethod]
         public void DebugReport()
         {
 
