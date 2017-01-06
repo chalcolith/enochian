@@ -11,11 +11,6 @@ namespace Enochian.Encoding
         IList<string> featureList;
         IDictionary<string, int> featureIndices;
 
-        public Features(dynamic config)
-            : base((object)config)
-        {
-        }
-
         public double PlusValue { get; private set; } = 1.0;
         public double UnsetValue { get; private set; } = 0.0;
         public double MinusValue { get; private set; } = -1.0;

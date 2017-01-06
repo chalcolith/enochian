@@ -23,16 +23,16 @@ namespace Enochian.UnitTests.Encoding
 
         public FeaturesTests()
         {
-            dynamic config = new 
-            {
-                Id = "Features Tests",
-                Description = "",
-                Changes = "",
-                PlusValue = plusValue,
-                MinusValue = minusValue,
-                Features = featureNames,
-            };
-            featuresUnderTest = new Features(config);
+            dynamic config = new ExpandoObject();
+            config.Id = "Features Tests";
+            config.Description = "";
+            config.Changes = "";
+            config.PlusValue = plusValue;
+            config.MinusValue = minusValue;
+            config.Features = featureNames;
+
+            featuresUnderTest = new Features();
+            featuresUnderTest.ConfigWith((object)config);
         }
 
         public static TheoryData<IList<string>, double[]> GetFeatureVectorData()
@@ -46,7 +46,7 @@ namespace Enochian.UnitTests.Encoding
 
         [Theory]
         [MemberData(nameof(GetFeatureVectorData))]
-        public void Test_GetFeatureVector(IList<string> featureSpec, double[] expected)
+        public void GetFeatureVector(IList<string> featureSpec, double[] expected)
         {
             var errors = new List<string>();
             var actual = featuresUnderTest.GetFeatureVector(featureSpec, errors);

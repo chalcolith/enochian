@@ -3,7 +3,7 @@
 
   "features": "encodings/features.json",
   "encodings": [
-    { "patterns": "encodings/ipa.json" }
+    { "encoding": "encodings/ipa.json" }
   ],
 
   "steps": [
