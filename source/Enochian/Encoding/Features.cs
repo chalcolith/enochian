@@ -59,7 +59,7 @@ namespace Enochian.Encoding
             return vector;
         }
 
-        protected override void Configure(dynamic config)
+        public override void Configure(dynamic config)
         {
             base.Configure((object)config);
 

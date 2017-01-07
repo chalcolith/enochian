@@ -61,7 +61,10 @@ namespace Enochian.Flow
             }
         }
 
-        protected abstract object Process(object input);
+        protected virtual object Process(object input)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public abstract class FlowStep<TIn, TOut> : FlowStep
@@ -96,6 +99,9 @@ namespace Enochian.Flow
             return outputTyped;
         }
 
-        protected abstract TOut ProcessTyped(TIn input);
+        protected virtual TOut ProcessTyped(TIn input)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

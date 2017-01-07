@@ -10,10 +10,21 @@ using Newtonsoft.Json.Serialization;
 
 namespace Enochian
 {
-    public abstract class Configurable
+    public interface IConfigurable
+    {
+        string AbsoluteFilePath { get; }
+        IList<IConfigurable> Children { get; }
+        IEnumerable<ErrorRecord> Errors { get; }
+
+        void Configure(dynamic config);
+        void AddError(string format, params object[] args);
+        void AddError(int line, int column, string format, params object[] args);
+    }
+
+    public abstract class Configurable : IConfigurable
     {
         string absFilePath;
-        IList<Configurable> children;
+        IList<IConfigurable> children;
         IList<ErrorRecord> errors;
 
         public string AbsoluteFilePath
@@ -26,9 +37,9 @@ namespace Enochian
         public string Description { get; set; }
         public string Changes { get; set; }
 
-        protected IList<Configurable> Children
+        public IList<IConfigurable> Children
         {
-            get { return children ?? (children = new List<Configurable>()); }
+            get { return children ?? (children = new List<IConfigurable>()); }
         }
 
         public IEnumerable<ErrorRecord> Errors
@@ -42,12 +53,12 @@ namespace Enochian
             }
         }
 
-        protected void AddError(string format, params object[] args)
+        public void AddError(string format, params object[] args)
         {
             AddError(0, 0, format, args);
         }
 
-        protected void AddError(int line, int column, string format, params object[] args)
+        public void AddError(int line, int column, string format, params object[] args)
         {
             if (errors == null) errors = new List<ErrorRecord>();
             errors.Add(new ErrorRecord
@@ -59,21 +70,31 @@ namespace Enochian
             });
         }
 
-        protected virtual void Configure(dynamic config)
+        public virtual void Configure(dynamic config)
         {
             Id = config.Id;
             Description = config.Description;
             Changes = config.Changes;
         }
 
-        protected void Load(string fname)
+        protected static void Load(string fname, IConfigurable obj)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             var serializer = new JsonSerializer
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DefaultValueHandling = DefaultValueHandling.Include,
-                NullValueHandling = NullValueHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore,                
+            };
+            serializer.Error += (object sender, ErrorEventArgs args) =>
+            {
+                if (args.ErrorContext.Error != null)
+                {
+                    obj.AddError("{0} ({1}): {2}", obj.AbsoluteFilePath, args.ErrorContext.Path, args.ErrorContext.Error);
+                    args.ErrorContext.Handled = true;
+                }
             };
 
             using (var stream = File.OpenRead(fname))
@@ -81,16 +102,21 @@ namespace Enochian
             using (var jr = new JsonTextReader(tr))
             {
                 var config = serializer.Deserialize<ExpandoObject>(jr);
-                Configure(config);
+                obj.Configure(config);
             }
         }
 
-        protected T Load<T>(string parentPath, string childPath)
-            where T : Configurable
+        protected static T Load<T>(IConfigurable parent, string childPath)
+            where T : IConfigurable, new()
         {
-            var child = Activator.CreateInstance<T>();
-            var absChildPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(parentPath), childPath));
-            child.Load(absChildPath);
+            if (string.IsNullOrWhiteSpace(childPath)) throw new ArgumentNullException(nameof(childPath));
+
+            var child = new T();
+            var absChildPath = !string.IsNullOrWhiteSpace(parent.AbsoluteFilePath)
+                ? Path.GetFullPath(Path.Combine(Path.GetDirectoryName(parent.AbsoluteFilePath), childPath))
+                : Path.GetFullPath(childPath);
+            Load(absChildPath, child);
+            parent.Children.Add(child);
             return child;
         }
     }
