@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7353F-D7C1-43CA-9884-2839FE695B11}"
 	ProjectSection(SolutionItems) = preProject
-		..\samples\debugReport.json = ..\samples\debugReport.json
+		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.Console", "Enochian.Console\Enochian.Console.csproj", "{D17B610B-FD6B-4A71-8B19-9212273F89A3}"

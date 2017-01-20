@@ -6,8 +6,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Enochian.UnitTests
 {
-    static class AssertUtils
+    public static class AssertUtils
     {
+        public static void NoErrors(IConfigurable obj)
+        {
+            if (obj.Errors != null && obj.Errors.Any())
+            {
+                Assert.Fail(string.Join(", ", obj.Errors.Select(er => er.Message)));
+            }
+        }
+
         public static void WithErrors(Action<IList<string>> act, Action assert, string expectedError = null)
         {
             WithErrors(null, act, assert, expectedError);

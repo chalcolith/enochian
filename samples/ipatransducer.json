@@ -1,0 +1,31 @@
+{
+  "id": "Debug Test Flow",
+
+  "features": [
+    {
+      "name": "Default",
+      "path": "encodings/features.json"
+    }
+  ],
+
+  "encodings": [
+    {
+      "name": "IPA",
+      "features": "Default",
+      "path": "encodings/ipa.json"
+    }
+  ],
+
+  "steps": [
+    {
+      "type": "SampleText",
+      "features": "Default"
+    },
+    {
+      "type": "Transducer",
+      "features": "Default",
+      "inputEncoding": "Default",
+      "outputEncoding": "IPA"
+    }
+  ]
+}

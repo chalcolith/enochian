@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
-using Enochian.Encoding;
+using Enochian.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Enochian.UnitTests.Encoding
+namespace Enochian.UnitTests.Text
 {
     [TestClass]
     public class FeaturesTests
@@ -20,7 +19,7 @@ namespace Enochian.UnitTests.Encoding
             "Alpha", "Charlie", "Bravo",
         };
 
-        Features featuresUnderTest;
+        FeatureSet featuresUnderTest;
 
         public FeaturesTests()
         {
@@ -33,8 +32,8 @@ namespace Enochian.UnitTests.Encoding
                 MinusValue = minusValue,
                 Features = featureNames
             });
-            featuresUnderTest = new Features();
-            featuresUnderTest.ConfigWith((object)config);
+            featuresUnderTest = new FeatureSet();
+            featuresUnderTest.Configure((object)config);
         }
 
         #region Tests

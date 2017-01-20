@@ -8,23 +8,26 @@ namespace Enochian.Flow
 {
     public abstract class FlowStep : Configurable
     {
-        public FlowStep(Type inputType, Type outputType)
+        public FlowStep(IFlowResources resources, Type inputType, Type outputType)
         {
+            Resources = resources;
             InputType = inputType;
             OutputType = outputType;
         }
 
-        public FlowStep(Type inputType, Type outputType, FlowContainer parent, FlowStep previous, dynamic config)
-            : this(inputType, outputType)
+        public FlowStep(IFlowResources resources, Type inputType, Type outputType, FlowContainer container, FlowStep previous, dynamic config)
+            : this(resources, inputType, outputType)
         {
-            Parent = parent;
+            Container = container;
             Previous = previous;
             Configure(config);
         }
 
-        public Type InputType { get; }
-        public Type OutputType { get; }
-        public FlowContainer Parent { get; }
+        protected IFlowResources Resources { get; }
+
+        public Type InputType { get; internal set; }
+        public Type OutputType { get; internal set; }
+        public FlowContainer Container { get; internal set; }
         public FlowStep Previous { get; internal set; }
 
         internal virtual IEnumerable<object> GetOutputs()
@@ -71,13 +74,13 @@ namespace Enochian.Flow
         where TIn : class
         where TOut : class
     {
-        public FlowStep()
-            : base(typeof(TIn), typeof(TOut))
+        public FlowStep(IFlowResources resources)
+            : base(resources, typeof(TIn), typeof(TOut))
         {
         }
 
-        public FlowStep(FlowContainer parent, FlowStep previous, dynamic config)
-            : base(typeof(TIn), typeof(TOut), parent, previous, (object)config)
+        public FlowStep(IFlowResources resources, FlowContainer container, FlowStep previous, dynamic config)
+            : base(resources, typeof(TIn), typeof(TOut), container, previous, (object)config)
         {
         }
 

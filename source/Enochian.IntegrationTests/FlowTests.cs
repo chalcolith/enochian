@@ -1,4 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Enochian.Flow.Steps;
+using Enochian.Text;
+using Enochian.UnitTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Enochian.IntegrationTests
@@ -6,10 +11,60 @@ namespace Enochian.IntegrationTests
     [TestClass]
     public class FlowTests
     {
-        [TestMethod]
-        public void DebugReport()
-        {
+        const string IpaTransducerPath = @"samples/ipatransducer.json";
 
+        [DataTestMethod]
+        [DataRow(IpaTransducerPath, "p", "+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal")]
+        public void TestIPATransducer(string fname, string given, string expected)
+        {
+            var path = @"../../../" + fname;
+            var flow = new Flow.Flow(path);
+            AssertUtils.NoErrors(flow);
+
+            var features = flow.FeatureSets.FirstOrDefault(fs => fs.Name == "Default");
+            Assert.IsNotNull(features, "no Default feature set");
+
+            var sampleText = flow.Steps.Children.FirstOrDefault() as SampleText;
+            Assert.IsNotNull(sampleText, "first step is not SampleText");
+
+            var transducer = flow.Steps.Children.LastOrDefault() as Transducer;
+            Assert.IsNotNull(transducer, "last step is not Transducer");
+
+            var encoding = transducer.Output;
+            Assert.IsNotNull(encoding, "transducer has no output encoding");
+
+            var tokens = sampleText.Tokens = given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
+
+            var errors = new List<string>();
+            var expectedVectors = expected.Split(';').Select(fs => features.GetFeatureVector(fs.Split(','), errors));
+            Assert.IsFalse(errors.Any(), string.Join(", ", errors));
+
+            var outputs = flow.GetOutputs().OfType<TextChunk>();
+            var chunkIter = outputs.GetEnumerator();
+            var expectedIter = expectedVectors.GetEnumerator();
+            foreach (var token in tokens)
+            {
+                if (!chunkIter.MoveNext())
+                    Assert.Fail("no output for token '{0}'", token);
+
+                var chunk = chunkIter.Current;
+                var iline = chunk.Lines.FirstOrDefault(line => line.Encoding == encoding);
+                Assert.IsNotNull(iline, "unable to find segment with encoding '{0}'", encoding.Name);
+
+                foreach (var seg in iline.Segments)
+                {
+                    foreach (var actualVector in seg.Vectors)
+                    {
+                        if (!expectedIter.MoveNext())
+                            Assert.Fail("no expected vector for token '{0}', seg '{1}'", token, seg.Text);
+
+                        var expectedVector = expectedIter.Current;
+
+                        double distance = FeatureSet.EuclideanDistance(expectedVector, actualVector);
+                        Assert.IsTrue(distance < 0.001, "distance for token '{0}', seg '{1}' is {2}", token, seg.Text, distance);
+                    }
+                }
+            }
         }
     }
 }
