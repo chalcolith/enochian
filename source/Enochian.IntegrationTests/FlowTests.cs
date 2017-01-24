@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Enochian.Flow.Steps;
 using Enochian.Text;
 using Enochian.UnitTests;
@@ -17,8 +19,9 @@ namespace Enochian.IntegrationTests
         [DataRow(IpaTransducerPath, "p", "+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         public void TestIPATransducer(string fname, string given, string expected)
         {
-            var path = @"../../../" + fname;
-            var flow = new Flow.Flow(path);
+            var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
+            var configPath = Path.Combine(assemblyDir, "../../../../..", fname);
+            var flow = new Flow.Flow(configPath);
             AssertUtils.NoErrors(flow);
 
             var features = flow.FeatureSets.FirstOrDefault(fs => fs.Name == "Default");

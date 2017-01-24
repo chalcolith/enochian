@@ -17,23 +17,26 @@ namespace Enochian.Flow.Steps
         public Encoding Input { get; private set; }
         public Encoding Output { get; private set; }
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
             if (Resources != null)
             {
-                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == config.Features);
+                var features = config.Get<string>("Features", this);
+                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == features);
                 if (Features == null)
-                    AddError("invalid features name '{0}'", config.Features);
+                    AddError("invalid features name '{0}'", features);
 
-                Input = Resources.Encodings.FirstOrDefault(enc => enc.Name == config.InputEncoding);
+                var inputEncoding = config.Get<string>("InputEncoding", this);
+                Input = Resources.Encodings.FirstOrDefault(enc => enc.Name == inputEncoding);
                 if (Input == null)
-                    AddError("invalid inputEncoding name '{0}'", config.Input);
+                    AddError("invalid inputEncoding name '{0}'", inputEncoding);
 
-                Output = Resources.Encodings.FirstOrDefault(enc => enc.Name == config.OutputEncoding);
+                var outputEncoding = config.Get<string>("OutputEncoding", this);
+                Output = Resources.Encodings.FirstOrDefault(enc => enc.Name == outputEncoding);
                 if (Output == null)
-                    AddError("invalid outputEncoding name '{0}'", config.Output);
+                    AddError("invalid outputEncoding name '{0}'", outputEncoding);
             }
             else
             {

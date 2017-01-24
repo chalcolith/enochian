@@ -18,22 +18,23 @@ namespace Enochian.Flow.Steps
 
         public static readonly char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
             if (Resources != null)
             {
-                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == config.Features);
+                var features = config.Get<string>("Features", this);
+                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == features);
                 if (Features == null)
-                    AddError("invalid features name '{0}'", config.Features);
+                    AddError("invalid features name '{0}'", features);
             }
             else
             {
                 AddError("no resources specified for SampleText");
             }
 
-            string text = Convert.ToString(config.Text);
+            string text = config.Get<string>("Text", this);
             if (!string.IsNullOrWhiteSpace(text))
                 Tokens = text.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
 

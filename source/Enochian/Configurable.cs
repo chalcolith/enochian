@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Enochian
 {
+    using Config = IDictionary<string, object>;
+
     public interface IConfigurable
     {
         string AbsoluteFilePath { get; }
         IConfigurable Parent { get; set; }
-        IList<IConfigurable> Children { get; }
+        ICollection<IConfigurable> Children { get; }
         IEnumerable<ErrorRecord> Errors { get; }
 
-        IConfigurable Configure(dynamic config);
+        IConfigurable Configure(Config config);
         IConfigurable AddError(string format, params object[] args);
         IConfigurable AddError(int line, int column, string format, params object[] args);
     }
@@ -46,7 +46,7 @@ namespace Enochian
 
         public IConfigurable Parent { get; set; }
 
-        public IList<IConfigurable> Children
+        public ICollection<IConfigurable> Children
         {
             get { return children ?? (children = new List<IConfigurable>()); }
         }
@@ -81,11 +81,11 @@ namespace Enochian
             return this;
         }
 
-        public virtual IConfigurable Configure(dynamic config)
+        public virtual IConfigurable Configure(Config config)
         {
-            Id = config.Id;
-            Description = config.Description;
-            Changes = config.Changes;
+            Id = config.Get<string>("Id", this);
+            Description = config.Get<string>("Description", this);
+            Changes = config.Get<string>("Changes", this);
             return this;
         }
 
@@ -127,14 +127,14 @@ namespace Enochian
             return obj;
         }
 
-        protected static T Load<T>(IConfigurable parent, string childPath)
-            where T : IConfigurable, new()
+        protected static TChild Load<TChild>(IConfigurable parent, string childPath)
+            where TChild : IConfigurable, new()
         {
-            return Load(parent, new T(), childPath);
+            return Load(parent, new TChild(), childPath);
         }
 
-        protected static T Load<T>(IConfigurable parent, T child, string childPath)
-            where T : IConfigurable
+        protected static TChild Load<TChild>(IConfigurable parent, TChild child, string childPath)
+            where TChild : IConfigurable
         {
             if (string.IsNullOrWhiteSpace(childPath)) throw new ArgumentNullException(nameof(childPath));
 
@@ -160,5 +160,26 @@ namespace Enochian
         public int ErrorLine { get; set; }
         public int ErrorColumn { get; set; }
         public string Message { get; set; }
+    }
+
+    public static class ConfigExtensions
+    {
+        public static T Get<T>(this Config config, string memberName, IConfigurable errorHandler)
+        {
+            if (config == null) throw new ArgumentNullException(nameof(config));
+            if (config.TryGetValue(memberName, out object value))
+            {
+                if (value is T)
+                    return (T)value;
+                if (errorHandler != null)
+                    errorHandler.AddError(string.Format("config value '{0}' is not of type {1}", memberName, typeof(T).Name));
+            }
+            return default(T);
+        }
+
+        public static IEnumerable<IDictionary<string, object>> GetChildren(this Config config, string memberName, IConfigurable errorHandler)
+        {
+            return config.Get<IEnumerable<IDictionary<string, object>>>(memberName, errorHandler);
+        }
     }
 }

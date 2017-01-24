@@ -9,13 +9,14 @@ namespace Enochian.Flow
     {
         IList<FlowStep> steps;
 
-        public FlowContainer(IFlowResources resources, Type inputType, Type outputType, FlowContainer parent, FlowStep previous, dynamic config)
-            : base(resources, inputType, outputType, parent, previous, (object)config)
+        public FlowContainer(IFlowResources resources, Type inputType, Type outputType, 
+            FlowContainer parent, FlowStep previous, IDictionary<string, object> config)
+            : base(resources, inputType, outputType, parent, previous, null)
         {
         }
 
-        public FlowContainer(IFlowResources resources, dynamic config)
-            : this(resources, null, null, null, null, (object)config)
+        public FlowContainer(IFlowResources resources, IDictionary<string, object> config)
+            : this(resources, null, null, null, null, config)
         {
         }
 
@@ -24,16 +25,17 @@ namespace Enochian.Flow
             get { return steps ?? (steps = new List<FlowStep>()); }
         }
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
             try
             {
                 FlowStep previous = null;
-                foreach (dynamic scfg in config)
+                var steps = config.GetChildren("Steps", this);
+                foreach (var stepConfig in steps)
                 {
-                    string typeName = Convert.ToString(scfg.Type);
+                    string typeName = stepConfig.Get<string>("Type", this);
                     if (string.IsNullOrWhiteSpace(typeName))
                     {
                         AddError("empty step type name");
@@ -67,7 +69,7 @@ namespace Enochian.Flow
                     step.Container = this;
                     step.Previous = previous;
 
-                    string inputTypeName = Convert.ToString(scfg.InputType);
+                    string inputTypeName = stepConfig.Get<string>("InputType", this);
                     if (!string.IsNullOrWhiteSpace(inputTypeName))
                     {
                         var inputType = Type.GetType(inputTypeName, false);
@@ -77,7 +79,7 @@ namespace Enochian.Flow
                             AddError("unknown inputType name '{0}'", inputTypeName);
                     }
 
-                    string outputTypeName = Convert.ToString(scfg.OutputType);
+                    string outputTypeName = stepConfig.Get<string>("OutputType", this);
                     if (!string.IsNullOrWhiteSpace(outputTypeName))
                     {
                         var outputType = Type.GetType(outputTypeName, false);

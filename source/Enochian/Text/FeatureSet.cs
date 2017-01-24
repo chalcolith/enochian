@@ -30,33 +30,34 @@ namespace Enochian.Text
 
         static readonly Regex FeatureSpec = new Regex(@"^([+-])(\w+)$", RegexOptions.Compiled);
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
-            if (config.PlusValue != null)
-                PlusValue = (double)config.PlusValue;
-            if (config.MinusValue != null)
-                MinusValue = (double)config.MinusValue;
+            var plusValue = config.Get<double?>("PlusValue", this);
+            if (plusValue != null)
+                PlusValue = plusValue.Value;
+            var minusValue = config.Get<double?>("MinusValue", this);
+            if (minusValue != null)
+                MinusValue = minusValue.Value;
 
             UnsetValue = (MinusValue + PlusValue) / 2.0;
 
-            if (config.Features != null)
+            var features = config.Get<IEnumerable<string>>("Features", this);
+            if (features != null)
             {
-                featureList = config.Features as IList<string>;
-                if (featureList == null)
-                {
-                    AddError("features are not defined");
-                    return this;
-                }
-
-                featureList = featureList.OrderBy(f => f).ToList();
+                featureList = features.OrderBy(f => f).ToList();
 
                 featureIndices = featureList.SelectMany(
                     (fnames, i) => fnames.Split(',')
                         .Where(n => !string.IsNullOrWhiteSpace(n))
                         .Select(n => (n, i)))
                     .ToDictionary(ni => ni.Item1.Trim().ToUpperInvariant(), ni => ni.Item2);
+            }
+            else
+            {
+                AddError("features are not defined");
+                return this;
             }
 
             return this;

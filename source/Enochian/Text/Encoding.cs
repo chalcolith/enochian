@@ -14,17 +14,18 @@ namespace Enochian.Text
 
         public IList<EncodingPattern> Patterns { get; } = new List<EncodingPattern>();
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
-            if (config.Patterns != null)
+            var patterns = config.GetChildren("Patterns", this);
+            if (patterns != null)
             {
                 try
                 {
-                    foreach (dynamic pat in config.Patterns)
+                    foreach (var pattern in patterns)
                     {
-                        Patterns.Add(new EncodingPattern(Features, pat));
+                        Patterns.Add(new EncodingPattern(Features, pattern));
                     }
                 }
                 catch (Exception e)
@@ -32,14 +33,13 @@ namespace Enochian.Text
                     AddError("patterns needs to be a list of pattern configs: {0}", e.Message);
                 }
             }
-
             return this;
         }
     }
 
     public class EncodingPattern : Configurable
     {
-        public EncodingPattern(FeatureSet features, object config)
+        public EncodingPattern(FeatureSet features, IDictionary<string, object> config)
         {
             Features = features;
             Configure(config);
@@ -53,25 +53,25 @@ namespace Enochian.Text
         // TODO: regular expression
         public double[] Vector { get; private set; }
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
-            Text = config.Text;
+            Text = config.Get<string>("Text", this);
             if (string.IsNullOrWhiteSpace(Text))
             {
                 AddError("empty text template");
             }
-            
-            var feats = config.Features as IList<string>;
-            if (feats != null)
+
+            var features = config.Get<IEnumerable<string>>("Features", this);
+            if (features != null)
             {
-                Spec = string.Join(", ", feats);
+                Spec = string.Join(", ", features);
 
                 if (Features != null)
                 {
                     var errors = new List<string>();
-                    Vector = Features.GetFeatureVector(feats, errors);
+                    Vector = Features.GetFeatureVector(features, errors);
                     foreach (var error in errors)
                         AddError("error in feature spec for '{0}': {1}", Text, error);
                 }

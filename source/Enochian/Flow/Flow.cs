@@ -26,47 +26,45 @@ namespace Enochian.Flow
 
         public FlowContainer Steps { get; private set; }
 
-        public override IConfigurable Configure(dynamic config)
+        public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            base.Configure((object)config);
+            base.Configure(config);
 
-            if (config.Features != null)
+            var features = config.GetChildren("Features", this);
+            if (features != null)
             {
-                foreach (dynamic fset in config.Features)
+                foreach (var fset in features)
                 {
                     var featureSet = new FeatureSet
                     {
-                        Name = fset.Name,
-                        Path = fset.Path,
+                        Name = fset.Get<string>("Name", this),
+                        Path = fset.Get<string>("Path", this),
                     };
 
                     FeatureSets.Add(Load(this, featureSet, featureSet.Path));
                 }
             }
 
-            if (config.Encodings != null)
+            var encodings = config.GetChildren("Encodings", this);
+            if (encodings != null)
             {
-                foreach (dynamic enc in config.Encodings)
+                foreach (var enc in encodings)
                 {
                     var encoding = new Encoding
                     {
-                        Name = enc.Name,
-                        Path = enc.Path,
-                        Features = FeatureSets.FirstOrDefault(fs => fs.Name == enc.Features),
+                        Name = enc.Get<string>("Name", this),
+                        Path = enc.Get<string>("Path", this),
+                        Features = FeatureSets.FirstOrDefault(fs => fs.Name == enc.Get<string>("Features", this)),
                     };
 
                     if (encoding.Features == null)
-                        AddError("unknown feature set '{0}' for encoding '{1}'", enc.Features, enc.Name);
+                        AddError("unknown feature set '{0}' for encoding '{1}'", enc.Get<string>("Features", this), encoding.Name);
 
                     Encodings.Add(Load(this, encoding, encoding.Path));
                 }
             }
 
-            if (config.Steps != null)
-            {
-                Steps = new FlowContainer(this, config.Steps);
-            }
-
+            Steps = new FlowContainer(this, config);
             return this;
         }
 

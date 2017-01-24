@@ -23,17 +23,18 @@ namespace Enochian.UnitTests.Text
 
         public FeaturesTests()
         {
-            dynamic config = new ExpandoObject().Init(new
+            var config = new Dictionary<string, object>
             {
-                Id = "Features Tests",
-                Description = "",
-                Changes = "",
-                PlusValue = plusValue,
-                MinusValue = minusValue,
-                Features = featureNames
-            });
+                { "Id", "Features Tests" },
+                { "Description", "" },
+                { "Changes", null },
+                { "PlusValue", plusValue },
+                { "MinusValue", minusValue },
+                { "Features", featureNames },
+            };
+
             featuresUnderTest = new FeatureSet();
-            featuresUnderTest.Configure((object)config);
+            featuresUnderTest.Configure(config);
         }
 
         #region Tests
@@ -56,8 +57,7 @@ namespace Enochian.UnitTests.Text
             Action<string[], double[]> test = (featureSpec, expected) =>
             {
                 double[] actual = null;
-                AssertUtils.WithErrors(
-                    errors => actual = featuresUnderTest.GetFeatureVector(featureSpec, errors),
+                AssertUtils.WithErrors(errors => actual = featuresUnderTest.GetFeatureVector(featureSpec, errors),
                     () =>
                     {
                         Assert.IsNotNull(actual);

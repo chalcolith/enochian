@@ -15,12 +15,14 @@ namespace Enochian.Flow
             OutputType = outputType;
         }
 
-        public FlowStep(IFlowResources resources, Type inputType, Type outputType, FlowContainer container, FlowStep previous, dynamic config)
+        public FlowStep(IFlowResources resources, Type inputType, Type outputType, 
+            FlowContainer container, FlowStep previous, IDictionary<string, object> config)
             : this(resources, inputType, outputType)
         {
             Container = container;
             Previous = previous;
-            Configure(config);
+            if (config != null)
+                Configure(config);
         }
 
         protected IFlowResources Resources { get; }
@@ -79,8 +81,8 @@ namespace Enochian.Flow
         {
         }
 
-        public FlowStep(IFlowResources resources, FlowContainer container, FlowStep previous, dynamic config)
-            : base(resources, typeof(TIn), typeof(TOut), container, previous, (object)config)
+        public FlowStep(IFlowResources resources, FlowContainer container, FlowStep previous, IDictionary<string, object> config)
+            : base(resources, typeof(TIn), typeof(TOut), container, previous, config)
         {
         }
 
