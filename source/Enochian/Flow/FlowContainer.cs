@@ -11,7 +11,7 @@ namespace Enochian.Flow
 
         public FlowContainer(IFlowResources resources, Type inputType, Type outputType, 
             FlowContainer parent, FlowStep previous, IDictionary<string, object> config)
-            : base(resources, inputType, outputType, parent, previous, null)
+            : base(resources, inputType, outputType, parent, previous, config)
         {
         }
 
@@ -32,10 +32,10 @@ namespace Enochian.Flow
             try
             {
                 FlowStep previous = null;
-                var steps = config.GetChildren("Steps", this);
+                var steps = config.GetChildren("steps", this);
                 foreach (var stepConfig in steps)
                 {
-                    string typeName = stepConfig.Get<string>("Type", this);
+                    string typeName = stepConfig.Get<string>("type", this);
                     if (string.IsNullOrWhiteSpace(typeName))
                     {
                         AddError("empty step type name");
@@ -69,7 +69,7 @@ namespace Enochian.Flow
                     step.Container = this;
                     step.Previous = previous;
 
-                    string inputTypeName = stepConfig.Get<string>("InputType", this);
+                    string inputTypeName = stepConfig.Get<string>("inputType", this);
                     if (!string.IsNullOrWhiteSpace(inputTypeName))
                     {
                         var inputType = Type.GetType(inputTypeName, false);
@@ -79,7 +79,7 @@ namespace Enochian.Flow
                             AddError("unknown inputType name '{0}'", inputTypeName);
                     }
 
-                    string outputTypeName = stepConfig.Get<string>("OutputType", this);
+                    string outputTypeName = stepConfig.Get<string>("outputType", this);
                     if (!string.IsNullOrWhiteSpace(outputTypeName))
                     {
                         var outputType = Type.GetType(outputTypeName, false);

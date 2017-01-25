@@ -30,37 +30,38 @@ namespace Enochian.Flow
         {
             base.Configure(config);
 
-            var features = config.GetChildren("Features", this);
+            var features = config.GetChildren("features", this);
             if (features != null)
             {
                 foreach (var fset in features)
                 {
                     var featureSet = new FeatureSet
                     {
-                        Name = fset.Get<string>("Name", this),
-                        Path = fset.Get<string>("Path", this),
+                        Name = fset.Get<string>("name", this),
+                        RelativePath = fset.Get<string>("path", this),
                     };
 
-                    FeatureSets.Add(Load(this, featureSet, featureSet.Path));
+                    FeatureSets.Add(Load(this, featureSet, featureSet.RelativePath));
                 }
             }
 
-            var encodings = config.GetChildren("Encodings", this);
+            var encodings = config.GetChildren("encodings", this);
             if (encodings != null)
             {
                 foreach (var enc in encodings)
                 {
+                    var featuresName = enc.Get<string>("features", this);
                     var encoding = new Encoding
                     {
-                        Name = enc.Get<string>("Name", this),
-                        Path = enc.Get<string>("Path", this),
-                        Features = FeatureSets.FirstOrDefault(fs => fs.Name == enc.Get<string>("Features", this)),
+                        Name = enc.Get<string>("name", this),
+                        RelativePath = enc.Get<string>("path", this),
+                        Features = FeatureSets.FirstOrDefault(fs => fs.Name == featuresName),
                     };
 
                     if (encoding.Features == null)
-                        AddError("unknown feature set '{0}' for encoding '{1}'", enc.Get<string>("Features", this), encoding.Name);
+                        AddError("unknown feature set '{0}' for encoding '{1}'", featuresName, encoding.Name);
 
-                    Encodings.Add(Load(this, encoding, encoding.Path));
+                    Encodings.Add(Load(this, encoding, encoding.RelativePath));
                 }
             }
 

@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 
 namespace Enochian.Text
 {
-    public class FeatureSet : Configurable, ILoadedFromFile
+    public class FeatureSet : Configurable, IFileReference
     {
         IList<string> featureList;
         IDictionary<string, int> featureIndices;
 
         public string Name { get; internal set; }
-        public string Path { get; internal set; }
+        public string RelativePath { get; internal set; }
 
         public double PlusValue { get; private set; } = 1.0;
         public double UnsetValue { get; private set; } = 0.0;
@@ -34,16 +34,16 @@ namespace Enochian.Text
         {
             base.Configure(config);
 
-            var plusValue = config.Get<double?>("PlusValue", this);
+            var plusValue = config.Get<double?>("plusValue", this);
             if (plusValue != null)
                 PlusValue = plusValue.Value;
-            var minusValue = config.Get<double?>("MinusValue", this);
+            var minusValue = config.Get<double?>("minusValue", this);
             if (minusValue != null)
                 MinusValue = minusValue.Value;
 
             UnsetValue = (MinusValue + PlusValue) / 2.0;
 
-            var features = config.Get<IEnumerable<string>>("Features", this);
+            var features = config.GetList<string>("features", this);
             if (features != null)
             {
                 featureList = features.OrderBy(f => f).ToList();
@@ -57,7 +57,6 @@ namespace Enochian.Text
             else
             {
                 AddError("features are not defined");
-                return this;
             }
 
             return this;

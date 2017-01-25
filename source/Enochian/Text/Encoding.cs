@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace Enochian.Text
 {
-    public class Encoding : Configurable, ILoadedFromFile
+    public class Encoding : Configurable, IFileReference
     {
         public static Encoding Default { get; } = new Encoding();
 
         public string Name { get; internal set; }
-        public string Path { get; internal set; }
+        public string RelativePath { get; internal set; }
 
         public FeatureSet Features { get; internal set; }
 
@@ -18,7 +18,7 @@ namespace Enochian.Text
         {
             base.Configure(config);
 
-            var patterns = config.GetChildren("Patterns", this);
+            var patterns = config.GetChildren("patterns", this);
             if (patterns != null)
             {
                 try
@@ -57,13 +57,13 @@ namespace Enochian.Text
         {
             base.Configure(config);
 
-            Text = config.Get<string>("Text", this);
+            Text = config.Get<string>("text", this);
             if (string.IsNullOrWhiteSpace(Text))
             {
                 AddError("empty text template");
             }
 
-            var features = config.Get<IEnumerable<string>>("Features", this);
+            var features = config.GetList<string>("features", this);
             if (features != null)
             {
                 Spec = string.Join(", ", features);

@@ -4,7 +4,7 @@
   "features": [
     {
       "name": "Default",
-      "path": "encodings/features.json"
+      "path": "../resources/encodings/features.json"
     }
   ],
 
@@ -12,7 +12,7 @@
     {
       "name": "IPA",
       "features": "Default",
-      "path": "encodings/ipa.json"
+      "path": "../resources/encodings/ipa.json"
     }
   ],
 

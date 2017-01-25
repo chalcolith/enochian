@@ -10,22 +10,26 @@ namespace Enochian
 {
     using Config = IDictionary<string, object>;
 
-    public interface IConfigurable
+    public interface IErrorHandler
     {
-        string AbsoluteFilePath { get; }
-        IConfigurable Parent { get; set; }
-        ICollection<IConfigurable> Children { get; }
         IEnumerable<ErrorRecord> Errors { get; }
-
-        IConfigurable Configure(Config config);
-        IConfigurable AddError(string format, params object[] args);
-        IConfigurable AddError(int line, int column, string format, params object[] args);
+        IErrorHandler AddError(string format, params object[] args);
+        IErrorHandler AddError(int line, int column, string format, params object[] args);
     }
 
-    public interface ILoadedFromFile
+    public interface IConfigurable : IErrorHandler
+    {
+        string AbsoluteFilePath { get; set; }
+        IConfigurable Parent { get; set; }
+        ICollection<IConfigurable> Children { get; }
+
+        IConfigurable Configure(Config config);
+    }
+
+    public interface IFileReference
     {
         string Name { get; }
-        string Path { get; }
+        string RelativePath { get; }
     }
 
     public abstract class Configurable : IConfigurable
@@ -62,13 +66,13 @@ namespace Enochian
             }
         }
 
-        public IConfigurable AddError(string format, params object[] args)
+        public IErrorHandler AddError(string format, params object[] args)
         {
             AddError(0, 0, format, args);
             return this;
         }
 
-        public IConfigurable AddError(int line, int column, string format, params object[] args)
+        public IErrorHandler AddError(int line, int column, string format, params object[] args)
         {
             if (errors == null) errors = new List<ErrorRecord>();
             errors.Add(new ErrorRecord
@@ -83,9 +87,9 @@ namespace Enochian
 
         public virtual IConfigurable Configure(Config config)
         {
-            Id = config.Get<string>("Id", this);
-            Description = config.Get<string>("Description", this);
-            Changes = config.Get<string>("Changes", this);
+            Id = config.Get<string>("id", this);
+            Description = config.Get<string>("description", this);
+            Changes = config.Get<string>("changes", this);
             return this;
         }
 
@@ -111,7 +115,10 @@ namespace Enochian
 
             try
             {
-                using (var stream = File.OpenRead(fname))
+                var path = Path.GetFullPath(fname);
+                obj.AbsoluteFilePath = path;
+
+                using (var stream = File.OpenRead(path))
                 using (var tr = new StreamReader(stream))
                 using (var jr = new JsonTextReader(tr))
                 {
@@ -164,7 +171,7 @@ namespace Enochian
 
     public static class ConfigExtensions
     {
-        public static T Get<T>(this Config config, string memberName, IConfigurable errorHandler)
+        public static T Get<T>(this Config config, string memberName, IErrorHandler errorHandler)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
             if (config.TryGetValue(memberName, out object value))
@@ -177,9 +184,15 @@ namespace Enochian
             return default(T);
         }
 
-        public static IEnumerable<IDictionary<string, object>> GetChildren(this Config config, string memberName, IConfigurable errorHandler)
+        public static IEnumerable<T> GetList<T>(this Config config, string memberName, IErrorHandler errorHandler)
         {
-            return config.Get<IEnumerable<IDictionary<string, object>>>(memberName, errorHandler);
+            var list = config.Get<IEnumerable<object>>(memberName, errorHandler);
+            return list.OfType<T>();
+        }
+
+        public static IEnumerable<IDictionary<string, object>> GetChildren(this Config config, string memberName, IErrorHandler errorHandler)
+        {
+            return config.GetList<IDictionary<string, object>>(memberName, errorHandler);
         }
     }
 }

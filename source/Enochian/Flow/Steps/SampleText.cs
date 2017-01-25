@@ -24,7 +24,7 @@ namespace Enochian.Flow.Steps
 
             if (Resources != null)
             {
-                var features = config.Get<string>("Features", this);
+                var features = config.Get<string>("features", this);
                 Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == features);
                 if (Features == null)
                     AddError("invalid features name '{0}'", features);
@@ -34,7 +34,7 @@ namespace Enochian.Flow.Steps
                 AddError("no resources specified for SampleText");
             }
 
-            string text = config.Get<string>("Text", this);
+            string text = config.Get<string>("text", this);
             if (!string.IsNullOrWhiteSpace(text))
                 Tokens = text.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
 

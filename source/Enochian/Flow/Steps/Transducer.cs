@@ -23,17 +23,17 @@ namespace Enochian.Flow.Steps
 
             if (Resources != null)
             {
-                var features = config.Get<string>("Features", this);
+                var features = config.Get<string>("features", this);
                 Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == features);
                 if (Features == null)
                     AddError("invalid features name '{0}'", features);
 
-                var inputEncoding = config.Get<string>("InputEncoding", this);
+                var inputEncoding = config.Get<string>("inputEncoding", this);
                 Input = Resources.Encodings.FirstOrDefault(enc => enc.Name == inputEncoding);
                 if (Input == null)
                     AddError("invalid inputEncoding name '{0}'", inputEncoding);
 
-                var outputEncoding = config.Get<string>("OutputEncoding", this);
+                var outputEncoding = config.Get<string>("outputEncoding", this);
                 Output = Resources.Encodings.FirstOrDefault(enc => enc.Name == outputEncoding);
                 if (Output == null)
                     AddError("invalid outputEncoding name '{0}'", outputEncoding);
