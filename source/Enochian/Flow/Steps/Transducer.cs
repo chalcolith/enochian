@@ -74,10 +74,12 @@ namespace Enochian.Flow.Steps
                 pat.Regexp.Reset();
 
             var replacements = patterns.Where(p => p.Pattern.IsReplacement).ToArray();
+            foreach (var pr in replacements) pr.Reset();
 
-            PatternRec lastRepl = null;
             var allSegs = new List<Segment>();
             var source = input.Text;
+
+            PatternRec lastRepl = null;
             int start = 0, cur = 0;
             while (cur < source.Length)
             {
@@ -91,21 +93,24 @@ namespace Enochian.Flow.Steps
                         continue;
 
                     pr.Regexp.ProcessInput(ch);
-                    if (pr.Regexp.Succeeded)
-                    {
+                    if (!pr.Regexp.Failed)
                         inRepl = true;
-                        if (firstRepl == null)
-                            firstRepl = pr;
-                    }
+
+                    if (pr.Regexp.Succeeded && firstRepl == null)
+                        firstRepl = pr;
                 }
 
                 if (inRepl)
                 {
-                    if (cur + 1 >= source.Length)
+                    if (firstRepl != null && cur + 1 >= source.Length)
                     {
+                        var text = !string.IsNullOrEmpty(firstRepl.Pattern.Output)
+                            ? firstRepl.Pattern.Output
+                            : firstRepl.Pattern.Input;
+
                         allSegs.Add(new Segment
                         {
-                            Text = source.Substring(start, 1 + cur - start),
+                            Text = text,
                             Vectors = new[] { firstRepl.Pattern.Vector },
                         });
                     }
@@ -116,9 +121,13 @@ namespace Enochian.Flow.Steps
                 {
                     if (lastRepl != null)
                     {
+                        var text = !string.IsNullOrEmpty(lastRepl.Pattern.Output)
+                            ? lastRepl.Pattern.Output
+                            : lastRepl.Pattern.Input;
+
                         allSegs.Add(new Segment
                         {
-                            Text = source.Substring(start, cur - start),
+                            Text = text,
                             Vectors = new[] { lastRepl.Pattern.Vector },
                         });
                         lastRepl = null;
@@ -128,7 +137,7 @@ namespace Enochian.Flow.Steps
                     {
                         allSegs.Add(new Segment
                         {
-                            Text = source.Substring(start, cur - start),
+                            Text = source.Substring(start, 1 + cur - start),
                             Vectors = new[] { new double[0] },
                         });
 
@@ -136,6 +145,59 @@ namespace Enochian.Flow.Steps
                     }
 
                     foreach (var pr in replacements)
+                        pr.Reset();
+                }
+            }
+
+            var templates = patterns.Where(p => !p.Pattern.IsReplacement).ToArray();
+            foreach (var pr in templates) pr.Reset();
+
+            PatternRec lastTempl = null;
+            start = cur = 0;
+            while (cur < allSegs.Count)
+            {
+                char ch = allSegs[cur].Text[0];
+
+                bool inTempl = false;
+                PatternRec firstTempl = null;
+                foreach (var pr in templates)
+                {
+                    if (pr.Regexp.Failed)
+                        continue;
+
+                    pr.Regexp.ProcessInput(ch);
+                    if (!pr.Regexp.Failed)
+                        inTempl = true;
+
+                    if (pr.Regexp.Succeeded && firstTempl == null)
+                        firstTempl = pr;
+                }
+
+                if (inTempl)
+                {
+                    if (firstTempl != null && cur + 1 >= source.Length)
+                    {
+                        var offset = firstTempl.Pattern.Input.IndexOf('_');
+                        allSegs[start + offset].Vectors[0] = Features.Override(allSegs[start + offset].Vectors[0], firstTempl.Pattern.Vector);
+                    }
+                    lastTempl = firstTempl;
+                    cur++;
+                }
+                else
+                {
+                    if (lastTempl != null)
+                    {
+                        var offset = lastTempl.Pattern.Input.IndexOf('_');
+                        allSegs[start + offset].Vectors[0] = Features.Override(allSegs[start + offset].Vectors[0], lastTempl.Pattern.Vector);
+                        lastTempl = null;
+                        start = cur;
+                    }
+                    else
+                    {
+                        start = ++cur;
+                    }
+
+                    foreach (var pr in templates)
                         pr.Reset();
                 }
             }

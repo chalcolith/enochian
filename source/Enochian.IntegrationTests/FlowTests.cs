@@ -44,7 +44,8 @@ namespace Enochian.IntegrationTests
             var tokens = sampleText.Tokens = given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
 
             var errors = new List<string>();
-            var expectedVectors = expected.Split(';').Select(fs => features.GetFeatureVector(fs.Split(','), errors));
+            var expectedVectors = expected.Split(';')
+                .Select(fs => features.GetFeatureVector(fs.Split(','), errors));
             Assert.IsFalse(errors.Any(), string.Join(", ", errors));
 
             var outputs = flow.GetOutputs().OfType<TextChunk>();
@@ -64,8 +65,9 @@ namespace Enochian.IntegrationTests
                 foreach (var seg in iline.Segments)
                 {
                     Assert.IsNotNull(seg.Vectors);
-                    Assert.AreEqual(2, seg.Vectors.Count, "expected 2 vectors");
-                    foreach (var actualVector in seg.Vectors)
+                    var actualVectors = seg.Vectors.Where(v => v.Length == features.NumDimensions).ToArray();
+                    Assert.AreEqual(2, actualVectors.Length, "expected 2 vectors");
+                    foreach (var actualVector in actualVectors)
                     {
                         if (!expectedIter.MoveNext())
                             Assert.Fail("no expected vector for token '{0}', seg '{1}'", token, seg.Text);
@@ -73,6 +75,8 @@ namespace Enochian.IntegrationTests
                         var expectedVector = expectedIter.Current;
 
                         double distance = FeatureSet.EuclideanDistance(expectedVector, actualVector);
+                        var expSpec = string.Join(",", features.GetFeatureSpec(expectedVector));
+                        var actSpec = string.Join(",", features.GetFeatureSpec(actualVector));
                         Assert.IsTrue(distance < 0.001, "distance for token '{0}', seg '{1}' is {2}", token, seg.Text, distance);
                     }
                 }

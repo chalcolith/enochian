@@ -70,7 +70,7 @@ namespace Enochian.Text
             {
                 foreach (var fspec in featureSpecs)
                 {
-                    var m = FeatureSpec.Match(fspec);
+                    var m = FeatureSpec.Match(fspec.Trim());
                     if (m.Success)
                     {
                         var fname = m.Groups[2].Value.Trim();
@@ -91,6 +91,18 @@ namespace Enochian.Text
             }
 
             return vector;
+        }
+
+        public IEnumerable<string> GetFeatureSpec(double[] vector)
+        {
+            int n = Math.Min(vector.Length, NumDimensions);
+            for (int i = 0; i < n; i++)
+            {
+                if (vector[i] == PlusValue)
+                    yield return "+" + featureList[i].Split(',').Last();
+                else if (vector[i] == MinusValue)
+                    yield return "-" + featureList[i].Split(',').Last();
+            }
         }
 
         public double[] GetUnsetVector()
