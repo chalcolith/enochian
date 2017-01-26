@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Verophyle.Regexp;
+using Verophyle.Regexp.InputSet;
+using Verophyle.Regexp.Node;
 
 namespace Enochian.Text
 {
     public class Encoding : Configurable, IFileReference
     {
-        public static Encoding Default { get; } = new Encoding();
+        public static Encoding Default { get; } = new Encoding { Name = "Default" };
 
         public string Name { get; internal set; }
         public string RelativePath { get; internal set; }
@@ -13,6 +16,8 @@ namespace Enochian.Text
         public FeatureSet Features { get; internal set; }
 
         public IList<EncodingPattern> Patterns { get; } = new List<EncodingPattern>();
+
+        public override IEnumerable<IConfigurable> Children => Patterns;
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -47,37 +52,42 @@ namespace Enochian.Text
 
         public FeatureSet Features { get; }
 
-        public string Text { get; private set; }
-        public string Spec { get; private set; }
+        public string Input { get; private set; }
+        public string Output { get; private set; }
 
-        // TODO: regular expression
+        public string FeatureSpec { get; private set; }
+
+        public bool IsReplacement => Input != null && !Input.Contains("_");
+
         public double[] Vector { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
             base.Configure(config);
 
-            Text = config.Get<string>("text", this);
-            if (string.IsNullOrWhiteSpace(Text))
+            Input = config.Get<string>("input", this);
+            if (string.IsNullOrWhiteSpace(Input))
             {
                 AddError("empty text template");
             }
 
+            Output = config.Get<string>("output", this);
+
             var features = config.GetList<string>("features", this);
             if (features != null)
             {
-                Spec = string.Join(", ", features);
+                FeatureSpec = string.Join(", ", features);
 
                 if (Features != null)
                 {
                     var errors = new List<string>();
                     Vector = Features.GetFeatureVector(features, errors);
                     foreach (var error in errors)
-                        AddError("error in feature spec for '{0}': {1}", Text, error);
+                        AddError("error in feature spec for '{0}': {1}", Input, error);
                 }
                 else
                 {
-                    AddError("null feature set for '{0}'", Text);
+                    AddError("null feature set for '{0}'", Input);
                 }
             }
             else
@@ -86,6 +96,26 @@ namespace Enochian.Text
             }
 
             return this;
+        }
+
+        public DeterministicAutomaton<char, UnicodeCategoryMatcher> GetRegexp()
+        {
+            if (string.IsNullOrEmpty(Input))
+                return new DeterministicAutomaton<char, UnicodeCategoryMatcher>();
+
+            int pos = 0;
+            Node<char> seq = null;
+            foreach (var ch in Input)
+            {
+                Node<char> leaf = ch == '_'
+                    ? new Dot<char>(new DotSet<char>(), ref pos)
+                    : new Leaf<char>(new CharSet(ch), ref pos);
+                seq = seq != null ? new Seq<char>(seq, leaf) : leaf;
+            }
+            Node<char> end = new End<char>(ref pos);
+            seq = seq != null ? new Seq<char>(seq, end) : end;
+
+            return new DeterministicAutomaton<char, UnicodeCategoryMatcher>(seq);
         }
     }
 }

@@ -64,8 +64,7 @@ namespace Enochian.Text
 
         public double[] GetFeatureVector(IEnumerable<string> featureSpecs, IList<string> errors)
         {
-            var vector = Enumerable.Range(0, NumDimensions)
-                .Select(i => UnsetValue).ToArray();
+            var vector = GetUnsetVector();
 
             if (featureIndices != null)
             {
@@ -92,6 +91,24 @@ namespace Enochian.Text
             }
 
             return vector;
+        }
+
+        public double[] GetUnsetVector()
+        {
+            return Enumerable.Range(0, NumDimensions).Select(i => UnsetValue).ToArray();
+        }
+
+        public double[] Override(double[] orig, double[] ovr)
+        {
+            double[] result = new double[orig.Length];
+            int n = Math.Min(orig.Length, ovr.Length);
+            for (int i = 0; i < n; i++)
+            {
+                result[i] = ovr[i] != UnsetValue
+                    ? ovr[i]
+                    : orig[i];
+            }
+            return result;
         }
 
         public static double EuclideanDistance(double[] a, double[] b)

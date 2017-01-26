@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,12 @@ namespace Enochian.IntegrationTests
         const string IpaTransducerPath = @"samples/ipatransducer.json";
 
         [DataTestMethod]
-        [DataRow(IpaTransducerPath, "p", "+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal")]
+        [DataRow(IpaTransducerPath, "py",
+            @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
+              -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
+        [DataRow(IpaTransducerPath, @"pʰy",
+            @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,+SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
+              -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         public void TestIPATransducer(string fname, string given, string expected)
         {
             var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
@@ -33,7 +38,7 @@ namespace Enochian.IntegrationTests
             var transducer = flow.Steps.Children.LastOrDefault() as Transducer;
             Assert.IsNotNull(transducer, "last step is not Transducer");
 
-            var encoding = transducer.Output;
+            var encoding = transducer.OutputEncoding;
             Assert.IsNotNull(encoding, "transducer has no output encoding");
 
             var tokens = sampleText.Tokens = given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
@@ -54,8 +59,12 @@ namespace Enochian.IntegrationTests
                 var iline = chunk.Lines.FirstOrDefault(line => line.Encoding == encoding);
                 Assert.IsNotNull(iline, "unable to find segment with encoding '{0}'", encoding.Name);
 
+                Assert.IsNotNull(iline.Segments);
+                Assert.AreEqual(1, iline.Segments.Count, "expected 1 segments");
                 foreach (var seg in iline.Segments)
                 {
+                    Assert.IsNotNull(seg.Vectors);
+                    Assert.AreEqual(2, seg.Vectors.Count, "expected 2 vectors");
                     foreach (var actualVector in seg.Vectors)
                     {
                         if (!expectedIter.MoveNext())

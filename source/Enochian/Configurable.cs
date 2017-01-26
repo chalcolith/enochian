@@ -21,7 +21,7 @@ namespace Enochian
     {
         string AbsoluteFilePath { get; set; }
         IConfigurable Parent { get; set; }
-        ICollection<IConfigurable> Children { get; }
+        IEnumerable<IConfigurable> Children { get; }
 
         IConfigurable Configure(Config config);
     }
@@ -35,7 +35,6 @@ namespace Enochian
     public abstract class Configurable : IConfigurable
     {
         string absFilePath;
-        IList<IConfigurable> children;
         IList<ErrorRecord> errors;
 
         public string AbsoluteFilePath
@@ -50,18 +49,14 @@ namespace Enochian
 
         public IConfigurable Parent { get; set; }
 
-        public ICollection<IConfigurable> Children
-        {
-            get { return children ?? (children = new List<IConfigurable>()); }
-        }
+        public virtual IEnumerable<IConfigurable> Children => Enumerable.Empty<IConfigurable>();
 
         public IEnumerable<ErrorRecord> Errors
         {
             get
             {
                 var allErrors = errors ?? Enumerable.Empty<ErrorRecord>();
-                if (children != null)
-                    allErrors = allErrors.Concat(children.SelectMany(child => child.Errors));
+                allErrors = allErrors.Concat(Children.SelectMany(child => child.Errors));
                 return allErrors;
             }
         }
@@ -148,7 +143,6 @@ namespace Enochian
             var absChildPath = GetChildPath(parent.AbsoluteFilePath, childPath);
             Load(absChildPath, child);
             child.Parent = parent;
-            parent.Children.Add(child);
             return child;
         }
 

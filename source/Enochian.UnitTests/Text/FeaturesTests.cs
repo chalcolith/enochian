@@ -25,12 +25,12 @@ namespace Enochian.UnitTests.Text
         {
             var config = new Dictionary<string, object>
             {
-                { "Id", "Features Tests" },
-                { "Description", "" },
-                { "Changes", null },
-                { "PlusValue", plusValue },
-                { "MinusValue", minusValue },
-                { "Features", featureNames },
+                { "id", "Features Tests" },
+                { "description", "" },
+                { "changes", null },
+                { "plusValue", plusValue },
+                { "minusValue", minusValue },
+                { "features", featureNames },
             };
 
             featuresUnderTest = new FeatureSet();

@@ -25,6 +25,8 @@ namespace Enochian.Flow
             get { return steps ?? (steps = new List<FlowStep>()); }
         }
 
+        public override IEnumerable<IConfigurable> Children => Steps;
+
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
             base.Configure(config);
@@ -33,9 +35,9 @@ namespace Enochian.Flow
             {
                 FlowStep previous = null;
                 var steps = config.GetChildren("steps", this);
-                foreach (var stepConfig in steps)
+                foreach (var step in steps)
                 {
-                    string typeName = stepConfig.Get<string>("type", this);
+                    string typeName = step.Get<string>("type", this);
                     if (string.IsNullOrWhiteSpace(typeName))
                     {
                         AddError("empty step type name");
@@ -65,32 +67,40 @@ namespace Enochian.Flow
                         continue;
                     }
 
-                    var step = ctor.Invoke(new object[] { Resources }) as FlowStep;
-                    step.Container = this;
-                    step.Previous = previous;
+                    var child = ctor.Invoke(new object[] { Resources }) as FlowStep;
+                    child.Container = this;
+                    child.Previous = previous;
 
-                    string inputTypeName = stepConfig.Get<string>("inputType", this);
-                    if (!string.IsNullOrWhiteSpace(inputTypeName))
+                    if (child.InputType == null)
                     {
-                        var inputType = Type.GetType(inputTypeName, false);
-                        if (inputType != null)
-                            step.InputType = inputType;
-                        else
-                            AddError("unknown inputType name '{0}'", inputTypeName);
+                        string inputTypeName = step.Get<string>("inputType", this);
+                        if (!string.IsNullOrWhiteSpace(inputTypeName))
+                        {
+                            var inputType = Type.GetType(inputTypeName, false);
+                            if (inputType != null)
+                                child.InputType = inputType;
+                            else
+                                AddError("unknown inputType name '{0}'", inputTypeName);
+                        }
                     }
 
-                    string outputTypeName = stepConfig.Get<string>("outputType", this);
-                    if (!string.IsNullOrWhiteSpace(outputTypeName))
+                    if (child.OutputType == null)
                     {
-                        var outputType = Type.GetType(outputTypeName, false);
-                        if (outputType != null)
-                            step.OutputType = outputType;
-                        else
-                            AddError("unknown outputType name '{0}'", outputTypeName);
+                        string outputTypeName = step.Get<string>("outputType", this);
+                        if (!string.IsNullOrWhiteSpace(outputTypeName))
+                        {
+                            var outputType = Type.GetType(outputTypeName, false);
+                            if (outputType != null)
+                                child.OutputType = outputType;
+                            else
+                                AddError("unknown outputType name '{0}'", outputTypeName);
+                        }
                     }
 
-                    Steps.Add(step);
-                    previous = step;
+                    child.Configure(step);
+
+                    Steps.Add(child);
+                    previous = child;
                 }
             }
             catch (Exception e)

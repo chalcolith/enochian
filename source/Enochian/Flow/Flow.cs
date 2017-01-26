@@ -20,11 +20,15 @@ namespace Enochian.Flow
             Load(fname, this);
         }
 
+        public override IEnumerable<IConfigurable> Children => 
+            FeatureSets.Concat<IConfigurable>(Encodings).Concat(Steps != null
+                ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>());
+
         public IList<FeatureSet> FeatureSets { get; } = new List<FeatureSet>();
 
         public IList<Encoding> Encodings { get; } = new List<Encoding>();
 
-        public FlowContainer Steps { get; private set; }
+        public FlowContainer Steps { get; private set; }        
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -65,6 +69,9 @@ namespace Enochian.Flow
                 }
             }
 
+            if (!Encodings.Any(e => e.Name == Encoding.Default.Name))
+                Encodings.Add(Encoding.Default);
+
             Steps = new FlowContainer(this, config);
             return this;
         }
@@ -75,7 +82,10 @@ namespace Enochian.Flow
                 yield break;
 
             foreach (var output in Steps.GetOutputs())
-                yield return output;
+            {
+                if (output != null)
+                    yield return output;
+            }
         }
     }
 }

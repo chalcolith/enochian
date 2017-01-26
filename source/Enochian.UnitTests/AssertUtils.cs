@@ -10,9 +10,11 @@ namespace Enochian.UnitTests
     {
         public static void NoErrors(IConfigurable obj)
         {
-            if (obj.Errors != null && obj.Errors.Any())
+            if (obj.Errors != null)
             {
-                Assert.Fail(string.Join(", ", obj.Errors.Select(er => er.Message)));
+                var message = string.Join(", ", obj.Errors.Select(er => er.Message));
+                if (!string.IsNullOrWhiteSpace(message))
+                    Assert.Fail(message);
             }
         }
 
