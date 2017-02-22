@@ -70,6 +70,9 @@ namespace Enochian.Text
             {
                 foreach (var fspec in featureSpecs)
                 {
+                    if (string.IsNullOrWhiteSpace(fspec))
+                        continue;
+
                     var m = FeatureSpec.Match(fspec.Trim());
                     if (m.Success)
                     {

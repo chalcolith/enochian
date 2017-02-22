@@ -22,6 +22,9 @@ namespace Enochian.IntegrationTests
         [DataRow(IpaTransducerPath, @"pʰy",
             @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,+SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
               -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
+        [DataRow(IpaTransducerPath, @"pБy",
+            @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;;
+              -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         public void TestIPATransducer(string fname, string given, string expected)
         {
             var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
@@ -45,7 +48,8 @@ namespace Enochian.IntegrationTests
 
             var errors = new List<string>();
             var expectedVectors = expected.Split(';')
-                .Select(fs => features.GetFeatureVector(fs.Split(','), errors));
+                .Select(fs => features.GetFeatureVector(fs.Split(','), errors))
+                .ToList();
             Assert.IsFalse(errors.Any(), string.Join(", ", errors));
 
             var outputs = flow.GetOutputs().OfType<TextChunk>();
@@ -66,7 +70,6 @@ namespace Enochian.IntegrationTests
                 {
                     Assert.IsNotNull(seg.Vectors);
                     var actualVectors = seg.Vectors.Where(v => v.Length == features.NumDimensions).ToArray();
-                    Assert.AreEqual(2, actualVectors.Length, "expected 2 vectors");
                     foreach (var actualVector in actualVectors)
                     {
                         if (!expectedIter.MoveNext())

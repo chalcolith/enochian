@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Verophyle.Regexp;
 using Verophyle.Regexp.InputSet;
 using Verophyle.Regexp.Node;
@@ -55,11 +56,11 @@ namespace Enochian.Text
         public string Input { get; private set; }
         public string Output { get; private set; }
 
-        public string FeatureSpec { get; private set; }
+        public string[] FeatureSpecs { get; private set; }
 
         public bool IsReplacement => Input != null && !Input.Contains("_");
 
-        public double[] Vector { get; private set; }
+        public double[][] Vectors { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -73,26 +74,46 @@ namespace Enochian.Text
 
             Output = config.Get<string>("output", this);
 
-            var features = config.GetList<string>("features", this);
+            var features = config.GetList<object>("features", this);
             if (features != null)
             {
-                FeatureSpec = string.Join(", ", features);
+                var specs = new List<string>();
+                var vectors = new List<double[]>();
+                var errors = new List<string>();
 
-                if (Features != null)
+                var fstrings = features.OfType<string>().ToList();
+                if (fstrings.Any())
                 {
-                    var errors = new List<string>();
-                    Vector = Features.GetFeatureVector(features, errors);
-                    foreach (var error in errors)
-                        AddError("error in feature spec for '{0}': {1}", Input, error);
+                    specs.Add(string.Join(", ", fstrings));
+                    vectors.Add(Features.GetFeatureVector(fstrings, errors));
                 }
                 else
                 {
-                    AddError("null feature set for '{0}'", Input);
+                    var flists = features.OfType<IEnumerable<object>>().ToList();
+                    foreach (var flist in flists)
+                    {
+                        fstrings = flist.OfType<string>().ToList();
+                        if (fstrings.Any())
+                        {
+                            specs.Add(string.Join(", ", fstrings));
+                            vectors.Add(Features.GetFeatureVector(fstrings, errors));
+                        }
+                        else
+                        {
+                            AddError("empty feature set for '{0}'", Input);
+                        }
+                    }
                 }
+
+                foreach (var error in errors)
+                    AddError("error in feature spec for '{0}': {1}", Input, error);
+
+                FeatureSpecs = specs.ToArray();
+                Vectors = vectors.ToArray();
             }
             else
             {
-                AddError("invalid feature spec (needs to be a list of strings)");
+                AddError("invalid feature spec (needs to be a list of strings or a list of lists of strings)");
             }
 
             return this;

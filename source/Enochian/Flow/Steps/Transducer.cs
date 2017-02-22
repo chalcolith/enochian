@@ -71,10 +71,9 @@ namespace Enochian.Flow.Steps
         Segment ProcessSegment(Segment input, PatternRec[] patterns)
         {
             foreach (var pat in patterns)
-                pat.Regexp.Reset();
+                pat.Reset();
 
             var replacements = patterns.Where(p => p.Pattern.IsReplacement).ToArray();
-            foreach (var pr in replacements) pr.Reset();
 
             var allSegs = new List<Segment>();
             var source = input.Text;
@@ -111,7 +110,7 @@ namespace Enochian.Flow.Steps
                         allSegs.Add(new Segment
                         {
                             Text = text,
-                            Vectors = new[] { firstRepl.Pattern.Vector },
+                            Vectors = firstRepl.Pattern.Vectors,
                         });
                     }
                     lastRepl = firstRepl;
@@ -128,7 +127,7 @@ namespace Enochian.Flow.Steps
                         allSegs.Add(new Segment
                         {
                             Text = text,
-                            Vectors = new[] { lastRepl.Pattern.Vector },
+                            Vectors = lastRepl.Pattern.Vectors,
                         });
                         lastRepl = null;
                         start = cur; // start again on this character
@@ -138,7 +137,7 @@ namespace Enochian.Flow.Steps
                         allSegs.Add(new Segment
                         {
                             Text = source.Substring(start, 1 + cur - start),
-                            Vectors = new[] { new double[0] },
+                            Vectors = new[] { Features.GetUnsetVector() },
                         });
 
                         start = ++cur; // go to the next character
@@ -150,7 +149,6 @@ namespace Enochian.Flow.Steps
             }
 
             var templates = patterns.Where(p => !p.Pattern.IsReplacement).ToArray();
-            foreach (var pr in templates) pr.Reset();
 
             PatternRec lastTempl = null;
             start = cur = 0;
@@ -178,7 +176,12 @@ namespace Enochian.Flow.Steps
                     if (firstTempl != null && cur + 1 >= source.Length)
                     {
                         var offset = firstTempl.Pattern.Input.IndexOf('_');
-                        allSegs[start + offset].Vectors[0] = Features.Override(allSegs[start + offset].Vectors[0], firstTempl.Pattern.Vector);
+                        var seg = allSegs[start + offset];
+                        seg.Vectors = seg.Vectors
+                            .SelectMany(orig =>
+                                firstTempl.Pattern.Vectors.Select(pat =>
+                                    Features.Override(orig, pat)))
+                            .ToArray();
                     }
                     lastTempl = firstTempl;
                     cur++;
@@ -188,7 +191,12 @@ namespace Enochian.Flow.Steps
                     if (lastTempl != null)
                     {
                         var offset = lastTempl.Pattern.Input.IndexOf('_');
-                        allSegs[start + offset].Vectors[0] = Features.Override(allSegs[start + offset].Vectors[0], lastTempl.Pattern.Vector);
+                        var seg = allSegs[start + offset];
+                        seg.Vectors = seg.Vectors
+                            .SelectMany(orig =>
+                                lastTempl.Pattern.Vectors.Select(pat =>
+                                    Features.Override(orig, pat)))
+                            .ToArray();
                         lastTempl = null;
                         start = cur;
                     }
@@ -207,17 +215,6 @@ namespace Enochian.Flow.Steps
                 Text = string.Join("", allSegs.Select(s => s.Text)),
                 Vectors = allSegs.SelectMany(s => s.Vectors.Where(v => v.Length > 0)).ToArray(),
             };
-        }
-
-        private void ApplyTemplateVector(EncodingPattern pattern, List<double[]> allVecs, IList<char> templChars, IList<double[]> templVecs)
-        {
-            var index = pattern.Input.IndexOf('_');
-            if (index < templVecs.Count)
-                AddError("unable to apply template '{0}' to '{1}'", pattern.Input, new string(templChars.ToArray()));
-            else
-                templVecs[index] = Features.Override(templVecs[index], pattern.Vector);
-            allVecs.AddRange(templVecs);
-            templVecs.Clear();
         }
 
         class PatternRec
