@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7353F-D7C1-43CA-9884-2839FE695B11}"
 	ProjectSection(SolutionItems) = preProject
+		..\samples\english_test.json = ..\samples\english_test.json
 		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
 	EndProjectSection
 EndProject
@@ -26,6 +27,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.UnitTests", "Enochian.UnitTests\Enochian.UnitTests.csproj", "{7944D3B0-4192-429E-B1C4-2E5E3C1E98F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.IntegrationTests", "Enochian.IntegrationTests\Enochian.IntegrationTests.csproj", "{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lexicons", "lexicons", "{B881B677-AAFC-45DB-B4E8-877767835E23}"
+	ProjectSection(SolutionItems) = preProject
+		..\resources\lexicons\cmudict.json = ..\resources\lexicons\cmudict.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,5 +99,6 @@ Global
 		{F5662EE4-6717-4557-B910-7D4B1040E383} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
 		{FE94FDE8-2A28-4EA9-ABDC-842A222A52EF} = {F5662EE4-6717-4557-B910-7D4B1040E383}
 		{A3D7353F-D7C1-43CA-9884-2839FE695B11} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
+		{B881B677-AAFC-45DB-B4E8-877767835E23} = {F5662EE4-6717-4557-B910-7D4B1040E383}
 	EndGlobalSection
 EndGlobal

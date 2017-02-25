@@ -1,0 +1,55 @@
+{
+  "id": "English Test Flow",
+  "description": "Tests whether a naive encoding of English can be matched to text via a pronunciation dictionary.",
+
+  "features": [
+    {
+      "name": "Default",
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+
+  "encodings": [
+    {
+      "name": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    }
+  ],
+
+  "lexicons": [
+    {
+      "name": "CMUDict",
+      "type": "CMUDict",
+      "path": "../resources/lexicons/cmudict.json"
+    }
+  ],
+
+  "steps": [
+    {
+      "id": "InputText",
+      "type": "SampleText",
+      "features": "Default",
+      "path": "english_test/austen_persuasion.txt"
+    },
+    {
+      "id": "NaivePhonological",
+      "type": "Transducer",
+      "features": "Default",
+      "inputEncoding": "Default",
+      "outputEncoding": "IPA"
+    },
+    {
+      "id": "MatchCMUDict",
+      "type": "DTWMatcher",
+      "lexicon": "CMUDict",
+      "inputEncoding": "IPA",
+      "outputEncoding": "Default"
+    },
+    {
+      "id": "MatchReport",
+      "type": "MatchReport",
+      "output": "../reports/english_test.html"
+    }
+  ]
+}
