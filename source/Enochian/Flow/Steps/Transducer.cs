@@ -9,9 +9,34 @@ namespace Enochian.Flow.Steps
 {
     public class Transducer : FlowStep<TextChunk, TextChunk>
     {
+        Lazy<PatternRec[]> patterns;
+        PatternRec[] Patterns => patterns.Value;
+
+        Lazy<PatternRec[]> replacements;
+        PatternRec[] Replacements => replacements.Value;
+
+        Lazy<PatternRec[]> templates;
+        PatternRec[] Templates => templates.Value;
+
+        Lazy<HashSet<char>> modifiers;
+        HashSet<char> Modifiers => modifiers.Value;
+
         public Transducer(IFlowResources resources)
             : base(resources)
         {
+            patterns = new Lazy<PatternRec[]>(() => OutputEncoding.Patterns
+                .OrderByDescending(p => p.Input.Length)
+                .Select((p, i) => new PatternRec { Id = i, Pattern = p, Regexp = p.GetRegexp() })
+                .ToArray());
+
+            replacements = new Lazy<PatternRec[]>(() =>
+                Patterns.Where(p => p.Pattern.IsReplacement).ToArray());
+
+            templates = new Lazy<PatternRec[]>(() =>
+                Patterns.Where(p => !p.Pattern.IsReplacement).ToArray());
+
+            modifiers = new Lazy<HashSet<char>>(() => new HashSet<char>(
+                Templates.SelectMany(pr => pr.Pattern.Input.Where(c => c != '_'))));
         }
 
         public FeatureSet Features { get; private set; }
@@ -50,16 +75,11 @@ namespace Enochian.Flow.Steps
 
         protected override TextChunk ProcessTyped(TextChunk input)
         {
-            var patterns = OutputEncoding.Patterns
-                .OrderByDescending(p => p.Input.Length)
-                .Select((p, i) => new PatternRec { Id = i, Pattern = p, Regexp = p.GetRegexp() })
-                .ToArray();
-
             var inputLines = input.Lines.Where(line => line.Encoding == InputEncoding);
             var outputLines = inputLines.Select(line => new Interline
             {
                 Encoding = OutputEncoding,
-                Segments = line.Segments.Select(seg => ProcessSegment(seg, patterns)).ToList(),
+                Segments = line.Segments.Select(seg => ProcessSegment(seg, Patterns)).ToList(),
             });
             var output = new TextChunk
             {
@@ -73,8 +93,6 @@ namespace Enochian.Flow.Steps
             foreach (var pat in patterns)
                 pat.Reset();
 
-            var replacements = patterns.Where(p => p.Pattern.IsReplacement).ToArray();
-
             var allSegs = new List<Segment>();
             var source = input.Text;
 
@@ -86,7 +104,7 @@ namespace Enochian.Flow.Steps
 
                 bool inRepl = false;
                 PatternRec firstRepl = null;
-                foreach (var pr in replacements)
+                foreach (var pr in Replacements)
                 {
                     if (pr.Regexp.Failed)
                         continue;
@@ -134,21 +152,23 @@ namespace Enochian.Flow.Steps
                     }
                     else
                     {
+                        var vectors = !Modifiers.Contains(ch)
+                            ? new double[][] { Features.GetUnsetVector() }
+                            : new double[][] { new double[0] };
+
                         allSegs.Add(new Segment
                         {
                             Text = source.Substring(start, 1 + cur - start),
-                            Vectors = new[] { Features.GetUnsetVector() },
+                            Vectors = vectors,
                         });
 
                         start = ++cur; // go to the next character
                     }
 
-                    foreach (var pr in replacements)
+                    foreach (var pr in Replacements)
                         pr.Reset();
                 }
             }
-
-            var templates = patterns.Where(p => !p.Pattern.IsReplacement).ToArray();
 
             PatternRec lastTempl = null;
             start = cur = 0;
@@ -158,7 +178,7 @@ namespace Enochian.Flow.Steps
 
                 bool inTempl = false;
                 PatternRec firstTempl = null;
-                foreach (var pr in templates)
+                foreach (var pr in Templates)
                 {
                     if (pr.Regexp.Failed)
                         continue;
@@ -205,7 +225,7 @@ namespace Enochian.Flow.Steps
                         start = ++cur;
                     }
 
-                    foreach (var pr in templates)
+                    foreach (var pr in Templates)
                         pr.Reset();
                 }
             }
