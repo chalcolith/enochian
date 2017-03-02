@@ -15,6 +15,13 @@ namespace Enochian.IntegrationTests
     {
         const string IpaTransducerPath = @"samples/ipatransducer.json";
 
+        string GetConfigPath(string relativePath)
+        {
+            var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
+            var configPath = Path.Combine(assemblyDir, "../../../../..", relativePath);
+            return Path.GetFullPath(configPath);
+        }
+
         [DataTestMethod]
         [DataRow(IpaTransducerPath, "py",
             @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
@@ -27,12 +34,11 @@ namespace Enochian.IntegrationTests
               -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         public void TestIPATransducer(string fname, string given, string expected)
         {
-            var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
-            var configPath = Path.Combine(assemblyDir, "../../../../..", fname);
+            var configPath = GetConfigPath(fname);
             var flow = new Flow.Flow(configPath);
             AssertUtils.NoErrors(flow);
 
-            var features = flow.FeatureSets.FirstOrDefault(fs => fs.Name == "Default");
+            var features = flow.FeatureSets.FirstOrDefault(fs => fs.Id == "Default");
             Assert.IsNotNull(features, "no Default feature set");
 
             var sampleText = flow.Steps.Children.FirstOrDefault() as SampleText;
@@ -44,7 +50,7 @@ namespace Enochian.IntegrationTests
             var encoding = transducer.OutputEncoding;
             Assert.IsNotNull(encoding, "transducer has no output encoding");
 
-            var tokens = sampleText.Tokens = given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
+            var tokens = sampleText.Lines = new List<IList<string>> { given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries) };
 
             var errors = new List<string>();
             var expectedVectors = expected.Split(';')
@@ -62,7 +68,7 @@ namespace Enochian.IntegrationTests
 
                 var chunk = chunkIter.Current;
                 var iline = chunk.Lines.FirstOrDefault(line => line.Encoding == encoding);
-                Assert.IsNotNull(iline, "unable to find segment with encoding '{0}'", encoding.Name);
+                Assert.IsNotNull(iline, "unable to find segment with encoding '{0}'", encoding.Id);
 
                 Assert.IsNotNull(iline.Segments);
                 Assert.AreEqual(1, iline.Segments.Count, "expected 1 segments");
@@ -84,6 +90,17 @@ namespace Enochian.IntegrationTests
                     }
                 }
             }
+        }
+
+
+        const string EnglishTestPath = @"samples/english_test.json";
+
+        [TestMethod]
+        public void EnglishTest()
+        {
+            var configPath = GetConfigPath(EnglishTestPath);
+            var flow = new Flow.Flow(configPath);
+            AssertUtils.NoErrors(flow);
         }
     }
 }

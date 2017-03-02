@@ -4,24 +4,27 @@
 
   "features": [
     {
-      "name": "Default",
       "path": "../resources/encodings/features.json"
     }
   ],
 
   "encodings": [
     {
-      "name": "IPA",
       "features": "Default",
       "path": "../resources/encodings/ipa.json"
+    },
+    {
+      "features": "Default",
+      "path": "../resources/encodings/cmu.json"
     }
   ],
 
   "lexicons": [
     {
-      "name": "CMUDict",
+      "id": "CMUDict",
       "type": "CMUDict",
-      "path": "../resources/lexicons/cmudict.json"
+      "encoding": "CMU",
+      "path": "../resources/lexicons/cmudict/cmudict-0.7b"
     }
   ],
 
@@ -40,11 +43,9 @@
       "outputEncoding": "IPA"
     },
     {
-      "id": "MatchCMUDict",
+      "id": "LexicalMatch",
       "type": "DTWMatcher",
-      "lexicon": "CMUDict",
-      "inputEncoding": "IPA",
-      "outputEncoding": "Default"
+      "lexicon": "CMUDict"
     },
     {
       "id": "MatchReport",

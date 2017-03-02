@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Enochian.Text;
+using System.IO;
 
 namespace Enochian.Flow.Steps
 {
     public class SampleText : FlowStep<TextChunk, TextChunk>
     {
-        public SampleText(IFlowResources resources)
-            : base(resources)
+        public SampleText(IConfigurable parent, IFlowResources resources)
+            : base(parent, resources)
         {
         }
 
         public FeatureSet Features { get; private set; }
 
-        public IList<string> Tokens { get; set; }
+        public IList<IList<string>> Lines { get; set; }
 
         public static readonly char[] WHITESPACE = new[] { ' ', '\t', '\n', '\r' };
 
@@ -25,7 +26,7 @@ namespace Enochian.Flow.Steps
             if (Resources != null)
             {
                 var features = config.Get<string>("features", this);
-                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Name == features);
+                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
                 if (Features == null)
                     AddError("invalid features name '{0}'", features);
             }
@@ -34,31 +35,61 @@ namespace Enochian.Flow.Steps
                 AddError("no resources specified for SampleText");
             }
 
-            string text = config.Get<string>("text", this);
-            if (!string.IsNullOrWhiteSpace(text))
-                Tokens = text.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries);
+            Lines = new List<IList<string>>();
+
+            string path = config.Get<string>("path", this);
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                try
+                {
+                    var configPath = GetChildPath(AbsoluteFilePath, path);
+                    using (var fs = new FileStream(configPath, FileMode.Open, FileAccess.Read))
+                    using (var sr = new StreamReader(fs))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            Lines.Add(line.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries));
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    AddError(e.Message);
+                }
+            }
+            else
+            {
+                string text = config.Get<string>("text", this);
+                if (!string.IsNullOrWhiteSpace(text))
+                    Lines.Add(text.Split(WHITESPACE, StringSplitOptions.RemoveEmptyEntries));
+            }
 
             return this;
         }
 
         internal override IEnumerable<object> GetOutputs()
         {
-            if (Tokens == null)
+            if (Lines == null)
                 yield break;
 
-            foreach (var token in Tokens)
+            foreach (var line in Lines)
             {
-                yield return new TextChunk
+                if (line == null)
+                    continue;
+
+                var chunk = new TextChunk
                 {
                     Lines = new[]
                     {
                         new Interline
                         {
                             Encoding = Encoding.Default,
-                            Segments = new[] { new Segment { Text = token } },
-                        },
-                    },
+                            Segments = line.Select(token => new Segment { Text = token }).ToArray(),
+                        }
+                    }
                 };
+                yield return chunk;
             }
         }
     }

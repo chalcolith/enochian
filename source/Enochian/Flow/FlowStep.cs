@@ -8,19 +8,21 @@ namespace Enochian.Flow
 {
     public abstract class FlowStep : Configurable
     {
-        public FlowStep(IFlowResources resources, Type inputType, Type outputType)
+        public FlowStep(IConfigurable parent, IFlowResources resources, Type inputType, Type outputType)
+            : base(parent)
         {
             Resources = resources;
             InputType = inputType;
             OutputType = outputType;
         }
 
-        public FlowStep(IFlowResources resources, Type inputType, Type outputType, 
+        public FlowStep(IConfigurable parent, IFlowResources resources, Type inputType, Type outputType, 
             FlowContainer container, FlowStep previous, IDictionary<string, object> config)
-            : this(resources, inputType, outputType)
+            : this(parent, resources, inputType, outputType)
         {
             Container = container;
             Previous = previous;
+
             if (config != null)
                 Configure(config);
         }
@@ -76,13 +78,13 @@ namespace Enochian.Flow
         where TIn : class
         where TOut : class
     {
-        public FlowStep(IFlowResources resources)
-            : base(resources, typeof(TIn), typeof(TOut))
+        public FlowStep(IConfigurable parent, IFlowResources resources)
+            : base(parent, resources, typeof(TIn), typeof(TOut))
         {
         }
 
-        public FlowStep(IFlowResources resources, FlowContainer container, FlowStep previous, IDictionary<string, object> config)
-            : base(resources, typeof(TIn), typeof(TOut), container, previous, config)
+        public FlowStep(IConfigurable parent, IFlowResources resources, FlowContainer container, FlowStep previous, IDictionary<string, object> config)
+            : base(parent, resources, typeof(TIn), typeof(TOut), container, previous, config)
         {
         }
 

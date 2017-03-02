@@ -9,9 +9,13 @@ namespace Enochian.Text
 {
     public class Encoding : Configurable, IFileReference
     {
-        public static Encoding Default { get; } = new Encoding { Name = "Default" };
+        public static Encoding Default { get; } = new Encoding(null) { Id = "Default" };
 
-        public string Name { get; internal set; }
+        public Encoding(IConfigurable parent)
+            : base(parent)
+        {
+        }
+
         public string RelativePath { get; internal set; }
 
         public FeatureSet Features { get; internal set; }
@@ -31,7 +35,7 @@ namespace Enochian.Text
                 {
                     foreach (var pattern in patterns)
                     {
-                        Patterns.Add(new EncodingPattern(Features, pattern));
+                        Patterns.Add(new EncodingPattern(this, Features, pattern));
                     }
                 }
                 catch (Exception e)
@@ -45,7 +49,8 @@ namespace Enochian.Text
 
     public class EncodingPattern : Configurable
     {
-        public EncodingPattern(FeatureSet features, IDictionary<string, object> config)
+        public EncodingPattern(IConfigurable parent, FeatureSet features, IDictionary<string, object> config)
+            : base(parent)
         {
             Features = features;
             Configure(config);

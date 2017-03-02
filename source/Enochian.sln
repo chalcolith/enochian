@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{FE94FDE8-2A28-4EA9-ABDC-842A222A52EF}"
 	ProjectSection(SolutionItems) = preProject
-		..\resources\encodings\cmudict.json = ..\resources\encodings\cmudict.json
+		..\resources\encodings\cmu.json = ..\resources\encodings\cmu.json
 		..\resources\encodings\features.json = ..\resources\encodings\features.json
 		..\resources\encodings\ipa.json = ..\resources\encodings\ipa.json
 	EndProjectSection
@@ -20,17 +20,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7
 		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.Console", "Enochian.Console\Enochian.Console.csproj", "{D17B610B-FD6B-4A71-8B19-9212273F89A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enochian.Console", "Enochian.Console\Enochian.Console.csproj", "{D17B610B-FD6B-4A71-8B19-9212273F89A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian", "Enochian\Enochian.csproj", "{CD5A1E90-CC4F-4E97-B863-D1D126AC3490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enochian", "Enochian\Enochian.csproj", "{CD5A1E90-CC4F-4E97-B863-D1D126AC3490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.UnitTests", "Enochian.UnitTests\Enochian.UnitTests.csproj", "{7944D3B0-4192-429E-B1C4-2E5E3C1E98F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enochian.UnitTests", "Enochian.UnitTests\Enochian.UnitTests.csproj", "{7944D3B0-4192-429E-B1C4-2E5E3C1E98F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enochian.IntegrationTests", "Enochian.IntegrationTests\Enochian.IntegrationTests.csproj", "{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enochian.IntegrationTests", "Enochian.IntegrationTests\Enochian.IntegrationTests.csproj", "{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lexicons", "lexicons", "{B881B677-AAFC-45DB-B4E8-877767835E23}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "english_test", "english_test", "{346B7A2A-0E5B-4AC6-A7D7-5E2A77541BBE}"
 	ProjectSection(SolutionItems) = preProject
-		..\resources\lexicons\cmudict.json = ..\resources\lexicons\cmudict.json
+		..\samples\english_test\austen_persuasion.txt = ..\samples\english_test\austen_persuasion.txt
 	EndProjectSection
 EndProject
 Global
@@ -99,6 +99,6 @@ Global
 		{F5662EE4-6717-4557-B910-7D4B1040E383} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
 		{FE94FDE8-2A28-4EA9-ABDC-842A222A52EF} = {F5662EE4-6717-4557-B910-7D4B1040E383}
 		{A3D7353F-D7C1-43CA-9884-2839FE695B11} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
-		{B881B677-AAFC-45DB-B4E8-877767835E23} = {F5662EE4-6717-4557-B910-7D4B1040E383}
+		{346B7A2A-0E5B-4AC6-A7D7-5E2A77541BBE} = {A3D7353F-D7C1-43CA-9884-2839FE695B11}
 	EndGlobalSection
 EndGlobal

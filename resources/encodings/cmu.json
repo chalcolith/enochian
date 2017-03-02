@@ -1,5 +1,5 @@
 {
-  "id": "CMUDICT",
+  "id": "CMU",
   "description": "Phonemes of the CMU Pronouncing Dictionary (http://www.speech.cs.cmu.edu/cgi-bin/cmudict)",
   "changes": "Initial version 2017-02-21",
   "patterns": [

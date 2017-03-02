@@ -9,14 +9,15 @@ namespace Enochian.Flow
     {
         IList<FlowStep> steps;
 
-        public FlowContainer(IFlowResources resources, Type inputType, Type outputType, 
-            FlowContainer parent, FlowStep previous, IDictionary<string, object> config)
-            : base(resources, inputType, outputType, parent, previous, config)
+        public FlowContainer(
+            IConfigurable parent, IFlowResources resources, Type inputType, Type outputType, 
+            FlowContainer container, FlowStep previous, IDictionary<string, object> config)
+            : base(parent, resources, inputType, outputType, container, previous, config)
         {
         }
 
-        public FlowContainer(IFlowResources resources, IDictionary<string, object> config)
-            : this(resources, null, null, null, null, config)
+        public FlowContainer(IConfigurable parent, IFlowResources resources, IDictionary<string, object> config)
+            : this(parent, resources, null, null, null, null, config)
         {
         }
 
@@ -59,15 +60,16 @@ namespace Enochian.Flow
                         continue;
                     }
 
-                    var ctor = stepType.GetTypeInfo().GetConstructor(new[] { typeof(IFlowResources) });
+                    var ctor = stepType.GetTypeInfo().GetConstructor(new[] { typeof(IConfigurable), typeof(IFlowResources) });
                     if (ctor == null)
                     {
-                        AddError("step type '{0}' does not contain a constructor with a single parameter of type '{1}'",
-                            stepType.FullName, nameof(IFlowResources));
+                        AddError("step type '{0}' does not contain a constructor with parameters of type '{1}' and '{2}'",
+                            stepType.FullName, nameof(IConfigurable), nameof(IFlowResources));
                         continue;
                     }
 
-                    var child = ctor.Invoke(new object[] { Resources }) as FlowStep;
+                    var child = ctor.Invoke(new object[] { this, Resources }) as FlowStep;
+                    child.Parent = this;
                     child.Container = this;
                     child.Previous = previous;
 

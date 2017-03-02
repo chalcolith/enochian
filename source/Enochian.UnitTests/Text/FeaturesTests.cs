@@ -33,7 +33,7 @@ namespace Enochian.UnitTests.Text
                 { "features", featureNames },
             };
 
-            featuresUnderTest = new FeatureSet();
+            featuresUnderTest = new FeatureSet(null);
             featuresUnderTest.Configure(config);
         }
 

@@ -28,7 +28,6 @@ namespace Enochian
 
     public interface IFileReference
     {
-        string Name { get; }
         string RelativePath { get; }
     }
 
@@ -37,10 +36,25 @@ namespace Enochian
         string absFilePath;
         IList<ErrorRecord> errors;
 
+        public Configurable(IConfigurable parent)
+        {
+            Parent = parent;
+        }
+
         public string AbsoluteFilePath
         {
-            get { return absFilePath ?? "?"; }
-            set { absFilePath = value; }
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(absFilePath))
+                    return absFilePath;
+                if (Parent != null)
+                    return Parent.AbsoluteFilePath;
+                return "?";
+            }
+            set
+            {
+                absFilePath = value;
+            }
         }
 
         public string Id { get; set; }
@@ -113,8 +127,8 @@ namespace Enochian
                 var path = Path.GetFullPath(fname);
                 obj.AbsoluteFilePath = path;
 
-                using (var stream = File.OpenRead(path))
-                using (var tr = new StreamReader(stream))
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                using (var tr = new StreamReader(fs))
                 using (var jr = new JsonTextReader(tr))
                 {
                     var config = serializer.Deserialize<ExpandoObject>(jr);
@@ -146,7 +160,7 @@ namespace Enochian
             return child;
         }
 
-        static string GetChildPath(string absParentPath, string childPath)
+        protected static string GetChildPath(string absParentPath, string childPath)
         {
             var absChildPath = !string.IsNullOrWhiteSpace(absParentPath)
                 ? Path.GetFullPath(Path.Combine(Path.GetDirectoryName(absParentPath), childPath))

@@ -11,7 +11,11 @@ namespace Enochian.Text
         IList<string> featureList;
         IDictionary<string, int> featureIndices;
 
-        public string Name { get; internal set; }
+        public FeatureSet(IConfigurable parent)
+            : base(parent)
+        {
+        }
+
         public string RelativePath { get; internal set; }
 
         public double PlusValue { get; private set; } = 1.0;

@@ -1,5 +1,5 @@
 ﻿{
-  "id": "International Phonetic Alphabet",
+  "id": "IPA",
   "description": "Encodes features for strings of IPA in Unicode (see https://westonruter.github.io/ipa-chart/keyboard/ for the Unicode values).",
   "changes": "Initial version 2016-12-31.",
 

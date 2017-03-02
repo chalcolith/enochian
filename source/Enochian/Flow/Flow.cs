@@ -16,6 +16,7 @@ namespace Enochian.Flow
     public class Flow : Configurable, IFlowResources
     {
         public Flow(string fname)
+            : base(null)
         {
             Load(fname, this);
         }
@@ -39,9 +40,9 @@ namespace Enochian.Flow
             {
                 foreach (var fset in features)
                 {
-                    var featureSet = new FeatureSet
+                    var featureSet = new FeatureSet(this)
                     {
-                        Name = fset.Get<string>("name", this),
+                        Id = fset.Get<string>("id", this),
                         RelativePath = fset.Get<string>("path", this),
                     };
 
@@ -55,24 +56,24 @@ namespace Enochian.Flow
                 foreach (var enc in encodings)
                 {
                     var featuresName = enc.Get<string>("features", this);
-                    var encoding = new Encoding
+                    var encoding = new Encoding(this)
                     {
-                        Name = enc.Get<string>("name", this),
+                        Id = enc.Get<string>("id", this),
                         RelativePath = enc.Get<string>("path", this),
-                        Features = FeatureSets.FirstOrDefault(fs => fs.Name == featuresName),
+                        Features = FeatureSets.FirstOrDefault(fs => fs.Id == featuresName),
                     };
 
                     if (encoding.Features == null)
-                        AddError("unknown feature set '{0}' for encoding '{1}'", featuresName, encoding.Name);
+                        AddError("unknown feature set '{0}' for encoding '{1}'", featuresName, encoding.Id);
 
                     Encodings.Add(Load(this, encoding, encoding.RelativePath));
                 }
             }
 
-            if (!Encodings.Any(e => e.Name == Encoding.Default.Name))
+            if (!Encodings.Any(e => e.Id == Encoding.Default.Id))
                 Encodings.Add(Encoding.Default);
 
-            Steps = new FlowContainer(this, config);
+            Steps = new FlowContainer(this, this, config);
             return this;
         }
 

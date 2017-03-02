@@ -3,14 +3,12 @@
 
   "features": [
     {
-      "name": "Default",
       "path": "../resources/encodings/features.json"
     }
   ],
 
   "encodings": [
     {
-      "name": "IPA",
       "features": "Default",
       "path": "../resources/encodings/ipa.json"
     }
@@ -18,10 +16,12 @@
 
   "steps": [
     {
+      "id": "LoadText",
       "type": "SampleText",
       "features": "Default"
     },
     {
+      "id": "EncodeIPA",
       "type": "Transducer",
       "features": "Default",
       "inputEncoding": "Default",
