@@ -47,10 +47,19 @@ namespace Enochian.IntegrationTests
             var transducer = flow.Steps.Children.LastOrDefault() as Transducer;
             Assert.IsNotNull(transducer, "last step is not Transducer");
 
-            var encoding = transducer.OutputEncoding;
+            var encoding = transducer.Encoding;
             Assert.IsNotNull(encoding, "transducer has no output encoding");
 
-            var tokens = sampleText.Lines = new List<IList<string>> { given.Split(SampleText.WHITESPACE, StringSplitOptions.RemoveEmptyEntries) };
+            var tokens = new List<IList<string>> { given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries) };
+            sampleText.Chunks = new List<Interline>
+            {
+                new Interline
+                {
+                    Text = given,
+                    Encoding = Encoding.Default,
+                    Segments = tokens[0].Select(t => new Segment { Text = t }).ToArray(),
+                }
+            };
 
             var errors = new List<string>();
             var expectedVectors = expected.Split(';')

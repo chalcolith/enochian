@@ -18,14 +18,14 @@
     {
       "id": "LoadText",
       "type": "SampleText",
-      "features": "Default"
+      "features": "Default",
+      "text": "placeholder"
     },
     {
       "id": "EncodeIPA",
       "type": "Transducer",
       "features": "Default",
-      "inputEncoding": "Default",
-      "outputEncoding": "IPA"
+      "encoding": "IPA"
     }
   ]
 }

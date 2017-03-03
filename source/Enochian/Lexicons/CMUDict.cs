@@ -5,13 +5,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Enochian.Lexicon
+namespace Enochian.Lexicons
 {
     public class CMUDict : Lexicon
     {
         public CMUDict(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
+        }
+
+        int DebugLimit { get; set; }
+
+        public override IConfigurable Configure(IDictionary<string, object> config)
+        {
+            var debugLimit = config.Get<int?>("debugLimit", this);
+            DebugLimit = debugLimit ?? int.MaxValue;
+
+            return base.Configure(config);
         }
 
         static readonly char[] WS = new[] { ' ', '\t' };
@@ -29,7 +39,8 @@ namespace Enochian.Lexicon
                 using (var sr = new StreamReader(fs, System.Text.Encoding.ASCII))
                 {
                     string line;
-                    while ((line = sr.ReadLine()) != null)
+                    int num = 0;
+                    while ((line = sr.ReadLine()) != null && num++ < DebugLimit)
                     {
                         if (line.StartsWith(";;;") || string.IsNullOrWhiteSpace(line))
                             continue;

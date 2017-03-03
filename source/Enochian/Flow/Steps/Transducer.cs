@@ -7,10 +7,10 @@ using Verophyle.Regexp.InputSet;
 
 namespace Enochian.Flow.Steps
 {
-    public class Transducer : FlowStep<TextChunk, TextChunk>
+    public class Transducer : TextFlowStep
     {
         Encoder encoder;
-        Encoder Encoder => encoder ?? (encoder = new Encoder(Features, OutputEncoding));
+        Encoder Encoder => encoder ?? (encoder = new Encoder(Features, Encoding));
 
         public Transducer(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
@@ -19,8 +19,7 @@ namespace Enochian.Flow.Steps
 
         public FeatureSet Features { get; private set; }
 
-        public Encoding InputEncoding { get; private set; }
-        public Encoding OutputEncoding { get; private set; }
+        public Encoding Encoding { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -33,15 +32,10 @@ namespace Enochian.Flow.Steps
                 if (Features == null)
                     AddError("invalid features name '{0}'", features);
 
-                var inputEncoding = config.Get<string>("inputEncoding", this);
-                InputEncoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == inputEncoding);
-                if (InputEncoding == null)
-                    AddError("invalid inputEncoding name '{0}'", inputEncoding);
-
-                var outputEncoding = config.Get<string>("outputEncoding", this);
-                OutputEncoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == outputEncoding);
-                if (OutputEncoding == null)
-                    AddError("invalid outputEncoding name '{0}'", outputEncoding);
+                var outputEncoding = config.Get<string>("encoding", this);
+                Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == outputEncoding);
+                if (Encoding == null)
+                    AddError("invalid encoding name '{0}'", outputEncoding);
             }
             else
             {
@@ -53,10 +47,11 @@ namespace Enochian.Flow.Steps
 
         protected override TextChunk ProcessTyped(TextChunk input)
         {
-            var inputLines = input.Lines.Where(line => line.Encoding == InputEncoding);
+            var inputLines = input.Lines.Where(line => line.SourceStep == Previous);
             var outputLines = inputLines.Select(line => new Interline
             {
-                Encoding = OutputEncoding,
+                SourceStep = this,
+                Encoding = Encoding,
                 Segments = line.Segments.Select(seg => Encoder.ProcessSegment(seg)).ToList(),
             });
             var output = new TextChunk

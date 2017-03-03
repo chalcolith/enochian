@@ -23,8 +23,10 @@
     {
       "id": "CMUDict",
       "type": "CMUDict",
+      "features": "Default",
       "encoding": "CMU",
-      "path": "../resources/lexicons/cmudict/cmudict-0.7b"
+      "path": "../resources/lexicons/cmudict/cmudict-0.7b",
+      "debugLimit": 1000
     }
   ],
 
@@ -39,8 +41,7 @@
       "id": "NaivePhonological",
       "type": "Transducer",
       "features": "Default",
-      "inputEncoding": "Default",
-      "outputEncoding": "IPA"
+      "encoding": "IPA"
     },
     {
       "id": "LexicalMatch",

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Enochian.Lexicon
+namespace Enochian.Lexicons
 {
     public abstract class Lexicon : Configurable
     {
@@ -30,14 +30,28 @@ namespace Enochian.Lexicon
             if (Resources != null)
             {
                 var features = config.Get<string>("features", this);
-                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
-                if (Features == null)
-                    AddError("invalid feature set name '{0}'", features);
+                if (!string.IsNullOrWhiteSpace(features))
+                {
+                    Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
+                    if (Features == null)
+                        AddError("invalid feature set name '{0}' for lexicon '{1}'", features, Id);
+                }
+                else
+                {
+                    AddError("no 'features' specified for lexicon '{0}'", Id);
+                }
 
                 var encoding = config.Get<string>("encoding", this);
-                Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == encoding);
-                if (Encoding == null)
-                    AddError("invalid encoding name '{0}'", encoding);
+                if (!string.IsNullOrWhiteSpace(encoding))
+                {
+                    Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == encoding);
+                    if (Encoding == null)
+                        AddError("invalid encoding name '{0}' for lexicon '{1}'", encoding, Id);
+                }
+                else
+                {
+                    AddError("no 'encoding' specified for lexicon '{0}'", Id);
+                }
 
                 var path = config.Get<string>("path", this);
                 if (!string.IsNullOrWhiteSpace(path))

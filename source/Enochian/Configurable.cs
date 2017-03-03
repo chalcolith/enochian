@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -182,12 +183,31 @@ namespace Enochian
         public static T Get<T>(this Config config, string memberName, IErrorHandler errorHandler)
         {
             if (config == null) throw new ArgumentNullException(nameof(config));
-            if (config.TryGetValue(memberName, out object value))
+            if (config.TryGetValue(memberName, out object value) && value != null)
             {
                 if (value is T)
                     return (T)value;
-                if (errorHandler != null)
-                    errorHandler.AddError(string.Format("config value '{0}' is not of type {1}", memberName, typeof(T).Name));
+
+                if (value.GetType() == typeof(long))
+                {
+                    long n = (long)value;
+
+                    if (typeof(T) == typeof(int))
+                        return (T)(object)n;
+
+                    if (typeof(T) == typeof(int?))
+                        return (T)(object)(new int?((int)n));
+                }
+
+                try
+                {
+                    return (T)Convert.ChangeType(value, typeof(T));
+                }
+                catch
+                {
+                    if (errorHandler != null)
+                        errorHandler.AddError(string.Format("config value '{0}' is not of type {1}", memberName, typeof(T).Name));
+                }
             }
             return default(T);
         }
@@ -195,7 +215,7 @@ namespace Enochian
         public static IEnumerable<T> GetList<T>(this Config config, string memberName, IErrorHandler errorHandler)
         {
             var list = config.Get<IEnumerable<object>>(memberName, errorHandler);
-            return list.OfType<T>();
+            return list?.OfType<T>() ?? Enumerable.Empty<T>();
         }
 
         public static IEnumerable<IDictionary<string, object>> GetChildren(this Config config, string memberName, IErrorHandler errorHandler)

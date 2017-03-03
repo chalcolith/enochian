@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enochian.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -109,6 +110,14 @@ namespace Enochian.Flow
         protected virtual TOut ProcessTyped(TIn input)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public abstract class TextFlowStep : FlowStep<TextChunk, TextChunk>
+    {
+        public TextFlowStep(IConfigurable parent, IFlowResources resources)
+            : base(parent, resources)
+        {
         }
     }
 }

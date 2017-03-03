@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enochian.Text;
+using Enochian.Flow;
 
 namespace Enochian.Text
 {
@@ -11,6 +12,8 @@ namespace Enochian.Text
 
     public class Interline
     {
+        public FlowStep SourceStep { get; set; }
+        public string Text { get; set; }
         public Encoding Encoding { get; set; }
         public IList<Segment> Segments { get; set; }
     }
