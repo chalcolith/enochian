@@ -82,7 +82,7 @@ namespace Enochian.Flow
                     };
 
                     if (encoding.Features == null)
-                        AddError("unknown feature set '{0}' for encoding '{1}'", featuresName, encoding.Id);
+                        AddError("unknown feature set '{0}' encoding '{1}'", featuresName, encoding.Id);
 
                     Encodings.Add(Load(this, encoding, encoding.RelativePath));
                 }

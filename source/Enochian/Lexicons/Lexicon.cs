@@ -9,6 +9,10 @@ namespace Enochian.Lexicons
 {
     public abstract class Lexicon : Configurable
     {
+        string lexiconPath;
+        ICollection<LexiconEntry> entries;
+        IDictionary<string, LexiconEntry> entriesByLemma;
+
         public Lexicon(IConfigurable parent, IFlowResources resources)
             : base(parent)
         {
@@ -20,12 +24,40 @@ namespace Enochian.Lexicons
         public FeatureSet Features { get; private set; }
         public Encoding Encoding { get; private set; }
 
-        public ICollection<LexiconEntry> Entries { get; protected set; }
-        public IDictionary<string, LexiconEntry> EntriesByLemma { get; protected set; }
+        public ICollection<LexiconEntry> Entries
+        {
+            get
+            {
+                EnsureLexiconLoaded();
+                return entries;
+            }
+            protected set
+            {
+                entries = value;
+            }
+        }
+
+        public IDictionary<string, LexiconEntry> EntriesByLemma
+        {
+            get
+            {
+                EnsureLexiconLoaded();
+                return entriesByLemma;
+            }
+            protected set
+            {
+                entriesByLemma = value;
+            }
+        }
+
+        public int MaxEntriesToLoad { get; set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
             base.Configure(config);
+
+            var debugLimit = config.Get<int?>("debugLimit", this);
+            MaxEntriesToLoad = debugLimit ?? int.MaxValue;
 
             if (Resources != null)
             {
@@ -34,11 +66,11 @@ namespace Enochian.Lexicons
                 {
                     Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
                     if (Features == null)
-                        AddError("invalid feature set name '{0}' for lexicon '{1}'", features, Id);
+                        AddError("invalid feature set name '{0}'", features);
                 }
                 else
                 {
-                    AddError("no 'features' specified for lexicon '{0}'", Id);
+                    AddError("no 'features' specified");
                 }
 
                 var encoding = config.Get<string>("encoding", this);
@@ -46,22 +78,17 @@ namespace Enochian.Lexicons
                 {
                     Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == encoding);
                     if (Encoding == null)
-                        AddError("invalid encoding name '{0}' for lexicon '{1}'", encoding, Id);
+                        AddError("invalid encoding name '{0}'", encoding);
                 }
                 else
                 {
-                    AddError("no 'encoding' specified for lexicon '{0}'", Id);
+                    AddError("no 'encoding' specified");
                 }
 
                 var path = config.Get<string>("path", this);
                 if (!string.IsNullOrWhiteSpace(path))
                 {
-                    var absolutePath = GetChildPath(AbsoluteFilePath, path);
-
-                    if (File.Exists(absolutePath))
-                        LoadLexicon(absolutePath);
-                    else
-                        AddError("invalid data path {0}", absolutePath);
+                    lexiconPath = path;
                 }
                 else
                 {
@@ -70,10 +97,29 @@ namespace Enochian.Lexicons
             }
             else
             {
-                AddError("No Resources specified for lexicon.");
+                AddError("No Resources specified");
             }
 
             return this;
+        }
+
+        void EnsureLexiconLoaded()
+        {
+            if (entries != null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(lexiconPath))
+            {
+                AddError("no lexicon path configured");
+                return;
+            }
+
+            var absolutePath = GetChildPath(AbsoluteFilePath, lexiconPath);
+
+            if (File.Exists(absolutePath))
+                LoadLexicon(absolutePath);
+            else
+                AddError("invalid lexicon path '{0}'", absolutePath);
         }
 
         protected abstract void LoadLexicon(string path);
@@ -83,6 +129,6 @@ namespace Enochian.Lexicons
     {
         public string Lemma { get; set; }
         public string Encoded { get; set; }
-        public IEnumerable<double[]> Vectors { get; set; }
+        public IList<double[]> Vectors { get; set; }
     }
 }

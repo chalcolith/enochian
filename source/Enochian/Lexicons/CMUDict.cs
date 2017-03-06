@@ -14,13 +14,8 @@ namespace Enochian.Lexicons
         {
         }
 
-        int DebugLimit { get; set; }
-
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
-            var debugLimit = config.Get<int?>("debugLimit", this);
-            DebugLimit = debugLimit ?? int.MaxValue;
-
             return base.Configure(config);
         }
 
@@ -40,7 +35,7 @@ namespace Enochian.Lexicons
                 {
                     string line;
                     int num = 0;
-                    while ((line = sr.ReadLine()) != null && num++ < DebugLimit)
+                    while ((line = sr.ReadLine()) != null && num++ < MaxEntriesToLoad)
                     {
                         if (line.StartsWith(";;;") || string.IsNullOrWhiteSpace(line))
                             continue;

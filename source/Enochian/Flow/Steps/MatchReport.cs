@@ -24,7 +24,7 @@ namespace Enochian.Flow.Steps
             if (!string.IsNullOrWhiteSpace(output))
                 OutputPath = GetChildPath(AbsoluteFilePath, output);
             else
-                AddError("no 'output' path specified for MatchReport");
+                AddError("no 'output' path specified");
 
             return this;
         }

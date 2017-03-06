@@ -25,8 +25,7 @@
       "type": "CMUDict",
       "features": "Default",
       "encoding": "CMU",
-      "path": "../resources/lexicons/cmudict/cmudict-0.7b",
-      "debugLimit": 1000
+      "path": "../resources/lexicons/cmudict/cmudict-0.7b"
     }
   ],
 

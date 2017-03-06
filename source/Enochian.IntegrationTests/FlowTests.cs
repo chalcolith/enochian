@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Enochian.Flow.Steps;
+using Enochian.Lexicons;
 using Enochian.Text;
 using Enochian.UnitTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -92,7 +93,7 @@ namespace Enochian.IntegrationTests
 
                         var expectedVector = expectedIter.Current;
 
-                        double distance = FeatureSet.EuclideanDistance(expectedVector, actualVector);
+                        double distance = Enochian.Math.DynamicTimeWarp.EuclideanDistance(expectedVector, actualVector);
                         var expSpec = string.Join(",", features.GetFeatureSpec(expectedVector));
                         var actSpec = string.Join(",", features.GetFeatureSpec(actualVector));
                         Assert.IsTrue(distance < 0.001, "distance for token '{0}', seg '{1}' is {2}", token, seg.Text, distance);
@@ -105,11 +106,34 @@ namespace Enochian.IntegrationTests
         const string EnglishTestPath = @"samples/english_test.json";
 
         [TestMethod]
-        public void EnglishTest()
+        public void EnglishTestSimple()
         {
             var configPath = GetConfigPath(EnglishTestPath);
             var flow = new Flow.Flow(configPath);
             AssertUtils.NoErrors(flow);
+
+            foreach (var lexicon in flow.Lexicons)
+            {
+                lexicon.MaxEntriesToLoad = 1000;
+            }
+
+            var given = "aardvark absolved acetate";
+            var tokens = new List<IList<string>> { given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries) };
+            foreach (var sampleText in flow.Steps.Children.OfType<SampleText>())
+            {
+                sampleText.Chunks = new List<Interline>
+                {
+                    new Interline
+                    {
+                        Text = given,
+                        Encoding = Encoding.Default,
+                        Segments = tokens[0].Select(t => new Segment { Text = t }).ToArray(),
+                    }
+                };
+            }
+
+            var reportPath = flow.GetOutputs().Single() as string;
+            Assert.IsNotNull(reportPath);
         }
     }
 }

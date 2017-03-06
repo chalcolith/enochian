@@ -39,7 +39,7 @@ namespace Enochian.Flow.Steps
             }
             else
             {
-                AddError("no resources specified for Transducer");
+                AddError("no resources specified");
             }
 
             return this;
@@ -52,7 +52,12 @@ namespace Enochian.Flow.Steps
             {
                 SourceStep = this,
                 Encoding = Encoding,
-                Segments = line.Segments.Select(seg => Encoder.ProcessSegment(seg)).ToList(),
+                Segments = line.Segments.Select(seg =>
+                {
+                    var newSeg = Encoder.ProcessSegment(seg);
+                    newSeg.SourceSegment = seg;
+                    return newSeg;
+                }).ToList(),
             });
             var output = new TextChunk
             {

@@ -102,7 +102,7 @@ namespace Enochian.Text
 
         public IEnumerable<string> GetFeatureSpec(double[] vector)
         {
-            int n = Math.Min(vector.Length, NumDimensions);
+            int n = System.Math.Min(vector.Length, NumDimensions);
             for (int i = 0; i < n; i++)
             {
                 if (vector[i] == PlusValue)
@@ -120,7 +120,7 @@ namespace Enochian.Text
         public double[] Override(double[] orig, double[] ovr)
         {
             double[] result = new double[orig.Length];
-            int n = Math.Min(orig.Length, ovr.Length);
+            int n = System.Math.Min(orig.Length, ovr.Length);
             for (int i = 0; i < n; i++)
             {
                 result[i] = ovr[i] != UnsetValue
@@ -128,23 +128,6 @@ namespace Enochian.Text
                     : orig[i];
             }
             return result;
-        }
-
-        public static double EuclideanDistance(double[] a, double[] b)
-        {
-            if (a == null || b == null)
-                return double.MaxValue;
-
-            int n = Math.Max(a.Length, b.Length);
-            double sum = 0;
-            for (int i = 0; i < n; i++)
-            {
-                double x = i < a.Length ? a[i] : double.MinValue;
-                double y = i < b.Length ? b[i] : double.MaxValue;
-                double d = x - y;
-                sum += d * d;
-            }
-            return Math.Sqrt(sum);
         }
     }
 }

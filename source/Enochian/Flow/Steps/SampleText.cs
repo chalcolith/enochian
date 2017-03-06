@@ -31,7 +31,7 @@ namespace Enochian.Flow.Steps
             }
             else
             {
-                AddError("no resources specified for SampleText");
+                AddError("no resources specified");
             }
 
             Chunks = new List<Interline>();

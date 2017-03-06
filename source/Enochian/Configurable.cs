@@ -90,7 +90,7 @@ namespace Enochian
                 AbsoluteFilePath = AbsoluteFilePath,
                 ErrorLine = line,
                 ErrorColumn = column,
-                Message = string.Format(format, args),
+                Message = string.Format("{0} for {1} '{2}'", string.Format(format, args), this.GetType().Name, Id ?? "?"),
             });
             return this;
         }

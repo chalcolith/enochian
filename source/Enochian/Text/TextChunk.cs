@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enochian.Text;
 using Enochian.Flow;
+using Enochian.Lexicons;
 
 namespace Enochian.Text
 {
@@ -20,6 +21,11 @@ namespace Enochian.Text
 
     public class Segment
     {
+        public Segment SourceSegment { get; set; }
+
+        public Lexicon Lexicon { get; set; }
+        public LexiconEntry Entry { get; set; }
+
         public string Text { get; set; }
         public IList<double[]> Vectors { get; set; }
     }
