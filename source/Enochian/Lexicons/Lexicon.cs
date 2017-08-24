@@ -129,6 +129,6 @@ namespace Enochian.Lexicons
     {
         public string Lemma { get; set; }
         public string Encoded { get; set; }
-        public IList<double[]> Vectors { get; set; }
+        public IList<double[]> Phones { get; set; }
     }
 }

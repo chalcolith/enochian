@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Verophyle.Regexp;
 using Verophyle.Regexp.InputSet;
 
@@ -43,153 +44,223 @@ namespace Enochian.Text
         Lazy<HashSet<char>> modifiers;
         HashSet<char> Modifiers => modifiers.Value;
 
-        public Segment ProcessSegment(Segment input)
+        static readonly object processSegmentLock = new object();
+
+        public TextSegment ProcessSegment(TextSegment input)
         {
-            foreach (var pat in Patterns)
-                pat.Reset();
+            lock (processSegmentLock)
+            {
+                var result = new TextSegment
+                {
+                    SourceSegments = new List<TextSegment> { input },
+                    Options = input.Options
+                        .Select(option =>
+                        {
+                            var textAndPhones = GetTextAndPhones(option.Text);
+                            return new SegmentOption
+                            {
+                                Lexicon = option.Lexicon,
+                                Entry = option.Entry,
+                                Text = textAndPhones.Item1,
+                                Phones = textAndPhones.Item2,
+                            };
+                        })
+                        .ToList()
+                };
+                return result;
+            }
+        }
 
-            var allSegs = new List<Segment>();
-            var source = input.Text;
+        Tuple<string, IList<double[]>> GetTextAndPhones(string source)
+        {
+            foreach (var pattern in Patterns)
+                pattern.Reset();
 
-            PatternRec lastRepl = null;
+            // replace the characters of the original with text + phones
+            var textsAndPhones = GetReplacements(source);
+
+            // merge the phones of existing characters with phones from templates
+            MergeTemplates(textsAndPhones);
+
+            var texts = string.Join("", textsAndPhones.Item1);
+            var phones = textsAndPhones.Item2
+                .SelectMany(ph => ph.Where(p => p.Length > 0))
+                .ToArray();
+
+            return Tuple.Create<string, IList<double[]>>(texts, phones);
+        }
+
+        Tuple<IList<string>, IList<IList<double[]>>> GetReplacements(string source)
+        {
+            var texts = new List<string>();
+            var phonesPerText = new List<IList<double[]>>();
+
+            // try replacements first
+            PatternRec lastReplacement = null;
             int start = 0, cur = 0;
             while (cur < source.Length)
             {
                 char ch = source[cur];
 
-                bool inRepl = false;
-                PatternRec firstRepl = null;
-                foreach (var pr in Replacements)
+                bool inReplacement = false;
+                PatternRec firstReplacement = null;
+                foreach (var replacement in Replacements)
                 {
-                    if (pr.Regexp.Failed)
+                    if (replacement.Regexp.Failed)
                         continue;
-
-                    pr.Regexp.ProcessInput(ch);
-                    if (!pr.Regexp.Failed)
-                        inRepl = true;
-
-                    if (pr.Regexp.Succeeded && firstRepl == null)
-                        firstRepl = pr;
+                    replacement.Regexp.ProcessInput(ch);
+                    if (!replacement.Regexp.Failed)
+                        inReplacement = true;
+                    if (replacement.Regexp.Succeeded && firstReplacement == null)
+                        firstReplacement = replacement;
                 }
 
-                if (inRepl)
+                if (inReplacement)
                 {
-                    if (firstRepl != null && cur + 1 >= source.Length)
+                    if (firstReplacement != null && cur + 1 >= source.Length)
                     {
-                        var text = !string.IsNullOrEmpty(firstRepl.Pattern.Output)
-                            ? firstRepl.Pattern.Output
-                            : firstRepl.Pattern.Input;
-
-                        allSegs.Add(new Segment
-                        {
-                            Text = text,
-                            Vectors = firstRepl.Pattern.Vectors,
-                        });
+                        var text = !string.IsNullOrEmpty(firstReplacement.Pattern.Output)
+                            ? firstReplacement.Pattern.Output
+                            : source.Substring(start, 1 + cur - start);
+                        texts.Add(text);
+                        phonesPerText.Add(firstReplacement.Pattern.Phones);
                     }
-                    lastRepl = firstRepl;
+                    lastReplacement = firstReplacement;
                     cur++;
                 }
                 else
                 {
-                    if (lastRepl != null)
+                    if (lastReplacement != null)
                     {
-                        var text = !string.IsNullOrEmpty(lastRepl.Pattern.Output)
-                            ? lastRepl.Pattern.Output
-                            : lastRepl.Pattern.Input;
-
-                        allSegs.Add(new Segment
-                        {
-                            Text = text,
-                            Vectors = lastRepl.Pattern.Vectors,
-                        });
-                        lastRepl = null;
+                        var text = !string.IsNullOrEmpty(lastReplacement.Pattern.Output)
+                            ? lastReplacement.Pattern.Output
+                            : source.Substring(start, cur - start);
+                        texts.Add(text);
+                        phonesPerText.Add(lastReplacement.Pattern.Phones);
+                        lastReplacement = null;
                         start = cur; // start again on this character
                     }
                     else
                     {
-                        var vectors = !Modifiers.Contains(ch)
-                            ? new double[][] { Features.GetUnsetVector() }
-                            : new double[][] { new double[0] };
-
-                        allSegs.Add(new Segment
-                        {
-                            Text = source.Substring(start, 1 + cur - start),
-                            Vectors = vectors,
-                        });
-
+                        texts.Add(source.Substring(start, 1 + cur - start));
+                        phonesPerText.Add(Modifiers.Contains(ch) ? new double[][] { new double[0] } : new double[][] { Features.GetUnsetVector() });
                         start = ++cur; // go to the next character
                     }
 
-                    foreach (var pr in Replacements)
-                        pr.Reset();
+                    foreach (var replacement in Replacements)
+                        replacement.Reset();
                 }
             }
 
-            PatternRec lastTempl = null;
-            start = cur = 0;
-            while (cur < allSegs.Count)
+            return Tuple.Create<IList<string>, IList<IList<double[]>>>(texts, phonesPerText);
+        }
+
+        void MergeTemplates(Tuple<IList<string>, IList<IList<double[]>>> textsAndPhones)
+        {
+            var texts = textsAndPhones.Item1;
+            var phonesPerText = textsAndPhones.Item2;
+
+            int startText = 0;
+            int curText = 0;
+            int startChar = 0;
+            int curChar = 0;
+
+            var toMerge = new List<Tuple<int, int, IList<double[]>>>();
+            PatternRec lastTemplate = null;
+            while (curText < texts.Count && curChar < texts[curText].Length)
             {
-                char ch = allSegs[cur].Text[0];
+                char ch = texts[curText][curChar];
 
-                bool inTempl = false;
-                PatternRec firstTempl = null;
-                foreach (var pr in Templates)
+                bool inTemplate = false;
+                PatternRec firstTemplate = null;
+                foreach (var template in Templates)
                 {
-                    if (pr.Regexp.Failed)
+                    if (template.Regexp.Failed)
                         continue;
-
-                    pr.Regexp.ProcessInput(ch);
-                    if (!pr.Regexp.Failed)
-                        inTempl = true;
-
-                    if (pr.Regexp.Succeeded && firstTempl == null)
-                        firstTempl = pr;
+                    template.Regexp.ProcessInput(ch);
+                    if (!template.Regexp.Failed)
+                        inTemplate = true;
+                    if (template.Regexp.Succeeded && firstTemplate == null)
+                        firstTemplate = template;
                 }
 
-                if (inTempl)
+                if (inTemplate)
                 {
-                    if (firstTempl != null && cur + 1 >= source.Length)
+                    if (firstTemplate != null && curText + 1 >= texts.Count && curChar + 1>= texts[curText].Length)
                     {
-                        var offset = firstTempl.Pattern.Input.IndexOf('_');
-                        var seg = allSegs[start + offset];
-                        seg.Vectors = seg.Vectors
-                            .SelectMany(orig =>
-                                firstTempl.Pattern.Vectors.Select(pat =>
-                                    Features.Override(orig, pat)))
-                            .ToArray();
+                        MergeTemplatePhones(texts, startText, startChar, firstTemplate, toMerge);
                     }
-                    lastTempl = firstTempl;
-                    cur++;
+                    lastTemplate = firstTemplate;
+                    if (++curChar >= texts[curText].Length)
+                    {
+                        curText++;
+                        curChar = 0;
+                    }
                 }
                 else
                 {
-                    if (lastTempl != null)
+                    if (lastTemplate != null)
                     {
-                        var offset = lastTempl.Pattern.Input.IndexOf('_');
-                        var seg = allSegs[start + offset];
-                        seg.Vectors = seg.Vectors
-                            .SelectMany(orig =>
-                                lastTempl.Pattern.Vectors.Select(pat =>
-                                    Features.Override(orig, pat)))
-                            .ToArray();
-                        lastTempl = null;
-                        start = cur;
+                        MergeTemplatePhones(texts, startText, startChar, lastTemplate, toMerge);
+
+                        lastTemplate = null;
+                        startText = curText;
+                        startChar = curChar;
                     }
                     else
                     {
-                        start = ++cur;
+                        if (++curChar >= texts[curText].Length)
+                        {
+                            curText++;
+                            curChar = 0;
+                        }
                     }
 
-                    foreach (var pr in Templates)
-                        pr.Reset();
+                    foreach (var template in Templates)
+                        template.Reset();
                 }
             }
 
-            return new Segment
+            for (int i = toMerge.Count - 1; i >= 0; i--)
             {
-                Text = string.Join("", allSegs.Select(s => s.Text)),
-                Vectors = allSegs.SelectMany(s => s.Vectors.Where(v => v.Length > 0)).ToArray(),
-            };
+                int textIndex = toMerge[i].Item1;
+                int charIndex = toMerge[i].Item2;
+                var patt = toMerge[i].Item3;
+
+                var span = phonesPerText[textIndex];
+                var orig = span[charIndex];
+                var repl = patt.Select(pat => Features.Override(orig, pat)).ToArray();
+
+                if (repl.Length == 1)
+                {
+                    span[charIndex] = repl[0];
+                }
+                else if (repl.Length > 1)
+                {
+                    span.RemoveAt(charIndex);
+                    foreach (var rep in repl.Reverse())
+                        span.Insert(charIndex, rep);
+                }
+            }
+        }
+
+        private static void MergeTemplatePhones(IList<string> texts, int startText, int startChar, PatternRec template, List<Tuple<int, int, IList<double[]>>> toMerge)
+        {
+            int offset = template.Pattern.Input.IndexOf('_');
+            if (offset < 0) throw new Exception("invalid template pattern " + template.Pattern.Input);
+
+            int textIndex = startText;
+            int charIndex = startChar;
+            for (int i = 0; i < offset; i++)
+            {
+                if (++charIndex > texts[textIndex].Length)
+                {
+                    textIndex++;
+                    charIndex = 0;
+                }
+            }
+
+            toMerge.Add(Tuple.Create(textIndex, charIndex, template.Pattern.Phones));
         }
     }
 

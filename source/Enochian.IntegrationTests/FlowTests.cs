@@ -27,11 +27,11 @@ namespace Enochian.IntegrationTests
         [DataRow(IpaTransducerPath, "py",
             @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
               -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
-        [DataRow(IpaTransducerPath, @"pʰy",
-            @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,+SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
-              -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         [DataRow(IpaTransducerPath, @"pБy",
             @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,-SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;;
+              -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
+        [DataRow(IpaTransducerPath, @"pʰy",
+            @"+Cons,-Son,-Syll,+Labial,-Round,-Cor,-Dorsal,-Phar,-Voice,+SG,-CG,-Cont,-Strident,-Lateral,-DelRel,-Nasal;
               -Cons,+Son,+Syll,+Labial,+Round,-Cor,+Dorsal,+High,-Low,-Back,+Tense,+Phar,+ATR,+Voice,-SG,-CG,+Cont,-Strident,-Lateral,-DelRel,-Nasal")]
         public void TestIPATransducer(string fname, string given, string expected)
         {
@@ -51,52 +51,59 @@ namespace Enochian.IntegrationTests
             var encoding = transducer.Encoding;
             Assert.IsNotNull(encoding, "transducer has no output encoding");
 
-            var tokens = new List<IList<string>> { given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries) };
-            sampleText.Chunks = new List<Interline>
+            var tokens = given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            sampleText.Chunks = new List<TextLine>
             {
-                new Interline
+                new TextLine
                 {
                     Text = given,
-                    Encoding = Encoding.Default,
-                    Segments = tokens[0].Select(t => new Segment { Text = t }).ToArray(),
+                    Segments = tokens
+                        .Select(t => new TextSegment
+                        {
+                            Options = new List<SegmentOption>
+                            {
+                                new SegmentOption { Text = t }
+                            }
+                        })
+                        .ToArray(),
                 }
             };
 
             var errors = new List<string>();
-            var expectedVectors = expected.Split(';')
+            var expectedPhones = expected.Split(';')
                 .Select(fs => features.GetFeatureVector(fs.Split(','), errors))
                 .ToList();
             Assert.IsFalse(errors.Any(), string.Join(", ", errors));
 
             var outputs = flow.GetOutputs().OfType<TextChunk>();
             var chunkIter = outputs.GetEnumerator();
-            var expectedIter = expectedVectors.GetEnumerator();
+            var expectedIter = expectedPhones.GetEnumerator();
             foreach (var token in tokens)
             {
                 if (!chunkIter.MoveNext())
                     Assert.Fail("no output for token '{0}'", token);
 
                 var chunk = chunkIter.Current;
-                var iline = chunk.Lines.FirstOrDefault(line => line.Encoding == encoding);
-                Assert.IsNotNull(iline, "unable to find segment with encoding '{0}'", encoding.Id);
+                var iline = chunk.Lines
+                    .FirstOrDefault(line => object.ReferenceEquals(line.SourceStep, transducer));
+                Assert.IsNotNull(iline, "unable to find line from transducer");
 
                 Assert.IsNotNull(iline.Segments);
                 Assert.AreEqual(1, iline.Segments.Count, "expected 1 segments");
-                foreach (var seg in iline.Segments)
+                foreach (var option in iline.Segments.Select(seg => seg.Options.First()))
                 {
-                    Assert.IsNotNull(seg.Vectors);
-                    var actualVectors = seg.Vectors.Where(v => v.Length == features.NumDimensions).ToArray();
-                    foreach (var actualVector in actualVectors)
+                    Assert.IsNotNull(option.Phones);
+                    var actualPhones = option.Phones.Where(p => p.Length == features.NumDimensions).ToArray();
+                    foreach (var phone in actualPhones)
                     {
                         if (!expectedIter.MoveNext())
-                            Assert.Fail("no expected vector for token '{0}', seg '{1}'", token, seg.Text);
+                            Assert.Fail("no expected phone for token '{0}', seg '{1}'", token, option.Text);
 
-                        var expectedVector = expectedIter.Current;
-
-                        double distance = Enochian.Math.DynamicTimeWarp.EuclideanDistance(expectedVector, actualVector);
-                        var expSpec = string.Join(",", features.GetFeatureSpec(expectedVector));
-                        var actSpec = string.Join(",", features.GetFeatureSpec(actualVector));
-                        Assert.IsTrue(distance < 0.001, "distance for token '{0}', seg '{1}' is {2}", token, seg.Text, distance);
+                        var expectedPhone = expectedIter.Current;
+                        double distance = Enochian.Math.DynamicTimeWarp.EuclideanDistance(expectedPhone, phone);
+                        var expSpec = string.Join(",", features.GetFeatureSpec(expectedPhone));
+                        var actSpec = string.Join(",", features.GetFeatureSpec(phone));
+                        Assert.IsTrue(distance < 0.001, "distance for token '{0}', seg '{1}' is {2}", token, option.Text, distance);
                     }
                 }
             }
@@ -117,23 +124,51 @@ namespace Enochian.IntegrationTests
                 lexicon.MaxEntriesToLoad = 1000;
             }
 
-            var given = "aardvark absolved acetate";
-            var tokens = new List<IList<string>> { given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries) };
+            var given = "aardvark absolved abelard";
+            var tokens = given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var sampleText in flow.Steps.Children.OfType<SampleText>())
             {
-                sampleText.Chunks = new List<Interline>
+                sampleText.Chunks = new List<TextLine>
                 {
-                    new Interline
+                    new TextLine
                     {
                         Text = given,
-                        Encoding = Encoding.Default,
-                        Segments = tokens[0].Select(t => new Segment { Text = t }).ToArray(),
+                        Segments = tokens
+                            .Select(t => new TextSegment
+                            {
+                                Options = new List<SegmentOption>
+                                {
+                                    new SegmentOption { Text = t}
+                                }
+                            })
+                            .ToArray(),
                     }
                 };
             }
 
             var reportPath = flow.GetOutputs().Single() as string;
             Assert.IsNotNull(reportPath);
+
+            var dtwMatcher = flow.Steps.Children.OfType<DTWMatcher>().LastOrDefault();
+            Assert.IsNotNull(dtwMatcher);
+
+            var matchReport = flow.Steps.Children.OfType<MatchReport>().LastOrDefault();
+            Assert.IsNotNull(matchReport);
+
+            var dtwLine = matchReport.Results
+                .SelectMany(chunk => chunk.Lines)
+                .FirstOrDefault(line => object.ReferenceEquals(line.SourceStep, dtwMatcher));
+            Assert.IsNotNull(dtwLine);
+
+            Assert.AreEqual(tokens.Length, dtwLine.Segments.Count);
+
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                var expected = tokens[i].ToUpperInvariant();
+                var options = dtwLine.Segments[i].Options;
+                var found = options.Any(opt => opt.Text.ToUpperInvariant().StartsWith(expected));
+                Assert.IsTrue(found, "did not find a CMU entry for " + expected);
+            }
         }
     }
 }

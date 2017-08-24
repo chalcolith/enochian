@@ -15,6 +15,7 @@ namespace Enochian.Flow.Steps
         }
 
         public Lexicon Lexicon { get; protected set; }
+        public int NumOptions { get; protected set; } = 6;
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -31,6 +32,10 @@ namespace Enochian.Flow.Steps
             {
                 AddError("no lexicon specified");
             }
+
+            var numOptions = config.Get<int>("numOptions", null);
+            if (numOptions > 0)
+                NumOptions = numOptions;
 
             return this;
         }
@@ -49,62 +54,87 @@ namespace Enochian.Flow.Steps
                 return input;
             }
 
-            var cache = new Dictionary<string, Segment>();
+            var cache = new Dictionary<string, IList<SegmentOption>>();
+            var comparer = new EntryComparer();
             var newLines = input.Lines
                 .Where(line => line.SourceStep == Previous)
                 .Select(oldLine =>
-            {
-                return new Interline
                 {
-                    Segments = oldLine.Segments.Select(oldSegment =>
+                    return new TextLine
                     {
-                        if (cache.TryGetValue(oldSegment.Text, out Segment cached))
-                        {
-                            return cached;
-                        }
-                        else if (oldSegment.Vectors != null && oldSegment.Vectors.Any())
-                        {
-                            double bestDistance = double.MaxValue;
-                            LexiconEntry bestEntry = null;
-
-                            foreach (var entry in Lexicon.Entries)
+                        SourceStep = this,
+                        SourceLine = oldLine,
+                        Text = oldLine.Text,                        
+                        Segments = oldLine.Segments
+                            .Select(oldSegment => new TextSegment
                             {
-                                double distance = Math.DynamicTimeWarp
-                                    .GetSequenceDistance(oldSegment.Vectors, entry.Vectors,
-                                        Math.DynamicTimeWarp.EuclideanDistance);
+                                SourceSegments = new List<TextSegment> { oldSegment },
+                                Options = oldSegment.Options
+                                    .Where(oldOption => !string.IsNullOrWhiteSpace(oldOption.Text))
+                                    .SelectMany(oldOption =>
+                                    {
+                                        IList<SegmentOption> cached;
+                                        if (cache.TryGetValue(oldOption.Text, out cached))
+                                            return cached;
 
-                                if (distance < bestDistance)
-                                {
-                                    bestDistance = distance;
-                                    bestEntry = entry;
-                                }
-                            }
+                                        if (oldOption.Phones != null && oldOption.Phones.Any())
+                                        {
+                                            double leastBestDistance = double.MaxValue;
+                                            var bestEntries =
+                                                new List<Tuple<double, LexiconEntry>>();
+                                            foreach (var entry in Lexicon.Entries)
+                                            {
+                                                double distance = Math.DynamicTimeWarp
+                                                    .GetSequenceDistance(oldOption.Phones, entry.Phones,
+                                                        Math.DynamicTimeWarp.EuclideanDistance);
 
-                            if (bestEntry != null)
-                            {
-                                var newSegment = new Segment
-                                {
-                                    SourceSegment = oldSegment,
-                                    Lexicon = Lexicon,
-                                    Entry = bestEntry,
-                                    Text = bestEntry.Lemma,
-                                    Vectors = bestEntry.Vectors,
-                                };
+                                                if (distance < leastBestDistance
+                                                    || bestEntries.Count < NumOptions)
+                                                {
+                                                    bestEntries.Add(Tuple.Create(distance, entry));
+                                                    bestEntries.Sort(comparer);
+                                                    if (bestEntries.Count > NumOptions)
+                                                        bestEntries.RemoveAt(bestEntries.Count - 1);
+                                                    leastBestDistance = bestEntries.Last().Item1;
+                                                }
+                                            }
 
-                                cache[oldSegment.Text] = newSegment;
-                                return newSegment;
-                            }
-                        }
-                        return oldSegment;
-                    })
-                    .ToList()
-                };
-            });
+                                            if (bestEntries.Any())
+                                            {
+                                                var newOptions = bestEntries
+                                                    .Select(de => new SegmentOption
+                                                    {
+                                                        Lexicon = Lexicon,
+                                                        Entry = de.Item2,
+                                                        Text = de.Item2.Lemma,
+                                                        Phones = de.Item2.Phones,
+                                                    })
+                                                    .ToList();
+                                                cache[oldOption.Text] = newOptions;
+                                                return newOptions;
+                                            }
+                                        }
+
+                                        return new[] { oldOption };
+                                    })
+                                    .ToList()
+                            })
+                            .ToList(),
+                    };
+                });
 
             return new TextChunk
             {
                 Lines = input.Lines.Concat(newLines).ToList(),
             };
+        }
+
+        class EntryComparer : IComparer<Tuple<double, LexiconEntry>>
+        {
+            public int Compare(Tuple<double, LexiconEntry> x, Tuple<double, LexiconEntry> y)
+            {
+                return x.Item1.CompareTo(y.Item1);
+            }
         }
     }
 }

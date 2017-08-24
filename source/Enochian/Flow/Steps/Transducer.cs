@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Enochian.Text;
-using Verophyle.Regexp;
-using Verophyle.Regexp.InputSet;
 
 namespace Enochian.Flow.Steps
 {
@@ -48,14 +45,13 @@ namespace Enochian.Flow.Steps
         protected override TextChunk ProcessTyped(TextChunk input)
         {
             var inputLines = input.Lines.Where(line => line.SourceStep == Previous);
-            var outputLines = inputLines.Select(line => new Interline
+            var outputLines = inputLines.Select(line => new TextLine
             {
                 SourceStep = this,
-                Encoding = Encoding,
                 Segments = line.Segments.Select(seg =>
                 {
                     var newSeg = Encoder.ProcessSegment(seg);
-                    newSeg.SourceSegment = seg;
+                    newSeg.SourceSegments = new[] { seg };
                     return newSeg;
                 }).ToList(),
             });

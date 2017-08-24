@@ -8,25 +8,41 @@ namespace Enochian.Text
 {
     public class TextChunk
     {
-        public IList<Interline> Lines { get; set; }
+        public IList<TextLine> Lines { get; set; }
     }
 
-    public class Interline
+    public class TextLine
     {
+        string text = null;
+
         public FlowStep SourceStep { get; set; }
-        public string Text { get; set; }
-        public Encoding Encoding { get; set; }
-        public IList<Segment> Segments { get; set; }
+        public TextLine SourceLine { get; set; }
+        public string Text
+        {
+            get { return text ?? SourceLine?.Text; }
+            set { text = value; }
+        }
+        public IList<TextSegment> Segments { get; set; }
     }
 
-    public class Segment
+    public class TextSegment
     {
-        public Segment SourceSegment { get; set; }
+        public IList<TextSegment> SourceSegments { get; set; }
+        public IList<SegmentOption> Options { get; set; }
+    }
+
+    public class SegmentOption
+    {
+        Encoding encoding;
 
         public Lexicon Lexicon { get; set; }
         public LexiconEntry Entry { get; set; }
-
+        public Encoding Encoding
+        {
+            get { return encoding ?? Lexicon?.Encoding; }
+            set { encoding = value; }
+        }
         public string Text { get; set; }
-        public IList<double[]> Vectors { get; set; }
+        public IList<double[]> Phones { get; set; }
     }
 }

@@ -46,20 +46,25 @@ namespace Enochian.Lexicons
 
                         var sb = new System.Text.StringBuilder();
                         var lemma = tokens[0].ToUpperInvariant();
-                        var vectors = tokens.Skip(1).SelectMany(t =>
-                        {
-                            sb.Append(t);
-                            var input = new Segment { Text = t };
-                            var result = encoder.ProcessSegment(input);
-                            return result.Vectors;
-                        })
-                        .ToArray();
+                        var phones = tokens
+                            .Skip(1)
+                            .SelectMany(t =>
+                            {
+                                sb.Append(t);
+                                var input = new TextSegment
+                                {
+                                    Options = new[] { new SegmentOption { Text = t } }
+                                };
+                                var result = encoder.ProcessSegment(input);
+                                return result.Options.SelectMany(o => o.Phones);
+                            })
+                            .ToArray();
 
                         var entry = new LexiconEntry
                         {
                             Lemma = lemma,
                             Encoded = sb.ToString(),
-                            Vectors = vectors,
+                            Phones = phones,
                         };
 
                         Entries.Add(entry);

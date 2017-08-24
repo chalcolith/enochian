@@ -16,7 +16,7 @@ namespace Enochian.Flow.Steps
 
         public FeatureSet Features { get; private set; }
 
-        public IList<Interline> Chunks { get; set; }
+        public IList<TextLine> Chunks { get; set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -34,7 +34,7 @@ namespace Enochian.Flow.Steps
                 AddError("no resources specified");
             }
 
-            Chunks = new List<Interline>();
+            Chunks = new List<TextLine>();
 
             string path = config.Get<string>("path", this);
             if (!string.IsNullOrWhiteSpace(path))
@@ -71,24 +71,26 @@ namespace Enochian.Flow.Steps
 
         static readonly Regex WORD = new Regex(@"\w+", RegexOptions.Compiled);
 
-        Interline GetInterline(string text)
-        {            
-            var segs = new List<Segment>();
+        TextLine GetInterline(string text)
+        {
+            var segs = new List<TextSegment>();
 
             if (!string.IsNullOrWhiteSpace(text))
             {
                 var match = WORD.Match(text);
                 while (match.Success)
                 {
-                    segs.Add(new Segment { Text = match.Value });
+                    segs.Add(new TextSegment
+                    {
+                        Options = new [] { new SegmentOption { Text = match.Value } }
+                    });
                     match = match.NextMatch();
                 }
             }
 
-            return new Interline
+            return new TextLine
             {
                 Text = text,
-                Encoding = Encoding.Default,
                 Segments = segs,
             };
         }
@@ -107,11 +109,10 @@ namespace Enochian.Flow.Steps
                 {
                     Lines = new[]
                     {
-                        new Interline
+                        new TextLine
                         {
                             SourceStep = this,
                             Text = chunk.Text,
-                            Encoding = Encoding.Default,
                             Segments = chunk.Segments,
                         }
                     }

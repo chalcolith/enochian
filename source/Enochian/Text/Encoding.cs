@@ -61,11 +61,11 @@ namespace Enochian.Text
         public string Input { get; private set; }
         public string Output { get; private set; }
 
-        public string[] FeatureSpecs { get; private set; }
+        public IList<string> FeatureSpecs { get; private set; }
 
         public bool IsReplacement => Input != null && !Input.Contains("_");
 
-        public double[][] Vectors { get; private set; }
+        public IList<double[]> Phones { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -114,7 +114,7 @@ namespace Enochian.Text
                     AddError("error in feature spec for '{0}': {1}", Input, error);
 
                 FeatureSpecs = specs.ToArray();
-                Vectors = vectors.ToArray();
+                Phones = vectors.ToArray();
             }
             else
             {
