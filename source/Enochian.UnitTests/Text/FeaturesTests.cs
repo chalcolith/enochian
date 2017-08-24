@@ -39,15 +39,15 @@ namespace Enochian.UnitTests.Text
 
         #region Tests
 
-        static readonly Tuple<string[], double[]>[] featureVectorData_Valid =
+        static readonly (string[], double[])[] featureVectorData_Valid =
         {
-            Tuple.Create(new [] { "+Alpha", "-Charlie" }, new [] { plusValue, unsetValue, minusValue }),
-            Tuple.Create(new string[] { }, new[] { unsetValue, unsetValue, unsetValue }),
+            (new [] { "+Alpha", "-Charlie" }, new [] { plusValue, unsetValue, minusValue }),
+            (new string[] { }, new[] { unsetValue, unsetValue, unsetValue }),
         };
 
-        static readonly Tuple<string[], double[]>[] featureVectorData_Invalid =
+        static readonly (string[], double[])[] featureVectorData_Invalid =
         {
-            Tuple.Create(new[] { "Foobar" }, new[] { unsetValue, unsetValue, unsetValue }),
+            (new[] { "Foobar" }, new[] { unsetValue, unsetValue, unsetValue }),
         };
 
         [TestMethod]

@@ -114,7 +114,7 @@ namespace Enochian
                 DefaultValueHandling = DefaultValueHandling.Include,
                 NullValueHandling = NullValueHandling.Ignore,                
             };
-            serializer.Error += (object sender, ErrorEventArgs args) =>
+            serializer.Error += (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) =>
             {
                 if (args.ErrorContext.Error != null)
                 {

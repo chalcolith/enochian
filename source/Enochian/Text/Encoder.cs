@@ -71,7 +71,7 @@ namespace Enochian.Text
             }
         }
 
-        Tuple<string, IList<double[]>> GetTextAndPhones(string source)
+        (string, IList<double[]>) GetTextAndPhones(string source)
         {
             foreach (var pattern in Patterns)
                 pattern.Reset();
@@ -87,10 +87,10 @@ namespace Enochian.Text
                 .SelectMany(ph => ph.Where(p => p.Length > 0))
                 .ToArray();
 
-            return Tuple.Create<string, IList<double[]>>(texts, phones);
+            return (texts, phones);
         }
 
-        Tuple<IList<string>, IList<IList<double[]>>> GetReplacements(string source)
+        (IList<string>, IList<IList<double[]>>) GetReplacements(string source)
         {
             var texts = new List<string>();
             var phonesPerText = new List<IList<double[]>>();
@@ -152,10 +152,10 @@ namespace Enochian.Text
                 }
             }
 
-            return Tuple.Create<IList<string>, IList<IList<double[]>>>(texts, phonesPerText);
+            return (texts, phonesPerText);
         }
 
-        void MergeTemplates(Tuple<IList<string>, IList<IList<double[]>>> textsAndPhones)
+        void MergeTemplates((IList<string>, IList<IList<double[]>>) textsAndPhones)
         {
             var texts = textsAndPhones.Item1;
             var phonesPerText = textsAndPhones.Item2;
@@ -165,7 +165,7 @@ namespace Enochian.Text
             int startChar = 0;
             int curChar = 0;
 
-            var toMerge = new List<Tuple<int, int, IList<double[]>>>();
+            var toMerge = new List<(int, int, IList<double[]>)>();
             PatternRec lastTemplate = null;
             while (curText < texts.Count && curChar < texts[curText].Length)
             {
@@ -244,7 +244,7 @@ namespace Enochian.Text
             }
         }
 
-        private static void MergeTemplatePhones(IList<string> texts, int startText, int startChar, PatternRec template, List<Tuple<int, int, IList<double[]>>> toMerge)
+        private static void MergeTemplatePhones(IList<string> texts, int startText, int startChar, PatternRec template, List<(int, int, IList<double[]>)> toMerge)
         {
             int offset = template.Pattern.Input.IndexOf('_');
             if (offset < 0) throw new Exception("invalid template pattern " + template.Pattern.Input);
@@ -260,7 +260,7 @@ namespace Enochian.Text
                 }
             }
 
-            toMerge.Add(Tuple.Create(textIndex, charIndex, template.Pattern.Phones));
+            toMerge.Add((textIndex, charIndex, template.Pattern.Phones));
         }
     }
 

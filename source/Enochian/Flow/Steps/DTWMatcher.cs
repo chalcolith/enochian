@@ -81,7 +81,7 @@ namespace Enochian.Flow.Steps
                                         {
                                             double leastBestDistance = double.MaxValue;
                                             var bestEntries =
-                                                new List<Tuple<double, LexiconEntry>>();
+                                                new List<(double, LexiconEntry)>();
                                             foreach (var entry in Lexicon.Entries)
                                             {
                                                 double distance = Math.DynamicTimeWarp
@@ -91,7 +91,7 @@ namespace Enochian.Flow.Steps
                                                 if (distance < leastBestDistance
                                                     || bestEntries.Count < NumOptions)
                                                 {
-                                                    bestEntries.Add(Tuple.Create(distance, entry));
+                                                    bestEntries.Add((distance, entry));
                                                     bestEntries.Sort(comparer);
                                                     if (bestEntries.Count > NumOptions)
                                                         bestEntries.RemoveAt(bestEntries.Count - 1);
@@ -129,9 +129,9 @@ namespace Enochian.Flow.Steps
             };
         }
 
-        class EntryComparer : IComparer<Tuple<double, LexiconEntry>>
+        class EntryComparer : IComparer<(double, LexiconEntry)>
         {
-            public int Compare(Tuple<double, LexiconEntry> x, Tuple<double, LexiconEntry> y)
+            public int Compare((double, LexiconEntry) x, (double, LexiconEntry) y)
             {
                 return x.Item1.CompareTo(y.Item1);
             }
