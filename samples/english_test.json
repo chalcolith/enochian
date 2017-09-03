@@ -50,7 +50,7 @@
     {
       "id": "MatchReport",
       "type": "MatchReport",
-      "output": "../reports/english_test.html"
+      "output": "../reports/english_test_report.html"
     }
   ]
 }

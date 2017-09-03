@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Enochian.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\samples\\english_test.json"
+    }
+  }
+}

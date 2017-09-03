@@ -34,6 +34,19 @@ namespace Enochian.Flow.Steps
             if (Previous != null)
                 Results = Previous.GetOutputs().OfType<TextChunk>().ToList();
 
+            var outputPath = Path.GetFullPath(OutputPath);
+            try
+            {
+                using (var sr = new StreamWriter(outputPath))
+                {
+                    sr.WriteLine("output!");
+                }
+            }
+            catch (Exception e)
+            {
+                AddError("erorr writing {0}: {1}", outputPath, e.Message);
+            }
+
             yield return OutputPath;
         }
     }
