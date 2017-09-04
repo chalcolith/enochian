@@ -7,8 +7,10 @@ using Enochian.Text;
 
 namespace Enochian.Flow.Steps
 {
-    public class SampleText : FlowStep<TextChunk, TextChunk>
+    public class SampleText : TextFlowStep
     {
+        IList<TextChunk> chunks;
+
         public SampleText(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
@@ -16,7 +18,8 @@ namespace Enochian.Flow.Steps
 
         public FeatureSet Features { get; private set; }
 
-        public IList<TextChunk> Chunks { get; set; }
+        public string SourcePath { get; private set; }
+        public IList<TextChunk> Chunks { set => chunks = value; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -34,53 +37,18 @@ namespace Enochian.Flow.Steps
                 AddError("no resources specified");
             }
 
-            Chunks = new List<TextChunk>();
-
             string path = config.Get<string>("path", this);
             if (!string.IsNullOrWhiteSpace(path))
             {
-                try
-                {
-                    var sourcePath = GetChildPath(AbsoluteFilePath, path);
-                    Log.Info("reading {0}", sourcePath);
-
-                    TextChunk currentChunk = null;
-                    bool needNewChunk = true;
-
-                    using (var fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
-                    using (var sr = new StreamReader(fs))
-                    {
-                        string line;
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            if (string.IsNullOrWhiteSpace(line))
-                            {
-                                needNewChunk = true;
-                                continue;
-                            }
-
-                            if (needNewChunk)
-                            {
-                                Chunks.Add(currentChunk = new TextChunk { Lines = new List<TextLine>() });
-                                needNewChunk = false;
-                            }
-
-                            currentChunk.Lines.Add(GetInterline(line));
-                        }
-                    }
-                    Log.Info("read {0} chunks; {1} lines", Chunks.Count, Chunks.Sum(chunk => chunk.Lines.Count));
-                }
-                catch (Exception e)
-                {
-                    AddError(e.Message);
-                }
+                SourcePath = path;
             }
             else
             {
                 string text = config.Get<string>("text", this);
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    Chunks.Add(new TextChunk
+                    chunks = new List<TextChunk>();
+                    chunks.Add(new TextChunk
                     {
                         Lines = new[] { GetInterline(text) }
                     });
@@ -92,6 +60,89 @@ namespace Enochian.Flow.Steps
             }
 
             return this;
+        }
+
+        public override IEnumerable<TextChunk> GetOutputs()
+        {
+            if (chunks != null)
+            {
+                foreach (var chunk in chunks)
+                    yield return chunk;
+            }
+            else if (!string.IsNullOrWhiteSpace(SourcePath))
+            {
+                FileStream fs = null;
+                StreamReader sr = null;
+                int numChunks = 0;
+                int numLines = 0;
+                try
+                {
+                    var sourcePath = GetChildPath(AbsoluteFilePath, SourcePath);
+                    Log.Info("reading {0}", sourcePath);
+
+                    try
+                    {
+                        fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
+                        sr = new StreamReader(fs);
+                    }
+                    catch (Exception e)
+                    {
+                        AddError(e.Message);
+                    }
+
+                    if (fs != null && sr != null)
+                    {
+                        TextChunk currentChunk = null;
+                        bool needNewChunk = true;
+
+                        string line;
+                        while (true)
+                        {
+                            try
+                            {
+                                line = sr.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                AddError(e.Message);
+                                break;
+                            }
+
+                            if (line == null)
+                                break;
+
+                            if (string.IsNullOrWhiteSpace(line))
+                            {
+                                needNewChunk = true;
+                                continue;
+                            }
+
+                            if (needNewChunk)
+                            {
+                                if (currentChunk != null)
+                                    yield return currentChunk;
+
+                                currentChunk = new TextChunk { Lines = new List<TextLine>() };
+                                numChunks++;
+                                needNewChunk = false;
+                            }
+
+                            currentChunk.Lines.Add(GetInterline(line));
+                            numLines++;
+                        }
+
+                        if (currentChunk != null)
+                            yield return currentChunk;
+                    }
+                }
+                finally
+                {
+                    if (sr != null) sr.Dispose();
+                    if (fs != null) fs.Dispose();
+                }
+
+                Log.Info("read {0} chunks; {1} lines", numChunks, numLines);
+            }
         }
 
         static readonly Regex WORD = new Regex(@"\w+", RegexOptions.Compiled);
@@ -106,8 +157,8 @@ namespace Enochian.Flow.Steps
                 while (match.Success)
                 {
                     segs.Add(new TextSegment
-                    {
-                        Options = new [] { new SegmentOption { Text = match.Value } }
+                    {                        
+                        Options = new[] { new SegmentOption { Text = match.Value } }
                     });
                     match = match.NextMatch();
                 }
@@ -119,11 +170,6 @@ namespace Enochian.Flow.Steps
                 Text = text,
                 Segments = segs,
             };
-        }
-
-        internal override IEnumerable<object> GetOutputs()
-        {
-            return Chunks;
         }
     }
 }

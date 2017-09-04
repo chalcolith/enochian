@@ -38,12 +38,14 @@
     },
     {
       "id": "NaivePhonological",
+      "description": "Interprets English text as IPA to assign slightly inaccurate phonological features.",
       "type": "Transducer",
       "features": "Default",
       "encoding": "IPA"
     },
     {
       "id": "LexicalMatch",
+      "description": "Matches inputs against the CMU phonetic dictionary.",
       "type": "DTWMatcher",
       "lexicon": "CMUDict"
     },

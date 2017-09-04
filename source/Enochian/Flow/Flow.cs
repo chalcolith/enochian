@@ -29,12 +29,10 @@ namespace Enochian.Flow
                 ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>());
 
         public IList<FeatureSet> FeatureSets { get; } = new List<FeatureSet>();
-
         public IList<Encoding> Encodings { get; } = new List<Encoding>();
-
         public IList<Lexicon> Lexicons { get; } = new List<Lexicon>();
 
-        public FlowContainer Steps { get; private set; }        
+        public FlowContainer Steps { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -116,13 +114,13 @@ namespace Enochian.Flow
                         continue;
                     }
 
-                    if (!typeof(Lexicon).GetTypeInfo().IsAssignableFrom(lexType))
+                    if (!typeof(Lexicon).IsAssignableFrom(lexType))
                     {
                         AddError("type '{0}' is not a subtype of Enochian.Lexicons.Lexicon", lexType.FullName);
                         continue;
                     }
 
-                    var ctor = lexType.GetTypeInfo().GetConstructor(new[] { typeof(IConfigurable), typeof(IFlowResources) });
+                    var ctor = lexType.GetConstructor(new[] { typeof(IConfigurable), typeof(IFlowResources) });
                     if (ctor == null)
                     {
                         AddError("type '{0}' does not have a constructor with parameters of type IConfigurable and IFlowResources");
@@ -140,14 +138,27 @@ namespace Enochian.Flow
 
         public IEnumerable<object> GetOutputs()
         {
-            if (Steps == null)
+            var lastStep = Steps.Children.LastOrDefault();
+            if (lastStep == null)
                 yield break;
 
-            foreach (var output in Steps.GetOutputs())
-            {
-                if (output != null)
-                    yield return output;
-            }
+            var getOutputs = lastStep.GetType().GetMethod(nameof(FlowStep<int, int>.GetOutputs));
+            if (getOutputs == null)
+                yield break;
+
+            var enumerable = getOutputs.Invoke(lastStep, null) as System.Collections.IEnumerable;
+            if (enumerable == null)
+                yield break;
+
+            foreach (var output in enumerable)
+                yield return output;
+        }
+
+        public void ProcessAll()
+        {
+            object lastOutput;
+            foreach (var output in GetOutputs())
+                lastOutput = output;
         }
     }
 }

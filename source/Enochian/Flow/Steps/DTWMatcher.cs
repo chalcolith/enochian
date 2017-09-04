@@ -40,7 +40,7 @@ namespace Enochian.Flow.Steps
             return this;
         }
 
-        protected override TextChunk ProcessTyped(TextChunk input)
+        protected override TextChunk Process(TextChunk input)
         {
             if (Lexicon == null)
             {

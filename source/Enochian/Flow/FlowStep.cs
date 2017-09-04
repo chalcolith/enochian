@@ -7,48 +7,77 @@ using System.Text;
 
 namespace Enochian.Flow
 {
-    public abstract class FlowStep : Configurable
+    public interface IFlowStep : IConfigurable
     {
-        public FlowStep(IConfigurable parent, IFlowResources resources, Type inputType, Type outputType)
+        IFlowResources Resources { get; }
+        FlowContainer Container { get; }
+        Type InputType { get; }
+        Type OutputType { get; }
+    }
+
+    public abstract class FlowStep : Configurable, IFlowStep
+    {
+        public FlowStep(IConfigurable parent, IFlowResources resources)
+            : this(parent, resources, null, null)
+        {
+        }
+
+        public FlowStep(IConfigurable parent, IFlowResources resources, FlowContainer container, IDictionary<string, object> config)
             : base(parent)
         {
             Resources = resources;
-            InputType = inputType;
-            OutputType = outputType;
-        }
-
-        public FlowStep(IConfigurable parent, IFlowResources resources, Type inputType, Type outputType, 
-            FlowContainer container, FlowStep previous, IDictionary<string, object> config)
-            : this(parent, resources, inputType, outputType)
-        {
             Container = container;
-            Previous = previous;
 
             if (config != null)
                 Configure(config);
         }
 
-        protected IFlowResources Resources { get; }
-
-        public Type InputType { get; internal set; }
-        public Type OutputType { get; internal set; }
+        public IFlowResources Resources { get; internal set; }
         public FlowContainer Container { get; internal set; }
-        public FlowStep Previous { get; internal set; }
 
-        internal virtual IEnumerable<object> GetOutputs()
+        public virtual Type InputType => null;
+        public virtual Type OutputType => null;
+        internal virtual void SetPrevious(IFlowStep previous) { }
+    }
+
+    public interface IFlowStep<TOut> : IFlowStep
+    {
+        IEnumerable<TOut> GetOutputs();
+    }
+
+    public abstract class FlowStep<TIn, TOut> : FlowStep, IFlowStep<TOut>
+    {
+        public FlowStep(IConfigurable parent, IFlowResources resources)
+            : this(parent, resources, null, null, null)
         {
-            if (InputType == null)
-            {
-                AddError("Input type is not defined");
-                yield break;
-            }
+        }
 
-            if (OutputType == null)
-            {
-                AddError("Output type is not defined");
-                yield break;
-            }
+        public FlowStep(IConfigurable parent, IFlowResources resources, 
+            FlowContainer container, IFlowStep<TIn> previous, IDictionary<string, object> config)
+            : base(parent, resources, container, config)
+        {
+            Previous = previous;
+        }
 
+        public override Type InputType => typeof(TIn);
+        public override Type OutputType => typeof(TOut);
+
+        public IFlowStep<TIn> Previous { get; internal set; }
+
+        internal override void SetPrevious(IFlowStep previous)
+        {
+            if (previous == null)
+            {
+                Previous = null;
+            }
+            else if ((Previous = previous as IFlowStep<TIn>) == null)
+            {
+                AddError("Cannot set Previous of {0} to {1}", GetType().Name, previous.GetType().Name);
+            }
+        }
+
+        public virtual IEnumerable<TOut> GetOutputs()
+        {
             if (Previous == null)
             {
                 yield break;
@@ -57,11 +86,6 @@ namespace Enochian.Flow
             foreach (var input in Previous.GetOutputs())
             {
                 if (input == null) continue;
-                if (!InputType.GetTypeInfo().IsAssignableFrom(input.GetType().GetTypeInfo()))
-                {
-                    AddError("Expected input of type {0}; found {1}", InputType.FullName, input.GetType().FullName);
-                    yield break;
-                }
 
                 var output = Process(input);
                 if (output != null)
@@ -69,47 +93,9 @@ namespace Enochian.Flow
             }
         }
 
-        protected virtual object Process(object input)
+        protected virtual TOut Process(TIn input)
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public abstract class FlowStep<TIn, TOut> : FlowStep
-        where TIn : class
-        where TOut : class
-    {
-        public FlowStep(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources, typeof(TIn), typeof(TOut))
-        {
-        }
-
-        public FlowStep(IConfigurable parent, IFlowResources resources, FlowContainer container, FlowStep previous, IDictionary<string, object> config)
-            : base(parent, resources, typeof(TIn), typeof(TOut), container, previous, config)
-        {
-        }
-
-        internal IEnumerable<TOut> GetOutputsTyped()
-        {
-            return GetOutputs().OfType<TOut>();
-        }
-
-        protected override object Process(object input)
-        {
-            var inputTyped = input as TIn;
-            if (inputTyped == null)
-            {
-                AddError("Input is not of type {0}", typeof(TIn).FullName);
-                return null;
-            }
-
-            var outputTyped = ProcessTyped(inputTyped);
-            return outputTyped;
-        }
-
-        protected virtual TOut ProcessTyped(TIn input)
-        {
-            throw new NotImplementedException();
+            throw new NotImplementedException("FlowStep.Process must be implemented in subclasses");
         }
     }
 

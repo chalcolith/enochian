@@ -18,7 +18,7 @@ namespace Enochian.IntegrationTests
 
         string GetConfigPath(string relativePath)
         {
-            var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).GetTypeInfo().Assembly.Location);
+            var assemblyDir = Path.GetDirectoryName(typeof(FlowTests).Assembly.Location);
             var configPath = Path.Combine(assemblyDir, "../../../../..", relativePath);
             return Path.GetFullPath(configPath);
         }
@@ -144,6 +144,7 @@ namespace Enochian.IntegrationTests
                             new TextLine
                             {
                                 Text = given,
+                                SourceStep = sampleText,
                                 Segments = tokens
                                     .Select(t => new TextSegment
                                     {

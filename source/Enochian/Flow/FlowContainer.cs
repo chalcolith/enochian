@@ -9,24 +9,17 @@ namespace Enochian.Flow
     {
         IList<FlowStep> steps;
 
-        public FlowContainer(
-            IConfigurable parent, IFlowResources resources, Type inputType, Type outputType, 
-            FlowContainer container, FlowStep previous, IDictionary<string, object> config)
-            : base(parent, resources, inputType, outputType, container, previous, config)
+        public FlowContainer(IConfigurable parent, IFlowResources resources)
+            : this(parent, resources, null)
         {
         }
 
         public FlowContainer(IConfigurable parent, IFlowResources resources, IDictionary<string, object> config)
-            : this(parent, resources, null, null, null, null, config)
+            : base(parent, resources, null, config)
         {
         }
 
-        protected IList<FlowStep> Steps
-        {
-            get { return steps ?? (steps = new List<FlowStep>()); }
-        }
-
-        public override IEnumerable<IConfigurable> Children => Steps;
+        public override IEnumerable<IConfigurable> Children => steps ?? (steps = new List<FlowStep>());
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -35,10 +28,11 @@ namespace Enochian.Flow
             try
             {
                 FlowStep previous = null;
-                var steps = config.GetChildren("steps", this);
-                foreach (var step in steps)
+                steps = new List<FlowStep>();
+                var children = config.GetChildren("steps", this);
+                foreach (var child in children)
                 {
-                    string typeName = step.Get<string>("type", this);
+                    string typeName = child.Get<string>("type", this);
                     if (string.IsNullOrWhiteSpace(typeName))
                     {
                         AddError("empty step type name");
@@ -54,13 +48,13 @@ namespace Enochian.Flow
                         continue;
                     }
 
-                    if (!typeof(FlowStep).GetTypeInfo().IsAssignableFrom(stepType))
+                    if (!typeof(FlowStep).IsAssignableFrom(stepType))
                     {
                         AddError("step type '{0}' is not a subtype of '{1}'", stepType.FullName, nameof(FlowStep));
                         continue;
                     }
 
-                    var ctor = stepType.GetTypeInfo().GetConstructor(new[] { typeof(IConfigurable), typeof(IFlowResources) });
+                    var ctor = stepType.GetConstructor(new[] { typeof(IConfigurable), typeof(IFlowResources) });
                     if (ctor == null)
                     {
                         AddError("step type '{0}' does not contain a constructor with parameters of type '{1}' and '{2}'",
@@ -68,41 +62,14 @@ namespace Enochian.Flow
                         continue;
                     }
 
-                    var child = ctor.Invoke(new object[] { this, Resources }) as FlowStep;
-                    child.Parent = this;
-                    child.Container = this;
-                    child.Previous = previous;
+                    var step = ctor.Invoke(new object[] { this, Resources }) as FlowStep;
+                    step.Parent = this;
+                    step.Container = this;
+                    step.SetPrevious(previous);
+                    step.Configure(child);
 
-                    if (child.InputType == null)
-                    {
-                        string inputTypeName = step.Get<string>("inputType", this);
-                        if (!string.IsNullOrWhiteSpace(inputTypeName))
-                        {
-                            var inputType = Type.GetType(inputTypeName, false);
-                            if (inputType != null)
-                                child.InputType = inputType;
-                            else
-                                AddError("unknown inputType name '{0}'", inputTypeName);
-                        }
-                    }
-
-                    if (child.OutputType == null)
-                    {
-                        string outputTypeName = step.Get<string>("outputType", this);
-                        if (!string.IsNullOrWhiteSpace(outputTypeName))
-                        {
-                            var outputType = Type.GetType(outputTypeName, false);
-                            if (outputType != null)
-                                child.OutputType = outputType;
-                            else
-                                AddError("unknown outputType name '{0}'", outputTypeName);
-                        }
-                    }
-
-                    child.Configure(step);
-
-                    Steps.Add(child);
-                    previous = child;
+                    steps.Add(step);
+                    previous = step;
                 }
             }
             catch (Exception e)
@@ -111,18 +78,6 @@ namespace Enochian.Flow
             }
 
             return this;
-        }
-
-        internal override IEnumerable<object> GetOutputs()
-        {
-            if (steps == null || steps.Count == 0)
-                yield break;
-
-            foreach (var output in steps.Last().GetOutputs())
-            {
-                if (output != null)
-                    yield return output;
-            }
         }
     }
 }

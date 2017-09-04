@@ -15,7 +15,7 @@ namespace Enochian.Text
     {
         string text = null;
 
-        public FlowStep SourceStep { get; set; }
+        public IFlowStep<TextChunk> SourceStep { get; set; }
         public TextLine SourceLine { get; set; }
         public string Text
         {

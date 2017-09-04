@@ -29,7 +29,7 @@ namespace Enochian.Flow.Steps
             return this;
         }
 
-        internal override IEnumerable<object> GetOutputs()
+        public override IEnumerable<string> GetOutputs()
         {
             if (Previous != null)
                 Results = Previous.GetOutputs().OfType<TextChunk>().ToList();

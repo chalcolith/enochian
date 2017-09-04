@@ -33,7 +33,7 @@ class Program
             var flow = new Flow(configFilePath);
             HandleErrors(flow);
 
-            var outputs = flow.GetOutputs().ToList();
+            flow.ProcessAll();
             HandleErrors(flow);
 
             return 0;
