@@ -30,6 +30,9 @@ namespace Enochian.Lexicons
                 Entries = new List<LexiconEntry>();
                 EntriesByLemma = new Dictionary<string, LexiconEntry>();
 
+                path = Path.GetFullPath(path);
+                Log.Info("loading CMUDICT from {0}", path);
+
                 using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                 using (var sr = new StreamReader(fs, System.Text.Encoding.ASCII))
                 {
@@ -76,6 +79,9 @@ namespace Enochian.Lexicons
                         {
                             AddError("duplicate lemma '{0}'", lemma);
                         }
+
+                        if ((num % 1000) == 0)
+                            Log.Info("  loaded {0} entries", num);
                     }
                 }
             }

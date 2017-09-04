@@ -52,20 +52,27 @@ namespace Enochian.IntegrationTests
             Assert.IsNotNull(encoding, "transducer has no output encoding");
 
             var tokens = given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-            sampleText.Chunks = new List<TextLine>
+            sampleText.Chunks = new List<TextChunk>
             {
-                new TextLine
+                new TextChunk
                 {
-                    Text = given,
-                    Segments = tokens
-                        .Select(t => new TextSegment
+                    Lines = new List<TextLine>
+                    {
+                        new TextLine
                         {
-                            Options = new List<SegmentOption>
-                            {
-                                new SegmentOption { Text = t }
-                            }
-                        })
-                        .ToArray(),
+                            SourceStep = sampleText,
+                            Text = given,
+                            Segments = tokens
+                                .Select(t => new TextSegment
+                                {
+                                    Options = new List<SegmentOption>
+                                    {
+                                        new SegmentOption { Text = t }
+                                    }
+                                })
+                                .ToArray(),
+                        }
+                    }
                 }
             };
 
@@ -128,20 +135,26 @@ namespace Enochian.IntegrationTests
             var tokens = given.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var sampleText in flow.Steps.Children.OfType<SampleText>())
             {
-                sampleText.Chunks = new List<TextLine>
+                sampleText.Chunks = new List<TextChunk>
                 {
-                    new TextLine
+                    new TextChunk
                     {
-                        Text = given,
-                        Segments = tokens
-                            .Select(t => new TextSegment
+                        Lines = new List<TextLine>
+                        {
+                            new TextLine
                             {
-                                Options = new List<SegmentOption>
-                                {
-                                    new SegmentOption { Text = t}
-                                }
-                            })
-                            .ToArray(),
+                                Text = given,
+                                Segments = tokens
+                                    .Select(t => new TextSegment
+                                    {
+                                        Options = new List<SegmentOption>
+                                        {
+                                            new SegmentOption { Text = t}
+                                        }
+                                    })
+                                    .ToArray(),
+                            }
+                        }
                     }
                 };
             }

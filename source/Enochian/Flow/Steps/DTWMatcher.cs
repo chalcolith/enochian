@@ -54,18 +54,19 @@ namespace Enochian.Flow.Steps
                 return input;
             }
 
+            int numTokens = 0;
             var cache = new Dictionary<string, IList<SegmentOption>>();
             var comparer = new EntryComparer();
             var newLines = input.Lines
-                .Where(line => line.SourceStep == Previous)
-                .Select(oldLine =>
+                .Where(line => object.ReferenceEquals(line.SourceStep, Previous))
+                .Select(srcLine =>
                 {
                     return new TextLine
                     {
                         SourceStep = this,
-                        SourceLine = oldLine,
-                        Text = oldLine.Text,                        
-                        Segments = oldLine.Segments
+                        SourceLine = srcLine,
+                        Text = srcLine.Text,                        
+                        Segments = srcLine.Segments
                             .Select(oldSegment => new TextSegment
                             {
                                 SourceSegments = new List<TextSegment> { oldSegment },
@@ -73,8 +74,10 @@ namespace Enochian.Flow.Steps
                                     .Where(oldOption => !string.IsNullOrWhiteSpace(oldOption.Text))
                                     .SelectMany(oldOption =>
                                     {
-                                        IList<SegmentOption> cached;
-                                        if (cache.TryGetValue(oldOption.Text, out cached))
+                                        if ((++numTokens % 1000) == 0)
+                                            Log.Info("matched {0} tokens", numTokens);
+
+                                        if (cache.TryGetValue(oldOption.Text, out IList<SegmentOption> cached))
                                             return cached;
 
                                         if (oldOption.Phones != null && oldOption.Phones.Any())
@@ -124,7 +127,7 @@ namespace Enochian.Flow.Steps
                 });
 
             return new TextChunk
-            {
+            {                
                 Lines = input.Lines.Concat(newLines).ToList(),
             };
         }

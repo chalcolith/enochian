@@ -7,7 +7,6 @@ namespace Enochian.Flow.Steps
     public class Transducer : TextFlowStep
     {
         Encoder encoder;
-        Encoder Encoder => encoder ?? (encoder = new Encoder(Features, Encoding));
 
         public Transducer(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
@@ -15,8 +14,8 @@ namespace Enochian.Flow.Steps
         }
 
         public FeatureSet Features { get; private set; }
-
         public Encoding Encoding { get; private set; }
+        Encoder Encoder => encoder ?? (encoder = new Encoder(Features, Encoding));
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -44,17 +43,23 @@ namespace Enochian.Flow.Steps
 
         protected override TextChunk ProcessTyped(TextChunk input)
         {
-            var inputLines = input.Lines.Where(line => line.SourceStep == Previous);
-            var outputLines = inputLines.Select(line => new TextLine
-            {
-                SourceStep = this,
-                Segments = line.Segments.Select(seg =>
+            var inputLines = input.Lines;
+            var outputLines = input.Lines
+                .Where(srcLine => object.ReferenceEquals(srcLine.SourceStep, Previous))
+                .Select(srcLine => new TextLine
                 {
-                    var newSeg = Encoder.ProcessSegment(seg);
-                    newSeg.SourceSegments = new[] { seg };
-                    return newSeg;
-                }).ToList(),
-            });
+                    SourceStep = this,
+                    SourceLine = srcLine,
+                    Text = srcLine.Text,
+                    Segments = srcLine.Segments
+                        .Select(seg =>
+                        {
+                            var newSeg = Encoder.ProcessSegment(seg);
+                            newSeg.SourceSegments = new[] { seg };
+                            return newSeg;
+                        })
+                        .ToList(),
+                });
             var output = new TextChunk
             {
                 Lines = input.Lines.Concat(outputLines).ToList(),

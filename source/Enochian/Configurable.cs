@@ -13,6 +13,7 @@ namespace Enochian
 
     public interface IErrorHandler
     {
+        NLog.Logger Log { get; }
         IEnumerable<ErrorRecord> Errors { get; }
         IErrorHandler AddError(string format, params object[] args);
         IErrorHandler AddError(int line, int column, string format, params object[] args);
@@ -35,6 +36,7 @@ namespace Enochian
     public abstract class Configurable : IConfigurable
     {
         string absFilePath;
+        NLog.Logger logger;
         IList<ErrorRecord> errors;
 
         public Configurable(IConfigurable parent)
@@ -66,6 +68,8 @@ namespace Enochian
 
         public virtual IEnumerable<IConfigurable> Children => Enumerable.Empty<IConfigurable>();
 
+        public NLog.Logger Log => logger ?? (logger = NLog.LogManager.GetCurrentClassLogger());
+
         public IEnumerable<ErrorRecord> Errors
         {
             get
@@ -84,13 +88,16 @@ namespace Enochian
 
         public IErrorHandler AddError(int line, int column, string format, params object[] args)
         {
+            var message = string.Format("{0} for {1} '{2}'", string.Format(format, args), this.GetType().Name, Id ?? "?");
+            Log.Error(message);
+
             if (errors == null) errors = new List<ErrorRecord>();
             errors.Add(new ErrorRecord
             {
                 AbsoluteFilePath = AbsoluteFilePath,
                 ErrorLine = line,
                 ErrorColumn = column,
-                Message = string.Format("{0} for {1} '{2}'", string.Format(format, args), this.GetType().Name, Id ?? "?"),
+                Message = message,
             });
             return this;
         }
