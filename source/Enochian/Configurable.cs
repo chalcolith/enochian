@@ -36,7 +36,6 @@ namespace Enochian
     public abstract class Configurable : IConfigurable
     {
         string absFilePath;
-        NLog.Logger logger;
         IList<ErrorRecord> errors;
 
         public Configurable(IConfigurable parent)
@@ -68,7 +67,7 @@ namespace Enochian
 
         public virtual IEnumerable<IConfigurable> Children => Enumerable.Empty<IConfigurable>();
 
-        public NLog.Logger Log => logger ?? (logger = NLog.LogManager.GetCurrentClassLogger());
+        public abstract NLog.Logger Log { get; }
 
         public IEnumerable<ErrorRecord> Errors
         {

@@ -18,15 +18,23 @@ namespace Enochian.Flow
 
     public class Flow : Configurable, IFlowResources
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        IEnumerable<IConfigurable> children;
+
         public Flow(string fname)
             : base(null)
         {
             Load(fname, this);
         }
 
-        public override IEnumerable<IConfigurable> Children => 
-            FeatureSets.Concat<IConfigurable>(Encodings).Concat(Steps != null
-                ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>());
+        public override NLog.Logger Log => logger;
+
+        public override IEnumerable<IConfigurable> Children
+        {
+            get => children ?? (children = FeatureSets
+                                            .Concat<IConfigurable>(Encodings)
+                                            .Concat(Steps != null ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>()));
+        }
 
         public IList<FeatureSet> FeatureSets { get; } = new List<FeatureSet>();
         public IList<Encoding> Encodings { get; } = new List<Encoding>();

@@ -9,12 +9,15 @@ namespace Enochian.Flow.Steps
 {
     public class SampleText : TextFlowStep
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         IList<TextChunk> chunks;
 
         public SampleText(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public FeatureSet Features { get; private set; }
 

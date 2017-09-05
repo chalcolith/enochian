@@ -2,26 +2,22 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using Enochian;
 using Enochian.Console;
 using Enochian.Flow;
 
 class Program
 {
+    static NLog.Logger logger;
+    static NLog.Logger Log { get => logger ?? (logger = NLog.LogManager.GetCurrentClassLogger()); }
+
     static int Main(string[] args)
     {
         try
         {
-            Options options;
-            var parseResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
-            switch (parseResult)
-            {
-                case CommandLine.Parsed<Options> parsed:
-                    options = parsed.Value;
-                    break;
-                default:
-                    throw new Exception("Usage: Enochian.Console config.json");
-            }
+            var options = GetOptions(args);
+            ConfigureLogging(options);
 
             var configFilePath = options.ConfigFile;
             if (string.IsNullOrWhiteSpace(configFilePath)
@@ -40,6 +36,7 @@ class Program
         }
         catch (Exception e)
         {
+            Log.Error(e.Message);
 #if DEBUG
             Console.Error.WriteLine(e);
 #else
@@ -47,6 +44,47 @@ class Program
 #endif
             return 1;
         }
+    }
+
+    static Options GetOptions(string[] args)
+    {
+        Options options;
+        var parseResult = CommandLine.Parser.Default.ParseArguments<Options>(args);
+        switch (parseResult)
+        {
+            case CommandLine.Parsed<Options> parsed:
+                options = parsed.Value;
+                break;
+            default:
+                throw new Exception(Options.Usage);
+        }
+
+        return options;
+    }
+
+    static void ConfigureLogging(Options options)
+    {
+        var config = new NLog.Config.LoggingConfiguration();
+
+        var console = new NLog.Targets.ColoredConsoleTarget
+        {
+            Layout = @"${logger} ${message}",
+        };
+        config.AddTarget("console", console);
+        config.LoggingRules.Add(new NLog.Config.LoggingRule("*", NLog.LogLevel.Info, console));
+
+        if (!string.IsNullOrWhiteSpace(options.LogFile))
+        {
+            var file = new NLog.Targets.FileTarget
+            {
+                FileName = "${basedir}/" + options.LogFile,
+                Layout = @"${date:format=HH\:mm\:ss} ${logger} ${message}",
+            };
+            config.AddTarget("file", file);
+            config.LoggingRules.Add(new NLog.Config.LoggingRule("*", NLog.LogLevel.Info, file));
+        }
+
+        NLog.LogManager.Configuration = config;
     }
 
     static void HandleErrors(IErrorHandler obj)

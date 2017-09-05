@@ -7,6 +7,8 @@ namespace Enochian.Flow
 {
     public class FlowContainer : FlowStep
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         IList<FlowStep> steps;
 
         public FlowContainer(IConfigurable parent, IFlowResources resources)
@@ -18,6 +20,8 @@ namespace Enochian.Flow
             : base(parent, resources, null, config)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public override IEnumerable<IConfigurable> Children => steps ?? (steps = new List<FlowStep>());
 

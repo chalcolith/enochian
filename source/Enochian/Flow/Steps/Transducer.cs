@@ -6,6 +6,7 @@ namespace Enochian.Flow.Steps
 {
     public class Transducer : TextFlowStep
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         Encoder encoder;
 
         public Transducer(IConfigurable parent, IFlowResources resources)
@@ -13,8 +14,11 @@ namespace Enochian.Flow.Steps
         {
         }
 
+        public override NLog.Logger Log => logger;
+
         public FeatureSet Features { get; private set; }
         public Encoding Encoding { get; private set; }
+
         Encoder Encoder => encoder ?? (encoder = new Encoder(Features, Encoding));
 
         public override IConfigurable Configure(IDictionary<string, object> config)

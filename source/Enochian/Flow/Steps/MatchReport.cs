@@ -8,10 +8,14 @@ namespace Enochian.Flow.Steps
 {
     public class MatchReport : FlowStep<TextChunk, string>
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public MatchReport(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public string OutputPath { get; protected set; }
         public IList<TextChunk> Results { get; protected set; }
@@ -37,6 +41,12 @@ namespace Enochian.Flow.Steps
             var outputPath = Path.GetFullPath(OutputPath);
             try
             {
+                Log.Info("writing report to " + outputPath);
+
+                var outputDir = Path.GetDirectoryName(outputPath);
+                if (!Directory.Exists(outputDir))
+                    Directory.CreateDirectory(outputDir);
+
                 using (var sr = new StreamWriter(outputPath))
                 {
                     sr.WriteLine("output!");
@@ -44,7 +54,7 @@ namespace Enochian.Flow.Steps
             }
             catch (Exception e)
             {
-                AddError("erorr writing {0}: {1}", outputPath, e.Message);
+                AddError("error writing {0}: {1}", outputPath, e.Message);
             }
 
             yield return OutputPath;

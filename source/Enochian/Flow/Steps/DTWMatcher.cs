@@ -9,10 +9,14 @@ namespace Enochian.Flow.Steps
 {
     public class DTWMatcher : TextFlowStep
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public DTWMatcher(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public Lexicon Lexicon { get; protected set; }
         public int NumOptions { get; protected set; } = 6;
@@ -61,6 +65,8 @@ namespace Enochian.Flow.Steps
                 .Where(line => object.ReferenceEquals(line.SourceStep, Previous))
                 .Select(srcLine =>
                 {
+                    Log.Info("matching " + srcLine.Text);
+
                     return new TextLine
                     {
                         SourceStep = this,

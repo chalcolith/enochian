@@ -8,6 +8,8 @@ namespace Enochian.Text
 {
     public class FeatureSet : Configurable, IFileReference
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         IList<string> featureList;
         IDictionary<string, int> featureIndices;
 
@@ -15,6 +17,8 @@ namespace Enochian.Text
             : base(parent)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public string RelativePath { get; internal set; }
 

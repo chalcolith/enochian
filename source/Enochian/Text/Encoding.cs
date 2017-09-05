@@ -9,12 +9,16 @@ namespace Enochian.Text
 {
     public class Encoding : Configurable, IFileReference
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static Encoding Default { get; } = new Encoding(null) { Id = "Default" };
 
         public Encoding(IConfigurable parent)
             : base(parent)
         {
         }
+
+        public override NLog.Logger Log => logger;
 
         public string RelativePath { get; internal set; }
 
@@ -49,12 +53,16 @@ namespace Enochian.Text
 
     public class EncodingPattern : Configurable
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public EncodingPattern(IConfigurable parent, FeatureSet features, IDictionary<string, object> config)
             : base(parent)
         {
             Features = features;
             Configure(config);
         }
+
+        public override NLog.Logger Log => logger;
 
         public FeatureSet Features { get; }
 

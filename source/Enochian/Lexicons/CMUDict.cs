@@ -9,6 +9,8 @@ namespace Enochian.Lexicons
 {
     public class CMUDict : Lexicon
     {
+        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public CMUDict(IConfigurable parent, IFlowResources resources)
             : base(parent, resources)
         {
@@ -18,6 +20,8 @@ namespace Enochian.Lexicons
         {
             return base.Configure(config);
         }
+
+        public override NLog.Logger Log => logger;
 
         static readonly char[] WS = new[] { ' ', '\t' };
 
@@ -83,6 +87,7 @@ namespace Enochian.Lexicons
                         if ((num % 1000) == 0)
                             Log.Info("  loaded {0} entries", num);
                     }
+                    Log.Info("loaded {0} total entries", num);
                 }
             }
             catch (Exception e)
