@@ -25,6 +25,10 @@ namespace Enochian
         IConfigurable Parent { get; set; }
         IEnumerable<IConfigurable> Children { get; }
 
+        string Id { get; }
+        string Description { get; }
+        string Changes { get; }
+
         IConfigurable Configure(Config config);
     }
 

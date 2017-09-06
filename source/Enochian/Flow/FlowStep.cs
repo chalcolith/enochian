@@ -7,6 +7,12 @@ using System.Text;
 
 namespace Enochian.Flow
 {
+    public enum ReportType
+    {
+        Text,
+        Html,
+    };
+
     public interface IFlowStep : IConfigurable
     {
         IFlowResources Resources { get; }
@@ -14,6 +20,7 @@ namespace Enochian.Flow
         Type InputType { get; }
         Type OutputType { get; }
         IFlowStep GetFirstStep();
+        string GenerateReport(ReportType reportType);
     }
 
     public abstract class FlowStep : Configurable, IFlowStep
@@ -40,6 +47,11 @@ namespace Enochian.Flow
         public virtual Type OutputType => null;
         internal virtual void SetPrevious(IFlowStep previous) { }
         public abstract IFlowStep GetFirstStep();
+
+        public virtual string GenerateReport(ReportType reportType)
+        {
+            return null;
+        }
     }
 
     public interface IFlowStep<TOut> : IFlowStep

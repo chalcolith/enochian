@@ -44,6 +44,11 @@ namespace Enochian.Flow.Steps
             return this;
         }
 
+        public override string GenerateReport(ReportType reportType)
+        {
+            return string.Format("Lexicon: {0}: {1}", Lexicon.Id, Lexicon.Description);
+        }
+
         protected override TextChunk Process(TextChunk input)
         {
             if (Lexicon == null)
@@ -73,20 +78,21 @@ namespace Enochian.Flow.Steps
                         SourceLine = srcLine,
                         Text = srcLine.Text,                        
                         Segments = srcLine.Segments
-                            .Select(oldSegment => new TextSegment
+                            .Select(srcSegment => new TextSegment
                             {
-                                SourceSegments = new List<TextSegment> { oldSegment },
-                                Options = oldSegment.Options
-                                    .Where(oldOption => !string.IsNullOrWhiteSpace(oldOption.Text))
-                                    .SelectMany(oldOption =>
+                                Text = srcSegment.Options?.FirstOrDefault(o => !string.IsNullOrWhiteSpace(o.Text))?.Text,
+                                SourceSegments = new List<TextSegment> { srcSegment },
+                                Options = srcSegment.Options
+                                    .Where(srcOption => !string.IsNullOrWhiteSpace(srcOption.Text))
+                                    .SelectMany(srcOption =>
                                     {
                                         if ((++numTokens % 1000) == 0)
                                             Log.Info("matched {0} tokens", numTokens);
 
-                                        if (cache.TryGetValue(oldOption.Text, out IList<SegmentOption> cached))
+                                        if (cache.TryGetValue(srcOption.Text, out IList<SegmentOption> cached))
                                             return cached;
 
-                                        if (oldOption.Phones != null && oldOption.Phones.Any())
+                                        if (srcOption.Phones != null && srcOption.Phones.Any())
                                         {
                                             double leastBestDistance = double.MaxValue;
                                             var bestEntries =
@@ -94,7 +100,7 @@ namespace Enochian.Flow.Steps
                                             foreach (var entry in Lexicon.Entries)
                                             {
                                                 double distance = Math.DynamicTimeWarp
-                                                    .GetSequenceDistance(oldOption.Phones, entry.Phones,
+                                                    .GetSequenceDistance(srcOption.Phones, entry.Phones,
                                                         Math.DynamicTimeWarp.EuclideanDistance);
 
                                                 if (distance < leastBestDistance
@@ -119,12 +125,12 @@ namespace Enochian.Flow.Steps
                                                         Phones = de.Item2.Phones,
                                                     })
                                                     .ToList();
-                                                cache[oldOption.Text] = newOptions;
+                                                cache[srcOption.Text] = newOptions;
                                                 return newOptions;
                                             }
                                         }
 
-                                        return new[] { oldOption };
+                                        return new[] { srcOption };
                                     })
                                     .ToList()
                             })

@@ -34,6 +34,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "english_test", "english_test", "{346B7A2A-0E5B-4AC6-A7D7-5E2A77541BBE}"
 	ProjectSection(SolutionItems) = preProject
 		..\samples\english_test\austen_persuasion.txt = ..\samples\english_test\austen_persuasion.txt
+		..\samples\english_test\austen_persuasion_single.txt = ..\samples\english_test\austen_persuasion_single.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reports", "reports", "{931F8B4D-78E7-44C6-990D-B183F80E4433}"

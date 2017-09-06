@@ -65,6 +65,11 @@ namespace Enochian.Flow.Steps
             return this;
         }
 
+        public override string GenerateReport(ReportType reportType)
+        {
+            return AbsoluteFilePath;
+        }
+
         public override IEnumerable<TextChunk> GetOutputs()
         {
             if (chunks != null)

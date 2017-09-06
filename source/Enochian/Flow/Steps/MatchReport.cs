@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Enochian.Text;
 using HtmlAgilityPack;
 
@@ -19,6 +20,7 @@ namespace Enochian.Flow.Steps
         public override NLog.Logger Log => logger;
 
         public string OutputPath { get; protected set; }
+        public bool DebugFirstOnly { get; protected set; }
         public IList<TextChunk> Results { get; protected set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
@@ -30,6 +32,8 @@ namespace Enochian.Flow.Steps
                 OutputPath = GetChildPath(AbsoluteFilePath, output);
             else
                 AddError("no 'output' path specified");
+
+            DebugFirstOnly = config.Get<bool>("debugFirstOnly", null);
 
             return this;
         }
@@ -86,11 +90,14 @@ namespace Enochian.Flow.Steps
             var bodyNode = HtmlNode.CreateNode("<body></body>");
 
             bodyNode.AppendChild(GenerateReportHeader(chunks, out DateTime timeGenerated));
+            int index = 0;
             foreach (var chunk in chunks)
             {
                 results.Add(chunk);
-                bodyNode.AppendChild(GenerateReportChunk(chunk));
-                break;
+                bodyNode.AppendChild(GenerateReportChunk(chunk, index++));
+
+                if (DebugFirstOnly)
+                    break;
             }
             bodyNode.AppendChild(GenerateReportFooter(results, timeGenerated));
 
@@ -106,13 +113,27 @@ namespace Enochian.Flow.Steps
             headerNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"subtitle\">Generated {0} ({1})</div>", 
                 timeGenerated.ToString("s"), timeGenerated.ToUniversalTime().ToString("u"))));
 
+            if (this.Container != null)
+            {
+                foreach (var step in this.Container.Children.OfType<FlowStep>())
+                {
+                    var report = step.GenerateReport(ReportType.Html);
+                    if (string.IsNullOrWhiteSpace(report))
+                        continue;
+
+                    var reportNode = HtmlNode.CreateNode(string.Format("<div class=\"step-report\"><div class=\"step-report-title\">{0}: {1}</div><div class=\"step-report-content\">{2}</div></div>", 
+                        step.Id, step.Description, report));
+                    headerNode.AppendChild(reportNode);
+                }
+            }
+
             return headerNode;
         }
 
-        HtmlNode GenerateReportChunk(TextChunk chunk)
+        HtmlNode GenerateReportChunk(TextChunk chunk, int index)
         {
             var sectionNode = HtmlNode.CreateNode("<section class=\"text-chunk\"></section>");
-            sectionNode.AppendChild(HtmlNode.CreateNode("<div class=\"text-chunk-intro\"></div>"));
+            sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", chunk.Description ?? index.ToString())));
             var interNode = HtmlNode.CreateNode("<div class=\"text-chunk-lines\"></div>");
 
             var linesNode = interNode;
@@ -122,10 +143,12 @@ namespace Enochian.Flow.Steps
                 var firstLine = chunk.Lines.FirstOrDefault(line => object.ReferenceEquals(line.SourceStep, firstStep));
                 if (firstLine == null) firstLine = chunk.Lines.FirstOrDefault();
 
-                var textLine = HtmlNode.CreateNode(string.Format("<div class=\"text-line-first\">{0}</div>", firstLine.Text));
+                string encoding = (firstLine.Segments?.FirstOrDefault()?.Options?.FirstOrDefault()?.Encoding?.Id?.ToLowerInvariant() ?? "default").ToLowerInvariant();
+
+                var textLine = HtmlNode.CreateNode(string.Format("<div class=\"text-line-first\"><span class=\"text-line-label\">Original text:</span> <span class=\"encoding-{1}\">{0}<span></div>", firstLine.Text, encoding));
                 linesNode.AppendChild(textLine);
 
-                foreach (var line in chunk.Lines.Where(l => !object.ReferenceEquals(l, firstLine)))
+                foreach (var line in chunk.Lines)
                 {
                     linesNode.AppendChild(GenerateReportLine(line));
                 }
@@ -138,7 +161,7 @@ namespace Enochian.Flow.Steps
         HtmlNode GenerateReportLine(TextLine line)
         {
             var lineNode = HtmlNode.CreateNode("<div class=\"text-line\"><div>");
-            lineNode.AppendChild(HtmlNode.CreateNode("<div class=\"text-line-intro\"></div>"));
+            lineNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-line-intro\">{0}: {1}</div>", line.SourceStep?.Id, line.SourceStep?.Description)));
 
             var lineDiv = HtmlNode.CreateNode("<div class=\"text-line-content\"></div>");
             lineNode.AppendChild(lineDiv);
@@ -151,25 +174,35 @@ namespace Enochian.Flow.Steps
                     if (segment.Options != null && segment.Options.Any())
                     {
                         var optionsNode = HtmlNode.CreateNode("<div class=\"segment-options\"></div>");
+                        if (!string.IsNullOrWhiteSpace(segment.Text) && segment.Text != segment.Options.FirstOrDefault()?.Text)
+                        {
+                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option-first\">{0}</div>", segment.Text));
+                            optionsNode.AppendChild(textNode);
+                        }
+
                         foreach (var option in segment.Options)
                         {
-                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\">{0}</div>", option.Text));                            
-                            optionsNode.AppendChild(textNode);
+                            string encoding = (option.Encoding?.Id ?? "default").ToLowerInvariant();
 
-                            if (option.Phones != null && option.Phones.Any()
-                                && option.Encoding?.Features != null)
+                            string optionTitle = "";
+                            if (option.Phones != null && option.Phones.Any() && option.Encoding?.Features != null)
                             {
-                                var phonesNode = HtmlNode.CreateNode(string.Format("<div class\"options-phones\"></div>"));
-
+                                var sb = new StringBuilder();
                                 foreach (var phone in option.Phones)
                                 {
-                                    var phoneNode = HtmlNode.CreateNode(string.Format("<div class=\"option-phone\">[{0}]</div>",
-                                        string.Join(",", option.Encoding.Features.GetFeatureSpec(phone))));
-                                    phonesNode.AppendChild(phoneNode);
+                                    sb.AppendFormat("[ {0} ]\n", string.Join(",", option.Encoding.Features.GetFeatureSpec(phone)));
                                 }
-
-                                optionsNode.AppendChild(phonesNode);
+                                optionTitle = sb.ToString();
                             }
+                            if (!string.IsNullOrWhiteSpace(option.Lexicon?.Id))
+                            {
+                                optionTitle = string.Format("{0}: {1} {2}\n\n", option.Lexicon?.Id, option.Entry?.Lemma, option.Entry?.Encoded)
+                                    + optionTitle;
+                            }
+
+                            var optionNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div></div>", 
+                                option.Text, optionTitle, encoding));
+                            optionsNode.AppendChild(optionNode);
                         }
                         segmentNode.AppendChild(optionsNode);
                     }

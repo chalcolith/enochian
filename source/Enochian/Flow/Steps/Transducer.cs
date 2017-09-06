@@ -45,6 +45,11 @@ namespace Enochian.Flow.Steps
             return this;
         }
 
+        public override string GenerateReport(ReportType reportType)
+        {
+            return string.Format("Encoding: {0}: {1}", Encoder.Encoding?.Id, Encoder.Encoding?.Description);
+        }
+
         protected override TextChunk Process(TextChunk input)
         {
             var inputLines = input.Lines;
@@ -56,12 +61,7 @@ namespace Enochian.Flow.Steps
                     SourceLine = srcLine,
                     Text = srcLine.Text,
                     Segments = srcLine.Segments
-                        .Select(seg =>
-                        {
-                            var newSeg = Encoder.ProcessSegment(seg);
-                            newSeg.SourceSegments = new[] { seg };
-                            return newSeg;
-                        })
+                        .Select(seg => Encoder.ProcessSegment(seg))
                         .ToList(),
                 });
             var output = new TextChunk

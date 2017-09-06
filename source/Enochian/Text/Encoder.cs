@@ -60,6 +60,7 @@ namespace Enochian.Text
                             return new SegmentOption
                             {
                                 Lexicon = option.Lexicon,
+                                Encoding = this.Encoding,
                                 Entry = option.Entry,
                                 Text = textAndPhones.Item1,
                                 Phones = textAndPhones.Item2,

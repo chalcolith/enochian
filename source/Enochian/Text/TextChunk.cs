@@ -8,6 +8,7 @@ namespace Enochian.Text
 {
     public class TextChunk
     {
+        public string Description { get; set; }
         public IList<TextLine> Lines { get; set; }
     }
 
@@ -27,6 +28,7 @@ namespace Enochian.Text
 
     public class TextSegment
     {
+        public string Text { get; set; }
         public IList<TextSegment> SourceSegments { get; set; }
         public IList<SegmentOption> Options { get; set; }
     }

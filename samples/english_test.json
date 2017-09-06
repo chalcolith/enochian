@@ -22,6 +22,7 @@
   "lexicons": [
     {
       "id": "CMUDict",
+      "description": "The CMU pronouncing dictionary (http://www.speech.cs.cmu.edu/cgi-bin/cmudict).",
       "type": "CMUDict",
       "features": "Default",
       "encoding": "CMU",
@@ -34,7 +35,7 @@
       "id": "InputText",
       "type": "SampleText",
       "features": "Default",
-      "path": "english_test/austen_persuasion.txt"
+      "path": "english_test/austen_persuasion_single.txt"
     },
     {
       "id": "NaivePhonological",
