@@ -32,7 +32,7 @@
 
   "steps": [
     {
-      "id": "InputText",
+      "id": "SampleText",
       "type": "SampleText",
       "features": "Default",
       "path": "english_test/austen_persuasion_single.txt"

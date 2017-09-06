@@ -67,7 +67,7 @@ namespace Enochian.Flow.Steps
 
         public override string GenerateReport(ReportType reportType)
         {
-            return AbsoluteFilePath;
+            return GetChildPath(AbsoluteFilePath, SourcePath);
         }
 
         public override IEnumerable<TextChunk> GetOutputs()

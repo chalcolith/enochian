@@ -15,12 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 		..\resources\encodings\cmu.json = ..\resources\encodings\cmu.json
 		..\resources\encodings\features.json = ..\resources\encodings\features.json
 		..\resources\encodings\ipa.json = ..\resources\encodings\ipa.json
+		..\resources\encodings\vogt.json = ..\resources\encodings\vogt.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7353F-D7C1-43CA-9884-2839FE695B11}"
 	ProjectSection(SolutionItems) = preProject
 		..\samples\english_test.json = ..\samples\english_test.json
 		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
+		..\samples\voynich.json = ..\samples\voynich.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enochian.Console", "Enochian.Console\Enochian.Console.csproj", "{D17B610B-FD6B-4A71-8B19-9212273F89A3}"

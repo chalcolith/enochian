@@ -113,6 +113,14 @@ namespace Enochian.Flow.Steps
             headerNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"subtitle\">Generated {0} ({1})</div>", 
                 timeGenerated.ToString("s"), timeGenerated.ToUniversalTime().ToString("u"))));
 
+            IConfigurable parent = this;
+            while (parent != null && !(parent is Flow))
+                parent = parent.Parent;
+            if (parent != null)
+            {
+                headerNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"flow-desc\">{0}: {1}</div>", parent.Id, parent.Description)));
+            }
+
             if (this.Container != null)
             {
                 foreach (var step in this.Container.Children.OfType<FlowStep>())
