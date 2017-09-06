@@ -1,0 +1,54 @@
+{
+  "id": "Voynich Test Flow",
+  "description": "Tests the phonological match report on part of the Voynich manuscript.",
+
+  "features": [
+    {
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+
+  "encodings": [
+    {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    },
+    {
+      "id": "Vogt",
+      "features": "Default",
+      "path": "../resources/encodings/vogt.json"
+    }
+  ],
+
+  "lexicons": [
+    {
+      "id": "Romany",
+      "features": "Default",
+      "encoding": "?"
+    }
+  ],
+
+  "steps": [
+    {
+      "id": "Voynich Interlinear",
+      "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6.",
+      "type": "VoynichInterlinear",
+      "path": "resources/voynich/interlinear_text16e6.evt",
+      "chunks": [
+
+      ]
+    },
+    {
+      "id": "LexicalMatch",
+      "description": "Matches inputs against a phonetic dictionary.",
+      "type": "DTWMatcher",
+      "lexicon": "Romany"
+    },
+    {
+      "id": "MatchReport",
+      "type": "MatchReport",
+      "output": "../reports/voynich_report.html"
+    }
+  ]
+}
