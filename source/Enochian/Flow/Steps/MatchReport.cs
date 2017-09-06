@@ -156,7 +156,8 @@ namespace Enochian.Flow.Steps
                             var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\">{0}</div>", option.Text));                            
                             optionsNode.AppendChild(textNode);
 
-                            if (option.Phones != null && option.Encoding.Features != null && option.Phones.Any())
+                            if (option.Phones != null && option.Phones.Any()
+                                && option.Encoding?.Features != null)
                             {
                                 var phonesNode = HtmlNode.CreateNode(string.Format("<div class\"options-phones\"></div>"));
 
@@ -164,7 +165,7 @@ namespace Enochian.Flow.Steps
                                 {
                                     var phoneNode = HtmlNode.CreateNode(string.Format("<div class=\"option-phone\">[{0}]</div>",
                                         string.Join(",", option.Encoding.Features.GetFeatureSpec(phone))));
-                                    phonesNode.AppendChild(phonesNode);
+                                    phonesNode.AppendChild(phoneNode);
                                 }
 
                                 optionsNode.AppendChild(phonesNode);

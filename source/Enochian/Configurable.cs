@@ -35,6 +35,8 @@ namespace Enochian
 
     public abstract class Configurable : IConfigurable
     {
+        public const string CacheDir = ".enoch";
+
         string absFilePath;
         IList<ErrorRecord> errors;
 

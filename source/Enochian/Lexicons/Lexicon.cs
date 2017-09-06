@@ -117,16 +117,132 @@ namespace Enochian.Lexicons
             var absolutePath = GetChildPath(AbsoluteFilePath, lexiconPath);
 
             if (File.Exists(absolutePath))
-                LoadLexicon(absolutePath);
+            {
+                try
+                {
+                    bool cacheSuccessful = false;
+                    var cachedPath = Path.Combine(".", CacheDir, Path.GetFileName(absolutePath) + ".bin");
+                    if (File.Exists(cachedPath))
+                    {
+                        var origInfo = new FileInfo(absolutePath);
+                        var cacheInfo = new FileInfo(cachedPath);
+                        if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc)
+                        {
+                            cacheSuccessful = LoadCachedDictionary(cachedPath);
+                        }
+                    }
+
+                    if (!cacheSuccessful)
+                    {
+                        LoadLexicon(absolutePath);
+                        SaveCachedDictionary(cachedPath);
+                    }
+                }
+                catch (Exception e)
+                {
+                    AddError("error loading '{0}': {1}", absolutePath, e.Message);
+                }
+            }
             else
+            {
                 AddError("invalid lexicon path '{0}'", absolutePath);
+            }
         }
 
         protected abstract void LoadLexicon(string path);
+
+        static readonly byte[] MagicCacheCookie = new Guid("{FF1B7C9F-FF3D-4718-BC92-91009A06BF85}").ToByteArray();
+
+        bool LoadCachedDictionary(string path)
+        {
+            entries = new List<LexiconEntry>();
+
+            Log.Info("reading cached dictionary {0}...", path);
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var br = new BinaryReader(fs))
+            {
+                byte[] cookie = br.ReadBytes(MagicCacheCookie.Length);
+                if (!cookie.SequenceEqual(MagicCacheCookie))
+                {
+                    AddError("error reading cached dictionary {0}", path);
+                    return false;
+                }
+
+                uint numEntries = br.ReadUInt32();
+                for (uint i = 0; i < numEntries; i++)
+                {
+                    string text = br.ReadString();
+                    string lemma = br.ReadString();
+                    string encoded = br.ReadString();
+                    ushort numPhones = br.ReadUInt16();
+                    double[][] phones = new double[numPhones][];
+                    for (ushort j = 0; j < numPhones; j++)
+                    {
+                        ushort numFeatures = br.ReadUInt16();
+                        phones[j] = new double[numFeatures];
+                        for (ushort k = 0; k < numFeatures; k++)
+                            phones[j][k] = br.ReadDouble();
+                    }
+                    entries.Add(new LexiconEntry
+                    {
+                        Text = text,
+                        Lemma = lemma,
+                        Encoded = encoded,
+                        Phones = phones,
+                    });
+                }
+            }
+
+            entriesByLemma = entries.ToDictionary(entry => entry.Lemma);
+
+            Log.Info("read {0} total entries", entries.Count);
+            return true;
+        }
+
+        void SaveCachedDictionary(string path)
+        {
+            if (entries == null)
+                return;
+
+            Log.Info("saving cached dictionary {0}", path);
+            var dir = Path.GetDirectoryName(path);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var bw = new BinaryWriter(fs))
+            {
+                bw.Write(MagicCacheCookie);
+                bw.Write((uint)entries.Count);
+                foreach (var entry in entries)
+                {
+                    bw.Write(entry.Text ?? "");
+                    bw.Write(entry.Lemma ?? "");
+                    bw.Write(entry.Encoded ?? "");
+                    if (entry.Phones != null)
+                    {
+                        bw.Write((ushort)entry.Phones.Count);
+                        foreach (var phone in entry.Phones)
+                        {
+                            bw.Write((ushort)phone.Length);
+                            foreach (var feature in phone)
+                                bw.Write(feature);
+                        }
+                    }
+                    else
+                    {
+                        bw.Write((ushort)0);
+                    }
+                }
+            }
+
+            Log.Info("saved {0} total entries", entries.Count);
+        }
     }
 
     public class LexiconEntry
     {
+        public string Text { get; set; }
         public string Lemma { get; set; }
         public string Encoded { get; set; }
         public IList<double[]> Phones { get; set; }

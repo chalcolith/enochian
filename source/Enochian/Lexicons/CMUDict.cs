@@ -69,6 +69,7 @@ namespace Enochian.Lexicons
 
                         var entry = new LexiconEntry
                         {
+                            Text = tokens[0],
                             Lemma = lemma,
                             Encoded = sb.ToString(),
                             Phones = phones,
