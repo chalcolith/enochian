@@ -123,7 +123,9 @@ namespace Enochian.Flow.Steps
                             if (needNewChunk)
                             {
                                 if (currentChunk != null)
+                                {
                                     yield return currentChunk;
+                                }
 
                                 currentChunk = new TextChunk { Lines = new List<TextLine>() };
                                 numChunks++;
@@ -135,16 +137,17 @@ namespace Enochian.Flow.Steps
                         }
 
                         if (currentChunk != null)
+                        {
                             yield return currentChunk;
+                        }
                     }
                 }
                 finally
                 {
                     if (sr != null) sr.Dispose();
                     if (fs != null) fs.Dispose();
+                    Log.Info("read {0} chunks; {1} lines", numChunks, numLines);
                 }
-
-                Log.Info("read {0} chunks; {1} lines", numChunks, numLines);
             }
         }
 

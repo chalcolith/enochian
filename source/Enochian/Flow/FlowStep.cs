@@ -13,6 +13,7 @@ namespace Enochian.Flow
         FlowContainer Container { get; }
         Type InputType { get; }
         Type OutputType { get; }
+        IFlowStep GetFirstStep();
     }
 
     public abstract class FlowStep : Configurable, IFlowStep
@@ -38,6 +39,7 @@ namespace Enochian.Flow
         public virtual Type InputType => null;
         public virtual Type OutputType => null;
         internal virtual void SetPrevious(IFlowStep previous) { }
+        public abstract IFlowStep GetFirstStep();
     }
 
     public interface IFlowStep<TOut> : IFlowStep
@@ -74,6 +76,14 @@ namespace Enochian.Flow
             {
                 AddError("Cannot set Previous of {0} to {1}", GetType().Name, previous.GetType().Name);
             }
+        }
+
+        public override IFlowStep GetFirstStep()
+        {
+            IFlowStep step = this;
+            if (Previous != null)
+                step = Previous.GetFirstStep();
+            return step ?? this;
         }
 
         public virtual IEnumerable<TOut> GetOutputs()

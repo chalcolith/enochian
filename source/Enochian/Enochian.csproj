@@ -12,6 +12,7 @@
     <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="5.0.0-beta10" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />

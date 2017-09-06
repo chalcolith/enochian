@@ -83,5 +83,10 @@ namespace Enochian.Flow
 
             return this;
         }
+
+        public override IFlowStep GetFirstStep()
+        {
+            return this;
+        }
     }
 }

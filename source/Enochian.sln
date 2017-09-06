@@ -36,6 +36,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "english_test", "english_tes
 		..\samples\english_test\austen_persuasion.txt = ..\samples\english_test\austen_persuasion.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reports", "reports", "{931F8B4D-78E7-44C6-990D-B183F80E4433}"
+	ProjectSection(SolutionItems) = preProject
+		..\reports\enochian.css = ..\reports\enochian.css
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +108,7 @@ Global
 		{FE94FDE8-2A28-4EA9-ABDC-842A222A52EF} = {F5662EE4-6717-4557-B910-7D4B1040E383}
 		{A3D7353F-D7C1-43CA-9884-2839FE695B11} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
 		{346B7A2A-0E5B-4AC6-A7D7-5E2A77541BBE} = {A3D7353F-D7C1-43CA-9884-2839FE695B11}
+		{931F8B4D-78E7-44C6-990D-B183F80E4433} = {074FA6BC-2E14-4656-8524-2BC2ACCD2191}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F896420B-255A-48E0-AD72-5EC8D453B9C1}
