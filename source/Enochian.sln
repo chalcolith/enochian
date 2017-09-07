@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 		..\resources\encodings\cmu.json = ..\resources\encodings\cmu.json
 		..\resources\encodings\features.json = ..\resources\encodings\features.json
 		..\resources\encodings\ipa.json = ..\resources\encodings\ipa.json
-		..\resources\encodings\vogt.json = ..\resources\encodings\vogt.json
+		..\resources\encodings\vogt_minimal.json = ..\resources\encodings\vogt_minimal.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7353F-D7C1-43CA-9884-2839FE695B11}"

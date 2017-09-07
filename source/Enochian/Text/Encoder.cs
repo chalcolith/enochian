@@ -54,17 +54,30 @@ namespace Enochian.Text
                 {
                     SourceSegments = new List<TextSegment> { input },
                     Options = input.Options
-                        .Select(option =>
+                        .SelectMany(srcOption =>
                         {
-                            var textAndPhones = GetTextAndPhones(option.Text);
-                            return new SegmentOption
+                            (var text, var repr, var phones) = GetTextAndPhones(srcOption.Text);
+                            var options = new List<SegmentOption>
                             {
-                                Lexicon = option.Lexicon,
-                                Encoding = this.Encoding,
-                                Entry = option.Entry,
-                                Text = textAndPhones.Item1,
-                                Phones = textAndPhones.Item2,
+                                new SegmentOption
+                                {
+                                    Lexicon = srcOption.Lexicon,
+                                    Encoding = this.Encoding,
+                                    Entry = srcOption.Entry,
+                                    Text = text,
+                                    Phones = phones,
+                                }
                             };
+
+                            if (!string.IsNullOrEmpty(repr))
+                            {
+                                options.Add(new SegmentOption
+                                {
+                                    Text = repr,
+                                });
+                            }
+
+                            return options;
                         })
                         .ToList()
                 };
@@ -72,28 +85,30 @@ namespace Enochian.Text
             }
         }
 
-        public (string, IList<double[]>) GetTextAndPhones(string source)
+        public (string, string, IList<double[]>) GetTextAndPhones(string source)
         {
             foreach (var pattern in Patterns)
                 pattern.Reset();
 
             // replace the characters of the original with text + phones
-            var textsAndPhones = GetReplacements(source);
+            (var texts, var reprs, var phones) = GetReplacements(source);
 
             // merge the phones of existing characters with phones from templates
-            MergeTemplates(textsAndPhones);
+            MergeTemplates((texts, phones));
 
-            var texts = string.Join("", textsAndPhones.Item1);
-            var phones = textsAndPhones.Item2
+            var allTexts = string.Join("", texts);
+            var allReprs = string.Join("", reprs);
+            var allPhones = phones
                 .SelectMany(ph => ph.Where(p => p.Length > 0))
                 .ToArray();
 
-            return (texts, phones);
+            return (allTexts, allReprs, allPhones);
         }
 
-        (IList<string>, IList<IList<double[]>>) GetReplacements(string source)
+        (IList<string>, IList<string>, IList<IList<double[]>>) GetReplacements(string source)
         {
             var texts = new List<string>();
+            var reprs = new List<string>();
             var phonesPerText = new List<IList<double[]>>();
 
             // try replacements first
@@ -124,6 +139,8 @@ namespace Enochian.Text
                             ? firstReplacement.Pattern.Output
                             : source.Substring(start, 1 + cur - start);
                         texts.Add(text);
+                        if (!string.IsNullOrEmpty(firstReplacement.Pattern.Repr))
+                            reprs.Add(firstReplacement.Pattern.Repr);
                         phonesPerText.Add(firstReplacement.Pattern.Phones);
                     }
                     lastReplacement = firstReplacement;
@@ -137,6 +154,8 @@ namespace Enochian.Text
                             ? lastReplacement.Pattern.Output
                             : source.Substring(start, cur - start);
                         texts.Add(text);
+                        if (!string.IsNullOrEmpty(lastReplacement.Pattern.Repr))
+                            reprs.Add(lastReplacement.Pattern.Repr);
                         phonesPerText.Add(lastReplacement.Pattern.Phones);
                         lastReplacement = null;
                         start = cur; // start again on this character
@@ -144,7 +163,9 @@ namespace Enochian.Text
                     else
                     {
                         texts.Add(source.Substring(start, 1 + cur - start));
-                        phonesPerText.Add(Modifiers.Contains(ch) ? new double[][] { new double[0] } : new double[][] { Features.GetUnsetVector() });
+                        phonesPerText.Add(Modifiers.Contains(ch) 
+                            ? new double[][] { new double[0] } 
+                            : new double[][] { Features.GetUnsetVector() });
                         start = ++cur; // go to the next character
                     }
 
@@ -153,13 +174,12 @@ namespace Enochian.Text
                 }
             }
 
-            return (texts, phonesPerText);
+            return (texts, reprs, phonesPerText);
         }
 
         void MergeTemplates((IList<string>, IList<IList<double[]>>) textsAndPhones)
         {
-            var texts = textsAndPhones.Item1;
-            var phonesPerText = textsAndPhones.Item2;
+            (var texts, var phonesPerText) = textsAndPhones;
 
             int startText = 0;
             int curText = 0;

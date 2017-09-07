@@ -15,9 +15,9 @@
       "path": "../resources/encodings/ipa.json"
     },
     {
-      "id": "Vogt",
+      "id": "VogtMinimal",
       "features": "Default",
-      "path": "../resources/encodings/vogt.json"
+      "path": "../resources/encodings/vogt_minimal.json"
     }
   ],
 
@@ -35,7 +35,7 @@
       "id": "Voynich Interlinear",
       "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6.",
       "type": "VoynichInterlinear",
-      "encoding": "Vogt",
+      "encoding": "VogtMinimal",
       "path": "../resources/voynich/interlinear_text16e6.evt",
       "locuses": [
         "<f1r.P1.1;H>",
@@ -46,7 +46,7 @@
     //  "id": "LexicalMatch",
     //  "description": "Matches inputs against a phonetic dictionary.",
     //  "type": "DTWMatcher",
-    //  "lexicon": "Romany"
+    //  "lexicon": "RomLex"
     //},
     {
       "id": "MatchReport",

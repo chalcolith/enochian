@@ -83,12 +83,14 @@ namespace Enochian.Flow.Steps
 
         public override string GenerateReport(ReportType reportType)
         {
-            return GetChildPath(AbsoluteFilePath, SourcePath);
+            return string.Format("&nbsp;&nbsp;{0}<br/>Encoding: {1}: {2}<br/>&nbsp;&nbsp;{3}",
+                GetChildPath(AbsoluteFilePath, SourcePath),
+                Encoding.Id, Encoding.Description, Encoding.AbsoluteFilePath);
         }
 
         static readonly Regex LineRegex = new Regex(@"^\s*(<[^>]+>)\s+(.*)[-=]", RegexOptions.Compiled);
         static readonly Regex ExtComment = new Regex(@"\*{&(\d+)}", RegexOptions.Compiled);
-        static readonly char[] Punctuation = new[] { '.', '\'', '-', '=', '?', '!', '%' };
+        static readonly char[] Punctuation = new[] { '.', '\'', '-', '=', '?', '%' };
 
         public override IEnumerable<TextChunk> GetOutputs()
         {
@@ -205,23 +207,34 @@ namespace Enochian.Flow.Steps
                     .Select(token =>
                     {
                         string option = token;
+                        string repr = "";
                         IList<double[]> phones = null;
                         if (Encoder != null)
                         {
-                            (option, phones) = Encoder.GetTextAndPhones(token);
+                            (option, repr, phones) = Encoder.GetTextAndPhones(token);
                         }
+                        var options = new List<SegmentOption>
+                        {
+                            new SegmentOption
+                            {
+                                Text = option,
+                                Encoding = Encoding,
+                                Phones = phones,
+                            }
+                        };
+
+                        if (!string.IsNullOrEmpty(repr))
+                        {
+                            options.Add(new SegmentOption
+                            {
+                                Text = repr,
+                            });
+                        }
+
                         return new TextSegment
                         {
                             Text = token,
-                            Options = new List<SegmentOption>
-                            {
-                                new SegmentOption
-                                {
-                                    Text = option,
-                                    Encoding = Encoding,
-                                    Phones = phones,
-                                }
-                            }
+                            Options = options,
                         };
                     })
                     .ToList()

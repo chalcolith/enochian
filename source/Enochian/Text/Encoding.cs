@@ -68,6 +68,7 @@ namespace Enochian.Text
 
         public string Input { get; private set; }
         public string Output { get; private set; }
+        public string Repr { get; private set; }
 
         public IList<string> FeatureSpecs { get; private set; }
 
@@ -86,6 +87,7 @@ namespace Enochian.Text
             }
 
             Output = config.Get<string>("output", this);
+            Repr = config.Get<string>("repr", this);
 
             var features = config.GetList<object>("features", this);
             if (features != null)
