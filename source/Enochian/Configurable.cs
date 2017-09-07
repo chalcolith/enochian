@@ -211,6 +211,17 @@ namespace Enochian
                         return (T)(object)(new int?((int)n));
                 }
 
+                if (typeof(T).IsAssignableFrom(value.GetType()))
+                {
+                    return (T)value;
+                }
+
+                if (typeof(IEnumerable<string>) == typeof(T)
+                    && value is IEnumerable<object> && ((IEnumerable<object>)value).All(obj => obj is string))
+                {
+                    return (T)((IEnumerable<object>)value).OfType<string>();
+                }
+
                 try
                 {
                     return (T)Convert.ChangeType(value, typeof(T));

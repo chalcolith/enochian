@@ -33,7 +33,7 @@ namespace Enochian.Flow.Steps
             else
                 AddError("no 'output' path specified");
 
-            DebugFirstOnly = config.Get<bool>("debugFirstOnly", null);
+            DebugFirstOnly = config.Get<bool>("debugFirstOnly", this);
 
             return this;
         }
@@ -141,7 +141,7 @@ namespace Enochian.Flow.Steps
         HtmlNode GenerateReportChunk(TextChunk chunk, int index)
         {
             var sectionNode = HtmlNode.CreateNode("<section class=\"text-chunk\"></section>");
-            sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", chunk.Description ?? index.ToString())));
+            sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", HtmlEntity.Entitize(chunk.Description ?? index.ToString(), true, true))));
             var interNode = HtmlNode.CreateNode("<div class=\"text-chunk-lines\"></div>");
 
             var linesNode = interNode;
@@ -208,8 +208,8 @@ namespace Enochian.Flow.Steps
                                     + optionTitle;
                             }
 
-                            var optionNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div></div>", 
-                                option.Text, optionTitle, encoding));
+                            var optionNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
+                                option.Text, optionTitle, encoding, option.Entry?.Definition));
                             optionsNode.AppendChild(optionNode);
                         }
                         segmentNode.AppendChild(optionsNode);

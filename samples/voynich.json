@@ -22,11 +22,12 @@
   ],
 
   "lexicons": [
-    {
-      "id": "Romany",
-      "features": "Default",
-      "encoding": "?"
-    }
+    //{
+    //  "id": "RomLex",
+    //  "type": "RomLex",
+    //  "features": "Default",
+    //  "encoding": "?"
+    //}
   ],
 
   "steps": [
@@ -34,17 +35,19 @@
       "id": "Voynich Interlinear",
       "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6.",
       "type": "VoynichInterlinear",
-      "path": "resources/voynich/interlinear_text16e6.evt",
-      "chunks": [
-
+      "encoding": "Vogt",
+      "path": "../resources/voynich/interlinear_text16e6.evt",
+      "locuses": [
+        "<f1r.P1.1;H>",
+        "<f1r.P1.2;H>"
       ]
     },
-    {
-      "id": "LexicalMatch",
-      "description": "Matches inputs against a phonetic dictionary.",
-      "type": "DTWMatcher",
-      "lexicon": "Romany"
-    },
+    //{
+    //  "id": "LexicalMatch",
+    //  "description": "Matches inputs against a phonetic dictionary.",
+    //  "type": "DTWMatcher",
+    //  "lexicon": "Romany"
+    //},
     {
       "id": "MatchReport",
       "type": "MatchReport",

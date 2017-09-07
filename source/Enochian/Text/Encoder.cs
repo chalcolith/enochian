@@ -72,7 +72,7 @@ namespace Enochian.Text
             }
         }
 
-        (string, IList<double[]>) GetTextAndPhones(string source)
+        public (string, IList<double[]>) GetTextAndPhones(string source)
         {
             foreach (var pattern in Patterns)
                 pattern.Reset();

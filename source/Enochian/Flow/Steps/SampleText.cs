@@ -100,6 +100,7 @@ namespace Enochian.Flow.Steps
 
                     if (fs != null && sr != null)
                     {
+                        chunks = new List<TextChunk>();
                         TextChunk currentChunk = null;
                         bool needNewChunk = true;
 
@@ -129,6 +130,7 @@ namespace Enochian.Flow.Steps
                             {
                                 if (currentChunk != null)
                                 {
+                                    chunks.Add(currentChunk);
                                     yield return currentChunk;
                                 }
 
@@ -141,8 +143,9 @@ namespace Enochian.Flow.Steps
                             numLines++;
                         }
 
-                        if (currentChunk != null)
+                        if (currentChunk != null && currentChunk.Lines.Any())
                         {
+                            chunks.Add(currentChunk);
                             yield return currentChunk;
                         }
                     }

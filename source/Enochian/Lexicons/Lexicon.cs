@@ -151,7 +151,8 @@ namespace Enochian.Lexicons
 
         protected abstract void LoadLexicon(string path);
 
-        static readonly byte[] MagicCacheCookie = new Guid("{FF1B7C9F-FF3D-4718-BC92-91009A06BF85}").ToByteArray();
+        // change this if the binary format changes
+        static readonly byte[] MagicCacheCookie = new Guid("{B2A4E9EB-5178-41B4-935A-47070BCBF37D}").ToByteArray();
 
         bool LoadCachedDictionary(string path)
         {
@@ -174,6 +175,7 @@ namespace Enochian.Lexicons
                     string text = br.ReadString();
                     string lemma = br.ReadString();
                     string encoded = br.ReadString();
+                    string definition = br.ReadString();
                     ushort numPhones = br.ReadUInt16();
                     double[][] phones = new double[numPhones][];
                     for (ushort j = 0; j < numPhones; j++)
@@ -188,6 +190,7 @@ namespace Enochian.Lexicons
                         Text = text,
                         Lemma = lemma,
                         Encoded = encoded,
+                        Definition = definition,
                         Phones = phones,
                     });
                 }
@@ -219,6 +222,7 @@ namespace Enochian.Lexicons
                     bw.Write(entry.Text ?? "");
                     bw.Write(entry.Lemma ?? "");
                     bw.Write(entry.Encoded ?? "");
+                    bw.Write(entry.Definition ?? "");
                     if (entry.Phones != null)
                     {
                         bw.Write((ushort)entry.Phones.Count);
@@ -245,6 +249,7 @@ namespace Enochian.Lexicons
         public string Text { get; set; }
         public string Lemma { get; set; }
         public string Encoded { get; set; }
+        public string Definition { get; set; }
         public IList<double[]> Phones { get; set; }
     }
 }

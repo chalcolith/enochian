@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'EVA';
+    src: url('../resources/voynich/fonts/eva1-webfont.woff') format('woff');
+}
+
 body {
     margin: 4em;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -86,4 +91,8 @@ section {
 
 .options-phones {
     font-size: 0.125em;
+}
+
+.encoding-vogt {
+    font-family: EVA, sans-serif;
 }

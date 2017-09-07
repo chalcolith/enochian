@@ -9,6 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{F5662EE4-6717-4557-B910-7D4B1040E383}"
+	ProjectSection(SolutionItems) = preProject
+		..\resources\voynich\links.md = ..\resources\voynich\links.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{FE94FDE8-2A28-4EA9-ABDC-842A222A52EF}"
 	ProjectSection(SolutionItems) = preProject
