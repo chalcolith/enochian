@@ -9,7 +9,7 @@ namespace Enochian.Lexicons
 {
     public abstract class Lexicon : Configurable
     {
-        string lexiconPath;
+        string sourcePath;
         ICollection<LexiconEntry> entries;
         IDictionary<string, LexiconEntry> entriesByLemma;
 
@@ -23,6 +23,7 @@ namespace Enochian.Lexicons
 
         public FeatureSet Features { get; private set; }
         public Encoding Encoding { get; private set; }
+        public string SourcePath => sourcePath;
 
         public ICollection<LexiconEntry> Entries
         {
@@ -88,7 +89,7 @@ namespace Enochian.Lexicons
                 var path = config.Get<string>("path", this);
                 if (!string.IsNullOrWhiteSpace(path))
                 {
-                    lexiconPath = path;
+                    sourcePath = path;
                 }
                 else
                 {
@@ -108,13 +109,13 @@ namespace Enochian.Lexicons
             if (entries != null)
                 return;
 
-            if (string.IsNullOrWhiteSpace(lexiconPath))
+            if (string.IsNullOrWhiteSpace(sourcePath))
             {
                 AddError("no lexicon path configured");
                 return;
             }
 
-            var absolutePath = GetChildPath(AbsoluteFilePath, lexiconPath);
+            var absolutePath = GetChildPath(AbsoluteFilePath, sourcePath);
 
             if (File.Exists(absolutePath))
             {

@@ -35,7 +35,7 @@
       "id": "SampleText",
       "type": "SampleText",
       "features": "Default",
-      "path": "english_test/austen_persuasion_single.txt"
+      "path": "english_test/austen_persuasion.txt"
     },
     {
       "id": "NaivePhonological",

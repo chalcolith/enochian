@@ -83,7 +83,7 @@ namespace Enochian.Flow.Steps
 
         public override string GenerateReport(ReportType reportType)
         {
-            return string.Format("&nbsp;&nbsp;{0}<br/>Encoding: {1}: {2}<br/>&nbsp;&nbsp;{3}",
+            return string.Format("&nbsp;&nbsp;Path: {0}<br/>&nbsp;&nbsp;Encoding: {1}: {2}<br/>&nbsp;&nbsp;Path: {3}",
                 GetChildPath(AbsoluteFilePath, SourcePath),
                 Encoding.Id, Encoding.Description, Encoding.AbsoluteFilePath);
         }

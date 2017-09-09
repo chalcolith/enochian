@@ -33,7 +33,7 @@
   "steps": [
     {
       "id": "Voynich Interlinear",
-      "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6.",
+      "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6 (http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/).",
       "type": "VoynichInterlinear",
       "encoding": "VogtMinimal",
       "path": "../resources/voynich/interlinear_text16e6.evt",

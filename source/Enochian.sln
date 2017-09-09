@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "reports", "reports", "{931F
 		..\reports\enochian.css = ..\reports\enochian.css
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RomlexScraper", "RomlexScraper\RomlexScraper.csproj", "{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,18 @@ Global
 		{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}.Release|x64.Build.0 = Release|Any CPU
 		{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}.Release|x86.ActiveCfg = Release|Any CPU
 		{CB408DE6-412C-4C1D-9753-8C1B5F2F2097}.Release|x86.Build.0 = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|x64.Build.0 = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Debug|x86.Build.0 = Debug|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|x64.ActiveCfg = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|x64.Build.0 = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|x86.ActiveCfg = Release|Any CPU
+		{E7A521D3-E540-4F48-A162-57FEDBE0DB7F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

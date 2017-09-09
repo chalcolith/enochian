@@ -19,14 +19,17 @@ namespace Enochian.Flow.Steps
 
         public override NLog.Logger Log => logger;
 
+        public bool PreserveCase { get; set; }
         public FeatureSet Features { get; private set; }
-
         public string SourcePath { get; private set; }
+
         public IList<TextChunk> Chunks { set => chunks = value; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
             base.Configure(config);
+
+            PreserveCase = config.Get<bool>("preserveCase", this);
 
             if (Resources != null)
             {
@@ -50,11 +53,13 @@ namespace Enochian.Flow.Steps
                 string text = config.Get<string>("text", this);
                 if (!string.IsNullOrWhiteSpace(text))
                 {
-                    chunks = new List<TextChunk>();
-                    chunks.Add(new TextChunk
+                    chunks = new List<TextChunk>
                     {
-                        Lines = new[] { GetInterline(text) }
-                    });
+                        new TextChunk
+                        {
+                            Lines = new[] { GetInterline(text) }
+                        }
+                    };
                 }
                 else
                 {
@@ -67,7 +72,7 @@ namespace Enochian.Flow.Steps
 
         public override string GenerateReport(ReportType reportType)
         {
-            return GetChildPath(AbsoluteFilePath, SourcePath);
+            return string.Format("&nbsp;&nbsp;Path: {0}", GetChildPath(AbsoluteFilePath, SourcePath));
         }
 
         public override IEnumerable<TextChunk> GetOutputs()
@@ -172,7 +177,7 @@ namespace Enochian.Flow.Steps
                 {
                     segs.Add(new TextSegment
                     {                        
-                        Options = new[] { new SegmentOption { Text = match.Value } }
+                        Options = new[] { new SegmentOption { Text = PreserveCase ? match.Value : match.Value.ToLowerInvariant() } }
                     });
                     match = match.NextMatch();
                 }

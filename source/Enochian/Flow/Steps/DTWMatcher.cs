@@ -46,7 +46,8 @@ namespace Enochian.Flow.Steps
 
         public override string GenerateReport(ReportType reportType)
         {
-            return string.Format("Lexicon: {0}: {1}<br/>{2}", Lexicon.Id, Lexicon.Description, Lexicon.AbsoluteFilePath);
+            return string.Format("&nbsp;&nbsp;Lexicon: {0}: {1}<br/>&nbsp;&nbsp;Path: {2}", 
+                Lexicon.Id, Lexicon.Description, GetChildPath(Lexicon.AbsoluteFilePath, Lexicon.SourcePath));
         }
 
         protected override TextChunk Process(TextChunk input)

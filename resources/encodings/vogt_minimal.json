@@ -1,6 +1,6 @@
 ﻿{
   "id": "VogtMinimal",
-  "description": "Encodes EVA using Derek Vogt's phonology.",
+  "description": "Encodes EVA using Derek Vogt's phonology (https://www.youtube.com/channel/UC-sW5dOlDxxu0EgdNn2pMaQ).",
   "changes": "",
 
   "patterns": [
