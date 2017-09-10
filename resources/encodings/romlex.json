@@ -1,5 +1,5 @@
 ﻿{
-  "id": "RomLex",
+  "id": "Romlex",
   "description": "Encodes features for strings in the RomLex encoding (http://romani.uni-graz.at/romlex/wsphonemic.xml).",
   "changes": "Initial version 2017-09-09",
 

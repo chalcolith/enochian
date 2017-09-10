@@ -202,11 +202,11 @@ namespace Enochian.Flow.Steps
                                 {
                                     sb.AppendFormat("[ {0} ]\n", string.Join(",", option.Encoding.Features.GetFeatureSpec(phone)));
                                 }
-                                optionTitle = sb.ToString();
+                                optionTitle += sb.ToString();
                             }
                             if (!string.IsNullOrWhiteSpace(option.Lexicon?.Id))
                             {
-                                optionTitle = string.Format("{0}: {1} {2}\n\n", option.Lexicon?.Id, option.Entry?.Lemma, option.Entry?.Encoded)
+                                optionTitle = string.Format("{0}: {1} {2}\n{3}\n\n", option.Lexicon?.Id, option.Entry?.Lemma, option.Entry?.Encoded, option.Entry?.Definition)
                                     + optionTitle;
                             }
 

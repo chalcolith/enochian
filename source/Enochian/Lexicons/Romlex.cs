@@ -30,6 +30,8 @@ namespace Enochian.Lexicons
             {
                 var encoder = new Encoder(Features, Encoding);
                 RomlexLexicon lexicon;
+                var entries = new List<LexiconEntry>();
+                var entriesByLemma = new Dictionary<string, LexiconEntry>();
 
                 path = Path.GetFullPath(path);
                 Log.Info("loading ROMLEX from {0}", path);
@@ -53,8 +55,9 @@ namespace Enochian.Lexicons
                     (_, _, var phones) = encoder.GetTextAndPhones(lemma);
 
                     var text = romEntry.Select(e => e.Entry).FirstOrDefault(t => t != lemma) ?? lemma;
-                    var def = string.Join("\n", romEntry.Select(e => string.Format("{0}: {1} ({2})",
-                        e.PartOfSpeech, e.Entry, lexicon.Languages.FirstOrDefault(l => l.Code == e.SrcLangCode)?.Name ?? "?")));
+
+                    var defs = romEntry.Select(e => string.Format("{0}: {1}", e.PartOfSpeech, e.Definition)).Distinct().ToList();                                        
+                    var def = string.Join(" / ", defs);
 
                     var entry = new LexiconEntry
                     {
@@ -64,10 +67,10 @@ namespace Enochian.Lexicons
                         Phones = phones,
                     };
 
-                    Entries.Add(entry);
+                    entries.Add(entry);
 
-                    if (!EntriesByLemma.ContainsKey(entry.Lemma))
-                        EntriesByLemma.Add(entry.Lemma, entry);
+                    if (!entriesByLemma.ContainsKey(entry.Lemma))
+                        entriesByLemma.Add(entry.Lemma, entry);
                     else
                         AddError("duplicate lemma '{0}'", entry.Lemma);
 
@@ -75,6 +78,9 @@ namespace Enochian.Lexicons
                         Log.Info("  loaded {0} entries", num);
                 }
                 Log.Info("loaded {0} total entries", num);
+
+                Entries = entries;
+                EntriesByLemma = entriesByLemma;
             }
             catch (Exception e)
             {

@@ -31,8 +31,8 @@ namespace Enochian.Lexicons
             {
                 var encoder = new Encoder(Features, Encoding);
 
-                Entries = new List<LexiconEntry>();
-                EntriesByLemma = new Dictionary<string, LexiconEntry>();
+                var entries = new List<LexiconEntry>();
+                var entriesByLemma = new Dictionary<string, LexiconEntry>();
 
                 path = Path.GetFullPath(path);
                 Log.Info("loading CMUDICT from {0}", path);
@@ -75,10 +75,10 @@ namespace Enochian.Lexicons
                             Phones = phones,
                         };
 
-                        Entries.Add(entry);
-                        if (!EntriesByLemma.ContainsKey(lemma))
+                        entries.Add(entry);
+                        if (!entriesByLemma.ContainsKey(lemma))
                         {
-                            EntriesByLemma.Add(lemma, entry);
+                            entriesByLemma.Add(lemma, entry);
                         }
                         else
                         {
@@ -90,6 +90,9 @@ namespace Enochian.Lexicons
                     }
                     Log.Info("loaded {0} total entries", num);
                 }
+
+                Entries = entries;
+                EntriesByLemma = entriesByLemma;
             }
             catch (Exception e)
             {
