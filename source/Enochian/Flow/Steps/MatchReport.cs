@@ -186,7 +186,8 @@ namespace Enochian.Flow.Steps
                         var optionsNode = HtmlNode.CreateNode("<div class=\"segment-options\"></div>");
                         if (!string.IsNullOrWhiteSpace(segment.Text) && segment.Text != segment.Options.FirstOrDefault()?.Text)
                         {
-                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option-first\">{0}</div>", segment.Text));
+                            var encoding = (segment.SourceSegments?.FirstOrDefault()?.Options?.FirstOrDefault().Encoding?.Id ?? "default").ToLowerInvariant();
+                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option-first encoding-{1}\">{0}</div>", segment.Text, encoding));
                             optionsNode.AppendChild(textNode);
                         }
 
@@ -211,7 +212,7 @@ namespace Enochian.Flow.Steps
                             }
 
                             var optionNode = HtmlNode.CreateNode(string.Format("<div id=\"entry{4}\" class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
-                                option.Text, optionTitle, encoding, option.Entry?.Definition, entryId++));
+                                option.Text, optionTitle, encoding, option.Entry?.Definition.Replace("\n", "<br/>"), entryId++));
                             optionsNode.AppendChild(optionNode);
                         }
                         segmentNode.AppendChild(optionsNode);

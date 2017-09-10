@@ -90,6 +90,7 @@ namespace Enochian.Flow.Steps
 
         static readonly Regex LineRegex = new Regex(@"^\s*(<[^>]+>)\s+(.*)[-=]", RegexOptions.Compiled);
         static readonly Regex ExtComment = new Regex(@"\*{&(\d+)}", RegexOptions.Compiled);
+        static readonly Regex ReplComment = new Regex(@"{&[^}]+}", RegexOptions.Compiled);
         static readonly char[] Punctuation = new[] { '.', '\'', '-', '=', '?', '%' };
 
         public override IEnumerable<TextChunk> GetOutputs()
@@ -161,9 +162,19 @@ namespace Enochian.Flow.Steps
                                     {
                                         var repl = new string((char)code, 1);
                                         text = text.Substring(0, extendedMatch.Index)
-                                            + repl + text.Substring(extendedMatch.Index + extendedMatch.Length);
+                                            + repl 
+                                            + text.Substring(extendedMatch.Index + extendedMatch.Length);
                                     }
                                     extendedMatch = extendedMatch.NextMatch();
+                                }
+
+                                var replMatch = ReplComment.Match(text);
+                                while (replMatch.Success)
+                                {
+                                    text = text.Substring(0, replMatch.Index)
+                                        + replMatch.Groups[1].Value
+                                        + text.Substring(replMatch.Index + replMatch.Length);
+                                    replMatch = replMatch.NextMatch();
                                 }
 
                                 var chunk = new TextChunk

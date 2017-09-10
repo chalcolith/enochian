@@ -205,10 +205,10 @@ namespace Enochian
                     long n = (long)value;
 
                     if (typeof(T) == typeof(int))
-                        return (T)(object)n;
+                        return (T)(object)int.Parse(n.ToString());
 
                     if (typeof(T) == typeof(int?))
-                        return (T)(object)(new int?((int)n));
+                        return (T)(object)(new int?(int.Parse(n.ToString())));
                 }
 
                 if (typeof(T).IsAssignableFrom(value.GetType()))

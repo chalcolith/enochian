@@ -93,6 +93,11 @@ section {
     font-size: 0.125em;
 }
 
+.option-definition {
+    font-size: 0.25em;
+    color: gray;
+}
+
 .encoding-vogt {
     font-family: EVA, sans-serif;
 }

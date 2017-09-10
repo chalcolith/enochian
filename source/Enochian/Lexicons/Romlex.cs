@@ -57,7 +57,7 @@ namespace Enochian.Lexicons
                     var text = romEntry.Select(e => e.Entry).FirstOrDefault(t => t != lemma) ?? lemma;
 
                     var defs = romEntry.Select(e => string.Format("{0}: {1}", e.PartOfSpeech, e.Definition)).Distinct().ToList();                                        
-                    var def = string.Join(" / ", defs);
+                    var def = string.Join("\n", defs);
 
                     var entry = new LexiconEntry
                     {
