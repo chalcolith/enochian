@@ -6,15 +6,25 @@ namespace Enochian.Math
 {
     public static class DynamicTimeWarp
     {
-        public static double GetSequenceDistance(IList<double[]> s, IList<double[]> t, Func<double[], double[], double> elemDistance)
+        public static double GetSequenceDistance(IList<double[]> s, IList<double[]> t, Func<double[], double[], double> elemDistance, double tolerance)
         {
-            var n = s.Count;
-            var m = t.Count;
+            int n = s.Count;
+            int tn = (int)System.Math.Ceiling(tolerance * (double)n);            
+
+            int m = t.Count;
+            int tm = (int)System.Math.Ceiling(tolerance * (double)m);
 
             var dtw = new double[n + 1, m + 1];
-            for (int i = 1; i <= n; i++) dtw[i, 0] = double.MaxValue;
-            for (int i = 1; i <= m; i++) dtw[0, i] = double.MaxValue;
-            dtw[0, 0] = 0;
+            for (int i = 0; i <= n; i++)
+                for (int j = 0; j <= m; j++)
+                    dtw[i, j] = double.MaxValue;
+
+            for (int i = 0; i < tn + 1; i++) dtw[i, 1] = 0;
+            for (int j = 0; j < tn + 1; j++) dtw[1, j] = 0;
+
+            //for (int i = 1; i <= n; i++) dtw[i, 0] = double.MaxValue;
+            //for (int j = 1; j <= m; j++) dtw[0, j] = double.MaxValue;
+            //dtw[0, 0] = 0;
 
             for (int i = 1; i <= n; i++)
             {

@@ -16,12 +16,12 @@ namespace Enochian.Lexicons
         {
         }
 
+        public override NLog.Logger Log => logger;
+
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
             return base.Configure(config);
         }
-
-        public override NLog.Logger Log => logger;
 
         static readonly char[] WS = new[] { ' ', '\t' };
 

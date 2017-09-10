@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 		..\resources\encodings\cmu.json = ..\resources\encodings\cmu.json
 		..\resources\encodings\features.json = ..\resources\encodings\features.json
 		..\resources\encodings\ipa.json = ..\resources\encodings\ipa.json
+		..\resources\encodings\romlex.json = ..\resources\encodings\romlex.json
 		..\resources\encodings\vogt_minimal.json = ..\resources\encodings\vogt_minimal.json
 	EndProjectSection
 EndProject

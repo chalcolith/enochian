@@ -89,22 +89,24 @@ namespace Enochian.Flow.Steps
         {
             var bodyNode = HtmlNode.CreateNode("<body></body>");
 
-            bodyNode.AppendChild(GenerateReportHeader(chunks, out DateTime timeGenerated));
+            int entryId = 0;
+            bodyNode.AppendChild(GenerateReportHeader(chunks, out DateTime timeGenerated, ref entryId));
+
             int index = 0;
             foreach (var chunk in chunks)
             {
                 results.Add(chunk);
-                bodyNode.AppendChild(GenerateReportChunk(chunk, index++));
+                bodyNode.AppendChild(GenerateReportChunk(chunk, index++, ref entryId));
 
                 if (DebugFirstOnly)
                     break;
             }
-            bodyNode.AppendChild(GenerateReportFooter(results, timeGenerated));
+            bodyNode.AppendChild(GenerateReportFooter(results, timeGenerated, ref entryId));
 
             return bodyNode;
         }
 
-        HtmlNode GenerateReportHeader(IEnumerable<TextChunk> chunks, out DateTime timeGenerated)
+        HtmlNode GenerateReportHeader(IEnumerable<TextChunk> chunks, out DateTime timeGenerated, ref int entryId)
         {
             var headerNode = HtmlNode.CreateNode("<header></header>");
 
@@ -138,7 +140,7 @@ namespace Enochian.Flow.Steps
             return headerNode;
         }
 
-        HtmlNode GenerateReportChunk(TextChunk chunk, int index)
+        HtmlNode GenerateReportChunk(TextChunk chunk, int index, ref int entryId)
         {
             var sectionNode = HtmlNode.CreateNode("<section class=\"text-chunk\"></section>");
             sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", HtmlEntity.Entitize(chunk.Description ?? index.ToString(), true, true))));
@@ -158,7 +160,7 @@ namespace Enochian.Flow.Steps
 
                 foreach (var line in chunk.Lines)
                 {
-                    linesNode.AppendChild(GenerateReportLine(line));
+                    linesNode.AppendChild(GenerateReportLine(line, ref entryId));
                 }
             }
             sectionNode.AppendChild(interNode);
@@ -166,7 +168,7 @@ namespace Enochian.Flow.Steps
             return sectionNode;
         }
 
-        HtmlNode GenerateReportLine(TextLine line)
+        HtmlNode GenerateReportLine(TextLine line, ref int entryId)
         {
             var lineNode = HtmlNode.CreateNode("<div class=\"text-line\"><div>");
             lineNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-line-intro\">{0}: {1}</div>", line.SourceStep?.Id, line.SourceStep?.Description)));
@@ -208,8 +210,8 @@ namespace Enochian.Flow.Steps
                                     + optionTitle;
                             }
 
-                            var optionNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
-                                option.Text, optionTitle, encoding, option.Entry?.Definition));
+                            var optionNode = HtmlNode.CreateNode(string.Format("<div id=\"entry{4}\" class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
+                                option.Text, optionTitle, encoding, option.Entry?.Definition, entryId++));
                             optionsNode.AppendChild(optionNode);
                         }
                         segmentNode.AppendChild(optionsNode);
@@ -221,7 +223,7 @@ namespace Enochian.Flow.Steps
             return lineNode;
         }
 
-        HtmlNode GenerateReportFooter(IEnumerable<TextChunk> chunks, DateTime timeGenerated)
+        HtmlNode GenerateReportFooter(IEnumerable<TextChunk> chunks, DateTime timeGenerated, ref int entryId)
         {
             var footerNode = HtmlNode.CreateNode("<footer></footer>");
             return footerNode;

@@ -35,7 +35,7 @@
       "id": "SampleText",
       "type": "SampleText",
       "features": "Default",
-      "path": "english_test/austen_persuasion.txt"
+      "path": "english_test/austen_persuasion_single.txt"
     },
     {
       "id": "NaivePhonological",
@@ -48,7 +48,8 @@
       "id": "LexicalMatch",
       "description": "Matches inputs against the CMU phonetic dictionary.",
       "type": "DTWMatcher",
-      "lexicon": "CMUDict"
+      "lexicon": "CMUDict",
+      "tolerance": 0.1
     },
     {
       "id": "MatchReport",

@@ -10,9 +10,9 @@
 
   "encodings": [
     {
-      "id": "IPA",
+      "id": "Romlex",
       "features": "Default",
-      "path": "../resources/encodings/ipa.json"
+      "path": "../resources/encodings/romlex.json"
     },
     {
       "id": "VogtMinimal",
@@ -22,12 +22,13 @@
   ],
 
   "lexicons": [
-    //{
-    //  "id": "RomLex",
-    //  "type": "RomLex",
-    //  "features": "Default",
-    //  "encoding": "?"
-    //}
+    {
+      "id": "Romlex",
+      "type": "Romlex",
+      "features": "Default",
+      "encoding": "Romlex",
+      "path": "../resources/lexicons/romlex/romlex.json"
+    }
   ],
 
   "steps": [
@@ -42,12 +43,12 @@
         "<f1r.P1.2;H>"
       ]
     },
-    //{
-    //  "id": "LexicalMatch",
-    //  "description": "Matches inputs against a phonetic dictionary.",
-    //  "type": "DTWMatcher",
-    //  "lexicon": "RomLex"
-    //},
+    {
+      "id": "LexicalMatch",
+      "description": "Matches inputs against the Romlex phonetic dictionary.",
+      "type": "DTWMatcher",
+      "lexicon": "Romlex"
+    },
     {
       "id": "MatchReport",
       "type": "MatchReport",

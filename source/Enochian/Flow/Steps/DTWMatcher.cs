@@ -19,7 +19,8 @@ namespace Enochian.Flow.Steps
         public override NLog.Logger Log => logger;
 
         public Lexicon Lexicon { get; protected set; }
-        public int NumOptions { get; protected set; } = 6;
+        public int NumOptions { get; protected set; } = 10;
+        public double Tolerance { get; protected set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -37,9 +38,13 @@ namespace Enochian.Flow.Steps
                 AddError("no lexicon specified");
             }
 
-            var numOptions = config.Get<int>("numOptions", null);
+            var numOptions = config.Get<int>("numOptions", this);
             if (numOptions > 0)
                 NumOptions = numOptions;
+
+            var Tolerance = config.Get<double>("tolerance", this);
+            if (Tolerance < 0.0) Tolerance = 0.0;
+            if (Tolerance > 1.0) Tolerance = 1.0;
 
             return this;
         }
@@ -102,7 +107,7 @@ namespace Enochian.Flow.Steps
                                             {
                                                 double distance = Math.DynamicTimeWarp
                                                     .GetSequenceDistance(srcOption.Phones, entry.Phones,
-                                                        Math.DynamicTimeWarp.EuclideanDistance);
+                                                        Math.DynamicTimeWarp.EuclideanDistance, Tolerance);
 
                                                 if (distance < leastBestDistance
                                                     || bestEntries.Count < NumOptions)
