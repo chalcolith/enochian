@@ -15,9 +15,9 @@
       "path": "../resources/encodings/romlex.json"
     },
     {
-      "id": "VogtMinimal",
+      "id": "Vogt",
       "features": "Default",
-      "path": "../resources/encodings/vogt_minimal.json"
+      "path": "../resources/encodings/vogt.json"
     }
   ],
 
@@ -58,12 +58,12 @@
       ]
     },
     {
-      "id": "LexicalMatch",
-      "description": "Matches inputs against the Romlex phonetic dictionary.",
+      "id": "Phonological Match",
+      "description": "Matches inputs against the Romlex lexicon.",
       "type": "DTWMatcher",
       "lexicon": "Romlex",
       "numOptions": 12,
-      "tolerance": 0.1
+      "tolerance": 0.0
     },
     {
       "id": "MatchReport",

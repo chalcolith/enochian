@@ -1,0 +1,31 @@
+{
+  "encoding": "Romlex",
+  "hypotheses": [
+    {
+      "source": "Derek Vogt: How to Solve the Voynich Manuscript Part 1",
+      "url": "https://www.youtube.com/watch?v=4cRlqE3D3RQ&t=2s",
+      "entries": [
+        {
+          "input": "otol",
+          "lemma": "ÊRgÊRS",
+          "definition": "day, dawn: Romani 'ges'"
+        },
+        {
+          "input": [ "dain", "daiin", "daiiin" ],
+          "lemma": "twR",
+          "definition": "and/but: Sanskrit"
+        },
+        {
+          "input": [ "orda", "oda" ],
+          "lemma": "ÊRtw",
+          "definition": "next, after: Burgenland Romani"
+        },
+        {
+          "input": "p",
+          "lemma": "b",
+          "definition": "now, certainly"
+        }
+      ]
+    }
+  ]
+}

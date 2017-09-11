@@ -19,12 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encodings", "encodings", "{
 		..\resources\encodings\features.json = ..\resources\encodings\features.json
 		..\resources\encodings\ipa.json = ..\resources\encodings\ipa.json
 		..\resources\encodings\romlex.json = ..\resources\encodings\romlex.json
-		..\resources\encodings\vogt_minimal.json = ..\resources\encodings\vogt_minimal.json
+		..\resources\encodings\vogt.json = ..\resources\encodings\vogt.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7353F-D7C1-43CA-9884-2839FE695B11}"
 	ProjectSection(SolutionItems) = preProject
 		..\samples\english_test.json = ..\samples\english_test.json
+		..\samples\hypotheses.json = ..\samples\hypotheses.json
 		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
 		..\samples\voynich.json = ..\samples\voynich.json
 	EndProjectSection

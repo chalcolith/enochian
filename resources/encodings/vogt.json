@@ -1,5 +1,5 @@
 ﻿{
-  "id": "VogtMinimal",
+  "id": "Vogt",
   "description": "Encodes EVA using Derek Vogt's phonology (https://www.youtube.com/channel/UC-sW5dOlDxxu0EgdNn2pMaQ).",
   "changes": "",
 
@@ -7,6 +7,12 @@
     {
       // ^w^
       "input": "a",
+      "repr": "w",
+      "features": [ "-Cons", "+Son", "-Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      // ^w^
+      "input": "u",
       "repr": "w",
       "features": [ "-Cons", "+Son", "-Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
@@ -29,6 +35,12 @@
       "features": [ "-Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "-Phar", "-Voice", "+SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      // ^h^
+      "input": "H",
+      "repr": "h",
+      "features": [ "-Cons", "-Son", "-Syll", "-Labial", "-Cor", "-Dorsal", "-Phar", "-Voice", "+SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       // ^t^
       "input": "d",
       "repr": "t",
@@ -37,6 +49,38 @@
     {
       // ^o^
       "input": "e",
+      "repr": "o",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      // ^o^
+      "input": "E",
+      "repr": "o",
+      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      // ^oro^
+      "input": "ee",
+      "repr": "õo",
+      "features": [
+        [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ],
+        [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-DelRel", "-Nasal" ],
+        [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+      ]
+    },
+    {
+      // ^ora^
+      "input": "eo",
+      "repr": "õa",
+      "features": [
+        [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ],
+        [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-DelRel", "-Nasal" ],
+        [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+      ]
+    },
+    {
+      // ^o^
+      "input": "b",
       "repr": "o",
       "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "-High", "-Low", "+Back", "+Tense", "+Phar", "+ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
@@ -51,6 +95,12 @@
       "input": "cfh",
       "repr": "f",
       "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      // ^fh^
+      "input": "fch",
+      "repr": "fʰ",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "-Voice", "+SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
       // ^f^
@@ -83,9 +133,15 @@
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "-Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
     },
     {
+      // ^kh^
+      "input": "kch",
+      "repr": "kʰ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "-Voice", "+SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       // ^ʃ^
       "input": "l",
-      "repr": "ʃ",
+      "repr": "S",
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
@@ -97,8 +153,20 @@
     {
       // ^æ^
       "input": "o",
-      "repr": "æ",
-      "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+      "repr": "æ̃",
+      "features": [
+        [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ],
+        [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-DelRel", "-Nasal" ]
+      ]
+    },
+    {
+      // ^æ^
+      "input": "O",
+      "repr": "æ̃",
+      "features": [
+        [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "-High", "+Low", "-Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ],
+        [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-DelRel", "-Nasal" ]
+      ]
     },
     {
       // ^b^
@@ -119,6 +187,12 @@
       "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      // ^bh^
+      "input": "pch",
+      "repr": "bʰ",
+      "features": [ "+Cons", "-Son", "-Syll", "+Labial", "-Round", "-Cor", "-Dorsal", "-Phar", "+Voice", "+SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       // ^r^
       "input": "r",
       "repr": "r",
@@ -127,8 +201,8 @@
     {
       // ^s^
       "input": "s",
-      "repr": "s",
-      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+      "repr": "ᵗs",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
     },
     {
       // ^x^
@@ -161,10 +235,28 @@
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Strident", "-Lateral", "+DelRel", "-Nasal" ]
     },
     {
-      // ^n^
+      // ^gh^
+      "input": "tch",
+      "repr": "gʰ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "-Tense", "-Phar", "+Voice", "+SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      // ^N^
       "input": "y",
-      "repr": "n",
-      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Dorsal", "-Phar", "+Voice", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+      "repr": "N",
+      "features": [ "+Cons", "+Son", "-Syll", "-Dorsal", "-Phar", "+Voice", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      // ^N^
+      "input": "Y",
+      "repr": "N",
+      "features": [ "+Cons", "+Son", "-Syll", "-Dorsal", "-Phar", "+Voice", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "+Nasal" ]
+    },
+    {
+      // ?
+      "input": "n",
+      "repr": "r",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     }
   ]
 }
