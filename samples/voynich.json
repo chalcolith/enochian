@@ -36,25 +36,25 @@
       "id": "Voynich Interlinear",
       "description": "Reads lines from the Reed-Landini-Stolfi Interlinear file 16e6 (http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/).",
       "type": "VoynichInterlinear",
-      "encoding": "VogtMinimal",
+      "encoding": "Vogt",
       "path": "../resources/voynich/interlinear_text16e6.evt",
       "locuses": [
         "<f1r.P1.1;H>",
-        "<f1r.P1.2;H>",
-        "<f1r.P1.3;H>",
-        "<f1r.P1.4;H>",
-        "<f1r.P1.5;H>",
-        "<f1r.T1.6;H>",
-        "<f1r.P2.7;H>",
-        "<f1r.P2.8;H>",
-        "<f1r.P2.9;H>",
-        "<f1r.T2.10;H>",
-        "<f1r.P3.11;H>",
-        "<f1r.P3.12;H>",
-        "<f1r.P3.13;H>",
-        "<f1r.P3.14;H>",
-        "<f1r.P3.15;H>",
-        "<f1r.P3.16;H>"
+        "<f1r.P1.2;H>"
+        //"<f1r.P1.3;H>",
+        //"<f1r.P1.4;H>",
+        //"<f1r.P1.5;H>",
+        //"<f1r.T1.6;H>",
+        //"<f1r.P2.7;H>",
+        //"<f1r.P2.8;H>",
+        //"<f1r.P2.9;H>",
+        //"<f1r.T2.10;H>",
+        //"<f1r.P3.11;H>",
+        //"<f1r.P3.12;H>",
+        //"<f1r.P3.13;H>",
+        //"<f1r.P3.14;H>",
+        //"<f1r.P3.15;H>",
+        //"<f1r.P3.16;H>"
       ]
     },
     {
@@ -63,7 +63,8 @@
       "type": "DTWMatcher",
       "lexicon": "Romlex",
       "numOptions": 12,
-      "tolerance": 0.0
+      "tolerance": 0.0,
+      "hypotheses": "hypotheses.json"
     },
     {
       "id": "MatchReport",

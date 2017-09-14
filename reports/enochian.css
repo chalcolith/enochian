@@ -78,19 +78,26 @@ section {
     flex-direction: column;
 }
 
-.segment-option-first {
-    margin-top: 0.25em;
-    margin-bottom: 0.5em;
-    background: #f0f0f0;
-}
-
 .segment-option {
     margin-top: 0.25em;
     margin-bottom: 0.25em;
 }
 
-.options-phones {
+.option-phones {
     font-size: 0.125em;
+}
+
+.option-first {
+}
+
+.option-hypo {
+    background: lightgreen;
+}
+
+.option-repr {
+    background: #f0f0f0;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
 }
 
 .option-definition {
@@ -99,9 +106,5 @@ section {
 }
 
 .encoding-vogt {
-    font-family: EVA, sans-serif;
-}
-
-.encoding-vogtminimal {
     font-family: EVA, sans-serif;
 }

@@ -7,7 +7,7 @@ using Verophyle.Regexp.InputSet;
 
 namespace Enochian.Text
 {
-    class Encoder
+    public class Encoder
     {
         public Encoder(FeatureSet features, Encoding encoding)
         {
@@ -61,7 +61,6 @@ namespace Enochian.Text
                             {
                                 new SegmentOption
                                 {
-                                    Lexicon = srcOption.Lexicon,
                                     Encoding = this.Encoding,
                                     Entry = srcOption.Entry,
                                     Text = text,

@@ -188,6 +188,7 @@ namespace Enochian.Lexicons
                     }
                     entries.Add(new LexiconEntry
                     {
+                        Lexicon = this,
                         Text = text,
                         Lemma = lemma,
                         Encoded = encoded,
@@ -247,6 +248,7 @@ namespace Enochian.Lexicons
 
     public class LexiconEntry
     {
+        public Lexicon Lexicon { get; set; }
         public string Text { get; set; }
         public string Lemma { get; set; }
         public string Encoded { get; set; }

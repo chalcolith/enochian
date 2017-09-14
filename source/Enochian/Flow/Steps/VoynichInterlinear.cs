@@ -209,6 +209,7 @@ namespace Enochian.Flow.Steps
         TextLine GetInterline(string line)
         {
             var tokens = line.Split(Punctuation, StringSplitOptions.RemoveEmptyEntries);
+            var optionComparer = new OptionComparer();
 
             return new TextLine
             {
@@ -224,6 +225,7 @@ namespace Enochian.Flow.Steps
                         {
                             (option, repr, phones) = Encoder.GetTextAndPhones(token);
                         }
+
                         var options = new List<SegmentOption>
                         {
                             new SegmentOption
@@ -238,9 +240,12 @@ namespace Enochian.Flow.Steps
                         {
                             options.Add(new SegmentOption
                             {
+                                Tags = TextTag.Repr,
                                 Text = repr,
                             });
                         }
+
+                        options.Sort(optionComparer);
 
                         return new TextSegment
                         {

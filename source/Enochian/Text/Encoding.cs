@@ -7,7 +7,7 @@ using Verophyle.Regexp.Node;
 
 namespace Enochian.Text
 {
-    public class Encoding : Configurable, IFileReference
+    public class Encoding : RelativeConfigurable
     {
         static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -19,8 +19,6 @@ namespace Enochian.Text
         }
 
         public override NLog.Logger Log => logger;
-
-        public string RelativePath { get; internal set; }
 
         public FeatureSet Features { get; internal set; }
 

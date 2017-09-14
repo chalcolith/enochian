@@ -33,18 +33,48 @@ namespace Enochian.Text
         public IList<SegmentOption> Options { get; set; }
     }
 
+    [Flags]
+    public enum TextTag
+    {
+        None   = 0,
+        Repr   = 1 << 0,
+        Hypo   = 1 << 1,
+        Match  = 1 << 2,
+    }
+
     public class SegmentOption
     {
         Encoding encoding;
 
-        public Lexicon Lexicon { get; set; }
+        public TextTag Tags { get; set;}
         public LexiconEntry Entry { get; set; }
         public Encoding Encoding
         {
-            get { return encoding ?? Lexicon?.Encoding; }
-            set { encoding = value; }
+            get => encoding ?? Entry?.Lexicon?.Encoding;
+            set => encoding = value;
         }
         public string Text { get; set; }
         public IList<double[]> Phones { get; set; }
+    }
+
+    public class OptionComparer : IComparer<SegmentOption>
+    {
+        public int Compare(SegmentOption x, SegmentOption y)
+        {
+            if (x == null) throw new ArgumentNullException(nameof(x));
+            if (y == null) throw new ArgumentNullException(nameof(y));
+
+            int result = Ordinal(x) - Ordinal(y);
+            return result;
+        }
+
+        int Ordinal(SegmentOption opt)
+        {
+            if ((opt.Tags & TextTag.Repr) != TextTag.None)
+                return 1;
+            if ((opt.Tags & TextTag.Match) != TextTag.None)
+                return 2;
+            return 0;
+        }
     }
 }

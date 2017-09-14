@@ -184,10 +184,13 @@ namespace Enochian.Flow.Steps
                     if (segment.Options != null && segment.Options.Any())
                     {
                         var optionsNode = HtmlNode.CreateNode("<div class=\"segment-options\"></div>");
+
+                        int numOptions = 0;
                         if (!string.IsNullOrWhiteSpace(segment.Text) && segment.Text != segment.Options.FirstOrDefault()?.Text)
                         {
+                            numOptions++;
                             var encoding = (segment.SourceSegments?.FirstOrDefault()?.Options?.FirstOrDefault().Encoding?.Id ?? "default").ToLowerInvariant();
-                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"segment-option-first encoding-{1}\">{0}</div>", segment.Text, encoding));
+                            var textNode = HtmlNode.CreateNode(string.Format("<div class=\"option-first encoding-{1}\">{0}</div>", segment.Text, encoding));
                             optionsNode.AppendChild(textNode);
                         }
 
@@ -205,14 +208,19 @@ namespace Enochian.Flow.Steps
                                 }
                                 optionTitle += sb.ToString();
                             }
-                            if (!string.IsNullOrWhiteSpace(option.Lexicon?.Id))
+                            if (!string.IsNullOrWhiteSpace(option.Entry?.Lemma))
                             {
-                                optionTitle = string.Format("{0}: {1} {2}\n{3}\n\n", option.Lexicon?.Id, option.Entry?.Lemma, option.Entry?.Encoded, option.Entry?.Definition)
+                                optionTitle = string.Format("{0}: {1} {2}\n{3}\n\n", option.Entry?.Lexicon?.Id, option.Entry?.Lemma, option.Entry?.Encoded, option.Entry?.Definition)
                                     + optionTitle;
                             }
 
-                            var optionNode = HtmlNode.CreateNode(string.Format("<div id=\"entry{4}\" class=\"segment-option\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
-                                option.Text, optionTitle, encoding, option.Entry?.Definition.Replace("\n", "<br/>"), entryId++));
+                            string classes = "segment-option";
+                            if (numOptions++ == 0) classes += " option-first";
+                            if ((option.Tags & TextTag.Hypo) != TextTag.None) classes += " option-hypo";
+                            if ((option.Tags & TextTag.Repr) != TextTag.None) classes += " option-repr";
+
+                            var optionNode = HtmlNode.CreateNode(string.Format("<div id=\"entry{4}\" class=\"{5}\" title=\"{1}\"><div class=\"option-text encoding-{2}\">{0}</div><div class=\"option-definition\">{3}</div></div>", 
+                                option.Text, optionTitle, encoding, option.Entry?.Definition.Replace("\n", "<br/>"), entryId++, classes));
                             optionsNode.AppendChild(optionNode);
                         }
                         segmentNode.AppendChild(optionsNode);

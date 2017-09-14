@@ -32,11 +32,6 @@ namespace Enochian
         IConfigurable Configure(Config config);
     }
 
-    public interface IFileReference
-    {
-        string RelativePath { get; }
-    }
-
     public abstract class Configurable : IConfigurable
     {
         public const string CacheDir = ".enoch";
@@ -180,6 +175,16 @@ namespace Enochian
                 : Path.GetFullPath(childPath);
             return absChildPath;
         }
+    }
+
+    public abstract class RelativeConfigurable : Configurable
+    {
+        public RelativeConfigurable(IConfigurable parent)
+            : base(parent)
+        {
+        }
+
+        public string RelativePath { get; internal set; }
     }
 
     public class ErrorRecord

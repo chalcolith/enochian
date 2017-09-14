@@ -56,11 +56,28 @@ namespace Enochian.Lexicons
 
                     var text = romEntry.Select(e => e.Entry).FirstOrDefault(t => t != lemma) ?? lemma;
 
-                    var defs = romEntry.Select(e => string.Format("{0}: {1}", e.PartOfSpeech, e.Definition)).Distinct().ToList();                                        
-                    var def = string.Join("\n", defs);
+                    var defsAndLanguages = romEntry
+                        .Select(e =>
+                        {
+                            var lang = lexicon.Languages.FirstOrDefault(l => l.Code == e.SrcLangCode);
+                            return (string.Format("{0}: {1}", e.PartOfSpeech, e.Definition), lang);
+                        })
+                        .ToLookup(de => de.Item1);
+
+                    var def = string.Join("\n", defsAndLanguages
+                        .OrderBy(dl => dl.Key)
+                        .Select(dl =>
+                        {
+                            var d = dl.Key;
+                            if (dl.Any())
+                                d += string.Format(" ({0})", string.Join(", ", dl.Where(de => de.Item2 != null)
+                                    .Distinct().Select((de, i) => (((i + 1) % 4) == 0 ? "\n" : "") + de.Item2.Name)));
+                            return d;
+                        }));
 
                     var entry = new LexiconEntry
                     {
+                        Lexicon = this,
                         Lemma = lemma,
                         Text = text,
                         Definition = def,

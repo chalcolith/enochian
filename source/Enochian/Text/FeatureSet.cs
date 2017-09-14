@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Enochian.Text
 {
-    public class FeatureSet : Configurable, IFileReference
+    public class FeatureSet : RelativeConfigurable
     {
         static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -19,8 +19,6 @@ namespace Enochian.Text
         }
 
         public override NLog.Logger Log => logger;
-
-        public string RelativePath { get; internal set; }
 
         public double PlusValue { get; private set; } = 1.0;
         public double UnsetValue { get; private set; } = 0.0;
