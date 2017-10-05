@@ -89,9 +89,9 @@ namespace Enochian.Flow.Steps
             }
             if (Hypotheses != null)
             {
-                sb.AppendFormat("&nbsp;&nbsp;Hypotheses: {0}", Hypotheses.AbsoluteFilePath);
+                sb.AppendFormat("<br/>&nbsp;&nbsp;Hypotheses: {0}", Hypotheses.AbsoluteFilePath);
             }
-            sb.AppendFormat("&nbsp;&nbsp;Tolerance: {0}", Tolerance);
+            sb.AppendFormat("<br/>&nbsp;&nbsp;Tolerance: {0}", Tolerance);
             return sb.ToString();
         }
 
