@@ -88,48 +88,63 @@ namespace Enochian.Text
             Repr = config.Get<string>("repr", this);
 
             var features = config.GetList<object>("features", this);
+            var ipa = config.Get<string>("ipa", this);
             if (features != null)
             {
-                var specs = new List<string>();
-                var vectors = new List<double[]>();
-                var errors = new List<string>();
-
-                var fstrings = features.OfType<string>().ToList();
-                if (fstrings.Any())
-                {
-                    specs.Add(string.Join(", ", fstrings));
-                    vectors.Add(Features.GetFeatureVector(fstrings, errors));
-                }
-                else
-                {
-                    var flists = features.OfType<IEnumerable<object>>().ToList();
-                    foreach (var flist in flists)
-                    {
-                        fstrings = flist.OfType<string>().ToList();
-                        if (fstrings.Any())
-                        {
-                            specs.Add(string.Join(", ", fstrings));
-                            vectors.Add(Features.GetFeatureVector(fstrings, errors));
-                        }
-                        else
-                        {
-                            AddError("empty feature set for '{0}'", Input);
-                        }
-                    }
-                }
-
-                foreach (var error in errors)
-                    AddError("error in feature spec for '{0}': {1}", Input, error);
-
-                FeatureSpecs = specs.ToArray();
-                Phones = vectors.ToArray();
+                ConfigureFeatures(features);
+            }
+            else if (!string.IsNullOrWhiteSpace(ipa))
+            {
+                ConfigureFeaturesFromIpa(ipa);
             }
             else
             {
-                AddError("invalid feature spec (needs to be a list of strings or a list of lists of strings)");
+                AddError("invalid or missing ipa or feature spec (needs to be a list of strings or a list of lists of strings)");
             }
 
             return this;
+        }
+
+        void ConfigureFeatures(IEnumerable<object> features)
+        {
+            var specs = new List<string>();
+            var vectors = new List<double[]>();
+            var errors = new List<string>();
+
+            var fstrings = features.OfType<string>().ToList();
+            if (fstrings.Any())
+            {
+                specs.Add(string.Join(", ", fstrings));
+                vectors.Add(Features.GetFeatureVector(fstrings, errors));
+            }
+            else
+            {
+                var flists = features.OfType<IEnumerable<object>>().ToList();
+                foreach (var flist in flists)
+                {
+                    fstrings = flist.OfType<string>().ToList();
+                    if (fstrings.Any())
+                    {
+                        specs.Add(string.Join(", ", fstrings));
+                        vectors.Add(Features.GetFeatureVector(fstrings, errors));
+                    }
+                    else
+                    {
+                        AddError("empty feature set for '{0}'", Input);
+                    }
+                }
+            }
+
+            foreach (var error in errors)
+                AddError("error in feature spec for '{0}': {1}", Input, error);
+
+            FeatureSpecs = specs.ToArray();
+            Phones = vectors.ToArray();
+        }
+
+        void ConfigureFeaturesFromIpa(string ipa)
+        {
+
         }
 
         public DeterministicAutomaton<char, UnicodeCategoryMatcher> GetRegexp()
