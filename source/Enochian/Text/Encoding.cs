@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Enochian.Flow;
 using Verophyle.Regexp;
 using Verophyle.Regexp.InputSet;
 using Verophyle.Regexp.Node;
@@ -47,6 +48,46 @@ namespace Enochian.Text
             }
             return this;
         }
+
+        public override void PostConfigure()
+        {
+            base.PostConfigure();
+
+            if (Patterns.Any(p => !string.IsNullOrWhiteSpace(p.Ipa)))
+            {
+                // find IPA encoding
+                IFlowResources flowResources = null;
+                IConfigurable cur = this;
+                do
+                {
+                    cur = cur.Parent;
+                    flowResources = cur as IFlowResources;
+                }
+                while (flowResources == null && cur != null);
+
+                if (flowResources == null)
+                {
+                    AddError("Unable to find flow resources.");
+                    return;
+                }
+
+                var ipaEncoding = flowResources.Encodings.FirstOrDefault(enc => enc.Id.Equals("ipa", StringComparison.InvariantCultureIgnoreCase));
+                if (ipaEncoding == null)
+                {
+                    AddError("Unable to find IPA encodingl.");
+                    return;
+                }
+
+                var encoder = new Encoder(ipaEncoding.Features, ipaEncoding);
+                foreach (var pattern in Patterns.Where(p => !string.IsNullOrWhiteSpace(p.Ipa)))
+                {
+                    var (input, repr, phones) = encoder.GetTextAndPhones(pattern.Ipa);
+                    pattern.Repr = repr;
+                    pattern.Phones = phones;
+                    pattern.FeatureSpecs = phones.Select(p => string.Format("[{0}]", string.Join(", ", ipaEncoding.Features.GetFeatureSpec(p)))).ToList();
+                }
+            }
+        }
     }
 
     public class EncodingPattern : Configurable
@@ -64,15 +105,15 @@ namespace Enochian.Text
 
         public FeatureSet Features { get; }
 
-        public string Input { get; private set; }
-        public string Output { get; private set; }
-        public string Repr { get; private set; }
+        public string Input { get; internal set; }
+        public string Output { get; internal set; }
+        public string Repr { get; internal set; }
+        internal string Ipa { get; private set; }
 
-        public IList<string> FeatureSpecs { get; private set; }
+        public IList<string> FeatureSpecs { get; internal set; }
+        public IList<double[]> Phones { get; internal set; }
 
         public bool IsReplacement => Input != null && !Input.Contains("_");
-
-        public IList<double[]> Phones { get; private set; }
 
         public override IConfigurable Configure(IDictionary<string, object> config)
         {
@@ -95,7 +136,7 @@ namespace Enochian.Text
             }
             else if (!string.IsNullOrWhiteSpace(ipa))
             {
-                ConfigureFeaturesFromIpa(ipa);
+                Ipa = ipa;
             }
             else
             {
@@ -140,11 +181,6 @@ namespace Enochian.Text
 
             FeatureSpecs = specs.ToArray();
             Phones = vectors.ToArray();
-        }
-
-        void ConfigureFeaturesFromIpa(string ipa)
-        {
-
         }
 
         public DeterministicAutomaton<char, UnicodeCategoryMatcher> GetRegexp()

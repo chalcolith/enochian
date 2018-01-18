@@ -30,6 +30,7 @@ namespace Enochian
         string Changes { get; }
 
         IConfigurable Configure(Config config);
+        void PostConfigure();
     }
 
     public abstract class Configurable : IConfigurable
@@ -108,6 +109,10 @@ namespace Enochian
             Description = config.Get<string>("description", this);
             Changes = config.Get<string>("changes", this);
             return this;
+        }
+
+        public virtual void PostConfigure()
+        {
         }
 
         protected static IConfigurable Load(string fname, IConfigurable obj)

@@ -32,8 +32,8 @@ namespace Enochian.Flow
         public override IEnumerable<IConfigurable> Children
         {
             get => children ?? (children = FeatureSets
-                                            .Concat<IConfigurable>(Encodings)
-                                            .Concat(Steps != null ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>()));
+                .Concat<IConfigurable>(Encodings)
+                .Concat(Steps != null ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>()));
         }
 
         public IList<FeatureSet> FeatureSets { get; } = new List<FeatureSet>();
@@ -142,6 +142,20 @@ namespace Enochian.Flow
                     Lexicons.Add(child);
                 }
             }
+        }
+
+        public override void PostConfigure()
+        {
+            PostConfigureChildren(this);
+        }
+
+        void PostConfigureChildren(IConfigurable obj)
+        {
+            foreach (var child in obj.Children)
+            {
+                PostConfigureChildren(child);
+            }
+            obj.PostConfigure();
         }
 
         public IEnumerable<object> GetOutputs()

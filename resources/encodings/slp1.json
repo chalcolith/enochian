@@ -1,0 +1,23 @@
+﻿{
+  "id": "SLP1",
+  "description": "Encodes text in Sanskrit Library Phonetic Basic Encoding Scheme transliteration to phonemic features.",
+  "changes": "",
+
+  "patterns": [
+    {
+      "input": "a",
+      "repr": "अ",
+      "ipa": "ə"
+    },
+    {
+      "input": "A",
+      "repr": "आ",
+      "ipa": "ɑɑ"
+    },
+    {
+      "input": "i",
+      "repr": "इ",
+      "ipa": "i"
+    }
+  ]
+}
