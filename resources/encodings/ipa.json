@@ -49,12 +49,24 @@
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      "input": "ʈ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       "input": "d",
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      "input": "ɖ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "-Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       "input": "s",
       "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "+Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "input": "ʂ",
+      "features": [ "+Cons", "-Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "-Voice", "-SG", "-CG", "+Cont", "+Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
       "input": "z",
@@ -229,6 +241,10 @@
       "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "+Ant", "+Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      "input": "ɭ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "-Ant", "+Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
       "input": "ʎ",
       "features": [ "+Cons", "+Son", "-Syll", "-Labial", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "+Lateral", "-DelRel", "-Nasal" ]
     },
@@ -238,6 +254,10 @@
     },
     {
       "input": "ɹ",
+      "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "input": "ɽ",
       "features": [ "+Cons", "+Son", "-Syll", "-Labial", "+Cor", "-Ant", "-Dist", "-Dorsal", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
@@ -251,6 +271,10 @@
     {
       "input": "w",
       "features": [ "-Cons", "+Son", "-Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
+    },
+    {
+      "input": "ʋ",
+      "features": [ "-Cons", "+Son", "-Syll", "+Labial", "+Round", "-Cor", "-Dorsal", "+High", "-Low", "-Back", "-Tense", "-Phar", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
       "input": "i",
