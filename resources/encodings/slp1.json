@@ -18,6 +18,251 @@
       "input": "i",
       "repr": "इ",
       "ipa": "i"
+    },
+    {
+      "input": "I",
+      "repr": "ई",
+      "ipa": "ii"
+    },
+    {
+      "input": "u",
+      "repr": "उ",
+      "ipa": "u"
+    },
+    {
+      "input": "U",
+      "repr": "ऊ",
+      "ipa": "uu"
+    },
+    {
+      "input": "e",
+      "repr": "ए",
+      "ipa": "e"
+    },
+    {
+      "input": "E",
+      "repr": "ऐ",
+      "ipa": "ee"
+    },
+    {
+      "input": "o",
+      "repr": "ओ",
+      "ipa": "o"
+    },
+    {
+      "input": "O",
+      "repr": "औ",
+      "ipa": "oo"
+    },
+    {
+      "input": "f",
+      "repr": "ऋ",
+      "ipa": "ɽ̩"
+    },
+    {
+      "input": "F",
+      "repr": "ॠ",
+      "ipa": "ɽ̩ɽ̩"
+    },
+    {
+      "input": "x",
+      "repr": "ऌ",
+      "ipa": "ɭ̩"
+    },
+    {
+      "input": "X",
+      "repr": "ॡ",
+      "ipa": "ɭ̩ɭ̩"
+    },
+    {
+      "input": "M",
+      "repr": "ं",
+      "ipa": "̃"
+    },
+    {
+      "input": "H",
+      "repr": "ः",
+      "ipa": "h"
+    },
+    {
+      "input": "~",
+      "repr": "ँ",
+      "ipa": "n"
+    },
+    {
+      "input": "k",
+      "repr": "क",
+      "ipa": "k"
+    },
+    {
+      "input": "K",
+      "repr": "ख",
+      "ipa": "kʰ"
+    },
+    {
+      "input": "g",
+      "repr": "ग",
+      "ipa": "g"
+    },
+    {
+      "input": "G",
+      "repr": "घ",
+      "ipa": "gʰ"
+    },
+    {
+      "input": "N",
+      "repr": "ङ",
+      "ipa": "ŋ"
+    },
+    {
+      "input": "c",
+      "repr": "च",
+      "ipa": "t͡ʃ"
+    },
+    {
+      "input": "C",
+      "repr": "छ",
+      "ipa": "t͡ʃʰ"
+    },
+    {
+      "input": "j",
+      "repr": "ज",
+      "ipa": "d͡ʒ"
+    },
+    {
+      "input": "J",
+      "repr": "झ",
+      "ipa": "d͡ʒʰ"
+    },
+    {
+      "input": "Y",
+      "repr": "ञ",
+      "ipa": "ɲ"
+    },
+    {
+      "input": "w",
+      "repr": "ट",
+      "ipa": "ʈ"
+    },
+    {
+      "input": "W",
+      "repr": "ठ",
+      "ipa": "ʈʰ"
+    },
+    {
+      "input": "q",
+      "repr": "ड",
+      "ipa": "ɖ"
+    },
+    {
+      "input": "Q",
+      "repr": "ढ",
+      "ipa": "ɖʰ"
+    },
+    {
+      "input": "R",
+      "repr": "ण",
+      "ipa": "ɳ"
+    },
+    {
+      "input": "t",
+      "repr": "त",
+      "ipa": "t̪"
+    },
+    {
+      "input": "T",
+      "repr": "थ",
+      "ipa": "t̪ʰ"
+    },
+    {
+      "input": "d",
+      "repr": "द",
+      "ipa": "d̪"
+    },
+    {
+      "input": "D",
+      "repr": "ध",
+      "ipa": "d̪ʰ"
+    },
+    {
+      "input": "n",
+      "repr": "न",
+      "ipa": "n"
+    },
+    {
+      "input": "p",
+      "repr": "प",
+      "ipa": "p"
+    },
+    {
+      "input": "P",
+      "repr": "फ",
+      "ipa": "pʰ"
+    },
+    {
+      "input": "b",
+      "repr": "ब",
+      "ipa": "b"
+    },
+    {
+      "input": "B",
+      "repr": "भ",
+      "ipa": "bʰ"
+    },
+    {
+      "input": "m",
+      "repr": "म",
+      "ipa": "m"
+    },
+    {
+      "input": "y",
+      "repr": "य",
+      "ipa": "j"
+    },
+    {
+      "input": "r",
+      "repr": "र",
+      "ipa": "r"
+    },
+    {
+      "input": "l",
+      "repr": "ल",
+      "ipa": "l"
+    },
+    {
+      "input": "L",
+      "repr": "ळ",
+      "ipa": "ll"
+    },
+    {
+      "input": "|",
+      "repr": "ळ्ह",
+      "ipa": "lʰlʰ"
+    },
+    {
+      "input": "v",
+      "repr": "व",
+      "ipa": "ʋ"
+    },
+    {
+      "input": "S",
+      "repr": "श",
+      "ipa": "ʃ"
+    },
+    {
+      "input": "z",
+      "repr": "ष",
+      "ipa": "ʂ"
+    },
+    {
+      "input": "s",
+      "repr": "स",
+      "ipa": "s"
+    },
+    {
+      "input": "h",
+      "repr": "ह",
+      "ipa": "ɦ"
     }
   ]
 }
