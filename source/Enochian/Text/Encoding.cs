@@ -82,7 +82,8 @@ namespace Enochian.Text
                 foreach (var pattern in Patterns.Where(p => !string.IsNullOrWhiteSpace(p.Ipa)))
                 {
                     var (input, repr, phones) = encoder.GetTextAndPhones(pattern.Ipa);
-                    pattern.Repr = repr;
+                    if (!string.IsNullOrWhiteSpace(repr))
+                        pattern.Repr = repr;
                     pattern.Phones = phones;
                     pattern.FeatureSpecs = phones.Select(p => string.Format("[{0}]", string.Join(", ", ipaEncoding.Features.GetFeatureSpec(p)))).ToList();
                 }
@@ -130,7 +131,7 @@ namespace Enochian.Text
 
             var features = config.GetList<object>("features", this);
             var ipa = config.Get<string>("ipa", this);
-            if (features != null)
+            if (features != null && features.Count() > 0)
             {
                 ConfigureFeatures(features);
             }

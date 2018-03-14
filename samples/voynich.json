@@ -10,9 +10,19 @@
 
   "encodings": [
     {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    },
+    {
       "id": "Romlex",
       "features": "Default",
       "path": "../resources/encodings/romlex.json"
+    },
+    {
+      "id": "SLP1",
+      "features": "Default",
+      "path": "../resources/encodings/slp1.json"
     },
     {
       "id": "Vogt",
@@ -28,6 +38,13 @@
       "features": "Default",
       "encoding": "Romlex",
       "path": "../resources/lexicons/romlex/romlex.json"
+    },
+    {
+      "id": "SHS",
+      "type": "ShabdaSagara",
+      "features": "Default",
+      "encoding": "SLP1",
+      "path": "../resources/lexicons/shstxt/shs.txt"
     }
   ],
 
@@ -59,9 +76,9 @@
     },
     {
       "id": "Phonological Match",
-      "description": "Matches inputs against the Romlex lexicon.",
+      "description": "Matches inputs against one or more lexicons.",
       "type": "DTWMatcher",
-      "lexicon": "Romlex",
+      "lexicons": [ "Romlex", "SHS" ],
       "numOptions": 12,
       "tolerance": 0.0,
       "hypotheses": "hypotheses.json"

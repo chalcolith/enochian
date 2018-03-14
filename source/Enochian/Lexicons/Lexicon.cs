@@ -129,7 +129,14 @@ namespace Enochian.Lexicons
                         var cacheInfo = new FileInfo(cachedPath);
                         if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc)
                         {
-                            cacheSuccessful = LoadCachedDictionary(cachedPath);
+                            try
+                            {
+                                cacheSuccessful = LoadCachedDictionary(cachedPath);
+                            }
+                            catch
+                            {
+                                cacheSuccessful = false;
+                            }
                         }
                     }
 

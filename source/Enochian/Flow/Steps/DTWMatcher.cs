@@ -44,7 +44,7 @@ namespace Enochian.Flow.Steps
             var lexNames = config.Get<IEnumerable<string>>("lexicons", this);
             foreach (var lexsName in lexNames ?? Enumerable.Empty<string>())
             {
-                var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexName);
+                var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexsName);
                 if (lexicon != null)
                     Lexicons.Add(lexicon);
                 else

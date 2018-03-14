@@ -51,6 +51,9 @@ namespace Enochian.Flow
             ConfigureLexicons(config);
 
             Steps = new FlowContainer(this, this, config);
+
+            PostConfigureChildren(this);
+            PostConfigure();
             return this;
         }
 
@@ -146,7 +149,6 @@ namespace Enochian.Flow
 
         public override void PostConfigure()
         {
-            PostConfigureChildren(this);
         }
 
         void PostConfigureChildren(IConfigurable obj)
