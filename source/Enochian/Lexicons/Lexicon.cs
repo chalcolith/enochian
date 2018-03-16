@@ -9,6 +9,8 @@ namespace Enochian.Lexicons
 {
     public abstract class Lexicon : Configurable
     {
+        static readonly object loadLock = new object();
+
         string sourcePath;
         ICollection<LexiconEntry> entries;
         IDictionary<string, LexiconEntry> entriesByLemma;
@@ -109,51 +111,57 @@ namespace Enochian.Lexicons
             if (entries != null)
                 return;
 
-            if (string.IsNullOrWhiteSpace(sourcePath))
+            lock (loadLock)
             {
-                AddError("no lexicon path configured");
-                return;
-            }
+                if (entries != null)
+                    return;
 
-            var absolutePath = GetChildPath(AbsoluteFilePath, sourcePath);
-
-            if (File.Exists(absolutePath))
-            {
-                try
+                if (string.IsNullOrWhiteSpace(sourcePath))
                 {
-                    bool cacheSuccessful = false;
-                    var cachedPath = Path.Combine(".", CacheDir, Path.GetFileName(absolutePath) + ".bin");
-                    if (File.Exists(cachedPath))
+                    AddError("no lexicon path configured");
+                    return;
+                }
+
+                var absolutePath = GetChildPath(AbsoluteFilePath, sourcePath);
+
+                if (File.Exists(absolutePath))
+                {
+                    try
                     {
-                        var origInfo = new FileInfo(absolutePath);
-                        var cacheInfo = new FileInfo(cachedPath);
-                        if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc)
+                        bool cacheSuccessful = false;
+                        var cachedPath = Path.Combine(".", CacheDir, Path.GetFileName(absolutePath) + ".bin");
+                        if (File.Exists(cachedPath))
                         {
-                            try
+                            var origInfo = new FileInfo(absolutePath);
+                            var cacheInfo = new FileInfo(cachedPath);
+                            if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc)
                             {
-                                cacheSuccessful = LoadCachedDictionary(cachedPath);
-                            }
-                            catch
-                            {
-                                cacheSuccessful = false;
+                                try
+                                {
+                                    cacheSuccessful = LoadCachedDictionary(cachedPath);
+                                }
+                                catch
+                                {
+                                    cacheSuccessful = false;
+                                }
                             }
                         }
-                    }
 
-                    if (!cacheSuccessful)
+                        if (!cacheSuccessful)
+                        {
+                            LoadLexicon(absolutePath);
+                            SaveCachedDictionary(cachedPath);
+                        }
+                    }
+                    catch (Exception e)
                     {
-                        LoadLexicon(absolutePath);
-                        SaveCachedDictionary(cachedPath);
+                        AddError("error loading '{0}': {1}", absolutePath, e.Message);
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    AddError("error loading '{0}': {1}", absolutePath, e.Message);
+                    AddError("invalid lexicon path '{0}'", absolutePath);
                 }
-            }
-            else
-            {
-                AddError("invalid lexicon path '{0}'", absolutePath);
             }
         }
 

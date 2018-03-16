@@ -26,6 +26,7 @@ namespace Enochian.Lexicons
         static readonly Regex LemmaLineRegex = new Regex(@"<L>(\d+).*<k1>(.*)<k2>", RegexOptions.Compiled);
         static readonly Regex FirstLineRegex = new Regex(@"(.*)¦\s+(\S+)\s+(.*)", RegexOptions.Compiled);
         static readonly Regex MidLineRegex = new Regex(@"<>(.*)", RegexOptions.Compiled);
+        static readonly Regex InlineRegex = new Regex(@"{#([^#]+)#}", RegexOptions.Compiled);
 
         protected override void LoadLexicon(string path)
         {
@@ -71,7 +72,7 @@ namespace Enochian.Lexicons
                                 Lexicon = this,
                                 Lemma = lemma,
                                 Text = text,
-                                Definition = "",
+                                Definition = "(" + lemmaSlp1 + ") ",
                                 Phones = phones,
                             };
                         }
@@ -79,11 +80,14 @@ namespace Enochian.Lexicons
                         {
                             if ((match = FirstLineRegex.Match(line)).Success)
                             {
-                                currentEntry.Definition = currentEntry.Definition + match.Groups[2].Value + " " + match.Groups[3].Value;
+                                currentEntry.Definition = currentEntry.Definition
+                                    + ReplaceSlp1(encoder, match.Groups[2].Value) + " "
+                                    + ReplaceSlp1(encoder, match.Groups[3].Value);
                             }
                             else if ((match = MidLineRegex.Match(line)).Success)
                             {
-                                currentEntry.Definition = currentEntry.Definition + " " + match.Groups[1].Value;
+                                currentEntry.Definition = currentEntry.Definition + " " 
+                                    + ReplaceSlp1(encoder, match.Groups[1].Value);
                             }
                         }
                     }
@@ -92,7 +96,7 @@ namespace Enochian.Lexicons
                     {
                         if (entriesByLemma.TryGetValue(currentEntry.Lemma, out LexiconEntry existingEntry))
                         {
-                            existingEntry.Definition = existingEntry.Definition + "\n\n" + currentEntry.Definition;
+                            existingEntry.Definition = existingEntry.Definition + "\n" + currentEntry.Definition;
                         }
                         else
                         {
@@ -111,6 +115,21 @@ namespace Enochian.Lexicons
             {
                 AddError("unable to load SHS lexicon: {0}", e.Message);
             }
+        }
+
+        string ReplaceSlp1(Encoder encoder, string str)
+        {
+            var match = InlineRegex.Match(str);
+            while (match.Success)
+            {
+                (_, string devanagari, _) = encoder.GetTextAndPhones(match.Groups[1].Value);
+                str = str.Substring(0, match.Index)
+                    + devanagari + " (" + match.Groups[1].Value + ")"
+                    + str.Substring(match.Index + match.Length);
+
+                match = InlineRegex.Match(str);
+            }
+            return str;
         }
     }
 }
