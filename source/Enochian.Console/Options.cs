@@ -14,5 +14,8 @@ namespace Enochian.Console
 
         [Option(HelpText = "Log file.")]
         public string LogFile { get; set; }
+
+        [Option(HelpText = "Locuses.")]
+        public string Locuses { get; set; }
     }
 }

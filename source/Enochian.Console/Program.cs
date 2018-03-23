@@ -6,6 +6,7 @@ using System.Text;
 using Enochian;
 using Enochian.Console;
 using Enochian.Flow;
+using Enochian.Flow.Steps;
 
 class Program
 {
@@ -28,6 +29,16 @@ class Program
 
             var flow = new Flow(configFilePath);
             HandleErrors(flow);
+
+            var voynichStep = flow.Steps.Children.OfType<VoynichInterlinear>().FirstOrDefault();
+            if (voynichStep != null && !string.IsNullOrWhiteSpace(options.Locuses))
+            {
+                voynichStep.Locuses = options.Locuses
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s.Trim())
+                    .ToList();
+
+            }
 
             flow.ProcessAll();
             HandleErrors(flow);

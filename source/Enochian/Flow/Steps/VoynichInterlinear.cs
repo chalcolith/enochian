@@ -25,7 +25,7 @@ namespace Enochian.Flow.Steps
 
         public string SourcePath { get; private set; }
 
-        public IList<string> Locuses { get; private set; }
+        public IList<string> Locuses { get; set; }
 
         public IList<TextChunk> Chunks { set => chunks = value; }
 
