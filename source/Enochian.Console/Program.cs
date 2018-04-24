@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using Enochian;
@@ -30,14 +31,11 @@ class Program
             var flow = new Flow(configFilePath);
             HandleErrors(flow);
 
-            var voynichStep = flow.Steps.Children.OfType<VoynichInterlinear>().FirstOrDefault();
-            if (voynichStep != null && !string.IsNullOrWhiteSpace(options.Locuses))
+            var overrides = options.Overrides;
+            if (!string.IsNullOrWhiteSpace(overrides))
             {
-                voynichStep.Locuses = options.Locuses
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(s => s.Trim())
-                    .ToList();
-
+                ApplyOverrides(flow, overrides);
+                HandleErrors(flow);
             }
 
             flow.ProcessAll();
@@ -109,6 +107,58 @@ class Program
         if (sb.Length > 0)
         {
             throw new Exception(sb.ToString());
+        }
+    }
+
+    static void ApplyOverrides(Flow flow, string overrides)
+    {
+        var assignments = overrides.Split('|');
+        foreach (var assignment in assignments)
+        {
+            var nameAndValue = assignment.Split('=');
+            if (nameAndValue.Length == 2)
+            {
+                var nameTokens = nameAndValue[0].Split('/');
+                IConfigurable cur = flow;
+                foreach (var token in nameTokens.Take(nameTokens.Length - 1))
+                {
+                    cur = cur.Children.FirstOrDefault(child => child.Id.Equals(token, StringComparison.InvariantCultureIgnoreCase));
+                    if (cur == null)
+                    {
+                        flow.AddError("Unknown config object with Id '{0}'", token);
+                        break;
+                    }
+
+                }
+                if (cur != null)
+                {
+                    var propName = nameTokens.Last();
+                    var propInfo = cur.GetType().GetProperty(propName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                    if (propInfo != null)
+                    {
+                        if (propInfo.PropertyType.IsAssignableFrom(typeof(string)))
+                        {
+                            propInfo.SetValue(cur, nameAndValue[1]);
+                        }
+                        else if (propInfo.PropertyType.IsAssignableFrom(typeof(string[])))
+                        {
+                            propInfo.SetValue(cur, nameAndValue[1].Split(','));
+                        }
+                        else
+                        {
+                            flow.AddError("Unable to set field value for field '{0}' of type '{1}'", nameAndValue[0], propInfo.PropertyType.Name);
+                        }
+                    }
+                    else
+                    {
+                        flow.AddError("Unknown config field '{0}'", propName);
+                    }
+                }
+            }
+            else
+            {
+                flow.AddError("Invalid config override '{0}'", nameAndValue);
+            }
         }
     }
 }

@@ -84,7 +84,7 @@
       "hypotheses": "hypotheses.json"
     },
     {
-      "id": "MatchReport",
+      "id": "Match Report",
       "type": "MatchReport",
       "output": "../reports/voynich_report.html"
     }

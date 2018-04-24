@@ -2,7 +2,7 @@
   "profiles": {
     "Enochian.Console": {
       "commandName": "Project",
-      "commandLineArgs": "..\\..\\samples\\voynich.json",
+      "commandLineArgs": "..\\..\\samples\\voynich.json --overrides \"steps/Voynich Interlinear/locuses=<f1r.P1.1;H>,<f1r.P1.2;H>|steps/Match Report/output=../reports/voynich_f1r.html\"",
       "workingDirectory": "C:\\Users\\TisherG\\Dev\\enochian\\source\\Enochian.Console"
     }
   }

@@ -6,7 +6,7 @@
     <Authors>Gordon Tisher</Authors>
     <Company>Verophyle Informatics</Company>
     <Description>Tools for decypherment.</Description>
-    <Copyright>Copyright (C) 2017 Gordon Tisher</Copyright>
+    <Copyright>Copyright (C) 2018 Gordon Tisher</Copyright>
     <PackageProjectUrl>https://github.com/kulibali/enochian</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/kulibali/enochian/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/kulibali/enochian</RepositoryUrl>
@@ -14,7 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.2.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="5.0.0-beta10" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />

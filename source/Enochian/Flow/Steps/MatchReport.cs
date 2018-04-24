@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Enochian.Text;
 using HtmlAgilityPack;
 
@@ -19,7 +20,10 @@ namespace Enochian.Flow.Steps
 
         public override NLog.Logger Log => logger;
 
-        public string OutputPath { get; protected set; }
+        public string Output { get; protected set; }
+        public string PreviousPage { get; protected set; }
+        public string NextPage { get; protected set; }
+
         public bool DebugFirstOnly { get; protected set; }
         public IList<TextChunk> Results { get; protected set; }
 
@@ -29,9 +33,16 @@ namespace Enochian.Flow.Steps
 
             var output = config.Get<string>("output", this);
             if (!string.IsNullOrWhiteSpace(output))
-                OutputPath = GetChildPath(AbsoluteFilePath, output);
+                Output = GetChildPath(AbsoluteFilePath, output);
             else
                 AddError("no 'output' path specified");
+
+            var previousPage = config.Get<string>("previousPage", this);
+            if (!string.IsNullOrWhiteSpace(previousPage))
+                PreviousPage = GetChildPath(AbsoluteFilePath, previousPage);
+            var nextPage = config.Get<string>("nextPage", this);
+            if (!string.IsNullOrWhiteSpace(nextPage))
+                NextPage = GetChildPath(AbsoluteFilePath, nextPage);
 
             DebugFirstOnly = config.Get<bool>("debugFirstOnly", this);
 
@@ -40,7 +51,7 @@ namespace Enochian.Flow.Steps
 
         public override IEnumerable<string> GetOutputs()
         {
-            var outputPath = Path.GetFullPath(OutputPath);
+            var outputPath = Path.GetFullPath(Output);
             try
             {
                 Log.Info("generating HTML report...");
@@ -64,7 +75,7 @@ namespace Enochian.Flow.Steps
                 AddError("error writing {0}: {1}", outputPath, e.Message);
             }
 
-            yield return OutputPath;
+            yield return Output;
         }
 
         HtmlDocument GenerateReportDocument(IEnumerable<TextChunk> chunks, IList<TextChunk> results)
@@ -92,15 +103,25 @@ namespace Enochian.Flow.Steps
             int entryId = 0;
             bodyNode.AppendChild(GenerateReportHeader(chunks, out DateTime timeGenerated, ref entryId));
 
+            var contentsNode = HtmlNode.CreateNode("<div class=\"contents\"></div>");
+            var chunksNode = HtmlNode.CreateNode("<div class=\"chunks\"></div>");
+            var idCounts = new Dictionary<string, int>();
             int index = 0;
             foreach (var chunk in chunks)
             {
+                GetChunkNameAndId(chunk, index, idCounts, out string name, out string id);
+                contentsNode.AppendChild(HtmlNode.CreateNode(string.Format("<span><a href=\"#{0}\">{1}</a></span>&nbsp;&nbsp;", id, HtmlEntity.Entitize(name, true, true))));
+
                 results.Add(chunk);
-                bodyNode.AppendChild(GenerateReportChunk(chunk, index++, ref entryId));
+                chunksNode.AppendChild(GenerateReportChunk(chunk, index, name, id, ref entryId));
 
                 if (DebugFirstOnly)
                     break;
+
+                index++;
             }
+            bodyNode.AppendChild(contentsNode);
+            bodyNode.AppendChild(chunksNode);
             bodyNode.AppendChild(GenerateReportFooter(results, timeGenerated, ref entryId));
 
             return bodyNode;
@@ -109,6 +130,13 @@ namespace Enochian.Flow.Steps
         HtmlNode GenerateReportHeader(IEnumerable<TextChunk> chunks, out DateTime timeGenerated, ref int entryId)
         {
             var headerNode = HtmlNode.CreateNode("<header></header>");
+
+            var navNode = HtmlNode.CreateNode("<div class=\"nav\"></div>");
+            if (!string.IsNullOrWhiteSpace(PreviousPage))
+                navNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"prev\"><a href=\"{0}\">Previous</a></div>", PreviousPage)));
+            if (!string.IsNullOrWhiteSpace(NextPage))
+                navNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"prev\"><a href=\"{0}\">Next</a></div>", NextPage)));
+            headerNode.AppendChild(navNode);
 
             headerNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"title\">{0}</div>", "Phonological Match Report")));
             timeGenerated = DateTime.Now;
@@ -140,10 +168,31 @@ namespace Enochian.Flow.Steps
             return headerNode;
         }
 
-        HtmlNode GenerateReportChunk(TextChunk chunk, int index, ref int entryId)
+        static readonly Regex WordRegex = new Regex(@"[^\w\d]+");
+
+        void GetChunkNameAndId(TextChunk chunk, int index, IDictionary<string, int> idCounts, out string name, out string id)
         {
-            var sectionNode = HtmlNode.CreateNode("<section class=\"text-chunk\"></section>");
-            sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", HtmlEntity.Entitize(chunk.Description ?? index.ToString(), true, true))));
+            name = chunk.Description ?? index.ToString();
+            id = WordRegex.Replace(name, "");
+
+            if (idCounts != null)
+            {
+                if (idCounts.ContainsKey(id))
+                {
+                    idCounts[id] = idCounts[id] + 1;
+                    id = id + idCounts[id].ToString();
+                }
+                else
+                {
+                    idCounts[id] = 1;
+                }
+            }
+        }
+
+        HtmlNode GenerateReportChunk(TextChunk chunk, int index, string name, string id, ref int entryId)
+        {
+            var sectionNode = HtmlNode.CreateNode(string.Format("<section id=\"{0}\" class=\"text-chunk\"></section>", id));
+            sectionNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"text-chunk-intro\">{0}</div>", HtmlEntity.Entitize(name, true, true))));
             var interNode = HtmlNode.CreateNode("<div class=\"text-chunk-lines\"></div>");
 
             var linesNode = interNode;
@@ -235,6 +284,12 @@ namespace Enochian.Flow.Steps
         HtmlNode GenerateReportFooter(IEnumerable<TextChunk> chunks, DateTime timeGenerated, ref int entryId)
         {
             var footerNode = HtmlNode.CreateNode("<footer></footer>");
+            var navNode = HtmlNode.CreateNode("<div class=\"nav\"></div>");
+            if (!string.IsNullOrWhiteSpace(PreviousPage))
+                navNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"prev\"><a href=\"{0}\">Previous</a></div>", PreviousPage)));
+            if (!string.IsNullOrWhiteSpace(NextPage))
+                navNode.AppendChild(HtmlNode.CreateNode(string.Format("<div class=\"prev\"><a href=\"{0}\">Next</a></div>", NextPage)));
+            footerNode.AppendChild(navNode);
             return footerNode;
         }
     }

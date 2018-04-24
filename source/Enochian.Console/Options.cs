@@ -15,7 +15,7 @@ namespace Enochian.Console
         [Option(HelpText = "Log file.")]
         public string LogFile { get; set; }
 
-        [Option(HelpText = "Locuses.")]
-        public string Locuses { get; set; }
+        [Option(HelpText = "Config overrides.")]
+        public string Overrides { get; set; }
     }
 }

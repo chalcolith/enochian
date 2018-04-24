@@ -31,9 +31,13 @@ namespace Enochian.Flow
 
         public override IEnumerable<IConfigurable> Children
         {
-            get => children ?? (children = FeatureSets
-                .Concat<IConfigurable>(Encodings)
-                .Concat(Steps != null ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>()));
+            get
+            {
+                return children ?? (children = FeatureSets
+                    .Concat<IConfigurable>(Encodings ?? Enumerable.Empty<IConfigurable>())
+                    .Concat<IConfigurable>(Steps != null ? new IConfigurable[] { Steps } : Enumerable.Empty<IConfigurable>())
+                    .ToArray());
+            }
         }
 
         public IList<FeatureSet> FeatureSets { get; } = new List<FeatureSet>();
@@ -50,7 +54,10 @@ namespace Enochian.Flow
             ConfigureEncodings(config);
             ConfigureLexicons(config);
 
-            Steps = new FlowContainer(this, this, config);
+            Steps = new FlowContainer(this, this, config)
+            {
+                Id = "steps"
+            };
 
             PostConfigureChildren(this);
             PostConfigure();

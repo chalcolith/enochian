@@ -19,6 +19,14 @@ header .title {
     margin-bottom: 0.5em;
 }
 
+.nav {
+    width: 100%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    display: flex;
+    justify-content: space-between;
+}
+
 .step-report {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
