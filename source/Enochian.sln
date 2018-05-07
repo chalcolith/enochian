@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A3D7
 		..\samples\english_test.json = ..\samples\english_test.json
 		..\samples\hypotheses.json = ..\samples\hypotheses.json
 		..\samples\ipatransducer.json = ..\samples\ipatransducer.json
+		..\samples\run_voynich.bat = ..\samples\run_voynich.bat
 		..\samples\voynich.json = ..\samples\voynich.json
 	EndProjectSection
 EndProject

@@ -3,6 +3,8 @@
 This project provides some tools to do exploratory phonological comparisons
 between texts in unknown languages and entries one or more lexicons.
 
+You may see the results of a recent test run of the software for the Voynich Manuscript
+[here](http://kulibali.github.io/enochian/index.html).
 
 ## Introduction
 
@@ -23,8 +25,11 @@ At present, the Enochian software tool can take arbitrary lines from the
 Interlinear](http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/)
 transcription of the Voynich manuscript, encode each word as a sequence of
 vectors in phonological feature space, and then search the
-[RomLex](http://romani.uni-graz.at/romlex/) lexicon of Romani, using dynamic
-time warping to look for for the closest phonological sequence matches.
+[RomLex](http://romani.uni-graz.at/romlex/) lexicon of Romani and the
+[Shabda-Sagara Sanskrit
+dictionary](http://www.sanskrit-lexicon.uni-koeln.de/scans/csldoc/dictionaries/shs.html),
+using dynamic time warping to look for for the closest phonological sequence
+matches.
 
 You can see a sample of this kind of flow in the
 [voynich.json](https://github.com/kulibali/enochian/blob/master/samples/voynich.json)
@@ -39,16 +44,16 @@ Current results are inconclusive. Possible matches for words meaning "sun",
 which are suggestive of references to astrological content, but much more work
 needs to be done.
 
+You may see the results of a recent test run of the software for the Voynich Manuscript
+[here](http://kulibali.github.io/enochian/index.html).
+
 ### Roadmap
 
 The RomLex lexicon has fewer than 30,000 entries, many of which are duplicates,
 due to the lexicon containing data from multiple Romani dialects. This means it
 does not provide very conclusive results on its own.
 
-I am currently working on integrating a Sanskrit dictionary to add a wider range
-of Indic lexemes to search.
-
-I plan to add Persian as well if necessary.
+The Shabda-Sagara dictionary also has fewer than 30,000 entries.
 
 
 ## General Functionality
@@ -108,3 +113,7 @@ demonstrates that the process is capable of finding many such valid matches.
 This is a dictionary of words in various Romani dialects. The database is only
 available via the web, so there is a project `RomlexScraper` that scrapes the
 web interface to assemble a complete version of the lexicon.
+
+### Shabda-Sagara
+
+This is a 19th-century dictionary of classical Sanskrit.

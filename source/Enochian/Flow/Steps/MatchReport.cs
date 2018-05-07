@@ -72,7 +72,7 @@ namespace Enochian.Flow.Steps
             }
             catch (Exception e)
             {
-                AddError("error writing {0}: {1}", outputPath, e.Message);
+                AddError("error writing {0}: {1}\n{2}", outputPath, e.Message, e.StackTrace);
             }
 
             yield return Output;

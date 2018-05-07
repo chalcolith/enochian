@@ -171,9 +171,9 @@ namespace Enochian.Flow.Steps
                                 var replMatch = ReplComment.Match(text);
                                 while (replMatch.Success)
                                 {
-                                    text = text.Substring(0, replMatch.Index)
+                                    text = text.Substring(0, System.Math.Min(text.Length, replMatch.Index))
                                         + replMatch.Groups[1].Value
-                                        + text.Substring(replMatch.Index + replMatch.Length);
+                                        + text.Substring(System.Math.Min(text.Length, replMatch.Index + replMatch.Length));
                                     replMatch = replMatch.NextMatch();
                                 }
 
