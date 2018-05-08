@@ -4,7 +4,7 @@ This project provides some tools to do exploratory phonological comparisons
 between texts in unknown languages and entries one or more lexicons.
 
 You may see the results of a recent test run of the software for the Voynich Manuscript
-[here](http://kulibali.github.io/enochian/index.html).
+[here](http://kulibali.github.io/enochian).
 
 ## Introduction
 
