@@ -7,9 +7,9 @@
     <Company>Verophyle Informatics</Company>
     <Description>Tools for decypherment.</Description>
     <Copyright>Copyright (C) 2018 Gordon Tisher</Copyright>
-    <PackageProjectUrl>https://github.com/kulibali/enochian</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/kulibali/enochian/blob/master/LICENSE</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/kulibali/enochian</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/chalcolith/enochian</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/chalcolith/enochian/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/chalcolith/enochian</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
   </PropertyGroup>
   <ItemGroup>

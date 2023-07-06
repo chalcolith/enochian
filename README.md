@@ -4,7 +4,7 @@ This project provides some tools to do exploratory phonological comparisons
 between texts in unknown languages and entries one or more lexicons.
 
 You may see the results of a recent test run of the software for the Voynich Manuscript
-[here](http://kulibali.github.io/enochian).
+[here](http://chalcolith.github.io/enochian).
 
 ## Introduction
 
@@ -32,7 +32,7 @@ using dynamic time warping to look for for the closest phonological sequence
 matches.
 
 You can see a sample of this kind of flow in the
-[voynich.json](https://github.com/kulibali/enochian/blob/master/samples/voynich.json)
+[voynich.json](https://github.com/chalcolith/enochian/blob/master/samples/voynich.json)
 flow configuration. This flow reads the RomLex lexicon and the specified lines
 of the Voynich transcription and produces an HTML file containing a report on
 the possible phonological matches.
@@ -45,7 +45,7 @@ which are suggestive of references to astrological content, but much more work
 needs to be done.
 
 You may see the results of a recent test run of the software for the Voynich Manuscript
-[here](http://kulibali.github.io/enochian/index.html).
+[here](http://chalcolith.github.io/enochian/index.html).
 
 ### Roadmap
 
@@ -61,11 +61,11 @@ The Shabda-Sagara dictionary also has fewer than 30,000 entries.
 At the most general level, the Enochian library provides a system for
 configuring and running "flows" of arbitrary data transformations. This is
 implemented by the
-[Flow](https://github.com/kulibali/enochian/blob/master/source/Enochian/Flow/Flow.cs)
+[Flow](https://github.com/chalcolith/enochian/blob/master/source/Enochian/Flow/Flow.cs)
 class, which contains a
-[FlowContainer](https://github.com/kulibali/enochian/blob/master/source/Enochian/Flow/FlowContainer.cs)
+[FlowContainer](https://github.com/chalcolith/enochian/blob/master/source/Enochian/Flow/FlowContainer.cs)
 which can have a number of
-[FlowStep](https://github.com/kulibali/enochian/blob/master/source/Enochian/Flow/FlowStep.cs)
+[FlowStep](https://github.com/chalcolith/enochian/blob/master/source/Enochian/Flow/FlowStep.cs)
 objects (which can themselves be containers).
 
 When you iterate over the enumerable returned by `FlowStep.GetOutputs()`, each
@@ -80,9 +80,9 @@ items as are needed to return one output.
 
 In order to do phonological analysis, the Enochian library provides a way to
 specify a phonological feature set (see
-[features.json](https://github.com/kulibali/enochian/blob/master/resources/encodings/features.json)
+[features.json](https://github.com/chalcolith/enochian/blob/master/resources/encodings/features.json)
 for an example using a pretty standard set of phonological features). The
-[FeatureSet](https://github.com/kulibali/enochian/blob/master/source/Enochian/Text/FeatureSet.cs)
+[FeatureSet](https://github.com/chalcolith/enochian/blob/master/source/Enochian/Text/FeatureSet.cs)
 class is used to load and use these feature sets.
 
 You can also define text "encodings". These take input strings in Unicode and
@@ -103,7 +103,7 @@ The systems includes several lexicons:
 This is used for testing the underlying assumption behind the project, that we
 can find slightly dissimilar phonological sequences in a lexicon by means of
 dynamic time warping. The
-[english_test.json](https://github.com/kulibali/enochian/blob/master/samples/english_test.json)
+[english_test.json](https://github.com/chalcolith/enochian/blob/master/samples/english_test.json)
 contains a sample flow that compares a defective encoding of English text with
 the CMU dictionary to produce matches for English words. Running this flow
 demonstrates that the process is capable of finding many such valid matches.
