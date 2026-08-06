@@ -1,258 +1,281 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Enochian.Lexicons;
+﻿using Enochian.Lexicons;
 using Enochian.Text;
 
-namespace Enochian.Flow.Steps
+namespace Enochian.Flow.Steps;
+
+public class DTWMatcher(IConfigurable parent, IFlowResources resources) : TextFlowStep(parent, resources)
 {
-    public class DTWMatcher : TextFlowStep
+    private static readonly ILogger Logger = Logging.CreateLogger<DTWMatcher>();
+
+    public override ILogger Log => Logger;
+
+    public IList<Lexicon> Lexicons { get; protected set; } = [];
+
+    public HypothesisFile? Hypotheses { get; protected set; }
+
+    public int NumOptions { get; protected set; }
+
+    public double Tolerance { get; set; }
+
+    public override IConfigurable Configure(JsonObject config)
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        _ = base.Configure(config);
 
-        public DTWMatcher(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources)
+        Lexicons = [];
+
+        var lexName = config.Get<string>("lexicon", this);
+        if (!string.IsNullOrWhiteSpace(lexName))
         {
+            var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexName);
+            if (lexicon != null)
+            {
+                Lexicons.Add(lexicon);
+            }
+            else
+            {
+                _ = AddError("unable to find lexicon '{0}'", lexName);
+            }
         }
 
-        public override NLog.Logger Log => logger;
-
-        public IList<Lexicon> Lexicons { get; protected set; }
-
-        public HypothesisFile Hypotheses { get; protected set; }
-
-        public int NumOptions { get; protected set; }
-
-        public double Tolerance { get; set; }
-
-        public override IConfigurable Configure(IDictionary<string, object> config)
+        var lexNames = config.Get<IEnumerable<string>>("lexicons", this);
+        foreach (var lexsName in lexNames ?? [])
         {
-            base.Configure(config);
-
-            Lexicons = new List<Lexicon>();
-
-            var lexName = config.Get<string>("lexicon", this);
-            if (!string.IsNullOrWhiteSpace(lexName))
+            var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexsName);
+            if (lexicon != null)
             {
-                var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexName);
-                if (lexicon != null)
-                    Lexicons.Add(lexicon);
-                else
-                    AddError("unable to find lexicon '{0}", lexicon);
+                Lexicons.Add(lexicon);
             }
-
-            var lexNames = config.Get<IEnumerable<string>>("lexicons", this);
-            foreach (var lexsName in lexNames ?? Enumerable.Empty<string>())
+            else
             {
-                var lexicon = Resources.Lexicons.FirstOrDefault(lex => lex.Id == lexsName);
-                if (lexicon != null)
-                    Lexicons.Add(lexicon);
-                else
-                    AddError("unable to find lexicon '{0}'", lexicon);
+                _ = AddError("unable to find lexicon '{0}'", lexsName);
             }
+        }
 
-            if (Lexicons.Count == 0)
-            {
-                AddError("no lexicon specified");
-            }
+        if (Lexicons.Count == 0)
+        {
+            _ = AddError("no lexicon specified");
+        }
 
-            var hypotheses = config.Get<string>("hypotheses", this);
-            if (!string.IsNullOrWhiteSpace(hypotheses))
+        var hypotheses = config.Get<string>("hypotheses", this);
+        if (!string.IsNullOrWhiteSpace(hypotheses))
+        {
+            var hypothesesFile = new HypothesisFile(this, Resources)
             {
-                var hypothesesFile = new HypothesisFile(this, Resources)
+                RelativePath = hypotheses,
+            };
+            Hypotheses = Load(this, hypothesesFile, hypotheses);
+        }
+
+        NumOptions = config.Get<int>("numOptions", this);
+        if (NumOptions <= 0)
+        {
+            NumOptions = 1;
+        }
+
+        if (NumOptions > 20)
+        {
+            NumOptions = 20;
+        }
+
+        Tolerance = config.Get<double>("tolerance", this);
+        if (Tolerance < 0.0)
+        {
+            Tolerance = 0.0;
+        }
+
+        if (Tolerance > 1.0)
+        {
+            Tolerance = 1.0;
+        }
+
+        return this;
+    }
+
+    public override string GenerateReport(ReportType reportType)
+    {
+        var sb = new System.Text.StringBuilder();
+        foreach (var lexicon in Lexicons)
+        {
+            var sourcePath = string.IsNullOrWhiteSpace(lexicon.SourcePath)
+                ? string.Empty
+                : GetChildPath(lexicon.AbsoluteFilePath, lexicon.SourcePath);
+            _ = sb.AppendFormat(CultureInfo.InvariantCulture, "&nbsp;&nbsp;Lexicon: {0}: {1}<br/>&nbsp;&nbsp;Path: {2}",
+                lexicon.Id, lexicon.Description, sourcePath);
+        }
+        if (Hypotheses != null)
+        {
+            _ = sb.AppendFormat(CultureInfo.InvariantCulture, "<br/>&nbsp;&nbsp;Hypotheses: {0}", Hypotheses.AbsoluteFilePath);
+        }
+        _ = sb.AppendFormat(CultureInfo.InvariantCulture, "<br/>&nbsp;&nbsp;Tolerance: {0}", Tolerance);
+        return sb.ToString();
+    }
+
+    protected override TextChunk Process(TextChunk input)
+    {
+        if (Lexicons.Count == 0)
+        {
+            _ = AddError("no lexicon");
+            return input;
+        }
+
+        int numTokens = 0;
+        var cache = new Dictionary<string, IEnumerable<SegmentOption>>();
+        var optionComparer = new OptionComparer();
+        var newLines = input.Lines
+            .Where(line => ReferenceEquals(line.SourceStep, Previous))
+            .Select(srcLine =>
+            {
+                Log.LogInformation("matching {Text}", srcLine.Text);
+
+                return new TextLine
                 {
-                    RelativePath = hypotheses,
+                    SourceStep = this,
+                    SourceLine = srcLine,
+                    Text = srcLine.Text,
+                    Segments = [.. srcLine.Segments
+                        .Select(srcSegment => new TextSegment
+                        {
+                            Text = srcSegment.Options?.FirstOrDefault(o => !string.IsNullOrWhiteSpace(o.Text))?.Text,
+                            SourceSegments = [srcSegment],
+                            Options = [.. (srcSegment.Options ?? [])
+                                .Where(srcOption => !string.IsNullOrWhiteSpace(srcOption.Text))
+                                .SelectMany(srcOption =>
+                                {
+                                    if ((++numTokens % 10) == 0)
+                                    {
+                                        Log.LogInformation("matched {Count} tokens", numTokens);
+                                    }
+
+                                    var text = srcOption.Text ?? string.Empty;
+                                    if (cache.TryGetValue(text, out var cached))
+                                    {
+                                        return cached;
+                                    }
+
+                                    var newOptions = GetOptions(srcOption);
+                                    cache[text] = newOptions;
+                                    return newOptions;
+                                })
+                                .OrderBy(o => o, optionComparer)]
+                        })],
                 };
-                Hypotheses = Load(this, hypothesesFile, hypotheses);
+            });
+
+        var newChunk = new TextChunk
+        {
+            Description = input.Description,
+            Lines = [.. input.Lines, .. newLines],
+        };
+
+        Log.LogInformation("matched {Count} total tokens", numTokens);
+        return newChunk;
+    }
+
+    private IEnumerable<SegmentOption> GetOptions(SegmentOption srcOption)
+    {
+        if (Hypotheses != null)
+        {
+            foreach (var hypothesis in Hypotheses.Groups.SelectMany(g => g.Entries))
+            {
+                if (srcOption.Text == hypothesis.Input)
+                {
+                    yield return new SegmentOption
+                    {
+                        Encoding = Hypotheses.Encoding,
+                        Text = srcOption.Text,
+                        Entry = new LexiconEntry { Lemma = hypothesis.Lemma, Definition = hypothesis.Definition },
+                        Tags = TextTag.Hypo,
+                    };
+                }
             }
-
-            NumOptions = config.Get<int>("numOptions", this);
-            if (NumOptions <= 0)
-                NumOptions = 1;
-            if (NumOptions > 20)
-                NumOptions = 20;
-
-            Tolerance = config.Get<double>("tolerance", this);
-            if (Tolerance < 0.0) Tolerance = 0.0;
-            if (Tolerance > 1.0) Tolerance = 1.0;
-
-            return this;
         }
 
-        public override string GenerateReport(ReportType reportType)
+        if (!string.IsNullOrEmpty(srcOption.Text) && srcOption.Phones.Count != 0)
         {
-            var sb = new System.Text.StringBuilder();
+            var entryComparer = new EntryComparer();
+            var srcConsonantIndex = GetConsonantIndex(srcOption.Encoding ?? Encoding.Default);
+            var srcPhones = ExpandPhones(srcOption.Phones, srcConsonantIndex);
+
+            double leastBestDistance = double.MaxValue;
+            var bestEntries = new List<(double, LexiconEntry)>();
             foreach (var lexicon in Lexicons)
             {
-                sb.AppendFormat("&nbsp;&nbsp;Lexicon: {0}: {1}<br/>&nbsp;&nbsp;Path: {2}",
-                lexicon.Id, lexicon.Description, GetChildPath(lexicon.AbsoluteFilePath, lexicon.SourcePath));
-            }
-            if (Hypotheses != null)
-            {
-                sb.AppendFormat("<br/>&nbsp;&nbsp;Hypotheses: {0}", Hypotheses.AbsoluteFilePath);
-            }
-            sb.AppendFormat("<br/>&nbsp;&nbsp;Tolerance: {0}", Tolerance);
-            return sb.ToString();
-        }
+                int consonantIndex = GetConsonantIndex(lexicon.Encoding ?? Encoding.Default);
 
-        protected override TextChunk Process(TextChunk input)
-        {
-            if (Lexicons == null || Lexicons.Count == 0)
-            {
-                AddError("no lexicon");
-                return input;
-            }
-
-            int numTokens = 0;
-            var cache = new Dictionary<string, IEnumerable<SegmentOption>>();
-            var optionComparer = new OptionComparer();
-            var newLines = input.Lines
-                .Where(line => object.ReferenceEquals(line.SourceStep, Previous))
-                .Select(srcLine =>
+                foreach (var entry in lexicon.Entries)
                 {
-                    Log.Info("matching " + srcLine.Text);
+                    var entryPhones = ExpandPhones(entry.Phones, consonantIndex);
 
-                    return new TextLine
+                    double distance = Math.DynamicTimeWarp
+                        .GetSequenceDistance(srcPhones, entryPhones,
+                            Math.DynamicTimeWarp.EuclideanDistance, Tolerance);
+
+                    if (distance < leastBestDistance || bestEntries.Count < NumOptions)
                     {
-                        SourceStep = this,
-                        SourceLine = srcLine,
-                        Text = srcLine.Text,
-                        Segments = srcLine.Segments
-                            .Select(srcSegment => new TextSegment
-                            {
-                                Text = srcSegment.Options?.FirstOrDefault(o => !string.IsNullOrWhiteSpace(o.Text))?.Text,
-                                SourceSegments = new List<TextSegment> { srcSegment },
-                                Options = srcSegment.Options
-                                    .Where(srcOption => !string.IsNullOrWhiteSpace(srcOption.Text))
-                                    .SelectMany(srcOption =>
-                                    {
-                                        if ((++numTokens % 10) == 0)
-                                            Log.Info("matched {0} tokens", numTokens);
-
-                                        if (cache.TryGetValue(srcOption.Text, out IEnumerable<SegmentOption> cached))
-                                            return cached;
-                                        var newOptions = GetOptions(srcOption);
-                                        cache[srcOption.Text] = newOptions;
-                                        return newOptions;
-                                    })
-                                    .OrderBy(o => o, optionComparer)
-                                    .ToList()
-                            })
-                            .ToList(),
-                    };
-                });
-
-            var newChunk = new TextChunk
-            {                
-                Description = input.Description,
-                Lines = input.Lines.Concat(newLines).ToList(),
-            };
-
-            Log.Info("matched {0} total tokens", numTokens);
-            return newChunk;
-        }
-
-        IEnumerable<SegmentOption> GetOptions(SegmentOption srcOption)
-        {
-            if (Hypotheses != null && Hypotheses.Groups != null)
-            {
-                foreach (var hypothesis in Hypotheses.Groups.Where(g => g.Entries != null).SelectMany(g => g.Entries))
-                {
-                    if (srcOption.Text == hypothesis.Input)
-                    {
-                        yield return new SegmentOption
+                        bestEntries.Add((distance, entry));
+                        bestEntries.Sort(entryComparer);
+                        while (bestEntries.Count > NumOptions)
                         {
-                            Encoding = Hypotheses.Encoding,
-                            Text = srcOption.Text,
-                            Entry = new LexiconEntry { Lemma = hypothesis.Lemma, Definition = hypothesis.Definition },
-                            Tags = TextTag.Hypo,
-                        };
-                    }
-                }
-            }
-
-            if (!(string.IsNullOrEmpty(srcOption.Text) || srcOption.Phones == null || srcOption.Phones.Count == 0))
-            {
-                var entryComparer = new EntryComparer();
-                var srcConsonantIndex = GetConsonantIndex(srcOption.Encoding ?? Encoding.Default);
-                var srcPhones = ExpandPhones(srcOption.Phones, srcConsonantIndex);
-               
-                double leastBestDistance = double.MaxValue;
-                var bestEntries = new List<(double, LexiconEntry)>();
-                foreach (var lexicon in Lexicons)
-                {
-                    int consonantIndex = GetConsonantIndex(lexicon.Encoding ?? Encoding.Default);
-
-                    foreach (var entry in lexicon.Entries)
-                    {
-                        var entryPhones = ExpandPhones(entry.Phones, consonantIndex);
-
-                        double distance = Math.DynamicTimeWarp
-                            .GetSequenceDistance(srcPhones, entryPhones,
-                                Math.DynamicTimeWarp.EuclideanDistance, Tolerance);
-
-                        if (distance < leastBestDistance || bestEntries.Count < NumOptions)
-                        {
-                            bestEntries.Add((distance, entry));
-                            bestEntries.Sort(entryComparer);
-                            while (bestEntries.Count > NumOptions)
-                                bestEntries.RemoveAt(bestEntries.Count - 1);
-                            leastBestDistance = bestEntries.Last().Item1;
+                            bestEntries.RemoveAt(bestEntries.Count - 1);
                         }
+
+                        leastBestDistance = bestEntries.Last().Item1;
                     }
                 }
+            }
 
-                if (bestEntries.Any())
+            if (bestEntries.Count != 0)
+            {
+                foreach (var de in bestEntries)
                 {
-                    foreach (var de in bestEntries)
+                    yield return new SegmentOption
                     {
-                        yield return new SegmentOption
-                        {
-                            Text = de.Item2.Lemma,
-                            Entry = de.Item2,
-                            Phones = de.Item2.Phones,
-                            Tags = TextTag.Match,
-                        };
-                    }
+                        Text = de.Item2.Lemma,
+                        Entry = de.Item2,
+                        Phones = de.Item2.Phones,
+                        Tags = TextTag.Match,
+                    };
                 }
-
-                yield break;
             }
 
-            yield return new SegmentOption
-            {
-                Text = srcOption.Text,
-                Encoding = srcOption.Encoding,
-                Entry = srcOption.Entry,
-                Phones = srcOption.Phones,
-                Tags = srcOption.Tags,
-            };
+            yield break;
         }
 
-        int GetConsonantIndex(Encoding encoding)
+        yield return new SegmentOption
         {
-            return encoding?.Features?.FeatureList?.IndexOf("Consonantal,Cons") ?? -1;
-        }
+            Text = srcOption.Text,
+            Encoding = srcOption.Encoding,
+            Entry = srcOption.Entry,
+            Phones = srcOption.Phones,
+            Tags = srcOption.Tags,
+        };
+    }
 
-        static IList<double[]> ExpandPhones(IEnumerable<double[]> phones, int consonantIndex)
+    private static int GetConsonantIndex(Encoding encoding)
+    {
+        return encoding.Features?.FeatureList.IndexOf("Consonantal,Cons") ?? -1;
+    }
+
+    private static List<double[]> ExpandPhones(IEnumerable<double[]> phones, int consonantIndex)
+    {
+        var result = new List<double[]>();
+        foreach (var phone in phones)
         {
-            var result = new List<double[]>();
-            foreach (var phone in phones)
+            result.Add(phone);
+            result.Add(phone);
+            if (!(consonantIndex >= 0 && consonantIndex < phone.Length && phone[consonantIndex] == 1.0))
             {
                 result.Add(phone);
-                result.Add(phone);
-                if (!(consonantIndex >= 0 && consonantIndex < phone.Length && phone[consonantIndex] == 1.0))
-                    result.Add(phone);
             }
-            return result;
         }
+        return result;
+    }
 
-        class EntryComparer : IComparer<(double, LexiconEntry)>
+    private sealed class EntryComparer : IComparer<(double, LexiconEntry)>
+    {
+        public int Compare((double, LexiconEntry) x, (double, LexiconEntry) y)
         {
-            public int Compare((double, LexiconEntry) x, (double, LexiconEntry) y)
-            {
-                return x.Item1.CompareTo(y.Item1);
-            }
+            return x.Item1.CompareTo(y.Item1);
         }
     }
 }

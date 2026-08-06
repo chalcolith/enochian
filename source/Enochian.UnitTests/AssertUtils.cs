@@ -1,56 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Globalization;
 
-namespace Enochian.UnitTests
+namespace Enochian.UnitTests;
+
+public static class AssertUtils
 {
-    public static class AssertUtils
+    public static void NoErrors(IConfigurable obj)
     {
-        public static void NoErrors(IConfigurable obj)
+        if (obj.Errors != null)
         {
-            if (obj.Errors != null)
+            var message = string.Join(", ", obj.Errors.Select(er => er.Message));
+            if (!string.IsNullOrWhiteSpace(message))
             {
-                var message = string.Join(", ", obj.Errors.Select(er => er.Message));
-                if (!string.IsNullOrWhiteSpace(message))
-                    Assert.Fail(message);
+                Assert.Fail(message);
             }
         }
+    }
 
-        public static void WithErrors(Action<IList<string>> act, Action assert, string expectedError = null)
+    public static void WithErrors(Action<IList<string>> act, Action assert, string? expectedError = null)
+    {
+        WithErrors(null, act, assert, expectedError);
+    }
+
+    public static void WithErrors(Action? arrange, Action<IList<string>> act, Action assert, string? expectedError = null)
+    {
+        arrange?.Invoke();
+        var errors = new List<string>();
+        act?.Invoke(errors);
+
+        if (string.IsNullOrWhiteSpace(expectedError))
         {
-            WithErrors(null, act, assert, expectedError);
-        }
-
-        public static void WithErrors(Action arrange, Action<IList<string>> act, Action assert, string expectedError = null)
-        {
-            arrange?.Invoke();
-            var errors = new List<string>();
-            act?.Invoke(errors);
-
-            if (string.IsNullOrWhiteSpace(expectedError))
+            if (errors.Count != 0)
             {
-                if (errors.Any())
-                    throw new AssertFailedException(string.Format("errors: {0}", string.Join(", ", errors)));
-                assert?.Invoke();
+                throw new AssertFailedException(string.Format(CultureInfo.InvariantCulture, "errors: {0}", string.Join(", ", errors)));
             }
-            else
-            {
-                var found = errors.Any(e => e.Contains(expectedError));
-                Assert.IsTrue(found,
-                    string.Format("did not find expected error {0}: {1}",
-                        expectedError, string.Join(", ", errors)));
-            }
+
+            assert?.Invoke();
         }
-
-        public static void SequenceEquals<T>(IEnumerable<T> expected, IEnumerable<T> actual)
+        else
         {
-            if (expected == null) throw new ArgumentNullException(nameof(expected));
-            if (actual == null) throw new ArgumentNullException(nameof(actual));
+            var found = errors.Any(e => e.Contains(expectedError));
+            Assert.IsTrue(found,
+                string.Format(CultureInfo.InvariantCulture, "did not find expected error {0}: {1}",
+                    expectedError, string.Join(", ", errors)));
+        }
+    }
 
-            if (!expected.SequenceEqual(actual))
-                throw new AssertFailedException("sequences are not equal");
+    public static void SequenceEquals<T>(IEnumerable<T> expected, IEnumerable<T> actual)
+    {
+        ArgumentNullException.ThrowIfNull(expected);
+
+        ArgumentNullException.ThrowIfNull(actual);
+
+        if (!expected.SequenceEqual(actual))
+        {
+            throw new AssertFailedException("sequences are not equal");
         }
     }
 }

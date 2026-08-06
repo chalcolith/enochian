@@ -1,260 +1,261 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using Enochian.Text;
 using System.Text.RegularExpressions;
-using Enochian.Text;
 
-namespace Enochian.Flow.Steps
+namespace Enochian.Flow.Steps;
+
+public class VoynichInterlinear(IConfigurable parent, IFlowResources resources) : TextFlowStep(parent, resources)
 {
-    public class VoynichInterlinear : TextFlowStep
+    private static readonly ILogger Logger = Logging.CreateLogger<VoynichInterlinear>();
+
+    private IList<TextChunk>? chunks;
+
+    public override ILogger Log => Logger;
+
+    public Encoding? Encoding { get; private set; }
+    private Encoder? Encoder { get; set; }
+
+    public string? SourcePath { get; private set; }
+
+    public IList<string>? Locuses { get; set; }
+
+    public IList<TextChunk> Chunks { set => chunks = value; }
+
+    public override IConfigurable Configure(JsonObject config)
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        _ = base.Configure(config);
 
-        IList<TextChunk> chunks;
-
-        public VoynichInterlinear(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources)
+        if (Resources != null)
         {
+            var encoding = config.Get<string>("encoding", this);
+            Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == encoding);
+            if (Encoding?.Features != null)
+            {
+                Encoder = new Encoder(Encoding.Features, Encoding);
+            }
+            else
+            {
+                _ = AddError("invalid encoding name '{0}'", encoding);
+            }
+        }
+        else
+        {
+            _ = AddError("no encoding specified");
         }
 
-        public override NLog.Logger Log => logger;
-
-        public Encoding Encoding { get; private set; }
-        Encoder Encoder { get; set; }
-
-        public string SourcePath { get; private set; }
-
-        public IList<string> Locuses { get; set; }
-
-        public IList<TextChunk> Chunks { set => chunks = value; }
-
-        public override IConfigurable Configure(IDictionary<string, object> config)
+        var path = config.Get<string>("path", this);
+        if (!string.IsNullOrWhiteSpace(path))
         {
-            base.Configure(config);
-
-            if (Resources != null)
+            SourcePath = path;
+        }
+        else
+        {
+            var text = config.Get<string>("text", this);
+            if (!string.IsNullOrWhiteSpace(text))
             {
-                var encoding = config.Get<string>("encoding", this);
-                Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == encoding);
-                if (Encoding != null)
-                {
-                    Encoder = new Encoder(Encoding.Features, Encoding);
-                }
-                else
-                {
-                    AddError("invalid encoding name '{0}'", encoding);
-                }
-            }
-            else
-            {
-                AddError("no encoding specified");
-            }
-
-            string path = config.Get<string>("path", this);
-            if (!string.IsNullOrWhiteSpace(path))
-            {
-                SourcePath = path;
-            }
-            else
-            {
-                string text = config.Get<string>("text", this);
-                if (!string.IsNullOrWhiteSpace(text))
-                {
-                    chunks = new List<TextChunk>
+                chunks =
+                [
+                    new TextChunk
                     {
-                        new TextChunk
-                        {                            
-                            Lines = new[] { GetInterline(text) }
-                        }
-                    };
-                }
-                else
-                {
-                    AddError("no sample text specified");
-                }
+                        Lines = [GetInterline(text)]
+                    }
+                ];
             }
-
-            var locuses = config.Get<IEnumerable<string>>("locuses", this);
-            Locuses = locuses?.ToList();
-
-            return this;
+            else
+            {
+                _ = AddError("no sample text specified");
+            }
         }
 
-        public override string GenerateReport(ReportType reportType)
-        {
-            return string.Format("&nbsp;&nbsp;Path: {0}<br/>&nbsp;&nbsp;Encoding: {1}: {2}<br/>&nbsp;&nbsp;Path: {3}",
-                GetChildPath(AbsoluteFilePath, SourcePath),
-                Encoding.Id, Encoding.Description, Encoding.AbsoluteFilePath);
-        }
+        var locuses = config.Get<IEnumerable<string>>("locuses", this);
+        Locuses = locuses?.ToList();
 
-        static readonly Regex LineRegex = new Regex(@"^\s*(<[^>]+>)\s+(.*)[-=]", RegexOptions.Compiled);
-        static readonly Regex ExtComment = new Regex(@"\*{&(\d+)}", RegexOptions.Compiled);
-        static readonly Regex ReplComment = new Regex(@"{&[^}]+}", RegexOptions.Compiled);
-        static readonly char[] Punctuation = new[] { '.', '\'', '-', '=', '?', '%' };
+        return this;
+    }
 
-        public override IEnumerable<TextChunk> GetOutputs()
+    public override string GenerateReport(ReportType reportType)
+    {
+        var sourcePath = string.IsNullOrWhiteSpace(SourcePath) ? string.Empty : GetChildPath(AbsoluteFilePath, SourcePath);
+        return string.Format(CultureInfo.InvariantCulture, "&nbsp;&nbsp;Path: {0}<br/>&nbsp;&nbsp;Encoding: {1}: {2}<br/>&nbsp;&nbsp;Path: {3}",
+            sourcePath,
+            Encoding?.Id, Encoding?.Description, Encoding?.AbsoluteFilePath);
+    }
+
+    private static readonly Regex LineRegex = new(@"^\s*(<[^>]+>)\s+(.*)[-=]", RegexOptions.Compiled);
+    private static readonly Regex ExtComment = new(@"\*{&(\d+)}", RegexOptions.Compiled);
+    private static readonly Regex ReplComment = new(@"{&[^}]+}", RegexOptions.Compiled);
+    private static readonly char[] Punctuation = ['.', '\'', '-', '=', '?', '%'];
+
+    public override IEnumerable<TextChunk> GetOutputs()
+    {
+        if (chunks != null)
         {
-            if (chunks != null)
+            foreach (var chunk in chunks)
             {
-                foreach (var chunk in chunks)
-                    yield return chunk;
+                yield return chunk;
             }
-            else if (!string.IsNullOrWhiteSpace(SourcePath))
+        }
+        else if (!string.IsNullOrWhiteSpace(SourcePath))
+        {
+            FileStream? fs = null;
+            StreamReader? sr = null;
+            int numLines = 0;
+            int numChunks = 0;
+            chunks = [];
+            var chunksPerLocus = new Dictionary<string, TextChunk>();
+
+            try
             {
-                FileStream fs = null;
-                StreamReader sr = null;
-                int numLines = 0;
-                int numChunks = 0;
-                chunks = new List<TextChunk>();
-                var chunksPerLocus = new Dictionary<string, TextChunk>();
+                var sourcePath = GetChildPath(AbsoluteFilePath, SourcePath);
+                Log.LogInformation("reading {SourcePath}", sourcePath);
 
                 try
                 {
-                    var sourcePath = GetChildPath(AbsoluteFilePath, SourcePath);
-                    Log.Info("reading {0}", sourcePath);
+                    fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
+                    sr = new StreamReader(fs, System.Text.Encoding.GetEncoding("ISO-8859-1"));
+                }
+                catch (Exception e)
+                {
+                    _ = AddError(e.Message);
+                }
 
-                    try
+                if (fs != null && sr != null)
+                {
+                    string? line;
+                    while (true)
                     {
-                        fs = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
-                        sr = new StreamReader(fs, System.Text.Encoding.GetEncoding("ISO-8859-1"));
-                    }
-                    catch (Exception e)
-                    {
-                        AddError(e.Message);
-                    }
-
-                    if (fs != null && sr != null)
-                    {
-                        string line;
-                        while (true)
+                        try
                         {
-                            try
-                            {
-                                line = sr.ReadLine();
-                                numLines++;
-                            }
-                            catch (Exception e)
-                            {
-                                AddError(e.Message);
-                                break;
-                            }
+                            line = sr.ReadLine();
+                            numLines++;
+                        }
+                        catch (Exception e)
+                        {
+                            _ = AddError(e.Message);
+                            break;
+                        }
 
-                            if (line == null)
-                                break;
+                        if (line == null)
+                        {
+                            break;
+                        }
 
-                            if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+                        if (string.IsNullOrWhiteSpace(line) || line[0] == '#')
+                        {
+                            continue;
+                        }
+
+                        var lineMatch = LineRegex.Match(line);
+                        if (lineMatch.Success)
+                        {
+                            var locus = lineMatch.Groups[1].Value;
+                            if (Locuses != null && !Locuses.Contains(locus))
+                            {
                                 continue;
+                            }
 
-                            var lineMatch = LineRegex.Match(line);
-                            if (lineMatch.Success)
+                            var text = lineMatch.Groups[2].Value;
+
+                            var extendedMatch = ExtComment.Match(text);
+                            while (extendedMatch.Success)
                             {
-                                var locus = lineMatch.Groups[1].Value;
-                                if (Locuses != null && !Locuses.Contains(locus))
-                                    continue;
-
-                                var text = lineMatch.Groups[2].Value;
-
-                                var extendedMatch = ExtComment.Match(text);
-                                while (extendedMatch.Success)
+                                if (int.TryParse(extendedMatch.Groups[1].Value, out int code))
                                 {
-                                    if (int.TryParse(extendedMatch.Groups[1].Value, out int code))
-                                    {
-                                        var repl = new string((char)code, 1);
-                                        text = text.Substring(0, extendedMatch.Index)
-                                            + repl 
-                                            + text.Substring(extendedMatch.Index + extendedMatch.Length);
-                                    }
-                                    extendedMatch = extendedMatch.NextMatch();
+                                    var repl = new string((char)code, 1);
+                                    text = text[..extendedMatch.Index]
+                                        + repl
+                                        + text[(extendedMatch.Index + extendedMatch.Length)..];
                                 }
+                                extendedMatch = extendedMatch.NextMatch();
+                            }
 
-                                var replMatch = ReplComment.Match(text);
-                                while (replMatch.Success)
+                            var replMatch = ReplComment.Match(text);
+                            while (replMatch.Success)
+                            {
+                                text = text[..System.Math.Min(text.Length, replMatch.Index)]
+                                    + replMatch.Groups[1].Value
+                                    + text[System.Math.Min(text.Length, replMatch.Index + replMatch.Length)..];
+                                replMatch = replMatch.NextMatch();
+                            }
+
+                            var chunk = new TextChunk
+                            {
+                                Description = locus,
+                                Lines = [GetInterline(text)]
+                            };
+                            chunks.Add(chunk);
+                            numChunks++;
+
+                            yield return chunk;
+
+                            if (Locuses != null && Locuses.Any())
+                            {
+                                chunksPerLocus[locus] = chunk;
+                                if (chunksPerLocus.Count == Locuses.Count)
                                 {
-                                    text = text.Substring(0, System.Math.Min(text.Length, replMatch.Index))
-                                        + replMatch.Groups[1].Value
-                                        + text.Substring(System.Math.Min(text.Length, replMatch.Index + replMatch.Length));
-                                    replMatch = replMatch.NextMatch();
-                                }
-
-                                var chunk = new TextChunk
-                                {
-                                    Description = locus,
-                                    Lines = new [] { GetInterline(text) }
-                                };
-                                chunks.Add(chunk);
-                                numChunks++;
-
-                                yield return chunk;
-
-                                if (Locuses != null && Locuses.Any())
-                                {
-                                    chunksPerLocus[locus] = chunk;
-                                    if (chunksPerLocus.Count == Locuses.Count)
-                                        break;
+                                    break;
                                 }
                             }
                         }
                     }
-                }
-                finally
-                {
-                    if (sr != null) sr.Dispose();
-                    if (fs != null) fs.Dispose();
-                    Log.Info("read {0} lines, {1} chunks", numLines, numChunks);
                 }
             }
-        }
-
-        TextLine GetInterline(string line)
-        {
-            var tokens = line.Split(Punctuation, StringSplitOptions.RemoveEmptyEntries);
-            var optionComparer = new OptionComparer();
-
-            return new TextLine
+            finally
             {
-                SourceStep = this,
-                Text = line,
-                Segments = tokens
-                    .Select(token =>
-                    {
-                        string option = token;
-                        string repr = "";
-                        IList<double[]> phones = null;
-                        if (Encoder != null)
-                        {
-                            (option, repr, phones) = Encoder.GetTextAndPhones(token);
-                        }
+                sr?.Dispose();
 
-                        var options = new List<SegmentOption>
-                        {
-                            new SegmentOption
-                            {
-                                Text = option,
-                                Encoding = Encoding,
-                                Phones = phones,
-                            }
-                        };
+                fs?.Dispose();
 
-                        if (!string.IsNullOrEmpty(repr))
-                        {
-                            options.Add(new SegmentOption
-                            {
-                                Tags = TextTag.Repr,
-                                Text = repr,
-                            });
-                        }
-
-                        options.Sort(optionComparer);
-
-                        return new TextSegment
-                        {
-                            Text = token,
-                            Options = options,
-                        };
-                    })
-                    .ToList()
-            };
+                Log.LogInformation("read {LineCount} lines, {ChunkCount} chunks", numLines, numChunks);
+            }
         }
+    }
+
+    private TextLine GetInterline(string line)
+    {
+        var tokens = line.Split(Punctuation, StringSplitOptions.RemoveEmptyEntries);
+        var optionComparer = new OptionComparer();
+
+        return new TextLine
+        {
+            SourceStep = this,
+            Text = line,
+            Segments = [.. tokens
+                .Select(token =>
+                {
+                    string option = token;
+                    string repr = "";
+                    IList<double[]> phones = [];
+                    if (Encoder != null)
+                    {
+                        (option, repr, phones) = Encoder.GetTextAndPhones(token);
+                    }
+
+                    var options = new List<SegmentOption>
+                    {
+                        new() {
+                            Text = option,
+                            Encoding = Encoding,
+                            Phones = phones,
+                        }
+                    };
+
+                    if (!string.IsNullOrEmpty(repr))
+                    {
+                        options.Add(new SegmentOption
+                        {
+                            Tags = TextTag.Repr,
+                            Text = repr,
+                        });
+                    }
+
+                    options.Sort(optionComparer);
+
+                    return new TextSegment
+                    {
+                        Text = token,
+                        Options = options,
+                    };
+                })]
+        };
     }
 }

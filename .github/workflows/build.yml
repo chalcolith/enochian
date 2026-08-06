@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: source
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: source/global.json
+
+      - name: Restore
+        run: dotnet restore Enochian.slnx
+
+      - name: Build
+        run: dotnet build Enochian.slnx --no-restore
+
+      - name: Test
+        run: dotnet test Enochian.slnx --no-build

@@ -6,6 +6,31 @@ between texts in unknown languages and entries one or more lexicons.
 You may see the results of a recent test run of the software for the Voynich Manuscript
 [here](http://chalcolith.github.io/enochian).
 
+## Build and Test
+
+The .NET and test SDK versions are pinned by `source/global.json`. Run the
+repository build from `source/` so the pinned SDK configuration is applied:
+
+```powershell
+cd source
+dotnet restore Enochian.slnx
+dotnet build Enochian.slnx --no-restore
+dotnet test Enochian.slnx --no-build
+```
+
+At the start of the .NET 10 baseline migration, the repository discovered six
+tests: two unit tests and four integration-test cases. M0-00 completes with ten
+tests: six unit tests and four integration-test cases. No tests are skipped.
+
+The integration tests use only checked-in fixtures and do not require network
+access. `EnglishTestSimple` writes `reports/english_test_report.html`, which is
+ignored by Git. `RomlexScraper` does perform live network acquisition when run,
+but it is a utility and is not invoked by the test suite or CI.
+
+Warnings are treated as errors except for missing XML documentation (`CS1591`),
+which remains visible as the temporary M0-00 migration baseline. All other
+compiler, analyzer, and style diagnostics fail the build.
+
 ## Introduction
 
 The initial goal is to investigate whether a particular theory of a possible

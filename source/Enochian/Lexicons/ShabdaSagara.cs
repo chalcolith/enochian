@@ -1,135 +1,134 @@
 ﻿using Enochian.Flow;
 using Enochian.Text;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
 
-namespace Enochian.Lexicons
+namespace Enochian.Lexicons;
+
+public class ShabdaSagara(IConfigurable parent, IFlowResources resources) : Lexicon(parent, resources)
 {
-    public class ShabdaSagara : Lexicon
+    private static readonly ILogger Logger = Logging.CreateLogger<ShabdaSagara>();
+
+    public override ILogger Log => Logger;
+
+    public override IConfigurable Configure(JsonObject config)
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        return base.Configure(config);
+    }
 
-        public ShabdaSagara(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources)
+    private static readonly Regex LemmaLineRegex = new(@"<L>(\d+).*<k1>(.*)<k2>", RegexOptions.Compiled);
+    private static readonly Regex FirstLineRegex = new(@"(.*)¦\s+(\S+)\s+(.*)", RegexOptions.Compiled);
+    private static readonly Regex MidLineRegex = new(@"<>(.*)", RegexOptions.Compiled);
+    private static readonly Regex InlineRegex = new(@"{#([^#]+)#}", RegexOptions.Compiled);
+
+    protected override void LoadLexicon(string path)
+    {
+        try
         {
-        }
-
-        public override NLog.Logger Log => logger;
-
-        public override IConfigurable Configure(IDictionary<string, object> config)
-        {
-            return base.Configure(config);
-        }
-
-        static readonly Regex LemmaLineRegex = new Regex(@"<L>(\d+).*<k1>(.*)<k2>", RegexOptions.Compiled);
-        static readonly Regex FirstLineRegex = new Regex(@"(.*)¦\s+(\S+)\s+(.*)", RegexOptions.Compiled);
-        static readonly Regex MidLineRegex = new Regex(@"<>(.*)", RegexOptions.Compiled);
-        static readonly Regex InlineRegex = new Regex(@"{#([^#]+)#}", RegexOptions.Compiled);
-
-        protected override void LoadLexicon(string path)
-        {
-            try
+            if (Features == null || Encoding == null)
             {
-                path = Path.GetFullPath(path);
-                Log.Info("loading SHS from {0}", path);
+                _ = AddError("Shabda-Sagara requires configured features and encoding");
+                return;
+            }
 
-                var encoder = new Encoder(Features, Encoding);
-                var entries = new List<LexiconEntry>();
-                var entriesByLemma = new Dictionary<string, LexiconEntry>();
+            path = Path.GetFullPath(path);
+            Log.LogInformation("loading SHS from {Path}", path);
 
-                int num = 0;
-                LexiconEntry currentEntry = null;
-                using (var sr = new StreamReader(path))
+            var encoder = new Encoder(Features, Encoding);
+            var entries = new List<LexiconEntry>();
+            var entriesByLemma = new Dictionary<string, LexiconEntry>();
+
+            int num = 0;
+            LexiconEntry? currentEntry = null;
+            using (var sr = new StreamReader(path))
+            {
+                string? line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    string line;
-                    while ((line = sr.ReadLine()) != null)
+                    var match = LemmaLineRegex.Match(line);
+                    if (match.Success)
                     {
-                        var match = LemmaLineRegex.Match(line);
-                        if (match.Success)
+                        if (currentEntry != null && !string.IsNullOrWhiteSpace(currentEntry.Lemma) && !string.IsNullOrWhiteSpace(currentEntry.Definition))
                         {
-                            if (currentEntry != null && !string.IsNullOrWhiteSpace(currentEntry.Lemma) && !string.IsNullOrWhiteSpace(currentEntry.Definition))
+                            if (entriesByLemma.TryGetValue(currentEntry.Lemma, out var existingEntry))
                             {
-                                if (entriesByLemma.TryGetValue(currentEntry.Lemma, out LexiconEntry existingEntry))
-                                {
-                                    existingEntry.Definition = existingEntry.Definition + "\n\n" + currentEntry.Definition;
-                                }
-                                else
-                                {
-                                    entries.Add(currentEntry);
-                                    entriesByLemma[currentEntry.Lemma] = currentEntry;
-                                }
-
-                                if ((++num % 1000) == 0)
-                                    Log.Info("  loaded {0} entries", num);
+                                existingEntry.Definition = existingEntry.Definition + "\n\n" + currentEntry.Definition;
+                            }
+                            else
+                            {
+                                entries.Add(currentEntry);
+                                entriesByLemma[currentEntry.Lemma] = currentEntry;
                             }
 
-                            string lemmaSlp1 = match.Groups[2].Value;
-                            (string text, string lemma, IList<double[]> phones) = encoder.GetTextAndPhones(lemmaSlp1);
-                            currentEntry = new LexiconEntry
+                            if ((++num % 1000) == 0)
                             {
-                                Lexicon = this,
-                                Lemma = lemma,
-                                Text = text,
-                                Definition = "(" + lemmaSlp1 + ") ",
-                                Phones = phones,
-                            };
+                                Log.LogInformation("  loaded {Count} entries", num);
+                            }
                         }
-                        else if (currentEntry != null)
+
+                        string lemmaSlp1 = match.Groups[2].Value;
+                        (string text, string lemma, IList<double[]> phones) = encoder.GetTextAndPhones(lemmaSlp1);
+                        currentEntry = new LexiconEntry
                         {
-                            if ((match = FirstLineRegex.Match(line)).Success)
-                            {
-                                currentEntry.Definition = currentEntry.Definition
-                                    + ReplaceSlp1(encoder, match.Groups[2].Value) + " "
-                                    + ReplaceSlp1(encoder, match.Groups[3].Value);
-                            }
-                            else if ((match = MidLineRegex.Match(line)).Success)
-                            {
-                                currentEntry.Definition = currentEntry.Definition + " " 
-                                    + ReplaceSlp1(encoder, match.Groups[1].Value);
-                            }
-                        }
+                            Lexicon = this,
+                            Lemma = lemma,
+                            Text = text,
+                            Definition = "(" + lemmaSlp1 + ") ",
+                            Phones = phones,
+                        };
                     }
-
-                    if (currentEntry != null)
+                    else if (currentEntry != null)
                     {
-                        if (entriesByLemma.TryGetValue(currentEntry.Lemma, out LexiconEntry existingEntry))
+                        if ((match = FirstLineRegex.Match(line)).Success)
                         {
-                            existingEntry.Definition = existingEntry.Definition + "\n" + currentEntry.Definition;
+                            currentEntry.Definition = currentEntry.Definition
+                                + ReplaceSlp1(encoder, match.Groups[2].Value) + " "
+                                + ReplaceSlp1(encoder, match.Groups[3].Value);
                         }
-                        else
+                        else if ((match = MidLineRegex.Match(line)).Success)
                         {
-                            entries.Add(currentEntry);
-                            entriesByLemma[currentEntry.Lemma] = currentEntry;
+                            currentEntry.Definition = currentEntry.Definition + " "
+                                + ReplaceSlp1(encoder, match.Groups[1].Value);
                         }
                     }
                 }
 
-                Log.Info("loaded {0} entries from SHS", num);
+                if (currentEntry != null)
+                {
+                    if (entriesByLemma.TryGetValue(currentEntry.Lemma, out var existingEntry))
+                    {
+                        existingEntry.Definition = existingEntry.Definition + "\n" + currentEntry.Definition;
+                    }
+                    else
+                    {
+                        entries.Add(currentEntry);
+                        entriesByLemma[currentEntry.Lemma] = currentEntry;
+                    }
+                }
+            }
 
-                Entries = entries;
-                EntriesByLemma = entriesByLemma;
-            }
-            catch (Exception e)
-            {
-                AddError("unable to load SHS lexicon: {0}", e.Message);
-            }
+            Log.LogInformation("loaded {Count} entries from SHS", num);
+
+            Entries = entries;
+            EntriesByLemma = entriesByLemma;
         }
-
-        string ReplaceSlp1(Encoder encoder, string str)
+        catch (Exception e)
         {
-            var match = InlineRegex.Match(str);
-            while (match.Success)
-            {
-                (_, string devanagari, _) = encoder.GetTextAndPhones(match.Groups[1].Value);
-                str = str.Substring(0, match.Index)
-                    + devanagari + " (" + match.Groups[1].Value + ")"
-                    + str.Substring(match.Index + match.Length);
-
-                match = InlineRegex.Match(str);
-            }
-            return str;
+            _ = AddError("unable to load SHS lexicon: {0}", e.Message);
         }
+    }
+
+    private static string ReplaceSlp1(Encoder encoder, string str)
+    {
+        var match = InlineRegex.Match(str);
+        while (match.Success)
+        {
+            (_, string devanagari, _) = encoder.GetTextAndPhones(match.Groups[1].Value);
+            str = str[..match.Index]
+                + devanagari + " (" + match.Groups[1].Value + ")"
+                + str[(match.Index + match.Length)..];
+
+            match = InlineRegex.Match(str);
+        }
+        return str;
     }
 }

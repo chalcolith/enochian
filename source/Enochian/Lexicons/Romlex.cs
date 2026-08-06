@@ -1,163 +1,167 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Enochian.Flow;
+﻿using Enochian.Flow;
 using Enochian.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
-namespace Enochian.Lexicons
+namespace Enochian.Lexicons;
+
+public class Romlex(IConfigurable parent, IFlowResources resources) : Lexicon(parent, resources)
 {
-    public class Romlex : Lexicon
+    private static readonly ILogger Logger = Logging.CreateLogger<Romlex>();
+    private static readonly JsonSerializerOptions SerializerOptions = new()
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        PropertyNameCaseInsensitive = true,
+    };
 
-        public Romlex(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources)
+    public override ILogger Log => Logger;
+
+    public override IConfigurable Configure(JsonObject config)
+    {
+        return base.Configure(config);
+    }
+
+    protected override void LoadLexicon(string path)
+    {
+        try
         {
-        }
-
-        public override NLog.Logger Log => logger;
-
-        public override IConfigurable Configure(IDictionary<string, object> config)
-        {
-            return base.Configure(config);
-        }
-
-        protected override void LoadLexicon(string path)
-        {
-            try
+            if (Features == null || Encoding == null)
             {
-                var encoder = new Encoder(Features, Encoding);
-                RomlexLexicon lexicon;
-                var entries = new List<LexiconEntry>();
-                var entriesByLemma = new Dictionary<string, LexiconEntry>();
+                _ = AddError("ROMLEX requires configured features and encoding");
+                return;
+            }
 
-                path = Path.GetFullPath(path);
-                Log.Info("loading ROMLEX from {0}", path);
+            var encoder = new Encoder(Features, Encoding);
+            RomlexLexicon lexicon;
+            var entries = new List<LexiconEntry>();
+            var entriesByLemma = new Dictionary<string, LexiconEntry>();
 
-                var js = new JsonSerializer
+            path = Path.GetFullPath(path);
+            Log.LogInformation("loading ROMLEX from {Path}", path);
+
+            using var stream = File.OpenRead(path);
+            lexicon = JsonSerializer.Deserialize<RomlexLexicon>(stream, SerializerOptions)
+                ?? throw new JsonException("The ROMLEX file did not contain a lexicon.");
+
+            int num = 0;
+            var romLookup = lexicon.Entries.ToLookup(e => e.Lemma);
+            foreach (var romEntry in romLookup)
+            {
+                var lemma = romEntry.Key;
+                if (string.IsNullOrWhiteSpace(lemma))
                 {
-                    Formatting = Formatting.Indented,
-                    NullValueHandling = NullValueHandling.Ignore,
-                };
-                using (var sr = new StreamReader(path))
-                using (var jr = new JsonTextReader(sr))
-                {
-                    lexicon = js.Deserialize<RomlexLexicon>(jr);
+                    _ = AddError("ROMLEX entry has no lemma");
+                    continue;
                 }
 
-                int num = 0;
-                var romLookup = lexicon.Entries.ToLookup(e => e.Lemma);
-                foreach (var romEntry in romLookup)
-                {
-                    var lemma = romEntry.Key;
-                    (_, _, var phones) = encoder.GetTextAndPhones(lemma);
+                (_, _, var phones) = encoder.GetTextAndPhones(lemma);
 
-                    var text = romEntry.Select(e => e.Entry).FirstOrDefault(t => t != lemma) ?? lemma;
+                var text = romEntry.Select(e => e.Entry).FirstOrDefault(t => t != lemma) ?? lemma;
 
-                    var defsAndLanguages = romEntry
-                        .Select(e =>
-                        {
-                            var lang = lexicon.Languages.FirstOrDefault(l => l.Code == e.SrcLangCode);
-                            return (string.Format("{0}: {1}", e.PartOfSpeech, e.Definition), lang);
-                        })
-                        .ToLookup(de => de.Item1);
-
-                    var def = string.Join("\n", defsAndLanguages
-                        .OrderBy(dl => dl.Key)
-                        .Select(dl =>
-                        {
-                            var d = dl.Key;
-                            if (dl.Any())
-                                d += string.Format(" ({0})", string.Join(", ", dl.Where(de => de.Item2 != null)
-                                    .Distinct().Select((de, i) => (((i + 1) % 4) == 0 ? "\n" : "") + de.Item2.Name)));
-                            return d;
-                        }));
-
-                    var entry = new LexiconEntry
+                var defsAndLanguages = romEntry
+                    .Select(e =>
                     {
-                        Lexicon = this,
-                        Lemma = lemma,
-                        Text = text,
-                        Definition = def,
-                        Phones = phones,
-                    };
+                        var lang = lexicon.Languages.FirstOrDefault(l => l.Code == e.SrcLangCode);
+                        return (string.Format(CultureInfo.InvariantCulture, "{0}: {1}", e.PartOfSpeech, e.Definition), lang);
+                    })
+                    .ToLookup(de => de.Item1);
 
-                    entries.Add(entry);
+                var def = string.Join("\n", defsAndLanguages
+                    .OrderBy(dl => dl.Key)
+                    .Select(dl =>
+                    {
+                        var d = dl.Key;
+                        if (dl.Any())
+                        {
+                            d += string.Format(CultureInfo.InvariantCulture, " ({0})", string.Join(", ", dl.Where(de => de.lang != null)
+                                .Distinct().Select((de, i) => (((i + 1) % 4) == 0 ? "\n" : "") + de.lang?.Name)));
+                        }
 
-                    if (!entriesByLemma.ContainsKey(entry.Lemma))
-                        entriesByLemma.Add(entry.Lemma, entry);
-                    else
-                        AddError("duplicate lemma '{0}'", entry.Lemma);
+                        return d;
+                    }));
 
-                    if ((++num % 1000) == 0)
-                        Log.Info("  loaded {0} entries", num);
+                var entry = new LexiconEntry
+                {
+                    Lexicon = this,
+                    Lemma = lemma,
+                    Text = text,
+                    Definition = def,
+                    Phones = phones,
+                };
+
+                entries.Add(entry);
+
+                if (!entriesByLemma.TryAdd(entry.Lemma, entry))
+                {
+                    _ = AddError("duplicate lemma '{0}'", entry.Lemma);
                 }
-                Log.Info("loaded {0} total entries", num);
 
-                Entries = entries;
-                EntriesByLemma = entriesByLemma;
+                if ((++num % 1000) == 0)
+                {
+                    Log.LogInformation("  loaded {Count} entries", num);
+                }
             }
-            catch (Exception e)
-            {
-                AddError("unable to load ROMLX lexicon: {0}", e.Message);
-            }
+            Log.LogInformation("loaded {Count} total entries", num);
+
+            Entries = entries;
+            EntriesByLemma = entriesByLemma;
+        }
+        catch (Exception e)
+        {
+            _ = AddError("unable to load ROMLX lexicon: {0}", e.Message);
         }
     }
+}
 
-    public class RomlexLexicon
+public class RomlexLexicon
+{
+    public string? Created { get; set; }
+    public IList<RomlexLanguage> Languages { get; set; } = [];
+    public IList<RomlexEntry> Entries { get; set; } = [];
+}
+
+public class RomlexLanguage
+{
+    public string? Code { get; set; }
+    public string? Name { get; set; }
+}
+
+public class RomlexEntry
+{
+    public string? SrcLangCode { get; set; }
+    public string? DefLangCode { get; set; }
+
+    public string? Lemma { get; set; }
+    public string Entry
     {
-        public string Created { get; set; }
-        public IList<RomlexLanguage> Languages { get; set; }
-        public IList<RomlexEntry> Entries { get; set; }
+        get => field ?? Lemma ?? string.Empty;
+        set;
+    }
+    public string? PartOfSpeech { get; set; }
+    public string? Definition { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not RomlexEntry other)
+        {
+            return false;
+        }
+
+        return SrcLangCode == other.SrcLangCode
+            && DefLangCode == other.DefLangCode
+            && Lemma == other.Lemma
+            && Entry == other.Entry
+            && PartOfSpeech == other.PartOfSpeech
+            && Definition == other.Definition;
     }
 
-    public class RomlexLanguage
+    public override int GetHashCode()
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class RomlexEntry
-    {
-        string entry;
-
-        public string SrcLangCode { get; set; }
-        public string DefLangCode { get; set; }
-
-        public string Lemma { get; set; }
-        public string Entry
-        {
-            get => entry ?? Lemma;
-            set => entry = value;
-        }
-        public string PartOfSpeech { get; set; }
-        public string Definition { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            var other = obj as RomlexEntry;
-            if (other == null) return false;
-
-            return SrcLangCode == other.SrcLangCode
-                && DefLangCode == other.DefLangCode
-                && Lemma == other.Lemma
-                && Entry == other.Entry
-                && PartOfSpeech == other.PartOfSpeech
-                && Definition == other.Definition;
-        }
-
-        public override int GetHashCode()
-        {
-            var hash = base.GetHashCode();
-            hash ^= SrcLangCode?.GetHashCode() ?? 0;
-            hash ^= DefLangCode?.GetHashCode() ?? 0;
-            hash ^= Lemma?.GetHashCode() ?? 0;
-            hash ^= Entry?.GetHashCode() ?? 0;
-            hash ^= PartOfSpeech?.GetHashCode() ?? 0;
-            hash ^= Definition?.GetHashCode() ?? 0;
-            return hash;
-        }
+        var hash = base.GetHashCode();
+        hash ^= SrcLangCode?.GetHashCode() ?? 0;
+        hash ^= DefLangCode?.GetHashCode() ?? 0;
+        hash ^= Lemma?.GetHashCode() ?? 0;
+        hash ^= Entry?.GetHashCode() ?? 0;
+        hash ^= PartOfSpeech?.GetHashCode() ?? 0;
+        hash ^= Definition?.GetHashCode() ?? 0;
+        return hash;
     }
 }
