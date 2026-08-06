@@ -27,9 +27,9 @@ access. `EnglishTestSimple` writes `reports/english_test_report.html`, which is
 ignored by Git. `RomlexScraper` does perform live network acquisition when run,
 but it is a utility and is not invoked by the test suite or CI.
 
-Warnings are treated as errors except for missing XML documentation (`CS1591`),
-which remains visible as the temporary M0-00 migration baseline. All other
-compiler, analyzer, and style diagnostics fail the build.
+Warnings are treated as errors. Missing XML documentation (`CS1591`) is
+suppressed as the temporary M0-00 migration baseline; all other compiler,
+analyzer, and style diagnostics fail the build.
 
 ## Research Protocol
 
