@@ -1,0 +1,20 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "example-lexicon",
+  "language": "san",
+  "family": "Indo-European/Indo-Aryan",
+  "url": "https://example.org/lexicon.git",
+  "revision": { "kind": "commit", "value": "0123456789abcdef0123456789abcdef01234567" },
+  "retrieval_date": "2026-08-06",
+  "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "license": "CC-BY-4.0",
+  "citation": "Example Lexicon, version 1 (demonstration record; not research data).",
+  "parser": { "id": "example-parser", "version": "1.0.0" },
+  "raw_path": "resources/lexicons/raw/example-lexicon.txt",
+  "generated_artifact_path": "resources/lexicons/generated/example-lexicon.jsonl",
+  "filters": {
+    "include": ["records with a non-empty headword and pronunciation"],
+    "exclude": ["records marked as corrupt by the source"]
+  }
+}

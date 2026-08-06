@@ -1,0 +1,22 @@
+{
+  "$schema": "../schemas/normalized-entry.schema.json",
+  "schema_version": "1.0.0",
+  "entry_id": "example-lexicon:san:demo-1",
+  "source_record_id": "demo-1",
+  "language": "san",
+  "family": "Indo-European/Indo-Aryan",
+  "source": "example-lexicon",
+  "source_version": "0123456789abcdef0123456789abcdef01234567",
+  "lemma": "agni",
+  "original_form": "agni",
+  "form": "agni",
+  "entry_kind": "lemma",
+  "dialect": null,
+  "part_of_speech": "noun",
+  "definition": "fire",
+  "frequency": null,
+  "source_encoding": "Latin",
+  "ipa": "ɐɡni",
+  "unicode_normalization": "NFC",
+  "license": "CC-BY-4.0"
+}

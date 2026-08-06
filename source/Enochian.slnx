@@ -4,6 +4,14 @@
     <File Path="../LICENSE" />
     <File Path="../README.md" />
   </Folder>
+  <Folder Name="/Solution Items/experiments/">
+    <File Path="../experiments/confirmatory.protocol.json" />
+    <File Path="../experiments/exploratory.example.json" />
+    <File Path="../experiments/protocol.md" />
+  </Folder>
+  <Folder Name="/Solution Items/experiments/schemas/">
+    <File Path="../experiments/schemas/experiment.schema.json" />
+  </Folder>
   <Folder Name="/Solution Items/reports/">
     <File Path="../reports/enochian.css" />
   </Folder>
@@ -17,6 +25,14 @@
     <File Path="../resources/encodings/romlex.json" />
     <File Path="../resources/encodings/slp1.json" />
     <File Path="../resources/encodings/vogt.json" />
+  </Folder>
+  <Folder Name="/Solution Items/resources/lexicons/examples/">
+    <File Path="../resources/lexicons/examples/normalized-entry.example.json" />
+    <File Path="../resources/lexicons/examples/source-manifest.example.json" />
+  </Folder>
+  <Folder Name="/Solution Items/resources/lexicons/schemas/">
+    <File Path="../resources/lexicons/schemas/normalized-entry.schema.json" />
+    <File Path="../resources/lexicons/schemas/source-manifest.schema.json" />
   </Folder>
   <Folder Name="/Solution Items/samples/">
     <File Path="../samples/english_test.json" />

@@ -31,6 +31,14 @@ Warnings are treated as errors except for missing XML documentation (`CS1591`),
 which remains visible as the temporary M0-00 migration baseline. All other
 compiler, analyzer, and style diagnostics fail the build.
 
+## Research Protocol
+
+The versioned experiment and lexicon interchange contracts live under
+`experiments/schemas/` and `resources/lexicons/schemas/`. See the
+[frozen research protocol](experiments/protocol.md) for field definitions,
+inclusion and exclusion rules, planned contrasts, and the confirmatory decision
+rule. Schema conformance is enforced by the unit-test suite.
+
 ## Introduction
 
 The initial goal is to investigate whether a particular theory of a possible

@@ -1,0 +1,5 @@
+{
+  "schema": "experiment",
+  "base": "experiments/confirmatory.protocol.json",
+  "patch": { "randomization": { "seeds": { "permutation": null } } }
+}
