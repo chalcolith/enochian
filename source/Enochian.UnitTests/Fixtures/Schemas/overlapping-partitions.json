@@ -1,0 +1,9 @@
+{
+  "schema": "experiment",
+  "base": "experiments/confirmatory.protocol.json",
+  "patch": {
+    "corpus_split": {
+      "holdout_partition": { "loci": ["f1r", "f3v", "f4r", "f4v"] }
+    }
+  }
+}

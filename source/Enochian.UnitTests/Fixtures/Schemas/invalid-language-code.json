@@ -1,0 +1,5 @@
+{
+  "schema": "source-manifest",
+  "base": "resources/lexicons/examples/source-manifest.example.json",
+  "patch": { "language": "Sanskrit" }
+}

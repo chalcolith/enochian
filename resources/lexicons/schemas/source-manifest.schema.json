@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/source-manifest-1.json",
+  "title": "Enochian lexicon source manifest",
+  "description": "Version 1 provenance contract for an acquired lexicon source.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_id",
+    "language",
+    "family",
+    "url",
+    "revision",
+    "retrieval_date",
+    "sha256",
+    "license",
+    "citation",
+    "parser",
+    "raw_path",
+    "generated_artifact_path",
+    "filters"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "source_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "language": { "$ref": "#/$defs/language_code" },
+    "family": { "type": "string", "minLength": 1 },
+    "url": { "type": "string", "format": "uri" },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "enum": ["commit", "tag", "release"] },
+        "value": { "type": "string", "minLength": 1 }
+      }
+    },
+    "retrieval_date": { "type": "string", "format": "date" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "license": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9.+() -]+$" },
+    "citation": { "type": "string", "minLength": 1 },
+    "parser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "raw_path": { "$ref": "#/$defs/path" },
+    "generated_artifact_path": { "$ref": "#/$defs/path" },
+    "filters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["include", "exclude"],
+      "properties": {
+        "include": { "$ref": "#/$defs/string_array" },
+        "exclude": { "$ref": "#/$defs/string_array" }
+      }
+    }
+  },
+  "$defs": {
+    "language_code": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$"
+    },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "string_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$schema": "schemas/experiment.schema.json",
+  "schema_version": "1.0.0",
+  "experiment_id": "confirmatory-voynich-language-panel",
+  "phase": "confirmatory",
+  "frozen": true,
+  "corpus_split": {
+    "selection_basis": "predeclared_loci",
+    "selection_uses_comparative_scores": false,
+    "evaluation_partition": {
+      "id": "confirmatory-evaluation",
+      "loci": ["f1r", "f1v", "f2r", "f2v"]
+    },
+    "holdout_partition": {
+      "id": "confirmatory-holdout",
+      "loci": ["f3r", "f3v", "f4r", "f4v"]
+    }
+  },
+  "transcription": { "id": "takeshi-takahashi-eva", "version": "1.6e6" },
+  "mapping": { "id": "enochian-eva-to-ipa", "version": "1.0.0" },
+  "tokenization": {
+    "method": "eva-whitespace-words",
+    "version": "1.0.0",
+    "unicode_normalization": "NFC",
+    "uncertain_tokens": "exclude"
+  },
+  "feature_set": { "id": "enochian-phonological-features", "version": "1.0.0" },
+  "dtw": {
+    "distance_metric": "euclidean",
+    "normalization": "path_length",
+    "window": null,
+    "mapping_selection": "predeclared_single"
+  },
+  "length_filters": { "minimum_phonemes": 3, "maximum_phonemes": 20 },
+  "lexicon_filters": {
+    "entry_kinds": ["lemma"],
+    "parts_of_speech": [],
+    "duplicate_forms": "deduplicate_within_source",
+    "proper_names": "exclude",
+    "abbreviations": "exclude",
+    "inflected_forms": "exclude"
+  },
+  "randomization": {
+    "seeds": { "sampling": 15485863, "null_generation": 15485867, "permutation": 15485917 },
+    "sample_count": 10000,
+    "permutation_count": 100000
+  },
+  "planned_contrasts": [
+    {
+      "id": "indo-aryan-vs-controls",
+      "primary": true,
+      "target_groups": ["Indo-Aryan"],
+      "control_groups": ["non-Indo-Aryan controls"],
+      "expected_direction": "lower"
+    },
+    {
+      "id": "romani-vs-non-indo-aryan-controls",
+      "primary": false,
+      "target_groups": ["Romani"],
+      "control_groups": ["non-Indo-Aryan controls"],
+      "expected_direction": "lower"
+    }
+  ],
+  "statistics": {
+    "primary_statistic": "mean_normalized_dtw_difference",
+    "correction_method": "holm",
+    "alpha": 0.05,
+    "confidence_level": 0.95
+  },
+  "outputs": {
+    "root_directory": "outputs/confirmatory",
+    "scores": "scores.jsonl",
+    "quality_report": "quality-report.json",
+    "metadata": "metadata.json"
+  }
+}

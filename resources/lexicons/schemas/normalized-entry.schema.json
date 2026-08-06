@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/normalized-entry-1.json",
+  "title": "Enochian normalized lexicon entry",
+  "description": "Version 1 language-neutral lexicon interchange record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entry_id",
+    "source_record_id",
+    "language",
+    "family",
+    "source",
+    "source_version",
+    "lemma",
+    "original_form",
+    "form",
+    "entry_kind",
+    "dialect",
+    "part_of_speech",
+    "definition",
+    "frequency",
+    "source_encoding",
+    "ipa",
+    "unicode_normalization",
+    "license"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "entry_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*:[a-z]{2,3}(?:-[A-Za-z0-9]+)*:[A-Za-z0-9._~%-]+$"
+    },
+    "source_record_id": { "type": "string", "minLength": 1 },
+    "language": { "$ref": "#/$defs/language_code" },
+    "family": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "source_version": { "type": "string", "minLength": 1 },
+    "lemma": { "type": "string", "minLength": 1 },
+    "original_form": { "type": "string", "minLength": 1 },
+    "form": { "type": "string", "minLength": 1 },
+    "entry_kind": { "enum": ["lemma", "inflected", "proper-name", "abbreviation"] },
+    "dialect": { "type": ["string", "null"], "minLength": 1 },
+    "part_of_speech": { "type": ["string", "null"], "minLength": 1 },
+    "definition": { "type": ["string", "null"] },
+    "frequency": { "type": ["number", "null"], "minimum": 0 },
+    "source_encoding": { "type": "string", "minLength": 1 },
+    "ipa": { "type": "string", "minLength": 1 },
+    "unicode_normalization": { "const": "NFC" },
+    "license": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9.+() -]+$" }
+  },
+  "$defs": {
+    "language_code": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$"
+    }
+  }
+}

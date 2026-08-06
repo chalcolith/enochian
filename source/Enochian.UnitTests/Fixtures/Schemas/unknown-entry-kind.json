@@ -1,0 +1,5 @@
+{
+  "schema": "normalized-entry",
+  "base": "resources/lexicons/examples/normalized-entry.example.json",
+  "patch": { "entry_kind": "phrase" }
+}
