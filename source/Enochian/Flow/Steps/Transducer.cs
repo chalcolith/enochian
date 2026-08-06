@@ -1,74 +1,76 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Enochian.Text;
+﻿using Enochian.Text;
 
-namespace Enochian.Flow.Steps
+namespace Enochian.Flow.Steps;
+
+public class Transducer(IConfigurable parent, IFlowResources resources) : TextFlowStep(parent, resources)
 {
-    public class Transducer : TextFlowStep
+    private static readonly ILogger Logger = Logging.CreateLogger<Transducer>();
+
+    public override ILogger Log => Logger;
+
+    public FeatureSet? Features { get; private set; }
+    public Encoding? Encoding { get; private set; }
+    private Encoder? encoder;
+
+    public override IConfigurable Configure(JsonObject config)
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        Encoder encoder;
+        _ = base.Configure(config);
 
-        public Transducer(IConfigurable parent, IFlowResources resources)
-            : base(parent, resources)
+        if (Resources != null)
         {
-        }
-
-        public override NLog.Logger Log => logger;
-
-        public FeatureSet Features { get; private set; }
-        public Encoding Encoding { get; private set; }
-
-        Encoder Encoder => encoder ?? (encoder = new Encoder(Features, Encoding));
-
-        public override IConfigurable Configure(IDictionary<string, object> config)
-        {
-            base.Configure(config);
-
-            if (Resources != null)
+            var features = config.Get<string>("features", this);
+            Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
+            if (Features == null)
             {
-                var features = config.Get<string>("features", this);
-                Features = Resources.FeatureSets.FirstOrDefault(fs => fs.Id == features);
-                if (Features == null)
-                    AddError("invalid features name '{0}'", features);
-
-                var outputEncoding = config.Get<string>("encoding", this);
-                Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == outputEncoding);
-                if (Encoding == null)
-                    AddError("invalid encoding name '{0}'", outputEncoding);
-            }
-            else
-            {
-                AddError("no resources specified");
+                _ = AddError("invalid features name '{0}'", features);
             }
 
-            return this;
-        }
-
-        public override string GenerateReport(ReportType reportType)
-        {
-            return string.Format("&nbsp;&nbsp;Encoding: {0}: {1}<br/>&nbsp;&nbsp;Path: {2}", Encoder.Encoding?.Id, Encoder.Encoding?.Description, Encoder.Encoding?.AbsoluteFilePath);
-        }
-
-        protected override TextChunk Process(TextChunk input)
-        {
-            var inputLines = input.Lines;
-            var outputLines = input.Lines
-                .Where(srcLine => object.ReferenceEquals(srcLine.SourceStep, Previous))
-                .Select(srcLine => new TextLine
-                {
-                    SourceStep = this,
-                    SourceLine = srcLine,
-                    Text = srcLine.Text,
-                    Segments = srcLine.Segments
-                        .Select(seg => Encoder.ProcessSegment(seg))
-                        .ToList(),
-                });
-            var output = new TextChunk
+            var outputEncoding = config.Get<string>("encoding", this);
+            Encoding = Resources.Encodings.FirstOrDefault(enc => enc.Id == outputEncoding);
+            if (Encoding == null)
             {
-                Lines = input.Lines.Concat(outputLines).ToList(),
-            };
-            return output;
+                _ = AddError("invalid encoding name '{0}'", outputEncoding);
+            }
+
+            if (Features != null && Encoding != null)
+            {
+                encoder = new Encoder(Features, Encoding);
+            }
         }
+        else
+        {
+            _ = AddError("no resources specified");
+        }
+
+        return this;
+    }
+
+    public override string GenerateReport(ReportType reportType)
+    {
+        return string.Format(CultureInfo.InvariantCulture, "&nbsp;&nbsp;Encoding: {0}: {1}<br/>&nbsp;&nbsp;Path: {2}", Encoding?.Id, Encoding?.Description, Encoding?.AbsoluteFilePath);
+    }
+
+    protected override TextChunk Process(TextChunk input)
+    {
+        if (encoder == null)
+        {
+            _ = AddError("transducer is not configured with features and encoding");
+            return input;
+        }
+
+        var outputLines = input.Lines
+            .Where(srcLine => ReferenceEquals(srcLine.SourceStep, Previous))
+            .Select(srcLine => new TextLine
+            {
+                SourceStep = this,
+                SourceLine = srcLine,
+                Text = srcLine.Text,
+                Segments = [.. srcLine.Segments.Select(seg => encoder.ProcessSegment(seg))],
+            });
+        var output = new TextChunk
+        {
+            Lines = [.. input.Lines, .. outputLines],
+        };
+        return output;
     }
 }

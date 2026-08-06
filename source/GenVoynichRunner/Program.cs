@@ -1,93 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace GenVoynichRunner
+namespace GenVoynichRunner;
+
+internal sealed class Program
 {
-    class Program
+    private static readonly Regex TextLineRegex = new(@"^(<([^\.]+)\.[^>]+H>)\s+(\S+)", RegexOptions.Compiled);
+
+    private sealed class PageRec
     {
-        static readonly Regex TextLineRegex = new Regex(@"^(<([^\.]+)\.[^>]+H>)\s+(\S+)", RegexOptions.Compiled);
+        public required string Page { get; init; }
+        public List<string> Locuses { get; } = [];
+        public required string Url { get; init; }
+        public string? PrevUrl { get; init; }
+        public string? NextUrl { get; set; }
+    }
 
-        class PageRec
+    private static void Main(string[] args)
+    {
+        try
         {
-            public string Page;
-            public IList<string> Locuses;
-            public string Url;
-            public string PrevUrl;
-            public string NextUrl;
-        }
+            var pageRecs = new List<PageRec>();
+            PageRec? curPageRec = null;
 
-        static void Main(string[] args)
-        {
-            try
+            foreach (var fname in args)
             {
-                var pageRecs = new List<PageRec>();
-                PageRec curPageRec = null;
-
-                foreach (var fname in args)
+                using var sr = new StreamReader(fname);
+                string? line;
+                while ((line = sr.ReadLine()) != null)
                 {
-                    using (var sr = new StreamReader(fname))
+                    var match = TextLineRegex.Match(line);
+                    if (match.Success)
                     {
-                        string line;
-                        while ((line = sr.ReadLine()) != null)
+                        var locus = match.Groups[1].Value;
+                        var page = match.Groups[2].Value;
+
+                        if (curPageRec == null || page != curPageRec.Page)
                         {
-                            var match = TextLineRegex.Match(line);
-                            if (match.Success)
+                            curPageRec = new PageRec
                             {
-                                var locus = match.Groups[1].Value;
-                                var page = match.Groups[2].Value;
-
-                                if (curPageRec == null || page != curPageRec.Page)
-                                {
-                                    var newPageRec = new PageRec
-                                    {
-                                        Page = page,
-                                        Locuses = new List<string>(),
-                                        Url = "voynich_" + page + ".html",
-                                        PrevUrl = curPageRec?.Url,
-                                    };
-                                    pageRecs.Add(newPageRec);
-
-                                    curPageRec = newPageRec;
-                                }
-                                curPageRec.Locuses.Add(locus);
-                            }
+                                Page = page,
+                                Url = "voynich_" + page + ".html",
+                                PrevUrl = curPageRec?.Url,
+                            };
+                            pageRecs.Add(curPageRec);
                         }
+                        curPageRec.Locuses.Add(locus);
                     }
                 }
-
-                PageRec lastPage = pageRecs.First();
-                foreach (var pageRec in pageRecs.Skip(1))
-                {
-                    lastPage.NextUrl = pageRec.Url;
-                    lastPage = pageRec;
-                }
-
-                foreach (var pageRec in pageRecs)
-                {
-                    PrintNewCommand(pageRec.Url, pageRec.Locuses, pageRec.PrevUrl, pageRec.NextUrl);
-                }
             }
-            catch (Exception e)
+
+            PageRec lastPage = pageRecs.First();
+            foreach (var pageRec in pageRecs.Skip(1))
             {
-                Console.Error.WriteLine(e);
+                lastPage.NextUrl = pageRec.Url;
+                lastPage = pageRec;
+            }
+
+            foreach (var pageRec in pageRecs)
+            {
+                PrintNewCommand(pageRec.Url, pageRec.Locuses, pageRec.PrevUrl, pageRec.NextUrl);
             }
         }
-
-        static void PrintNewCommand(string url, IList<string> locuses, string prevUrl, string nextUrl)
+        catch (Exception e)
         {
-            string previousPage = prevUrl != null
-                ? string.Format(@"|steps/Match Report/previousPage={0}", prevUrl)
-                : "";
-
-            string nextPage = nextUrl != null
-                ? string.Format(@"|steps/Match Report/nextPage={0}", nextUrl)
-                : "";
-
-            Console.Out.WriteLine(@"dotnet ..\source\Enochian.Console\bin\Debug\netcoreapp2.0\Enochian.Console.dll voynich.json --overrides ""steps/Voynich Interlinear/locuses={0}|steps/Match Report/output=../reports/{1}{2}{3}""",
-                string.Join(",", locuses), url, previousPage, nextPage);
+            Console.Error.WriteLine(e);
         }
+    }
+
+    private static void PrintNewCommand(string url, IEnumerable<string> locuses, string? prevUrl, string? nextUrl)
+    {
+        string previousPage = prevUrl != null
+            ? $@"|steps/Match Report/previousPage={prevUrl}"
+            : "";
+
+        string nextPage = nextUrl != null
+            ? $@"|steps/Match Report/nextPage={nextUrl}"
+            : "";
+
+        Console.Out.WriteLine(FormattableString.Invariant(
+            $@"dotnet ..\source\Enochian.Console\bin\Debug\net10.0\Enochian.Console.dll voynich.json --overrides ""steps/Voynich Interlinear/locuses={string.Join(",", locuses)}|steps/Match Report/output=../reports/{url}{previousPage}{nextPage}"""));
     }
 }

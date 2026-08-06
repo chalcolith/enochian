@@ -1,135 +1,140 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Enochian.Text
+namespace Enochian.Text;
+
+public class FeatureSet(IConfigurable? parent) : RelativeConfigurable(parent)
 {
-    public class FeatureSet : RelativeConfigurable
+    private static readonly ILogger Logger = Logging.CreateLogger<FeatureSet>();
+
+    private IList<string>? featureList;
+    private Dictionary<string, int>? featureIndices;
+
+    public override ILogger Log => Logger;
+
+    public double PlusValue { get; private set; } = 1.0;
+    public double UnsetValue { get; private set; }
+    public double MinusValue { get; private set; } = -1.0;
+
+    public IList<string> FeatureList
     {
-        static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        get { return featureList ??= []; }
+    }
 
-        IList<string> featureList;
-        IDictionary<string, int> featureIndices;
+    public int NumDimensions
+    {
+        get { return featureList?.Count ?? 0; }
+    }
 
-        public FeatureSet(IConfigurable parent)
-            : base(parent)
+    private static readonly Regex FeatureSpec = new(@"^([+-])(\w+)$", RegexOptions.Compiled);
+
+    public override IConfigurable Configure(JsonObject config)
+    {
+        _ = base.Configure(config);
+
+        var plusValue = config.Get<double?>("plusValue", this);
+        if (plusValue != null)
         {
+            PlusValue = plusValue.Value;
         }
 
-        public override NLog.Logger Log => logger;
-
-        public double PlusValue { get; private set; } = 1.0;
-        public double UnsetValue { get; private set; } = 0.0;
-        public double MinusValue { get; private set; } = -1.0;
-
-        public IList<string> FeatureList
+        var minusValue = config.Get<double?>("minusValue", this);
+        if (minusValue != null)
         {
-            get { return featureList ?? (featureList = new List<string>()); }
+            MinusValue = minusValue.Value;
         }
 
-        public int NumDimensions
+        UnsetValue = (MinusValue + PlusValue) / 2.0;
+
+        var features = config.GetList<string>("features", this);
+        if (features != null)
         {
-            get { return featureList?.Count ?? 0; }
+            featureList = [.. features.OrderBy(f => f)];
+
+            featureIndices = featureList.SelectMany(
+                (fnames, i) => fnames.Split(',')
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .Select(n => (n, i)))
+                .ToDictionary(ni => ni.n.Trim().ToUpperInvariant(), ni => ni.i);
+        }
+        else
+        {
+            _ = AddError("features are not defined");
         }
 
-        static readonly Regex FeatureSpec = new Regex(@"^([+-])(\w+)$", RegexOptions.Compiled);
+        return this;
+    }
 
-        public override IConfigurable Configure(IDictionary<string, object> config)
+    public double[] GetFeatureVector(IEnumerable<string> featureSpecs, IList<string> errors)
+    {
+        var vector = GetUnsetVector();
+
+        if (featureIndices != null)
         {
-            base.Configure(config);
-
-            var plusValue = config.Get<double?>("plusValue", this);
-            if (plusValue != null)
-                PlusValue = plusValue.Value;
-            var minusValue = config.Get<double?>("minusValue", this);
-            if (minusValue != null)
-                MinusValue = minusValue.Value;
-
-            UnsetValue = (MinusValue + PlusValue) / 2.0;
-
-            var features = config.GetList<string>("features", this);
-            if (features != null)
+            foreach (var fspec in featureSpecs)
             {
-                featureList = features.OrderBy(f => f).ToList();
-
-                featureIndices = featureList.SelectMany(
-                    (fnames, i) => fnames.Split(',')
-                        .Where(n => !string.IsNullOrWhiteSpace(n))
-                        .Select(n => (n, i)))
-                    .ToDictionary(ni => ni.Item1.Trim().ToUpperInvariant(), ni => ni.Item2);
-            }
-            else
-            {
-                AddError("features are not defined");
-            }
-
-            return this;
-        }
-
-        public double[] GetFeatureVector(IEnumerable<string> featureSpecs, IList<string> errors)
-        {
-            var vector = GetUnsetVector();
-
-            if (featureIndices != null)
-            {
-                foreach (var fspec in featureSpecs)
+                if (string.IsNullOrWhiteSpace(fspec))
                 {
-                    if (string.IsNullOrWhiteSpace(fspec))
-                        continue;
+                    continue;
+                }
 
-                    var m = FeatureSpec.Match(fspec.Trim());
-                    if (m.Success)
+                var m = FeatureSpec.Match(fspec.Trim());
+                if (m.Success)
+                {
+                    var fname = m.Groups[2].Value.Trim();
+                    if (featureIndices.TryGetValue(fname.ToUpperInvariant(), out int idx))
                     {
-                        var fname = m.Groups[2].Value.Trim();
-                        if (featureIndices.TryGetValue(fname.ToUpperInvariant(), out int idx))
-                            vector[idx] = m.Groups[1].Value == "+" ? PlusValue : MinusValue;
-                        else
-                            errors.Add(string.Format("unknown feature name '{0}'", fname));
+                        vector[idx] = m.Groups[1].Value == "+" ? PlusValue : MinusValue;
                     }
                     else
                     {
-                        errors.Add(string.Format("invalid feature specification '{0}'", fspec));
+                        errors.Add(string.Format(CultureInfo.InvariantCulture, "unknown feature name '{0}'", fname));
                     }
                 }
+                else
+                {
+                    errors.Add(string.Format(CultureInfo.InvariantCulture, "invalid feature specification '{0}'", fspec));
+                }
             }
-            else
-            {
-                errors.Add("no features are defined");
-            }
-
-            return vector;
         }
-
-        public IEnumerable<string> GetFeatureSpec(double[] vector)
+        else
         {
-            int n = System.Math.Min(vector.Length, NumDimensions);
-            for (int i = 0; i < n; i++)
-            {
-                if (vector[i] == PlusValue)
-                    yield return "+" + featureList[i].Split(',').Last();
-                else if (vector[i] == MinusValue)
-                    yield return "-" + featureList[i].Split(',').Last();
-            }
+            errors.Add("no features are defined");
         }
 
-        public double[] GetUnsetVector()
-        {
-            return Enumerable.Range(0, NumDimensions).Select(i => UnsetValue).ToArray();
-        }
+        return vector;
+    }
 
-        public double[] Override(double[] orig, double[] ovr)
+    public IEnumerable<string> GetFeatureSpec(double[] vector)
+    {
+        int n = System.Math.Min(vector.Length, NumDimensions);
+        for (int i = 0; i < n; i++)
         {
-            double[] result = new double[orig.Length];
-            int n = System.Math.Min(orig.Length, ovr.Length);
-            for (int i = 0; i < n; i++)
+            if (vector[i] == PlusValue)
             {
-                result[i] = ovr[i] != UnsetValue
-                    ? ovr[i]
-                    : orig[i];
+                yield return "+" + FeatureList[i].Split(',').Last();
             }
-            return result;
+            else if (vector[i] == MinusValue)
+            {
+                yield return "-" + FeatureList[i].Split(',').Last();
+            }
         }
+    }
+
+    public double[] GetUnsetVector()
+    {
+        return [.. Enumerable.Range(0, NumDimensions).Select(i => UnsetValue)];
+    }
+
+    public double[] Override(double[] orig, double[] ovr)
+    {
+        double[] result = new double[orig.Length];
+        int n = System.Math.Min(orig.Length, ovr.Length);
+        for (int i = 0; i < n; i++)
+        {
+            result[i] = ovr[i] != UnsetValue
+                ? ovr[i]
+                : orig[i];
+        }
+        return result;
     }
 }

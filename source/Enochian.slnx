@@ -1,0 +1,38 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitignore" />
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+  </Folder>
+  <Folder Name="/Solution Items/reports/">
+    <File Path="../reports/enochian.css" />
+  </Folder>
+  <Folder Name="/Solution Items/resources/">
+    <File Path="../resources/voynich/links.md" />
+  </Folder>
+  <Folder Name="/Solution Items/resources/encodings/">
+    <File Path="../resources/encodings/cmu.json" />
+    <File Path="../resources/encodings/features.json" />
+    <File Path="../resources/encodings/ipa.json" />
+    <File Path="../resources/encodings/romlex.json" />
+    <File Path="../resources/encodings/slp1.json" />
+    <File Path="../resources/encodings/vogt.json" />
+  </Folder>
+  <Folder Name="/Solution Items/samples/">
+    <File Path="../samples/english_test.json" />
+    <File Path="../samples/hypotheses.json" />
+    <File Path="../samples/ipatransducer.json" />
+    <File Path="../samples/run_voynich.bat" />
+    <File Path="../samples/voynich.json" />
+  </Folder>
+  <Folder Name="/Solution Items/samples/english_test/">
+    <File Path="../samples/english_test/austen_persuasion.txt" />
+    <File Path="../samples/english_test/austen_persuasion_single.txt" />
+  </Folder>
+  <Project Path="Enochian.Console/Enochian.Console.csproj" />
+  <Project Path="Enochian.IntegrationTests/Enochian.IntegrationTests.csproj" />
+  <Project Path="Enochian.UnitTests/Enochian.UnitTests.csproj" />
+  <Project Path="Enochian/Enochian.csproj" />
+  <Project Path="GenVoynichRunner/GenVoynichRunner.csproj" />
+  <Project Path="RomlexScraper/RomlexScraper.csproj" />
+</Solution>
