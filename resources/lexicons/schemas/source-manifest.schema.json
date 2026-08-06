@@ -8,6 +8,8 @@
   "required": [
     "schema_version",
     "source_id",
+    "status",
+    "owner",
     "language",
     "family",
     "url",
@@ -15,6 +17,11 @@
     "retrieval_date",
     "sha256",
     "license",
+    "license_status",
+    "distribution_policy",
+    "usage_policy",
+    "optional",
+    "default_bundle",
     "citation",
     "parser",
     "raw_path",
@@ -25,6 +32,8 @@
     "$schema": { "type": "string", "format": "uri-reference" },
     "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
     "source_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "status": { "enum": ["planned", "acquired"] },
+    "owner": { "type": "string", "minLength": 1 },
     "language": { "$ref": "#/$defs/language_code" },
     "family": { "type": "string", "minLength": 1 },
     "url": { "type": "string", "format": "uri" },
@@ -33,13 +42,32 @@
       "additionalProperties": false,
       "required": ["kind", "value"],
       "properties": {
-        "kind": { "enum": ["commit", "tag", "release"] },
+        "kind": { "enum": ["commit", "tag", "release", "unresolved"] },
         "value": { "type": "string", "minLength": 1 }
       }
     },
-    "retrieval_date": { "type": "string", "format": "date" },
-    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "license": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9.+() -]+$" },
+    "retrieval_date": { "type": ["string", "null"], "format": "date" },
+    "sha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "license": {
+      "enum": [
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "CC-BY-4.0",
+        "CC-BY-NC-4.0",
+        "CC-BY-SA-3.0",
+        "CC-BY-SA-4.0",
+        "GPL-2.0-or-later",
+        "LGPL-2.1-or-later",
+        "MIT",
+        "MPL-1.1",
+        "NOASSERTION"
+      ]
+    },
+    "license_status": { "enum": ["verified", "unverified"] },
+    "distribution_policy": { "enum": ["vendored", "download-on-demand", "metadata-only"] },
+    "usage_policy": { "enum": ["unrestricted", "non-commercial", "unverified"] },
+    "optional": { "type": "boolean" },
+    "default_bundle": { "type": "boolean" },
     "citation": { "type": "string", "minLength": 1 },
     "parser": {
       "type": "object",
@@ -50,8 +78,8 @@
         "version": { "type": "string", "minLength": 1 }
       }
     },
-    "raw_path": { "$ref": "#/$defs/path" },
-    "generated_artifact_path": { "$ref": "#/$defs/path" },
+    "raw_path": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] },
+    "generated_artifact_path": { "oneOf": [{ "$ref": "#/$defs/path" }, { "type": "null" }] },
     "filters": {
       "type": "object",
       "additionalProperties": false,
@@ -62,6 +90,35 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "acquired" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "revision": {
+            "type": "object",
+            "properties": { "kind": { "enum": ["commit", "tag", "release"] } }
+          },
+          "retrieval_date": { "type": "string" },
+          "sha256": { "type": "string" },
+          "raw_path": { "$ref": "#/$defs/path" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "license_status": { "const": "unverified" } }, "required": ["license_status"] },
+      "then": { "properties": { "default_bundle": { "const": false } } }
+    },
+    {
+      "if": { "properties": { "usage_policy": { "const": "non-commercial" } }, "required": ["usage_policy"] },
+      "then": {
+        "properties": {
+          "optional": { "const": true },
+          "default_bundle": { "const": false }
+        }
+      }
+    }
+  ],
   "$defs": {
     "language_code": {
       "type": "string",

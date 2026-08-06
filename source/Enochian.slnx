@@ -30,6 +30,10 @@
     <File Path="../resources/lexicons/examples/normalized-entry.example.json" />
     <File Path="../resources/lexicons/examples/source-manifest.example.json" />
   </Folder>
+  <Folder Name="/Solution Items/resources/lexicons/">
+    <File Path="../resources/lexicons/ATTRIBUTION.md" />
+    <File Path="../resources/lexicons/README.md" />
+  </Folder>
   <Folder Name="/Solution Items/resources/lexicons/schemas/">
     <File Path="../resources/lexicons/schemas/normalized-entry.schema.json" />
     <File Path="../resources/lexicons/schemas/source-manifest.schema.json" />
@@ -47,6 +51,7 @@
   </Folder>
   <Project Path="Enochian.Console/Enochian.Console.csproj" />
   <Project Path="Enochian.IntegrationTests/Enochian.IntegrationTests.csproj" />
+  <Project Path="Enochian.Provenance/Enochian.Provenance.csproj" />
   <Project Path="Enochian.UnitTests/Enochian.UnitTests.csproj" />
   <Project Path="Enochian/Enochian.csproj" />
   <Project Path="GenVoynichRunner/GenVoynichRunner.csproj" />

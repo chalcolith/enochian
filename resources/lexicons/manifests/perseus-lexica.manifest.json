@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "perseus-lexica",
+  "status": "planned",
+  "owner": "Perseus Digital Library",
+  "language": "mul",
+  "family": "Indo-European/Classical",
+  "url": "https://github.com/PerseusDL/lexica",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "NOASSERTION",
+  "license_status": "unverified",
+  "distribution_policy": "metadata-only",
+  "usage_policy": "unverified",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "Perseus Digital Library lexica collection; dictionary-specific reuse terms must be verified before selection.",
+  "parser": { "id": "perseus-tei", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["a selected pre-modern comparison lexicon after license review"],
+    "exclude": ["all dictionaries until dictionary-specific terms and revisions are pinned"]
+  }
+}

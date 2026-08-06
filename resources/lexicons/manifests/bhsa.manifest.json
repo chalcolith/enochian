@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "bhsa",
+  "status": "planned",
+  "owner": "ETCBC, Vrije Universiteit Amsterdam",
+  "language": "hbo",
+  "family": "Afro-Asiatic/Semitic",
+  "url": "https://github.com/ETCBC/bhsa",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "CC-BY-NC-4.0",
+  "license_status": "verified",
+  "distribution_policy": "metadata-only",
+  "usage_policy": "non-commercial",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "ETCBC, Biblia Hebraica Stuttgartensia Amstelodamensis; DOI 10.17026/dans-z6y-skyh.",
+  "parser": { "id": "text-fabric-bhsa", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["optional Biblical Hebrew lexemes after an explicit non-commercial acquisition step"],
+    "exclude": ["all BHSA data from default acquisition, packaging, and redistribution"]
+  }
+}

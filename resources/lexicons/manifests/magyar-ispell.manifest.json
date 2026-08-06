@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "magyar-ispell",
+  "status": "planned",
+  "owner": "Magyar Ispell contributors",
+  "language": "hun",
+  "family": "Uralic/Ugric",
+  "url": "https://github.com/laszlonemeth/magyarispell",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "NOASSERTION",
+  "license_status": "unverified",
+  "distribution_policy": "metadata-only",
+  "usage_policy": "unverified",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "Magyar Ispell Hungarian spelling and morphology sources; one offered GPL/LGPL/MPL option must be selected before redistribution.",
+  "parser": { "id": "magyar-ispell", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["lemma forms from a future pinned release"],
+    "exclude": ["generated inflections in the primary analysis"]
+  }
+}

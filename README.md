@@ -3,8 +3,8 @@
 This project provides some tools to do exploratory phonological comparisons
 between texts in unknown languages and entries one or more lexicons.
 
-You may see the results of a recent test run of the software for the Voynich Manuscript
-[here](http://chalcolith.github.io/enochian).
+You may see the [results of a recent Voynich Manuscript test
+run](http://chalcolith.github.io/enochian).
 
 ## Build and Test
 
@@ -38,6 +38,18 @@ The versioned experiment and lexicon interchange contracts live under
 [frozen research protocol](experiments/protocol.md) for field definitions,
 inclusion and exclusion rules, planned contrasts, and the confirmatory decision
 rule. Schema conformance is enforced by the unit-test suite.
+
+Source ownership, revisions, checksums, license status, and distribution
+decisions are recorded in `resources/lexicons/manifests/`. Validate them or
+regenerate the attribution report offline from `source/`:
+
+```powershell
+dotnet run --project Enochian.Provenance -- validate
+dotnet run --project Enochian.Provenance -- attribution ../resources/lexicons/manifests ../resources/lexicons/ATTRIBUTION.md
+```
+
+See the [lexicon provenance guide](resources/lexicons/README.md) before adding,
+acquiring, or packaging a source.
 
 ## Introduction
 
@@ -77,8 +89,8 @@ Current results are inconclusive. Possible matches for words meaning "sun",
 which are suggestive of references to astrological content, but much more work
 needs to be done.
 
-You may see the results of a recent test run of the software for the Voynich Manuscript
-[here](http://chalcolith.github.io/enochian/index.html).
+You may see the [results of a recent Voynich Manuscript test
+run](http://chalcolith.github.io/enochian/index.html).
 
 ### Roadmap
 
@@ -87,7 +99,6 @@ due to the lexicon containing data from multiple Romani dialects. This means it
 does not provide very conclusive results on its own.
 
 The Shabda-Sagara dictionary also has fewer than 30,000 entries.
-
 
 ## General Functionality
 
@@ -108,7 +119,6 @@ method on it, returning the resulting output. If you implement only
 return`, the flow process will be asynchronous; it will only process as many
 items as are needed to return one output.
 
-
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to
@@ -125,7 +135,6 @@ phonological feature set. A single phonological segment consists of an
 If a particular feature has a `+` value for that segment, its corresponding
 vector element will be `1`; if it has a `-` value, its vector element will be
 `-`. If the feature is unspecified, its vector element will be `0`.
-
 
 ## Lexicons
 

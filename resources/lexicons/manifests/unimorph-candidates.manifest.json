@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "unimorph-candidates",
+  "status": "planned",
+  "owner": "UniMorph project and individual language-repository contributors",
+  "language": "mul",
+  "family": "multiple",
+  "url": "https://unimorph.github.io/",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "NOASSERTION",
+  "license_status": "unverified",
+  "distribution_policy": "metadata-only",
+  "usage_policy": "unverified",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "UniMorph language repositories; each selected language requires its own pinned manifest and license verification before acquisition.",
+  "parser": { "id": "unimorph-tsv", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["candidate Sanskrit, Hindi, Bengali, Gujarati, Assamese, Turkish, Hungarian, and Hebrew repositories"],
+    "exclude": ["no language is approved for bundling by this planning manifest"]
+  }
+}
