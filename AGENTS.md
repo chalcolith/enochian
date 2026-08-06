@@ -28,3 +28,7 @@
 - Treat files under `resources/lexicons/` and `resources/voynich/` as third-party source snapshots, not ordinary fixtures or generated scratch data.
 - Before adding or regenerating data, follow the licensing, attribution, normalization, and reproducibility rules in the improvement plan and milestone specs.
 - Keep generated outputs deterministic: sort records, use invariant-culture formatting, normalize line endings, and do not depend on filesystem enumeration order.
+
+## Workflow
+
+- Don't force-push things; make separate commits.
