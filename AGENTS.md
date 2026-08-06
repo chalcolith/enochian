@@ -31,4 +31,5 @@
 
 ## Workflow
 
+- Please don't commit, push, or create PRs if I don't explicitly ask you to.
 - Don't force-push things; make separate commits.
