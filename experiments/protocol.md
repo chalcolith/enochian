@@ -66,12 +66,18 @@ backward-compatible clarification, but released schema IDs remain stable.
 ## Source Manifest Fields
 
 - `source_id`, `language`, and `family` identify the source and its comparison
-  grouping. `language` is a constrained BCP 47 language tag.
+  grouping. `language` is a constrained BCP 47 language tag. `owner` identifies
+  the party responsible for the upstream data, and `status` distinguishes a
+  planned source from acquired bytes.
 - `url` and `revision` pin the upstream location and commit, tag, or release.
 - `retrieval_date` records the UTC calendar date of acquisition. `sha256` is
   the lowercase SHA-256 digest of the unmodified raw input bytes.
 - `license` is an SPDX expression or identifier. `citation` is the complete
-  attribution text required in generated reports.
+  attribution text required in generated reports. `license_status` remains
+  `unverified` until terms for the exact snapshot have been reviewed.
+- `distribution_policy`, `usage_policy`, `optional`, and `default_bundle` make
+  packaging decisions executable. Unverified or non-commercial sources cannot
+  enter the default bundle. BHSA is always optional and metadata-only.
 - `parser` pins the adapter ID and version. `raw_path` and
   `generated_artifact_path` separate acquired bytes from generated records.
 - `filters.include` and `filters.exclude` state every acquisition-time record

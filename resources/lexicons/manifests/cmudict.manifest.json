@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "cmudict",
+  "status": "acquired",
+  "owner": "Carnegie Mellon University",
+  "language": "eng",
+  "family": "Indo-European/Germanic",
+  "url": "https://github.com/cmusphinx/cmudict",
+  "revision": { "kind": "release", "value": "0.7b" },
+  "retrieval_date": "2017-02-21",
+  "sha256": "7a1feef41b2fb34871608ba8d612e4a6bcf5a2a2a8bdad3ff14f7b7f0f0c0aae",
+  "license": "BSD-2-Clause",
+  "license_status": "verified",
+  "distribution_policy": "vendored",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": true,
+  "citation": "CMU Pronouncing Dictionary, version 0.7b, Carnegie Mellon University.",
+  "parser": { "id": "cmudict", "version": "0.7b" },
+  "raw_path": "resources/lexicons/cmudict/cmudict-0.7b",
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["all non-comment pronunciation records"],
+    "exclude": ["comment and blank lines"]
+  }
+}

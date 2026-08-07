@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "zemberek",
+  "status": "planned",
+  "owner": "Zemberek-NLP contributors",
+  "language": "tur",
+  "family": "Turkic/Oghuz",
+  "url": "https://github.com/ahmetaa/zemberek-nlp",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "Apache-2.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "Zemberek-NLP Turkish natural language processing library and morphology dictionaries.",
+  "parser": { "id": "zemberek-dictionary", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["dictionary lemmas from a future pinned release"],
+    "exclude": ["proper names, abbreviations, and inflected forms in the primary analysis"]
+  }
+}

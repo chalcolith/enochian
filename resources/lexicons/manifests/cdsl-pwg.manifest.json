@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "cdsl-pwg",
+  "status": "planned",
+  "owner": "Cologne Digital Sanskrit Dictionaries",
+  "language": "san",
+  "family": "Indo-European/Indo-Aryan",
+  "url": "https://github.com/sanskrit-lexicon/csl-orig",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "CC-BY-SA-4.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "Boehtlingk and Roth, Sanskrit-Woerterbuch (PWG), digitized by Cologne Digital Sanskrit Dictionaries.",
+  "parser": { "id": "cdsl-orig", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["PWG records from the pinned csl-orig snapshot"],
+    "exclude": ["none until parser rules are frozen"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "open-scriptures-hebrew",
+  "status": "planned",
+  "owner": "Open Scriptures",
+  "language": "hbo",
+  "family": "Afro-Asiatic/Semitic",
+  "url": "https://github.com/openscriptures/HebrewLexicon",
+  "revision": { "kind": "unresolved", "value": "unresolved" },
+  "retrieval_date": null,
+  "sha256": null,
+  "license": "CC-BY-4.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "Open Scriptures Hebrew Lexicon, including Strong's, BDB, and lexical index data.",
+  "parser": { "id": "open-scriptures-xml", "version": "planned" },
+  "raw_path": null,
+  "generated_artifact_path": null,
+  "filters": {
+    "include": ["Biblical Hebrew lexemes from a future pinned revision"],
+    "exclude": ["records without a usable lexical form"]
+  }
+}
