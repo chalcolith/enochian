@@ -95,6 +95,7 @@ public sealed class LexiconCacheTests
             Language = "eng",
             Family = "Indo-European",
             SourceId = "source",
+            SourceVersion = "1.0.0",
             SourceRecordId = sourceRecordId,
             Text = text,
             Lemma = lemma,
@@ -105,6 +106,7 @@ public sealed class LexiconCacheTests
             Frequency = frequency,
             SourceEncoding = "test-encoding",
             Ipa = "test-ipa",
+            License = "CC-BY-4.0",
             Encoded = "encoded-" + text,
             Definition = "definition-" + text,
             Phones = [[1.0, -1.0], [0.5]],
@@ -117,6 +119,7 @@ public sealed class LexiconCacheTests
         Assert.AreEqual(expected.Language, actual.Language);
         Assert.AreEqual(expected.Family, actual.Family);
         Assert.AreEqual(expected.SourceId, actual.SourceId);
+        Assert.AreEqual(expected.SourceVersion, actual.SourceVersion);
         Assert.AreEqual(expected.SourceRecordId, actual.SourceRecordId);
         Assert.AreEqual(expected.Text, actual.Text);
         Assert.AreEqual(expected.Lemma, actual.Lemma);
@@ -127,6 +130,7 @@ public sealed class LexiconCacheTests
         Assert.AreEqual(expected.Frequency, actual.Frequency);
         Assert.AreEqual(expected.SourceEncoding, actual.SourceEncoding);
         Assert.AreEqual(expected.Ipa, actual.Ipa);
+        Assert.AreEqual(expected.License, actual.License);
         Assert.AreEqual(expected.Encoded, actual.Encoded);
         Assert.AreEqual(expected.Definition, actual.Definition);
         Assert.AreEqual(expected.Phones.Count, actual.Phones.Count);
