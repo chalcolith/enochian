@@ -70,8 +70,15 @@ public class ShabdaSagara(IConfigurable parent, IFlowResources resources) : Lexi
                         currentEntry = new LexiconEntry
                         {
                             Lexicon = this,
+                            Language = "san",
+                            Family = "Indo-European",
+                            SourceId = "cdsl-shs",
+                            SourceRecordId = match.Groups[1].Value,
                             Lemma = lemma,
                             Text = text,
+                            Form = text,
+                            EntryKind = LexiconEntryKind.Lemma,
+                            SourceEncoding = "slp1",
                             Definition = "(" + lemmaSlp1 + ") ",
                             Phones = phones,
                         };
@@ -108,8 +115,7 @@ public class ShabdaSagara(IConfigurable parent, IFlowResources resources) : Lexi
 
             Log.LogInformation("loaded {Count} entries from SHS", num);
 
-            Entries = entries;
-            EntriesByLemma = entriesByLemma;
+            SetEntries(entries);
         }
         catch (Exception e)
         {

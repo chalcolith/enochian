@@ -32,7 +32,6 @@ public class Romlex(IConfigurable parent, IFlowResources resources) : Lexicon(pa
             var encoder = new Encoder(Features, Encoding);
             RomlexLexicon lexicon;
             var entries = new List<LexiconEntry>();
-            var entriesByLemma = new Dictionary<string, LexiconEntry>();
 
             path = Path.GetFullPath(path);
             Log.LogInformation("loading ROMLEX from {Path}", path);
@@ -81,18 +80,20 @@ public class Romlex(IConfigurable parent, IFlowResources resources) : Lexicon(pa
                 var entry = new LexiconEntry
                 {
                     Lexicon = this,
+                    Language = "rom",
+                    Family = "Indo-European",
+                    SourceId = "romlex",
+                    SourceRecordId = lemma,
                     Lemma = lemma,
                     Text = text,
+                    Form = text,
+                    EntryKind = LexiconEntryKind.Lemma,
+                    SourceEncoding = "romlex",
                     Definition = def,
                     Phones = phones,
                 };
 
                 entries.Add(entry);
-
-                if (!entriesByLemma.TryAdd(entry.Lemma, entry))
-                {
-                    _ = AddError("duplicate lemma '{0}'", entry.Lemma);
-                }
 
                 if ((++num % 1000) == 0)
                 {
@@ -101,8 +102,7 @@ public class Romlex(IConfigurable parent, IFlowResources resources) : Lexicon(pa
             }
             Log.LogInformation("loaded {Count} total entries", num);
 
-            Entries = entries;
-            EntriesByLemma = entriesByLemma;
+            SetEntries(entries);
         }
         catch (Exception e)
         {

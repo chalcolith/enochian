@@ -140,6 +140,24 @@ vector element will be `1`; if it has a `-` value, its vector element will be
 
 The systems includes several lexicons:
 
+### Lexicon entry and cache compatibility
+
+`LexiconEntry` records include stable entry/source identifiers, language and
+family, form and entry kind, dialect, part of speech, frequency, source
+encoding, and IPA metadata. `Dialect`, `PartOfSpeech`, `Frequency`, and `Ipa`
+are optional for legacy sources. Existing loaders populate deterministic
+defaults for required metadata that their source format does not provide.
+
+`Lexicon.EntriesByLemma` is a one-to-many, ordinally ordered index because a
+lemma may have homographs or multiple pronunciations. Callers that intentionally
+need only the first deterministic match can use `GetEntryByLemma`.
+
+The binary cache format is versioned. Caches from older versions are ignored and
+rebuilt from source. Cache identity includes the canonical source path, lexicon
+type and ID, feature set, encoding, and debug limit, so equal source filenames
+or different configurations cannot collide. Cache replacement is atomic; an
+interrupted write does not replace the previous valid cache.
+
 ### CMU Pronouncing Dictionary
 
 This is used for testing the underlying assumption behind the project, that we
