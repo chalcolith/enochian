@@ -29,7 +29,6 @@ public class CMUDict(IConfigurable parent, IFlowResources resources) : Lexicon(p
             var encoder = new Encoder(Features, Encoding);
 
             var entries = new List<LexiconEntry>();
-            var entriesByLemma = new Dictionary<string, LexiconEntry>();
 
             path = Path.GetFullPath(path);
             Log.LogInformation("loading CMUDICT from {Path}", path);
@@ -71,17 +70,20 @@ public class CMUDict(IConfigurable parent, IFlowResources resources) : Lexicon(p
                     var entry = new LexiconEntry
                     {
                         Lexicon = this,
+                        Language = "eng",
+                        Family = "Indo-European",
+                        SourceId = "cmudict",
+                        SourceRecordId = tokens[0],
                         Text = tokens[0],
                         Lemma = lemma,
+                        Form = tokens[0],
+                        EntryKind = LexiconEntryKind.Lemma,
+                        SourceEncoding = "cmu",
                         Encoded = sb.ToString(),
                         Phones = phones,
                     };
 
                     entries.Add(entry);
-                    if (!entriesByLemma.TryAdd(lemma, entry))
-                    {
-                        _ = AddError("duplicate lemma '{0}'", lemma);
-                    }
 
                     if ((num % 1000) == 0)
                     {
@@ -91,8 +93,7 @@ public class CMUDict(IConfigurable parent, IFlowResources resources) : Lexicon(p
                 Log.LogInformation("loaded {Count} total entries", num);
             }
 
-            Entries = entries;
-            EntriesByLemma = entriesByLemma;
+            SetEntries(entries);
         }
         catch (Exception e)
         {
