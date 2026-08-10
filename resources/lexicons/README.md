@@ -34,6 +34,37 @@ their exact redistribution terms remain unverified. Their manifests preserve
 real local checksums and explicitly prevent default bundling. CMUdict's embedded
 BSD-2-Clause terms are verified and permit its current vendored use.
 
+## Normalized lexicons
+
+`NormalizedLexicon` streams one normalized-entry JSON object per UTF-8 line and
+converts its `ipa` value through the configured IPA encoding. A minimal flow
+lexicon configuration is:
+
+```json
+{
+  "id": "example-normalized",
+  "type": "NormalizedLexicon",
+  "features": "Default",
+  "encoding": "IPA",
+  "path": "../resources/lexicons/generated/example.jsonl",
+  "manifest": "../resources/lexicons/manifests/example.manifest.json",
+  "qualityReport": "../reports/example.quality.json"
+}
+```
+
+By default, `lemma`, `form`, `dialect`, `part_of_speech`, `definition`, and
+`ipa` are normalized to NFC. `original_form` is retained byte-for-byte as the
+source spelling. Override the normalized set with `normalizeFields`, using only
+those field names.
+
+Malformed records, duplicate entry IDs, missing or invalid fields, invalid
+UTF-8, unknown IPA segments, and IPA that produces no phonological segments are
+excluded and counted. The deterministic quality report records accepted and
+rejected totals, unique and duplicate lemma/form/phonology counts, rejection
+reasons, unknown symbols, phoneme-length counts, and each rejection's source
+ID, line, reason code, and detail. Loading requires only checked-in artifacts;
+no acquisition tool or network access occurs at runtime.
+
 ## Commands
 
 Run from `source/`:

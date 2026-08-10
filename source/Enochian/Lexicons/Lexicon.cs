@@ -132,11 +132,16 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
                     {
                         var origInfo = new FileInfo(absolutePath);
                         var cacheInfo = new FileInfo(cachedPath);
-                        if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc)
+                        if (cacheInfo.LastWriteTimeUtc > origInfo.LastWriteTimeUtc
+                            && IsCacheCurrent(origInfo, cacheInfo))
                         {
                             try
                             {
                                 cacheSuccessful = LoadCachedDictionary(cachedPath);
+                                if (cacheSuccessful)
+                                {
+                                    OnCacheLoaded();
+                                }
                             }
                             catch
                             {
@@ -164,6 +169,20 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
     }
 
     protected abstract void LoadLexicon(string path);
+
+    protected virtual IEnumerable<string?> GetCacheIdentityParts()
+    {
+        return [];
+    }
+
+    protected virtual bool IsCacheCurrent(FileInfo sourceInfo, FileInfo cacheInfo)
+    {
+        return true;
+    }
+
+    protected virtual void OnCacheLoaded()
+    {
+    }
 
     protected void SetEntries(IEnumerable<LexiconEntry> loadedEntries)
     {
@@ -209,11 +228,14 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
     }
 
     // change this if the binary format changes
-    private static readonly byte[] MagicCacheCookie = new Guid("{14880838-E56B-4954-B746-43616E98A90D}").ToByteArray();
+    private static readonly byte[] MagicCacheCookie = new Guid("{6C5CCB84-D637-4CBF-9A23-9CA744862C44}").ToByteArray();
 
     private string GetCachePath(string absolutePath)
     {
-        var identity = string.Join("\n", GetType().FullName, Id, Path.GetFullPath(absolutePath), Features?.Id, Encoding?.Id, MaxEntriesToLoad);
+        var identity = string.Join(
+            "\n",
+            new string?[] { GetType().FullName, Id, Path.GetFullPath(absolutePath), Features?.Id, Encoding?.Id, MaxEntriesToLoad.ToString(CultureInfo.InvariantCulture) }
+                .Concat(GetCacheIdentityParts()));
         var hash = Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(identity))).ToLowerInvariant();
         return Path.Combine(".", CacheDir, Path.GetFileName(absolutePath) + "." + hash[..16] + ".bin");
     }
@@ -258,6 +280,7 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
                     Language = br.ReadString(),
                     Family = br.ReadString(),
                     SourceId = br.ReadString(),
+                    SourceVersion = br.ReadString(),
                     SourceRecordId = br.ReadString(),
                     Text = text,
                     Lemma = lemma,
@@ -268,6 +291,7 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
                     Frequency = ReadNullableDouble(br),
                     SourceEncoding = br.ReadString(),
                     Ipa = ReadNullableString(br),
+                    License = br.ReadString(),
                     Encoded = encoded,
                     Definition = definition,
                     Phones = phones,
@@ -330,6 +354,7 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
                     bw.Write(entry.Language ?? "");
                     bw.Write(entry.Family ?? "");
                     bw.Write(entry.SourceId ?? "");
+                    bw.Write(entry.SourceVersion ?? "");
                     bw.Write(entry.SourceRecordId ?? "");
                     bw.Write(entry.Form ?? "");
                     bw.Write((byte)entry.EntryKind);
@@ -338,6 +363,7 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
                     WriteNullableDouble(bw, entry.Frequency);
                     bw.Write(entry.SourceEncoding ?? "");
                     WriteNullableString(bw, entry.Ipa);
+                    bw.Write(entry.License ?? "");
                 }
             }
 
@@ -398,6 +424,7 @@ public class LexiconEntry
     public string Language { get; set; } = "und";
     public string Family { get; set; } = "unknown";
     public string SourceId { get; set; } = string.Empty;
+    public string SourceVersion { get; set; } = string.Empty;
     public string SourceRecordId { get; set; } = string.Empty;
     public string Text { get; set; } = string.Empty;
     public string Lemma { get; set; } = string.Empty;
@@ -408,6 +435,7 @@ public class LexiconEntry
     public double? Frequency { get; set; }
     public string SourceEncoding { get; set; } = string.Empty;
     public string? Ipa { get; set; }
+    public string License { get; set; } = string.Empty;
     public string Encoded { get; set; } = string.Empty;
     public string Definition { get; set; } = string.Empty;
     public IList<double[]> Phones { get; set; } = [];

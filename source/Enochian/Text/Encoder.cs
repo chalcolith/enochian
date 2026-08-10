@@ -78,13 +78,22 @@ public class Encoder
 
     public (string, string, IList<double[]>) GetTextAndPhones(string source)
     {
+        return GetTextAndPhones(source, out _);
+    }
+
+    public (string, string, IList<double[]>) GetTextAndPhones(
+        string source,
+        out IReadOnlyList<string> unknownSymbols)
+    {
         foreach (var pattern in Patterns)
         {
             pattern.Reset();
         }
 
+        var unknown = new HashSet<string>(StringComparer.Ordinal);
+
         // replace the characters of the original with text + phones
-        (var texts, var reprs, var phones) = GetReplacements(source);
+        (var texts, var reprs, var phones) = GetReplacements(source, unknown);
 
         // merge the phones of existing characters with phones from templates
         MergeTemplates((texts, phones));
@@ -94,11 +103,14 @@ public class Encoder
         var allPhones = phones
             .SelectMany(ph => ph.Where(p => p.Length > 0))
             .ToArray();
+        unknownSymbols = [.. unknown.Order(StringComparer.Ordinal)];
 
         return (allTexts, allReprs, allPhones);
     }
 
-    private (IList<string>, IList<string>, IList<IList<double[]>>) GetReplacements(string source)
+    private (IList<string>, IList<string>, IList<IList<double[]>>) GetReplacements(
+        string source,
+        HashSet<string> unknownSymbols)
     {
         var texts = new List<string>();
         var reprs = new List<string>();
@@ -169,10 +181,17 @@ public class Encoder
                 }
                 else
                 {
-                    texts.Add(source[start..(1 + cur)]);
-                    phonesPerText.Add(Modifiers.Contains(ch)
-                        ? new double[][] { [] }
-                        : [Features.GetUnsetVector()]);
+                    var unmatched = source[start..(1 + cur)];
+                    texts.Add(unmatched);
+                    if (Modifiers.Contains(ch))
+                    {
+                        phonesPerText.Add([[]]);
+                    }
+                    else
+                    {
+                        _ = unknownSymbols.Add(unmatched);
+                        phonesPerText.Add([Features.GetUnsetVector()]);
+                    }
                     start = ++cur; // go to the next character
                 }
 
