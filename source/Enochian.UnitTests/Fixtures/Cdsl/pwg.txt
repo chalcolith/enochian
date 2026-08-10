@@ -1,0 +1,3 @@
+<L>30<pc>1,1<k1>veda<k2>veda
+{#veda#} {%knowledge%}
+<LEND> [Page1-0002]

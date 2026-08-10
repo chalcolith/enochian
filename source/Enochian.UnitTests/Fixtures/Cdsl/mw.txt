@@ -1,0 +1,6 @@
+<L>1<pc>1,1<k1>agni<k2>agni<h>1<e>1
+<s>agni</s> ¦ <lex>m.</lex> fire
+<LEND>
+<L>1.1<pc>1,1<k1>agni<k2>agni<h>2<e>1
+<hom>2.</hom> <s>agni</s> ¦ sacrificial fire
+<LEND>
