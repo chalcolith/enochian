@@ -104,7 +104,7 @@ public class EncodingPattern : Configurable
     public string Input { get; internal set; } = string.Empty;
     public string? Output { get; internal set; }
     public string? Repr { get; internal set; }
-    internal string? Ipa { get; private set; }
+    public string? Ipa { get; private set; }
 
     public IList<string> FeatureSpecs { get; internal set; } = [];
     public IList<double[]> Phones { get; internal set; } = [];

@@ -2,14 +2,14 @@
   "$schema": "../schemas/source-manifest.schema.json",
   "schema_version": "1.0.0",
   "source_id": "cdsl-pw",
-  "status": "planned",
+  "status": "acquired",
   "owner": "Cologne Digital Sanskrit Dictionaries",
   "language": "san",
   "family": "Indo-European/Indo-Aryan",
   "url": "https://github.com/sanskrit-lexicon/csl-orig",
-  "revision": { "kind": "unresolved", "value": "unresolved" },
-  "retrieval_date": null,
-  "sha256": null,
+  "revision": { "kind": "commit", "value": "b7297b97cf9f7112277ea98f7969291eb1d5f495" },
+  "retrieval_date": "2026-08-10",
+  "sha256": "399de2e20f8fff20860da18b46ced725b9ccb9ff975930b3cf86543cee75ae40",
   "license": "CC-BY-SA-4.0",
   "license_status": "verified",
   "distribution_policy": "download-on-demand",
@@ -17,11 +17,11 @@
   "optional": false,
   "default_bundle": false,
   "citation": "Otto Boehtlingk, Sanskrit-Woerterbuch in kuerzerer Fassung (PW), digitized by Cologne Digital Sanskrit Dictionaries.",
-  "parser": { "id": "cdsl-orig", "version": "planned" },
-  "raw_path": null,
-  "generated_artifact_path": null,
+  "parser": { "id": "cdsl-orig", "version": "1.0.0" },
+  "raw_path": ".enoch/csl-orig-b7297b97cf9f7112277ea98f7969291eb1d5f495/v02/pw/pw.txt",
+  "generated_artifact_path": ".enoch/cdsl-generated/cdsl-pw.jsonl",
   "filters": {
     "include": ["PW records from the pinned csl-orig snapshot"],
-    "exclude": ["none until parser rules are frozen"]
+    "exclude": ["records without a complete L/k1/k2/LEND boundary", "records whose SLP1 headword cannot be converted completely"]
   }
 }

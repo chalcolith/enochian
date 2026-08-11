@@ -65,6 +65,38 @@ reasons, unknown symbols, phoneme-length counts, and each rejection's source
 ID, line, reason code, and detail. Loading requires only checked-in artifacts;
 no acquisition tool or network access occurs at runtime.
 
+## CDSL acquisition and normalization
+
+The `Enochian.Cdsl` command acquires AP, MW, PW, PWG, and SHS from the exact
+`csl-orig` commit pinned in their manifests, verifies each raw file's SHA-256,
+and writes one normalized JSONL file and one quality report per dictionary:
+
+```powershell
+dotnet run --project Enochian.Cdsl -- acquire-normalize
+```
+
+Run the command from `source/`. Raw snapshots are stored under
+`.enoch/csl-orig-<commit>/` at the repository root, and normalized outputs are
+stored under `.enoch/cdsl-generated/`. Both locations are ignored and are not
+runtime dependencies. Use `normalize` instead of `acquire-normalize` for an
+offline regeneration from an already verified snapshot.
+
+All dictionaries share `<L>` headline parsing, `<LEND>` prefix boundaries,
+record IDs, `k1` SLP1 headwords, and `k2` display-headword extraction. The MW
+profile removes XML-like tags. AP, PW, PWG, and SHS additionally unwrap CDSL
+Sanskrit (`{#...#}`), translation (`{%...%}`), and editorial (`{@...@}`)
+markup. PW `{{Lbody=...}}` cross-reference markers are removed from definitions
+but do not create duplicate entries. These rules live only in the acquisition
+adapter; `NormalizedLexicon` remains source-neutral.
+
+For commit `b7297b97cf9f7112277ea98f7969291eb1d5f495`, deterministic quality counts
+are AP 90,846, MW 286,525, PW 170,556, PWG 123,366, and SHS 47,326 emitted
+records. The sole rejected headword is AP record `6082.002`,
+`asaMBAVitopamA`: uppercase `V` is not an SLP1 symbol. It is intentionally
+excluded rather than assigned a guessed phonological value. This is the
+reviewed unknown-symbol allowlist for adapter version 1.0.0; any other unknown
+SLP1 symbol requires review before release.
+
 ## Commands
 
 Run from `source/`:

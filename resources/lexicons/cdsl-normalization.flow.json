@@ -1,0 +1,21 @@
+{
+  "id": "CDSL normalization resources",
+  "description": "Feature and encoding resources used by the pinned csl-orig adapter.",
+  "features": [
+    {
+      "path": "../encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "features": "Default",
+      "path": "../encodings/ipa.json"
+    },
+    {
+      "features": "Default",
+      "path": "../encodings/slp1.json"
+    }
+  ],
+  "lexicons": [],
+  "steps": []
+}
