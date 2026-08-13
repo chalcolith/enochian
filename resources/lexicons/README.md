@@ -97,6 +97,48 @@ excluded rather than assigned a guessed phonological value. This is the
 reviewed unknown-symbol allowlist for adapter version 1.0.0; any other unknown
 SLP1 symbol requires review before release.
 
+## Sanskrit corpus panel
+
+`samples/sanskrit-panel.json` configures normalized MW, AP, PWG, PW, and SHS
+lexicons independently and searches each one in a separate matcher step. Run
+the panel only after acquisition and normalization have produced the five
+artifacts under `.enoch/cdsl-generated/`.
+
+The primary Sanskrit union includes lemma entries with 2 through 24 phonemes
+and excludes records whose lemma, display form, or definition retains angle
+bracket markup. Exclusions are counted as `entry_kind`, `phoneme_length`,
+`malformed_markup`, or `missing_phonology`. Included entries are deduplicated
+by ordinally compared canonical IPA and, secondarily, normalized lemma. Each
+union entry retains its source ID, source record ID, and entry ID memberships,
+sorted ordinally. Inputs, union entries, source counts, overlap-matrix axes,
+memberships, and exclusion reasons are all ordered independently of source
+file or command-line order.
+
+After normalization, produce the aggregate union/overlap report and the
+legacy-to-normalized SHS comparison offline:
+
+```powershell
+dotnet run --project Enochian.Cdsl -- corpus-report
+```
+
+The command writes `sanskrit-corpus-report.json` and
+`shs-comparison-report.json` under `.enoch/cdsl-generated/`. Per-source counts
+represent dictionary evidence; `union_count` represents deduplicated evidence
+and must not be interpreted as another independent dictionary. The overlap
+matrix counts union entries shared by each source pair. Report generation
+fails if any normalized loader reports an unknown IPA symbol.
+
+The SHS discrepancy tolerance is declared as zero in `CdslPipeline`. Adapter
+rejections carry their exact reason, and normalized homographs absent from the
+legacy view are explained by the legacy loader's lemma collapse. Any remaining
+unexplained discrepancy makes `corpus-report` fail.
+
+`samples/voynich.json` intentionally remains on the legacy SHS snapshot for
+M1-04, so its lexicon composition and matching behavior do not change. The new
+panel is additive. Migrating the Voynich sample to normalized SHS requires a
+separate recorded result comparison rather than silently changing its search
+space.
+
 ## Commands
 
 Run from `source/`:

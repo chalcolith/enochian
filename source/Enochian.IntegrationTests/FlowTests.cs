@@ -1,6 +1,10 @@
-﻿using Enochian.Flow.Steps;
+﻿using Enochian.Cdsl;
+using Enochian.Flow.Steps;
+using Enochian.Lexicons;
 using Enochian.Text;
 using Enochian.UnitTests;
+using System.Text;
+using System.Text.Json.Nodes;
 
 namespace Enochian.IntegrationTests;
 
@@ -190,6 +194,188 @@ public class FlowTests
             var options = dtwLine.Segments[i].Options;
             var found = options.Any(opt => opt.Text?.StartsWith(expected, StringComparison.OrdinalIgnoreCase) == true);
             Assert.IsTrue(found, "did not find a CMU entry for " + expected);
+        }
+    }
+
+    [TestMethod]
+    public void SanskritPanelSearchesEachFixtureLexiconAndPreservesSource()
+    {
+        using var fixture = new SanskritPanelFixture();
+        var flow = fixture.CreateFlow();
+        AssertUtils.NoErrors(flow);
+
+        var result = flow.GetOutputs().Single() as TextChunk;
+
+        Assert.IsNotNull(result);
+        foreach (var matcher in flow.Steps!.Children.OfType<DTWMatcher>())
+        {
+            var expectedSource = matcher.Lexicons.Single().Entries
+                .Select(entry => entry.SourceId)
+                .Distinct(StringComparer.Ordinal)
+                .Single();
+            var line = result.Lines.Single(candidate => ReferenceEquals(candidate.SourceStep, matcher));
+            Assert.IsTrue(line.Segments
+                .SelectMany(segment => segment.Options)
+                .Any(option => string.Equals(option.Entry?.SourceId, expectedSource, StringComparison.Ordinal)));
+        }
+
+        var legacyFlow = fixture.CreateLegacyShsFlow();
+        var comparison = SanskritCorpusBuilder.CompareShs(
+            legacyFlow.Lexicons.Single().Entries,
+            flow.Lexicons.Single(lexicon => lexicon.Id == "cdsl-shs").Entries,
+            0,
+            new Dictionary<string, string>(StringComparer.Ordinal));
+        Assert.AreEqual(0, comparison.Discrepancies.Count);
+        Assert.AreEqual(0, comparison.UnexplainedAboveTolerance);
+    }
+
+    private sealed class SanskritPanelFixture : IDisposable
+    {
+        private static readonly string[] DictionaryCodes = ["mw", "ap", "pwg", "pw", "shs"];
+        private readonly string root = Path.Combine(Path.GetTempPath(), $"enochian-sanskrit-panel-{Guid.NewGuid():N}");
+
+        public SanskritPanelFixture()
+        {
+            _ = Directory.CreateDirectory(root);
+        }
+
+        public Enochian.Flow.Flow CreateFlow()
+        {
+            var resources = new Enochian.Flow.Flow(GetConfigPath("resources/lexicons/cdsl-normalization.flow.json"));
+            AssertUtils.NoErrors(resources);
+            var adapter = new CdslOrigAdapter(
+                resources.FeatureSets.Single(featureSet => featureSet.Id == "Default"),
+                resources.Encodings.Single(encoding => encoding.Id == "SLP1"));
+            var manifestPath = Path.Combine(root, "manifest.json");
+            File.WriteAllText(manifestPath, "{}", new UTF8Encoding(false));
+            var lexicons = new JsonArray();
+            var steps = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["id"] = "Sanskrit Sample",
+                    ["type"] = "SampleText",
+                    ["features"] = "Default",
+                    ["text"] = "aɡni",
+                },
+                new JsonObject
+                {
+                    ["id"] = "Encode Sanskrit Sample",
+                    ["type"] = "Transducer",
+                    ["features"] = "Default",
+                    ["encoding"] = "IPA",
+                },
+            };
+
+            foreach (var dictionaryCode in DictionaryCodes)
+            {
+                var sourceId = $"cdsl-{dictionaryCode}";
+                var outputPath = Path.Combine(root, sourceId + ".jsonl");
+                _ = adapter.Normalize(
+                    new CdslManifest(
+                        sourceId,
+                        dictionaryCode,
+                        "https://github.com/sanskrit-lexicon/csl-orig",
+                        "fixture-revision",
+                        new string('0', 64),
+                        "CC-BY-SA-4.0",
+                        dictionaryCode + ".txt",
+                        outputPath),
+                    GetConfigPath($"source/Enochian.UnitTests/Fixtures/Cdsl/{dictionaryCode}.txt"),
+                    outputPath,
+                    Path.Combine(root, sourceId + ".adapter-quality.json"),
+                    "fixture command");
+                lexicons.Add(new JsonObject
+                {
+                    ["id"] = sourceId,
+                    ["type"] = "NormalizedLexicon",
+                    ["features"] = "Default",
+                    ["encoding"] = "IPA",
+                    ["path"] = outputPath,
+                    ["manifest"] = manifestPath,
+                    ["qualityReport"] = Path.Combine(root, sourceId + ".loader-quality.json"),
+                });
+                steps.Add(new JsonObject
+                {
+                    ["id"] = "Search " + dictionaryCode,
+                    ["type"] = "DTWMatcher",
+                    ["lexicon"] = sourceId,
+                    ["numOptions"] = 1,
+                    ["tolerance"] = 0.0,
+                });
+            }
+
+            var config = new JsonObject
+            {
+                ["id"] = "Sanskrit Fixture Panel",
+                ["features"] = new JsonArray
+                {
+                    new JsonObject { ["path"] = GetConfigPath("resources/encodings/features.json") },
+                },
+                ["encodings"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["id"] = "IPA",
+                        ["features"] = "Default",
+                        ["path"] = GetConfigPath("resources/encodings/ipa.json"),
+                    },
+                },
+                ["lexicons"] = lexicons,
+                ["steps"] = steps,
+            };
+            var configPath = Path.Combine(root, "flow.json");
+            File.WriteAllText(configPath, config.ToJsonString(), new UTF8Encoding(false));
+            return new Enochian.Flow.Flow(configPath);
+        }
+
+        public Enochian.Flow.Flow CreateLegacyShsFlow()
+        {
+            var config = new JsonObject
+            {
+                ["id"] = "Legacy SHS Fixture",
+                ["features"] = new JsonArray
+                {
+                    new JsonObject { ["path"] = GetConfigPath("resources/encodings/features.json") },
+                },
+                ["encodings"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["id"] = "IPA",
+                        ["features"] = "Default",
+                        ["path"] = GetConfigPath("resources/encodings/ipa.json"),
+                    },
+                    new JsonObject
+                    {
+                        ["id"] = "SLP1",
+                        ["features"] = "Default",
+                        ["path"] = GetConfigPath("resources/encodings/slp1.json"),
+                    },
+                },
+                ["lexicons"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["id"] = "SHS-Legacy",
+                        ["type"] = "ShabdaSagara",
+                        ["features"] = "Default",
+                        ["encoding"] = "SLP1",
+                        ["path"] = GetConfigPath("source/Enochian.UnitTests/Fixtures/Cdsl/shs.txt"),
+                    },
+                },
+                ["steps"] = new JsonArray(),
+            };
+            var configPath = Path.Combine(root, "legacy-shs-flow.json");
+            File.WriteAllText(configPath, config.ToJsonString(), new UTF8Encoding(false));
+            var flow = new Enochian.Flow.Flow(configPath);
+            AssertUtils.NoErrors(flow);
+            return flow;
+        }
+
+        public void Dispose()
+        {
+            Directory.Delete(root, true);
         }
     }
 }

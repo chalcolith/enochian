@@ -1,0 +1,112 @@
+{
+  "id": "Sanskrit Corpus Panel",
+  "description": "Searches each pinned normalized CDSL Sanskrit dictionary separately.",
+  "features": [
+    {
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    }
+  ],
+  "lexicons": [
+    {
+      "id": "CDSL-MW",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/cdsl-generated/cdsl-mw.jsonl",
+      "manifest": "../resources/lexicons/manifests/cdsl-mw.manifest.json",
+      "qualityReport": "../.enoch/cdsl-generated/cdsl-mw.loader-quality.json"
+    },
+    {
+      "id": "CDSL-AP",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/cdsl-generated/cdsl-ap.jsonl",
+      "manifest": "../resources/lexicons/manifests/cdsl-ap.manifest.json",
+      "qualityReport": "../.enoch/cdsl-generated/cdsl-ap.loader-quality.json"
+    },
+    {
+      "id": "CDSL-PWG",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/cdsl-generated/cdsl-pwg.jsonl",
+      "manifest": "../resources/lexicons/manifests/cdsl-pwg.manifest.json",
+      "qualityReport": "../.enoch/cdsl-generated/cdsl-pwg.loader-quality.json"
+    },
+    {
+      "id": "CDSL-PW",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/cdsl-generated/cdsl-pw.jsonl",
+      "manifest": "../resources/lexicons/manifests/cdsl-pw.manifest.json",
+      "qualityReport": "../.enoch/cdsl-generated/cdsl-pw.loader-quality.json"
+    },
+    {
+      "id": "CDSL-SHS",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/cdsl-generated/cdsl-shs.jsonl",
+      "manifest": "../resources/lexicons/manifests/cdsl-shs.manifest.json",
+      "qualityReport": "../.enoch/cdsl-generated/cdsl-shs.loader-quality.json"
+    }
+  ],
+  "steps": [
+    {
+      "id": "Sanskrit Sample",
+      "type": "SampleText",
+      "features": "Default",
+      "text": "aɡni"
+    },
+    {
+      "id": "Encode Sanskrit Sample",
+      "type": "Transducer",
+      "features": "Default",
+      "encoding": "IPA"
+    },
+    {
+      "id": "Search MW",
+      "type": "DTWMatcher",
+      "lexicon": "CDSL-MW",
+      "numOptions": 5,
+      "tolerance": 0.0
+    },
+    {
+      "id": "Search AP",
+      "type": "DTWMatcher",
+      "lexicon": "CDSL-AP",
+      "numOptions": 5,
+      "tolerance": 0.0
+    },
+    {
+      "id": "Search PWG",
+      "type": "DTWMatcher",
+      "lexicon": "CDSL-PWG",
+      "numOptions": 5,
+      "tolerance": 0.0
+    },
+    {
+      "id": "Search PW",
+      "type": "DTWMatcher",
+      "lexicon": "CDSL-PW",
+      "numOptions": 5,
+      "tolerance": 0.0
+    },
+    {
+      "id": "Search normalized SHS",
+      "type": "DTWMatcher",
+      "lexicon": "CDSL-SHS",
+      "numOptions": 5,
+      "tolerance": 0.0
+    }
+  ]
+}
