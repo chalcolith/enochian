@@ -1,4 +1,5 @@
 using Enochian.Flow.Steps;
+using Enochian.Lexicons;
 using Enochian.Text;
 using System.Text.Json.Nodes;
 
@@ -40,6 +41,24 @@ public class FlowConfigurationTests
 
         Assert.AreEqual(8, hypotheses.Groups.SelectMany(group => group.Entries).Count());
         Assert.IsTrue(hypotheses.Groups.SelectMany(group => group.Entries).Any(entry => entry.Input == "daiiin"));
+    }
+
+    [TestMethod]
+    public void ConfiguresFiveIndependentNormalizedSanskritSearches()
+    {
+        var configPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../../samples/sanskrit-panel.json"));
+
+        var flow = new Flow.Flow(configPath);
+
+        AssertUtils.NoErrors(flow);
+        Assert.AreEqual(5, flow.Lexicons.OfType<NormalizedLexicon>().Count());
+        Assert.IsTrue(flow.Lexicons.All(lexicon => lexicon.Encoding?.Id == "IPA"));
+        var matchers = flow.Steps?.Children.OfType<DTWMatcher>().ToArray()
+            ?? throw new AssertFailedException("Flow steps were not configured.");
+        Assert.AreEqual(5, matchers.Length);
+        Assert.IsTrue(matchers.All(matcher => matcher.Lexicons.Count == 1));
+        Assert.AreEqual(5, matchers.Select(matcher => matcher.Lexicons.Single().Id).Distinct(StringComparer.Ordinal).Count());
     }
 
     [TestMethod]

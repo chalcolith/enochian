@@ -228,7 +228,7 @@ public abstract class Lexicon(IConfigurable parent, IFlowResources resources) : 
     }
 
     // change this if the binary format changes
-    private static readonly byte[] MagicCacheCookie = new Guid("{6C5CCB84-D637-4CBF-9A23-9CA744862C44}").ToByteArray();
+    private static readonly byte[] MagicCacheCookie = new Guid("{D7A37D63-ECC0-4311-AF0E-206291A35D5A}").ToByteArray();
 
     private string GetCachePath(string absolutePath)
     {

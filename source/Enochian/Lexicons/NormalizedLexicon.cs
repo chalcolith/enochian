@@ -441,7 +441,9 @@ public partial class NormalizedLexicon(IConfigurable parent, IFlowResources reso
         string ipa,
         out IReadOnlyList<string> unknownSymbols)
     {
-        var (text, encoded, phones) = encoder.GetTextAndPhones(ipa, out unknownSymbols);
+        var (text, encoded, phones) = encoder.GetTextAndPhones(
+            ipa.Normalize(NormalizationForm.FormD),
+            out unknownSymbols);
         return (text, string.IsNullOrEmpty(encoded) ? ipa : encoded, phones);
     }
 

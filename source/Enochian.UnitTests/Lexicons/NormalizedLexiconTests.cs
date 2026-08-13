@@ -10,6 +10,22 @@ namespace Enochian.UnitTests.Lexicons;
 [DoNotParallelize]
 public sealed class NormalizedLexiconTests
 {
+    [TestMethod]
+    public void EncodesPrecomposedNasalVowelsFromNfcInterchangeRecords()
+    {
+        using var environment = new NormalizedLexiconTestEnvironment();
+        var sourcePath = environment.CreateSource("nfc-nasal-vowel.jsonl");
+        var record = CreateRecord(0);
+        record["ipa"] = "ĩ";
+        File.WriteAllText(sourcePath, record.ToJsonString() + "\n", new UTF8Encoding(false));
+
+        var lexicon = environment.Load(sourcePath);
+
+        Assert.AreEqual(1, lexicon.Entries.Count);
+        Assert.AreEqual("ĩ", lexicon.Entries.Single().Ipa);
+        Assert.AreEqual(0, lexicon.QualityReport?.UnknownSymbols.Count);
+    }
+
     private static readonly string[] ExpectedRejectionReasons =
     [
         "duplicate_entry_id",

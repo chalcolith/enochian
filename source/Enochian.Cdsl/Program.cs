@@ -12,6 +12,7 @@ try
     {
         "acquire-normalize" => await pipeline.RunAsync(acquire: true),
         "normalize" => await pipeline.RunAsync(acquire: false),
+        "corpus-report" => pipeline.WriteCorpusReport(),
         _ => ShowUsage(),
     };
 }
@@ -23,7 +24,7 @@ catch (Exception exception)
 
 static int ShowUsage()
 {
-    Console.Error.WriteLine("Usage: Enochian.Cdsl <acquire-normalize|normalize> [repository-root]");
+    Console.Error.WriteLine("Usage: Enochian.Cdsl <acquire-normalize|normalize|corpus-report> [repository-root]");
     return 1;
 }
 
