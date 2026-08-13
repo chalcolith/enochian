@@ -27,6 +27,12 @@
     <File Path="../resources/encodings/vogt.json" />
   </Folder>
   <Folder Name="/Solution Items/resources/lexicons/examples/">
+    <File Path="../resources/lexicons/examples/ipa-audit-summary.example.json" />
+    <File Path="../resources/lexicons/examples/ipa-conversion-artifact.example.json" />
+    <File Path="../resources/lexicons/examples/ipa-conversion-profile-custom.example.json" />
+    <File Path="../resources/lexicons/examples/ipa-conversion-profile.example.json" />
+    <File Path="../resources/lexicons/examples/ipa-conversion-request.example.json" />
+    <File Path="../resources/lexicons/examples/ipa-review-sheet.example.json" />
     <File Path="../resources/lexicons/examples/normalized-entry.example.json" />
     <File Path="../resources/lexicons/examples/source-manifest.example.json" />
   </Folder>
@@ -35,6 +41,11 @@
     <File Path="../resources/lexicons/README.md" />
   </Folder>
   <Folder Name="/Solution Items/resources/lexicons/schemas/">
+    <File Path="../resources/lexicons/schemas/ipa-audit-summary.schema.json" />
+    <File Path="../resources/lexicons/schemas/ipa-conversion-artifact.schema.json" />
+    <File Path="../resources/lexicons/schemas/ipa-conversion-profile.schema.json" />
+    <File Path="../resources/lexicons/schemas/ipa-conversion-request.schema.json" />
+    <File Path="../resources/lexicons/schemas/ipa-review-sheet.schema.json" />
     <File Path="../resources/lexicons/schemas/normalized-entry.schema.json" />
     <File Path="../resources/lexicons/schemas/source-manifest.schema.json" />
   </Folder>

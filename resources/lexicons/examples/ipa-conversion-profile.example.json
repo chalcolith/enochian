@@ -1,0 +1,21 @@
+{
+  "$schema": "../schemas/ipa-conversion-profile.schema.json",
+  "schema_version": "1.0.0",
+  "provider_id": "epitran",
+  "provider_version": "1.34.0",
+  "profile_id": "tur-Latn",
+  "profile_version": "1.0.0",
+  "provider_kind": "external",
+  "language": "tur",
+  "input_normalization": "NFC",
+  "output_notation": "IPA",
+  "execution_boundary": "out-of-process",
+  "packages": [
+    {
+      "name": "epitran",
+      "version": "1.34.0",
+      "license": "MIT"
+    }
+  ],
+  "notes": "Example metadata only; production profiles must pin the installed provider version."
+}

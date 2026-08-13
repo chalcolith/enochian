@@ -36,6 +36,7 @@ public partial class NormalizedLexicon(IConfigurable parent, IFlowResources reso
         "frequency",
         "source_encoding",
         "ipa",
+        "ipa_conversion",
         "unicode_normalization",
         "license",
     ];
@@ -69,6 +70,17 @@ public partial class NormalizedLexicon(IConfigurable parent, IFlowResources reso
         "part_of_speech",
         "definition",
         "ipa",
+    ];
+    private static readonly HashSet<string> IpaConversionProperties =
+    [
+        "source_form",
+        "normalized_form",
+        "generated_ipa",
+        "provider_id",
+        "provider_version",
+        "profile_id",
+        "profile_version",
+        "status",
     ];
 
     private readonly HashSet<string> normalizeFields = new(StringComparer.Ordinal)
@@ -413,6 +425,11 @@ public partial class NormalizedLexicon(IConfigurable parent, IFlowResources reso
             return false;
         }
 
+        if (!TryValidateIpaConversion(root, ipa, out error))
+        {
+            return false;
+        }
+
         entry = new LexiconEntry
         {
             EntryId = entryId,
@@ -433,6 +450,52 @@ public partial class NormalizedLexicon(IConfigurable parent, IFlowResources reso
             Definition = Normalize("definition", definition) ?? string.Empty,
             License = license,
         };
+        return true;
+    }
+
+    private static bool TryValidateIpaConversion(JsonElement root, string ipa, out string error)
+    {
+        error = string.Empty;
+        if (!root.TryGetProperty("ipa_conversion", out var conversion))
+        {
+            return true;
+        }
+
+        if (conversion.ValueKind != JsonValueKind.Object)
+        {
+            error = "ipa_conversion must be an object";
+            return false;
+        }
+
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var property in conversion.EnumerateObject())
+        {
+            if (!names.Add(property.Name) || !IpaConversionProperties.Contains(property.Name))
+            {
+                error = $"ipa_conversion contains invalid property '{property.Name}'";
+                return false;
+            }
+        }
+
+        if (IpaConversionProperties.Any(property => !names.Contains(property))
+            || !TryGetRequiredString(conversion, "source_form", out _, out error)
+            || !TryGetRequiredString(conversion, "normalized_form", out var normalizedForm, out error)
+            || !normalizedForm.IsNormalized(NormalizationForm.FormC)
+            || !TryGetRequiredString(conversion, "generated_ipa", out var generatedIpa, out error)
+            || !string.Equals(generatedIpa, ipa, StringComparison.Ordinal)
+            || !TryGetRequiredString(conversion, "provider_id", out _, out error)
+            || !TryGetRequiredString(conversion, "provider_version", out _, out error)
+            || !TryGetRequiredString(conversion, "profile_id", out _, out error)
+            || !TryGetRequiredString(conversion, "profile_version", out _, out error)
+            || !TryGetRequiredString(conversion, "status", out var status, out error)
+            || !string.Equals(status, "complete", StringComparison.Ordinal))
+        {
+            error = string.IsNullOrEmpty(error)
+                ? "ipa_conversion must be complete, NFC-normalized, and match ipa"
+                : error;
+            return false;
+        }
+
         return true;
     }
 

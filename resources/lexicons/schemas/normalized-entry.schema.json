@@ -48,10 +48,35 @@
     "frequency": { "type": ["number", "null"], "minimum": 0 },
     "source_encoding": { "type": "string", "minLength": 1 },
     "ipa": { "type": "string", "minLength": 1 },
+    "ipa_conversion": { "$ref": "#/$defs/ipa_conversion" },
     "unicode_normalization": { "const": "NFC" },
     "license": { "type": "string", "minLength": 1, "pattern": "^[A-Za-z0-9.+() -]+$" }
   },
   "$defs": {
+    "ipa_conversion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_form",
+        "normalized_form",
+        "generated_ipa",
+        "provider_id",
+        "provider_version",
+        "profile_id",
+        "profile_version",
+        "status"
+      ],
+      "properties": {
+        "source_form": { "type": "string", "minLength": 1 },
+        "normalized_form": { "type": "string", "minLength": 1 },
+        "generated_ipa": { "type": "string", "minLength": 1 },
+        "provider_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "provider_version": { "type": "string", "minLength": 1 },
+        "profile_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "profile_version": { "type": "string", "minLength": 1 },
+        "status": { "const": "complete" }
+      }
+    },
     "language_code": {
       "type": "string",
       "pattern": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$"

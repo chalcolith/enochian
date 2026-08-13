@@ -1,0 +1,9 @@
+{
+  "$schema": "../schemas/ipa-audit-summary.schema.json",
+  "schema_version": "1.0.0",
+  "total_records": 1,
+  "accepted_records": 1,
+  "rejected_records": 0,
+  "unknown_segments": {},
+  "issues": []
+}

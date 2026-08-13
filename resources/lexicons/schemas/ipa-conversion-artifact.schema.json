@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/ipa-conversion-artifact-1.json",
+  "title": "Enochian IPA conversion artifact",
+  "description": "Version 1 frozen output from an external or custom grapheme-to-phoneme provider.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "source",
+    "language",
+    "source_form",
+    "normalized_form",
+    "ipa",
+    "provider_id",
+    "provider_version",
+    "profile_id",
+    "profile_version",
+    "status",
+    "diagnostics"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "record_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$"
+    },
+    "source_form": { "type": "string", "minLength": 1 },
+    "normalized_form": { "type": "string", "minLength": 1 },
+    "ipa": { "type": "string" },
+    "provider_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "provider_version": { "type": "string", "minLength": 1 },
+    "profile_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+    "profile_version": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["complete", "incomplete"] },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+          "message": { "type": "string", "minLength": 1 },
+          "text": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}
