@@ -4,5 +4,6 @@
     <ProjectReference Include="..\Enochian.Cdsl\Enochian.Cdsl.csproj" />
     <ProjectReference Include="..\Enochian\Enochian.csproj" />
     <ProjectReference Include="..\Enochian.Provenance\Enochian.Provenance.csproj" />
+    <ProjectReference Include="..\Enochian.Perseus\Enochian.Perseus.csproj" />
   </ItemGroup>
 </Project>

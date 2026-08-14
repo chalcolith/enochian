@@ -1,0 +1,21 @@
+{
+  "$schema": "../schemas/ipa-conversion-profile.schema.json",
+  "schema_version": "1.0.0",
+  "provider_id": "enochian-latin",
+  "provider_version": "1.0.0",
+  "profile_id": "lat-classical-restored",
+  "profile_version": "1.0.0",
+  "provider_kind": "custom",
+  "language": "lat",
+  "input_normalization": "NFC",
+  "output_notation": "IPA",
+  "execution_boundary": "out-of-process",
+  "packages": [
+    {
+      "name": "Enochian.Perseus",
+      "version": "1.0.0",
+      "license": "MIT"
+    }
+  ],
+  "notes": "Restored Classical Latin: c and g are always velar; v is /w/; consonantal i/u are /j,w/; qu is /kw/; x is /ks/; Greek ch/ph/th retain aspiration; ae/oe/au are diphthongs. Macron and breve marks are honored. Unmarked vocalic nuclei use the predeclared conservative short-vowel assumption and are counted in quality output. Stress is not emitted because stress is not represented in the Enochian feature space."
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Derived from Perseus Lewis and Short lat.ls.perseus-eng2.xml, CC BY-SA 4.0.
+     Text provided by Perseus Digital Library, http://www.perseus.tufts.edu. -->
+<TEI.2>
+  <text><body>
+    <entryFree key="amo" type="main" id="n1">
+      <orth lang="la" extent="full">ămo</orth>, <pos>v.</pos>
+      <sense level="1"><hi>to love</hi><sense level="2">to be fond of <foreign lang="greek">φιλῶ</foreign></sense></sense>
+    </entryFree>
+    <entryFree key="malum" type="main" id="n2">
+      <orth lang="la" extent="full">mălum</orth>, <pos>n.</pos><sense level="1">an apple</sense>
+    </entryFree>
+    <entryFree key="malum" type="main" id="n3">
+      <orth lang="la" extent="full">mălum</orth>, <pos>adj.</pos><sense level="1">evil</sense>
+    </entryFree>
+    <entryFree key="variant" type="main" id="n4">
+      <orth lang="la" extent="full">ab-lū^dўœ</orth>, also <orth lang="la">abludo</orth>, <pos>v.</pos>
+      <sense level="1">to differ</sense>
+    </entryFree>
+  </body></text>
+</TEI.2>

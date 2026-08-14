@@ -1,0 +1,48 @@
+{
+  "id": "Latin Control",
+  "description": "Searches the pinned normalized Lewis and Short Latin control.",
+  "features": [
+    {
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    }
+  ],
+  "lexicons": [
+    {
+      "id": "Perseus-Lewis-Short",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/perseus-generated/perseus-lewis-short.jsonl",
+      "manifest": "../resources/lexicons/manifests/perseus-lewis-short.manifest.json",
+      "qualityReport": "../.enoch/perseus-generated/perseus-lewis-short.loader-quality.json"
+    }
+  ],
+  "steps": [
+    {
+      "id": "Latin Sample",
+      "type": "SampleText",
+      "features": "Default",
+      "text": "wiːnum"
+    },
+    {
+      "id": "Encode Latin Sample",
+      "type": "Transducer",
+      "features": "Default",
+      "encoding": "IPA"
+    },
+    {
+      "id": "Search Latin",
+      "type": "DTWMatcher",
+      "lexicon": "Perseus-Lewis-Short",
+      "numOptions": 5,
+      "tolerance": 0.0
+    }
+  ]
+}

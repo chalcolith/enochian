@@ -369,6 +369,10 @@
       "features": [ "-Cons", "+Son", "+Syll", "+Labial", "-Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     },
     {
+      "input": "_ː",
+      "features": [ "+Syll" ]
+    },
+    {
       "input": "ʉ",
       "features": [ "-Cons", "+Son", "+Syll", "+Labial", "+Round", "-Cor", "+Dorsal", "+High", "-Low", "+Back", "+Tense", "+Phar", "-ATR", "+Voice", "-SG", "-CG", "+Cont", "-Strident", "-Lateral", "-DelRel", "-Nasal" ]
     }

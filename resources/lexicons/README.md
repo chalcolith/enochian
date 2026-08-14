@@ -178,6 +178,42 @@ omit language, source, record, provider, and profile metadata. Sampling favors
 unusual graphemes and longer forms, then sorts rows by a stable SHA-256 blinded
 ID so source ordering cannot reveal hidden groups.
 
+## Latin control
+
+`Enochian.Perseus` downloads the Lewis and Short TEI component from the exact
+PerseusDL commit and URL pinned in
+`manifests/perseus-lewis-short.manifest.json`, verifies its SHA-256, and writes
+normalized, conversion, quality, audit, and blinded-review artifacts under
+`.enoch/perseus-generated/`:
+
+```powershell
+dotnet run --project Enochian.Perseus -- acquire-normalize ..
+```
+
+Run from `source/`. Use `normalize` for an offline regeneration from the
+verified raw file under `.enoch/perseus/`. Runtime matching uses only the
+frozen normalized JSONL; `samples/latin-panel.json` does not invoke the
+acquirer or converter.
+
+The single named convention is Restored Classical Latin, profile
+`lat-classical-restored` version 1.0.0. `c` and `g` remain velar, `v` is /w/;
+vocalic and consonantal `u` and `i` are selected contextually, `qu` is /kw/,
+`x` is /ks/, and Greek `ch`, `ph`, and `th` retain aspiration. Macron and breve
+marks are honored; unmarked vocalic nuclei use the predeclared conservative
+short-vowel rule and are counted. Stress is omitted because the shared feature
+space does not encode it. Definitions and POS are retained as metadata but do
+not enter conversion.
+
+Lewis and Short editorial separators are removed before conversion. Its legacy
+Cyrillic `ў` breve-u encoding is normalized to `ŭ`; ligatures and accented or
+diaeresis vowel variants are normalized explicitly. At pinned commit
+`40038e40937fa639639802e73dac15e6c938496b`, the deterministic baseline is
+50,522 parsed records, 50,520 emitted records, 48,925 records with 88,778
+assumed-short vowels, and 100 blinded review rows. Records `n10474` and
+`n39823` contain bare `q` outside `qu`; both are rejected and counted rather
+than assigned a guessed pronunciation. The G2P audit and command therefore
+exit nonzero until those source forms receive an explicit reviewed rule.
+
 ## Commands
 
 Run from `source/`:

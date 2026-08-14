@@ -62,6 +62,23 @@ public class FlowConfigurationTests
     }
 
     [TestMethod]
+    public void ConfiguresLatinControlFromFrozenArtifact()
+    {
+        var configPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../../samples/latin-panel.json"));
+
+        var flow = new Flow.Flow(configPath);
+
+        AssertUtils.NoErrors(flow);
+        var lexicon = flow.Lexicons.OfType<NormalizedLexicon>().Single();
+        Assert.AreEqual("Perseus-Lewis-Short", lexicon.Id);
+        Assert.AreEqual("IPA", lexicon.Encoding?.Id);
+        var matcher = flow.Steps?.Children.OfType<DTWMatcher>().Single()
+            ?? throw new AssertFailedException("Latin matcher was not configured.");
+        Assert.AreEqual(lexicon, matcher.Lexicons.Single());
+    }
+
+    [TestMethod]
     public void ReadsTypedJsonNodeConfigurationValues()
     {
         var config = JsonNode.Parse(

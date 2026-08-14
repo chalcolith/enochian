@@ -74,13 +74,13 @@ This report is generated solely from checked-in source manifests.
 - Distribution: download-on-demand
 - Citation: Open Scriptures Hebrew Lexicon, including Strong's, BDB, and lexical index data.
 
-## perseus-lexica
+## perseus-lewis-short
 
 - Owner: Perseus Digital Library
-- Upstream: <https://github.com/PerseusDL/lexica>
-- License: NOASSERTION (unverified)
-- Distribution: metadata-only
-- Citation: Perseus Digital Library lexica collection; dictionary-specific reuse terms must be verified before selection.
+- Upstream: <https://raw.githubusercontent.com/PerseusDL/lexica/40038e40937fa639639802e73dac15e6c938496b/CTS_XML_TEI/perseus/pdllex/lat/ls/lat.ls.perseus-eng2.xml>
+- License: CC-BY-SA-4.0 (verified)
+- Distribution: download-on-demand
+- Citation: Charlton T. Lewis and Charles Short, A Latin Dictionary (1879), Unicode Greek TEI edition provided by Perseus Digital Library with NEH funding; accessed 2026-08-14.
 
 ## romlex
 
