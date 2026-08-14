@@ -1,0 +1,21 @@
+{
+  "$schema": "../schemas/ipa-conversion-profile.schema.json",
+  "schema_version": "1.0.0",
+  "provider_id": "enochian-custom",
+  "provider_version": "1.0.0",
+  "profile_id": "eng-Latn",
+  "profile_version": "1.0.0",
+  "provider_kind": "custom",
+  "language": "eng",
+  "input_normalization": "NFC",
+  "output_notation": "IPA",
+  "execution_boundary": "out-of-process",
+  "packages": [
+    {
+      "name": "enochian-custom-profile",
+      "version": "1.0.0",
+      "license": "MIT"
+    }
+  ],
+  "notes": "Example custom profile; replace the package identity and version with the pinned converter implementation."
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "../schemas/ipa-review-sheet.schema.json",
+  "schema_version": "1.0.0",
+  "blinded_id": "668bb51a6681a4ba6a7ba756a7949524a5b167142729427217dc43e9ff349eab",
+  "source_form": "kitap",
+  "normalized_form": "kitap",
+  "generated_ipa": "kitap",
+  "expected_ipa": null,
+  "decision": "pending",
+  "error_category": null,
+  "notes": null
+}

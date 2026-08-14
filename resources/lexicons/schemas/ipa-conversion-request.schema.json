@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/ipa-conversion-request-1.json",
+  "title": "Enochian IPA conversion request",
+  "description": "Version 1 UTF-8 JSONL input record for an out-of-process grapheme-to-phoneme provider.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_id", "source", "language", "source_form"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+\\.[0-9]+$" },
+    "record_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "language": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$"
+    },
+    "source_form": { "type": "string", "minLength": 1 }
+  }
+}

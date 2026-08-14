@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/ipa-review-sheet-1.json",
+  "title": "Enochian blinded IPA review row",
+  "description": "Version 1 review row with language, source, provider, and source record metadata withheld.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "blinded_id",
+    "source_form",
+    "normalized_form",
+    "generated_ipa",
+    "expected_ipa",
+    "decision",
+    "error_category",
+    "notes"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "const": "1.0.0" },
+    "blinded_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_form": { "type": "string", "minLength": 1 },
+    "normalized_form": { "type": "string", "minLength": 1 },
+    "generated_ipa": { "type": "string", "minLength": 1 },
+    "expected_ipa": { "type": ["string", "null"] },
+    "decision": { "enum": ["pending", "accept", "reject"] },
+    "error_category": { "type": ["string", "null"] },
+    "notes": { "type": ["string", "null"] }
+  }
+}

@@ -15,6 +15,16 @@ public class SchemaTests
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
         LoadSchema("resources/lexicons/schemas/normalized-entry.schema.json");
+    private static readonly JsonSchema IpaConversionArtifactSchema =
+        LoadSchema("resources/lexicons/schemas/ipa-conversion-artifact.schema.json");
+    private static readonly JsonSchema IpaConversionRequestSchema =
+        LoadSchema("resources/lexicons/schemas/ipa-conversion-request.schema.json");
+    private static readonly JsonSchema IpaConversionProfileSchema =
+        LoadSchema("resources/lexicons/schemas/ipa-conversion-profile.schema.json");
+    private static readonly JsonSchema IpaReviewSheetSchema =
+        LoadSchema("resources/lexicons/schemas/ipa-review-sheet.schema.json");
+    private static readonly JsonSchema IpaAuditSummarySchema =
+        LoadSchema("resources/lexicons/schemas/ipa-audit-summary.schema.json");
 
     [TestMethod]
     public void ValidExamplesConformToSchemas()
@@ -23,6 +33,18 @@ public class SchemaTests
         AssertValid(ExperimentSchema, "experiments/confirmatory.protocol.json");
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");
+        AssertValid(IpaConversionArtifactSchema,
+            "resources/lexicons/examples/ipa-conversion-artifact.example.json");
+        AssertValid(IpaConversionRequestSchema,
+            "resources/lexicons/examples/ipa-conversion-request.example.json");
+        AssertValid(IpaConversionProfileSchema,
+            "resources/lexicons/examples/ipa-conversion-profile.example.json");
+        AssertValid(IpaConversionProfileSchema,
+            "resources/lexicons/examples/ipa-conversion-profile-custom.example.json");
+        AssertValid(IpaReviewSheetSchema,
+            "resources/lexicons/examples/ipa-review-sheet.example.json");
+        AssertValid(IpaAuditSummarySchema,
+            "resources/lexicons/examples/ipa-audit-summary.example.json");
     }
 
     [TestMethod]
@@ -59,6 +81,12 @@ public class SchemaTests
             "experiments/confirmatory.protocol.json",
             "resources/lexicons/examples/source-manifest.example.json",
             "resources/lexicons/examples/normalized-entry.example.json",
+            "resources/lexicons/examples/ipa-conversion-artifact.example.json",
+            "resources/lexicons/examples/ipa-conversion-request.example.json",
+            "resources/lexicons/examples/ipa-conversion-profile.example.json",
+            "resources/lexicons/examples/ipa-conversion-profile-custom.example.json",
+            "resources/lexicons/examples/ipa-review-sheet.example.json",
+            "resources/lexicons/examples/ipa-audit-summary.example.json",
         };
 
         foreach (var path in paths)
@@ -192,7 +220,9 @@ public class SchemaTests
 
     private static JsonSchema LoadSchema(string schemaPath)
     {
-        return JsonSchema.FromText(File.ReadAllText(GetPath(schemaPath)));
+        return JsonSchema.FromText(
+            File.ReadAllText(GetPath(schemaPath)),
+            new BuildOptions { SchemaRegistry = new SchemaRegistry() });
     }
 
     private static JsonObject LoadObject(string relativePath)

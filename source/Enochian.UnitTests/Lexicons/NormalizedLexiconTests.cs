@@ -26,6 +26,27 @@ public sealed class NormalizedLexiconTests
         Assert.AreEqual(0, lexicon.QualityReport?.UnknownSymbols.Count);
     }
 
+    [TestMethod]
+    public void LoadsFrozenIpaConversionProvenanceAndRejectsMismatchedIpa()
+    {
+        using var environment = new NormalizedLexiconTestEnvironment();
+        var sourcePath = environment.CreateSource("conversion-provenance.jsonl");
+        var valid = CreateRecord(1);
+        valid["ipa_conversion"] = CreateConversionProvenance("t");
+        var invalid = CreateRecord(2);
+        invalid["ipa_conversion"] = CreateConversionProvenance("d");
+        File.WriteAllText(
+            sourcePath,
+            valid.ToJsonString() + "\n" + invalid.ToJsonString() + "\n",
+            new UTF8Encoding(false));
+
+        var lexicon = environment.Load(sourcePath);
+
+        Assert.AreEqual(1, lexicon.Entries.Count);
+        Assert.AreEqual(1, lexicon.QualityReport?.RejectedRecords);
+        Assert.AreEqual("invalid_field", lexicon.QualityReport?.Rejections.Single().ReasonCode);
+    }
+
     private static readonly string[] ExpectedRejectionReasons =
     [
         "duplicate_entry_id",
@@ -151,6 +172,21 @@ public sealed class NormalizedLexiconTests
             ["ipa"] = "t",
             ["unicode_normalization"] = "NFC",
             ["license"] = "CC-BY-4.0",
+        };
+    }
+
+    private static JsonObject CreateConversionProvenance(string generatedIpa)
+    {
+        return new JsonObject
+        {
+            ["source_form"] = "word",
+            ["normalized_form"] = "word",
+            ["generated_ipa"] = generatedIpa,
+            ["provider_id"] = "test-provider",
+            ["provider_version"] = "1.0.0",
+            ["profile_id"] = "eng-Latn",
+            ["profile_version"] = "1.0.0",
+            ["status"] = "complete",
         };
     }
 

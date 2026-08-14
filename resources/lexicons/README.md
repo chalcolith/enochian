@@ -139,6 +139,45 @@ panel is additive. Migrating the Voynich sample to normalized SHS requires a
 separate recorded result comparison rather than silently changing its search
 space.
 
+## IPA conversion boundary
+
+External and custom grapheme-to-phoneme converters are preprocessing tools,
+not runtime dependencies. They exchange UTF-8 JSONL using
+`schemas/ipa-conversion-request.schema.json` and
+`schemas/ipa-conversion-artifact.schema.json`. A converter invocation must:
+
+- read one request per line and emit exactly one artifact per request in the
+  same order;
+- write UTF-8 without a byte-order mark, use LF line endings, and produce the
+  same bytes for the same ordered input and pinned profile;
+- identify the provider and profile with nonempty pinned versions from a file
+  conforming to `schemas/ipa-conversion-profile.schema.json`;
+- mark unmapped graphemes as `incomplete`, include an `unconverted_grapheme`
+  diagnostic, and exit nonzero if any record is incomplete; and
+- write a machine-readable summary conforming to
+  `schemas/ipa-audit-summary.schema.json`.
+
+Epitran and custom profile examples are checked in under `examples/`. Package
+licenses and versions belong in profile metadata. GPL-licensed tools may be
+run only out of process; their code and environment are not linked, imported,
+or packaged with the Enochian library. Generated IPA and the profile/provider
+identity are preserved in normalized entries under `ipa_conversion`.
+
+Audit a frozen conversion batch from `source/`:
+
+```powershell
+dotnet run --project Enochian.Provenance -- ipa-audit `
+    <artifacts-jsonl> <profile-json> <review-jsonl> <summary-json> [sample-size]
+```
+
+The audit rejects malformed or incomplete records, missing or mismatched
+versions, empty IPA, and segments unknown to the checked-in IPA encoding. It
+always writes the machine summary and exits nonzero when any record is
+rejected. Review rows conform to `schemas/ipa-review-sheet.schema.json`; they
+omit language, source, record, provider, and profile metadata. Sampling favors
+unusual graphemes and longer forms, then sorts rows by a stable SHA-256 blinded
+ID so source ordering cannot reveal hidden groups.
+
 ## Commands
 
 Run from `source/`:

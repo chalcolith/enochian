@@ -17,6 +17,16 @@
   "frequency": null,
   "source_encoding": "Latin",
   "ipa": "ɐɡni",
+  "ipa_conversion": {
+    "source_form": "agni",
+    "normalized_form": "agni",
+    "generated_ipa": "ɐɡni",
+    "provider_id": "example-custom",
+    "provider_version": "1.0.0",
+    "profile_id": "san-Latn",
+    "profile_version": "1.0.0",
+    "status": "complete"
+  },
   "unicode_normalization": "NFC",
   "license": "CC-BY-4.0"
 }

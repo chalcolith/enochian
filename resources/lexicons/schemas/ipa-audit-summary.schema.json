@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/ipa-audit-summary-1.json",
+  "title": "Enochian IPA audit summary",
+  "description": "Machine-readable result of validating a frozen IPA conversion batch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "total_records",
+    "accepted_records",
+    "rejected_records",
+    "unknown_segments",
+    "issues"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "const": "1.0.0" },
+    "total_records": { "type": "integer", "minimum": 0 },
+    "accepted_records": { "type": "integer", "minimum": 0 },
+    "rejected_records": { "type": "integer", "minimum": 0 },
+    "unknown_segments": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 1 }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["line", "record_id", "code", "message"],
+        "properties": {
+          "line": { "type": "integer", "minimum": 1 },
+          "record_id": { "type": ["string", "null"] },
+          "code": { "type": "string", "minLength": 1 },
+          "message": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
