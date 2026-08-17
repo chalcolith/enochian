@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "perseus-lewis-short",
+  "status": "acquired",
+  "owner": "Perseus Digital Library",
+  "language": "lat",
+  "family": "Indo-European/Italic",
+  "url": "https://raw.githubusercontent.com/PerseusDL/lexica/40038e40937fa639639802e73dac15e6c938496b/CTS_XML_TEI/perseus/pdllex/lat/ls/lat.ls.perseus-eng2.xml",
+  "revision": { "kind": "commit", "value": "40038e40937fa639639802e73dac15e6c938496b" },
+  "retrieval_date": "2026-08-14",
+  "sha256": "01c723e98720910ba834e84b52a4e7b32ce1f84270d948fe5a4c3c2678629284",
+  "license": "CC-BY-SA-4.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "Charlton T. Lewis and Charles Short, A Latin Dictionary (1879), Unicode Greek TEI edition provided by Perseus Digital Library with NEH funding; accessed 2026-08-14.",
+  "parser": { "id": "perseus-tei", "version": "1.0.0" },
+  "raw_path": ".enoch/perseus/lat.ls.perseus-eng2.xml",
+  "generated_artifact_path": ".enoch/perseus-generated/perseus-lewis-short.jsonl",
+  "filters": {
+    "include": ["entryFree records with an ID and a Latin orth element", "one record per unique normalized lemma and part of speech"],
+    "exclude": ["entries without a Latin orthography", "exact duplicate normalized lemma and part-of-speech pairs after the first ordinal record ID", "entries with unsupported orthographic graphemes"]
+  }
+}

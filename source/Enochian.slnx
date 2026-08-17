@@ -63,6 +63,7 @@
   <Project Path="Enochian.Cdsl/Enochian.Cdsl.csproj" />
   <Project Path="Enochian.Console/Enochian.Console.csproj" />
   <Project Path="Enochian.IntegrationTests/Enochian.IntegrationTests.csproj" />
+  <Project Path="Enochian.Perseus/Enochian.Perseus.csproj" />
   <Project Path="Enochian.Provenance/Enochian.Provenance.csproj" />
   <Project Path="Enochian.UnitTests/Enochian.UnitTests.csproj" />
   <Project Path="Enochian/Enochian.csproj" />
