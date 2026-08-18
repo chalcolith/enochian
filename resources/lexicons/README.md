@@ -214,6 +214,50 @@ assumed-short vowels, and 100 blinded review rows. Records `n10474` and
 than assigned a guessed pronunciation. The G2P audit and command therefore
 exit nonzero until those source forms receive an explicit reviewed rule.
 
+## Turkish and Hungarian controls
+
+`Enochian.Controls` acquires the Zemberek Turkish master dictionary and Magyar
+Ispell 1.9.1 source archive from the exact revisions and URLs pinned in
+`manifests/zemberek.manifest.json` and
+`manifests/magyar-ispell.manifest.json`. It verifies each SHA-256 before
+parsing explicit lexical stems and never expands productive morphology. Run
+from `source/` with the Python 3.11 environment containing the packages pinned
+in `tools/epitran/requirements.txt`:
+
+```powershell
+dotnet run --project Enochian.Controls -- acquire-normalize .. <python-path>
+```
+
+Use `normalize` for an offline rerun from the verified files under
+`.enoch/controls/`. Outputs are written under `.enoch/controls-generated/`.
+Each language receives its own normalized JSONL, conversion JSONL, quality
+report, audit summary, and 100-row blinded review sheet. Runtime consumers use
+only frozen normalized JSONL; they do not invoke Python, Epitran, or either
+acquirer. `samples/turkish-hungarian-panel.json` loads both normalized controls
+as separate runtime lexicons for exploratory comparison.
+
+Both languages share the out-of-process Epitran 1.35.2 worker and retain its
+output unchanged. Turkish uses `tur-Latn`; Hungarian uses `hun-Latn`. The
+process boundary forces Python UTF-8 mode and BOM-free UTF-8 JSONL. The
+Zemberek adapter excludes proper names, abbreviations, punctuation, and
+malformed records. The Magyar adapter reads the frozen default source-module
+list, excludes proper-name, place-name, abbreviation, obsolete, and correction
+sources, and records source flags without applying affix rules.
+
+At Zemberek commit `ae2fbe31438dda4dddc674a2a8991d518984d392`, the
+deterministic baseline is 28,821 lemmas, 27,677 emitted records, 1,181 total
+exclusions, zero generated morphology records, and 100 review rows. Epitran
+passes circumflex orthography through in 1,129 records and 15 records retain a
+hyphen, so 1,144 conversions fail the checked-in IPA inventory. At Magyar
+Ispell tag `v1.9.1`, commit
+`1ecfd0b086fecb4d02b38148bceeb00b86dd3b6e`, the baseline is 58,112 lemmas,
+57,596 emitted records, 38,433 total exclusions, zero generated morphology
+records, and 100 review rows. Of those exclusions, 35,339 are frozen
+proper-name sources, 1,370 are correction-source records, and 516 are rejected
+by the IPA audit. Both languages are therefore blocked from confirmatory use by
+unknown IPA and pending blinded review; these records are counted rather than
+silently rewritten.
+
 ## Commands
 
 Run from `source/`:

@@ -2,6 +2,7 @@
   <ItemGroup>
     <PackageReference Include="JsonSchema.Net" />
     <ProjectReference Include="..\Enochian.Cdsl\Enochian.Cdsl.csproj" />
+    <ProjectReference Include="..\Enochian.Controls\Enochian.Controls.csproj" />
     <ProjectReference Include="..\Enochian\Enochian.csproj" />
     <ProjectReference Include="..\Enochian.Provenance\Enochian.Provenance.csproj" />
     <ProjectReference Include="..\Enochian.Perseus\Enochian.Perseus.csproj" />

@@ -1,0 +1,64 @@
+{
+  "id": "Turkish and Hungarian Control Panel",
+  "description": "Searches the pinned normalized Turkish and Hungarian controls separately.",
+  "features": [
+    {
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    }
+  ],
+  "lexicons": [
+    {
+      "id": "Zemberek-Turkish",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/controls-generated/zemberek.jsonl",
+      "manifest": "../resources/lexicons/manifests/zemberek.manifest.json",
+      "qualityReport": "../.enoch/controls-generated/zemberek.loader-quality.json"
+    },
+    {
+      "id": "Magyar-Ispell-Hungarian",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/controls-generated/magyar-ispell.jsonl",
+      "manifest": "../resources/lexicons/manifests/magyar-ispell.manifest.json",
+      "qualityReport": "../.enoch/controls-generated/magyar-ispell.loader-quality.json"
+    }
+  ],
+  "steps": [
+    {
+      "id": "Control Sample",
+      "type": "SampleText",
+      "features": "Default",
+      "text": "ɯʃɯk"
+    },
+    {
+      "id": "Encode Control Sample",
+      "type": "Transducer",
+      "features": "Default",
+      "encoding": "IPA"
+    },
+    {
+      "id": "Search Turkish",
+      "type": "DTWMatcher",
+      "lexicon": "Zemberek-Turkish",
+      "numOptions": 5,
+      "tolerance": 0.0
+    },
+    {
+      "id": "Search Hungarian",
+      "type": "DTWMatcher",
+      "lexicon": "Magyar-Ispell-Hungarian",
+      "numOptions": 5,
+      "tolerance": 0.0
+    }
+  ]
+}

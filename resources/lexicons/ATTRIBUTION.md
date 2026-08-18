@@ -61,10 +61,10 @@ This report is generated solely from checked-in source manifests.
 ## magyar-ispell
 
 - Owner: Magyar Ispell contributors
-- Upstream: <https://github.com/laszlonemeth/magyarispell>
-- License: NOASSERTION (unverified)
-- Distribution: metadata-only
-- Citation: Magyar Ispell Hungarian spelling and morphology sources; one offered GPL/LGPL/MPL option must be selected before redistribution.
+- Upstream: <https://github.com/laszlonemeth/magyarispell/archive/1ecfd0b086fecb4d02b38148bceeb00b86dd3b6e.zip>
+- License: LGPL-2.1-or-later (verified)
+- Distribution: download-on-demand
+- Citation: Magyar Ispell Hungarian spelling and morphological dictionary, version 1.9.1; LGPL-2.1-or-later selected from the offered GPL/LGPL/MPL alternatives.
 
 ## open-scriptures-hebrew
 
@@ -109,7 +109,7 @@ This report is generated solely from checked-in source manifests.
 ## zemberek
 
 - Owner: Zemberek-NLP contributors
-- Upstream: <https://github.com/ahmetaa/zemberek-nlp>
+- Upstream: <https://raw.githubusercontent.com/ahmetaa/zemberek-nlp/ae2fbe31438dda4dddc674a2a8991d518984d392/morphology/src/main/resources/tr/master-dictionary.dict>
 - License: Apache-2.0 (verified)
 - Distribution: download-on-demand
-- Citation: Zemberek-NLP Turkish natural language processing library and morphology dictionaries.
+- Citation: Zemberek-NLP Turkish master dictionary, pinned component from the morphology resources.
