@@ -79,6 +79,26 @@ public class FlowConfigurationTests
     }
 
     [TestMethod]
+    public void ConfiguresTurkishAndHungarianAsSeparateControls()
+    {
+        var configPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../../samples/turkish-hungarian-panel.json"));
+
+        var flow = new Flow.Flow(configPath);
+
+        AssertUtils.NoErrors(flow);
+        var lexicons = flow.Lexicons.OfType<NormalizedLexicon>().ToArray();
+        Assert.HasCount(2, lexicons);
+        Assert.IsTrue(lexicons.All(lexicon => lexicon.Encoding?.Id == "IPA"));
+        var matchers = flow.Steps?.Children.OfType<DTWMatcher>().ToArray()
+            ?? throw new AssertFailedException("Control matchers were not configured.");
+        Assert.HasCount(2, matchers);
+        Assert.IsTrue(matchers.All(matcher => matcher.Lexicons.Count == 1));
+        Assert.AreEqual(2, matchers.Select(matcher => matcher.Lexicons.Single().Id)
+            .Distinct(StringComparer.Ordinal).Count());
+    }
+
+    [TestMethod]
     public void ReadsTypedJsonNodeConfigurationValues()
     {
         var config = JsonNode.Parse(

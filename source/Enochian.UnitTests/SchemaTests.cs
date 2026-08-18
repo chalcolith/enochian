@@ -43,8 +43,16 @@ public class SchemaTests
             "resources/lexicons/examples/ipa-conversion-profile-custom.example.json");
         AssertValid(SourceManifestSchema,
             "resources/lexicons/manifests/perseus-lewis-short.manifest.json");
+        AssertValid(SourceManifestSchema,
+            "resources/lexicons/manifests/zemberek.manifest.json");
+        AssertValid(SourceManifestSchema,
+            "resources/lexicons/manifests/magyar-ispell.manifest.json");
         AssertValid(IpaConversionProfileSchema,
             "resources/lexicons/profiles/latin-classical-restored.profile.json");
+        AssertValid(IpaConversionProfileSchema,
+            "resources/lexicons/profiles/epitran-tur-Latn.profile.json");
+        AssertValid(IpaConversionProfileSchema,
+            "resources/lexicons/profiles/epitran-hun-Latn.profile.json");
         AssertValid(IpaReviewSheetSchema,
             "resources/lexicons/examples/ipa-review-sheet.example.json");
         AssertValid(IpaAuditSummarySchema,
