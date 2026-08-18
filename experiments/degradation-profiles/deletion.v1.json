@@ -1,0 +1,13 @@
+{
+  "$schema": "../schemas/degradation-profile.schema.json",
+  "id": "delete-every-fourth",
+  "version": "1.0.0",
+  "language_neutral": true,
+  "operations": [
+    {
+      "kind": "deletion",
+      "every": 4,
+      "offset": 3
+    }
+  ]
+}

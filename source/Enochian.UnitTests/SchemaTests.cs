@@ -11,6 +11,10 @@ public class SchemaTests
     private static readonly string RepositoryRoot = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "../../../../.."));
     private static readonly JsonSchema ExperimentSchema = LoadSchema("experiments/schemas/experiment.schema.json");
+    private static readonly JsonSchema RetrievalBenchmarkSchema =
+        LoadSchema("experiments/schemas/retrieval-benchmark.schema.json");
+    private static readonly JsonSchema DegradationProfileSchema =
+        LoadSchema("experiments/schemas/degradation-profile.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -33,6 +37,12 @@ public class SchemaTests
     {
         AssertValid(ExperimentSchema, "experiments/exploratory.example.json");
         AssertValid(ExperimentSchema, "experiments/confirmatory.protocol.json");
+        AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.protocol.json");
+        foreach (var profile in new[] { "identity", "deletion", "feature-merger", "feature-masking" })
+        {
+            AssertValid(DegradationProfileSchema, $"experiments/degradation-profiles/{profile}.v1.json");
+        }
+
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");
         AssertValid(IpaConversionArtifactSchema,

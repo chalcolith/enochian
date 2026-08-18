@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/retrieval-score-1.json",
+  "title": "Enochian retrieval benchmark query score",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["benchmark_id", "profile_id", "profile_version", "candidate_mode", "query_id", "source_id", "language", "confirmatory", "length_band", "unusual_category", "query_phoneme_length", "recall_at_1", "recall_at_5", "recall_at_20", "reciprocal_rank", "relevant_rank", "relevant_normalized_distance", "nearest_normalized_distance", "candidate_count"],
+  "properties": {
+    "benchmark_id": { "type": "string" },
+    "profile_id": { "type": "string" },
+    "profile_version": { "type": "string" },
+    "candidate_mode": { "enum": ["source-included", "source-excluded"] },
+    "query_id": { "type": "string" },
+    "source_id": { "type": "string" },
+    "language": { "type": "string" },
+    "confirmatory": { "type": "boolean" },
+    "length_band": { "enum": ["03-05", "06-09", "10-20"] },
+    "unusual_category": { "enum": ["combining-mark", "tie-bar", "modifier-letter", "ordinary"] },
+    "query_phoneme_length": { "type": "integer", "minimum": 0 },
+    "recall_at_1": { "type": "boolean" },
+    "recall_at_5": { "type": "boolean" },
+    "recall_at_20": { "type": "boolean" },
+    "reciprocal_rank": { "type": "number", "minimum": 0, "maximum": 1 },
+    "relevant_rank": { "type": ["integer", "null"], "minimum": 1 },
+    "relevant_normalized_distance": { "type": ["number", "null"], "minimum": 0 },
+    "nearest_normalized_distance": { "type": ["number", "null"], "minimum": 0 },
+    "candidate_count": { "type": "integer", "minimum": 0 }
+  }
+}

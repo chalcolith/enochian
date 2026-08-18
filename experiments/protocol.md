@@ -41,6 +41,45 @@ backward-compatible clarification, but released schema IDs remain stable.
   DTW minus control-group mean normalized DTW. The expected primary effect is
   therefore negative. Holm correction is applied across all reported planned
   contrasts.
+
+  ## Known-Language Retrieval Benchmark
+
+  `retrieval-benchmark.protocol.json` freezes the pre-comparison validation used
+  by M2-06. It samples lemma entries deterministically with seed `15485863`,
+  stratified by language, phoneme-length band, and unusual IPA category. Eligible
+  entries contain 3 through 20 encoded phonemes. The required bands are `03-05`,
+  `06-09`, and `10-20`.
+
+  Four versioned language-neutral profiles measure identity retrieval, deletion
+  of every fourth segment, merger of the `High` and `Low` feature dimensions,
+  and masking of laryngeal features. Every query is ranked against one sampled
+  cross-language candidate pool in two modes. `source-included` retains the exact
+  source record and determines progression; `source-excluded` removes every ID
+  for that source record and is diagnostic because no relevant source item then
+  remains. DTW distance is divided by the deterministic selected path length.
+
+  Required confirmatory languages must have at least 100 completed blinded review
+  rows with accuracy at least 0.95 and no pending or uncategorized rejection. In
+  every required length band and degradation profile, source-included retrieval
+  must achieve recall@1 at least 0.80, recall@5 at least 0.95, recall@20 at least
+  0.99, mean reciprocal rank at least 0.85, and mean relevant path-normalized
+  distance at most 0.35. A missing artifact, empty band, incomplete review, or
+  failed metric creates a quality blocker. Optional and exploratory sources still
+  produce diagnostics when available but do not relax or replace required-source
+  thresholds.
+
+  Run the offline benchmark from `source/` after generating the control artifacts:
+
+  ```powershell
+  dotnet run --project Enochian.Benchmark -- ../experiments/retrieval-benchmark.protocol.json ..
+  ```
+
+  The runner writes BOM-free LF JSONL query scores and tidy aggregate, language,
+  length-band, and language-by-length-band summaries under
+  `reports/retrieval-benchmark/`, plus an atomic quality decision. Query outputs
+  contain IDs and phonological metrics but no definitions. Blinded review input
+  rejects any field outside the shared review-sheet contract, including language,
+  source, source-record, and provider metadata.
 - `outputs` contains repository-relative destinations. Output artifacts must
   record the experiment, schema, source, and software hashes when implemented.
 

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/retrieval-benchmark-1.json",
+  "title": "Enochian cross-language retrieval benchmark protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "benchmark_id",
+    "frozen",
+    "sampling_seed",
+    "samples_per_stratum",
+    "minimum_phonemes",
+    "maximum_phonemes",
+    "required_length_bands",
+    "thresholds",
+    "sources",
+    "degradation_profiles",
+    "outputs"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "const": "1.0.0" },
+    "benchmark_id": { "$ref": "#/$defs/id" },
+    "frozen": { "const": true },
+    "sampling_seed": { "type": "integer", "minimum": 0 },
+    "samples_per_stratum": { "type": "integer", "minimum": 1 },
+    "minimum_phonemes": { "const": 3 },
+    "maximum_phonemes": { "const": 20 },
+    "required_length_bands": {
+      "const": ["03-05", "06-09", "10-20"]
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_review_records",
+        "minimum_review_accuracy",
+        "minimum_recall_at_1",
+        "minimum_recall_at_5",
+        "minimum_recall_at_20",
+        "minimum_mean_reciprocal_rank",
+        "maximum_mean_normalized_distance"
+      ],
+      "properties": {
+        "minimum_review_records": { "const": 100 },
+        "minimum_review_accuracy": { "const": 0.95 },
+        "minimum_recall_at_1": { "const": 0.8 },
+        "minimum_recall_at_5": { "const": 0.95 },
+        "minimum_recall_at_20": { "const": 0.99 },
+        "minimum_mean_reciprocal_rank": { "const": 0.85 },
+        "maximum_mean_normalized_distance": { "const": 0.35 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "language", "lexicon_path", "review_path", "confirmatory", "required"],
+        "properties": {
+          "source_id": { "$ref": "#/$defs/id" },
+          "language": { "type": "string", "pattern": "^[a-z]{2,3}$" },
+          "lexicon_path": { "$ref": "#/$defs/path" },
+          "review_path": { "$ref": "#/$defs/path" },
+          "confirmatory": { "type": "boolean" },
+          "required": { "type": "boolean" }
+        }
+      }
+    },
+    "degradation_profiles": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scores", "summaries", "quality_report"],
+      "properties": {
+        "scores": { "$ref": "#/$defs/path" },
+        "summaries": { "$ref": "#/$defs/path" },
+        "quality_report": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" }
+  }
+}
