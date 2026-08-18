@@ -1,0 +1,15 @@
+{
+  "$schema": "../schemas/ipa-conversion-profile.schema.json",
+  "schema_version": "1.0.0",
+  "provider_id": "epitran",
+  "provider_version": "1.35.2",
+  "profile_id": "ben-Beng",
+  "profile_version": "1.0.0",
+  "provider_kind": "external",
+  "language": "ben",
+  "input_normalization": "NFC",
+  "output_notation": "IPA",
+  "execution_boundary": "out-of-process",
+  "packages": [{ "name": "epitran", "version": "1.35.2", "license": "MIT-Modern-Variant" }],
+  "notes": "Pinned Bengali-script profile. Only 48 of 136 pinned unique lemmas pass the shared strict IPA audit, below the 100-row review threshold, so this profile remains exploratory. Rejected output is not silently rewritten."
+}

@@ -258,6 +258,44 @@ by the IPA audit. Both languages are therefore blocked from confirmatory use by
 unknown IPA and pending blinded review; these records are counted rather than
 silently rewritten.
 
+## Modern Indo-Aryan and Indo-Iranian bridge controls
+
+The predeclared selection and thresholds are recorded in
+`docs/modern-indo-iranian-panel.md`. Hindi is the confirmatory candidate because
+its pinned UniMorph dataset yields at least 100 auditable readings with Epitran
+1.35.2. Bengali is exploratory because only 48 readings pass strict IPA audit.
+Gujarati is retained as an exploratory source because no pinned profile exists.
+Persian is the Indo-Iranian bridge and remains exploratory because ordinary
+Perso-Arabic spelling omits vowels needed for auditable lexical IPA.
+
+Acquire exact source bytes, verify their hashes, and regenerate all artifacts
+from `source/`:
+
+```powershell
+dotnet run --project Enochian.Controls -- acquire-normalize .. <python-path>
+```
+
+UniMorph raw files are stored under `.enoch/unimorph/`; outputs are stored
+under `.enoch/indo-iranian-generated/`. Unique lemma records use `lemma:` IDs
+and are the only records passed to Epitran or written to the primary
+`unimorph-<language>.jsonl`. Every valid source row is retained separately in
+`unimorph-<language>.inflected-forms.jsonl` with a `form:` ID and its UniMorph
+feature bundle. Script, nullable transliteration, and generated IPA are
+separate fields. Each language receives a quality report and review artifact;
+unsupported exploratory languages receive an empty review artifact plus an
+explicit adequacy blocker rather than guessed IPA.
+
+`samples/modern-indo-aryan-panel.json` loads only Hindi. Unknown IPA, fewer
+than 100 auditable lemmas, or pending/failed blinded review blocks it from
+confirmatory use under the same rules as other controls.
+
+The pinned real-data baseline emits 149 of 258 Hindi lemmas and prepares 100
+review rows; 109 outputs fail strict IPA audit. Bengali emits 48 of 136 lemmas,
+below the review threshold, with 88 strict audit rejections. Gujarati reports
+397 converter-blocked lemmas. Persian excludes all 273 unvocalized lemmas from
+phonological output. Repeated normalization produces byte-identical primary,
+inflected, conversion, audit, review, and quality artifacts.
+
 ## Optional Biblical Hebrew control
 
 `Enochian.Bhsa` exports unique Biblical Hebrew lexemes from an authorized local

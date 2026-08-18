@@ -13,6 +13,7 @@ public sealed class ControlNormalizedEntry
     public string OriginalForm { get; init; } = string.Empty;
     public string Form { get; init; } = string.Empty;
     public string EntryKind { get; init; } = "lemma";
+    public string? Transliteration { get; init; }
     public string? Dialect { get; init; }
     public string? PartOfSpeech { get; init; }
     public string? Definition { get; init; }
@@ -51,6 +52,7 @@ public sealed class ControlQualityReport
     public int SourceRecords { get; init; }
     public int LemmaRecords { get; init; }
     public int GeneratedMorphologyRecords { get; init; }
+    public int InflectedFormRecords { get; init; }
     public int EmittedRecords { get; init; }
     public int ExcludedRecords { get; init; }
     public int ReviewRecords { get; init; }
@@ -60,4 +62,22 @@ public sealed class ControlQualityReport
     public IReadOnlyDictionary<string, int> ExclusionCounts { get; init; } = new SortedDictionary<string, int>(StringComparer.Ordinal);
     public IReadOnlyDictionary<string, int> UnknownIpaSegments { get; init; } = new SortedDictionary<string, int>(StringComparer.Ordinal);
     public IReadOnlyList<ControlSourceRejection> SourceRejections { get; init; } = [];
+}
+
+public sealed class ControlInflectedEntry
+{
+    public string SchemaVersion { get; init; } = "1.0.0";
+    public string EntryId { get; init; } = string.Empty;
+    public string SourceRecordId { get; init; } = string.Empty;
+    public string Source { get; init; } = string.Empty;
+    public string SourceVersion { get; init; } = string.Empty;
+    public string Language { get; init; } = string.Empty;
+    public string Lemma { get; init; } = string.Empty;
+    public string Form { get; init; } = string.Empty;
+    public string EntryKind { get; init; } = "inflected_form";
+    public string Script { get; init; } = string.Empty;
+    public string? Transliteration { get; init; }
+    public IReadOnlyList<string> Features { get; init; } = [];
+    public string UnicodeNormalization { get; init; } = "NFC";
+    public string License { get; init; } = string.Empty;
 }

@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "unimorph-ben",
+  "status": "acquired",
+  "owner": "UniMorph contributors",
+  "language": "ben",
+  "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+  "url": "https://raw.githubusercontent.com/unimorph/ben/55a44fa60e9b7a3a5ff7acbed66b07571ceefa79/ben",
+  "revision": { "kind": "commit", "value": "55a44fa60e9b7a3a5ff7acbed66b07571ceefa79" },
+  "retrieval_date": "2026-08-18",
+  "sha256": "b0f1e2d005bce183dfcc2a570de1ce3d4d9a17feafa6c222b3f72b3e6ff894b2",
+  "license": "CC-BY-SA-3.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "UniMorph Bengali dataset: 4,443 forms and 136 unique lemmas at the pinned revision; selected before cross-language scoring and retained as exploratory after only 48 readings passed strict IPA audit.",
+  "parser": { "id": "unimorph-tsv", "version": "1.0.0" },
+  "raw_path": ".enoch/unimorph/ben.tsv",
+  "generated_artifact_path": ".enoch/indo-iranian-generated/unimorph-ben.jsonl",
+  "filters": {
+    "include": ["unique NFC-normalized lemma column for exploratory reporting", "all valid form rows in the separate inflected-form artifact"],
+    "exclude": ["inflected forms from primary lemmas", "malformed TSV records", "Bengali from the frozen panel because fewer than 100 readings pass strict IPA audit"]
+  }
+}

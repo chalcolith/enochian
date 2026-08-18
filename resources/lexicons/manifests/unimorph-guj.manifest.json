@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "unimorph-guj",
+  "status": "acquired",
+  "owner": "UniMorph contributors",
+  "language": "guj",
+  "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+  "url": "https://raw.githubusercontent.com/unimorph/guj/f98348eea353912a61ca5d5af5c68c602a483ebe/guj",
+  "revision": { "kind": "commit", "value": "f98348eea353912a61ca5d5af5c68c602a483ebe" },
+  "retrieval_date": "2026-08-18",
+  "sha256": "fb6437c6544b823c00c85d78e3ba614bec80d1ee8a8982770ff24181f6a503a3",
+  "license": "CC-BY-SA-3.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "UniMorph Gujarati dataset: 7,505 valid forms and 397 unique lemmas at the pinned revision; predeclared as exploratory because Epitran 1.35.2 has no Gujarati profile.",
+  "parser": { "id": "unimorph-tsv", "version": "1.0.0" },
+  "raw_path": ".enoch/unimorph/guj.tsv",
+  "generated_artifact_path": ".enoch/indo-iranian-generated/unimorph-guj.jsonl",
+  "filters": {
+    "include": ["unique NFC-normalized lemma column for exploratory reporting", "all valid form rows in the separate inflected-form artifact"],
+    "exclude": ["inflected forms from primary lemmas", "malformed TSV records", "Gujarati from the frozen panel until an adequate pinned G2P profile exists"]
+  }
+}
