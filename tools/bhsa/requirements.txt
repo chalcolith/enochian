@@ -1,0 +1,1 @@
+text-fabric==13.1.0 --hash=sha256:2b57fec0bf8c7dace8ef23faeecdd15b584b2d7826a366b8640034cd2ccbcaad

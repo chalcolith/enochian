@@ -5,10 +5,10 @@ This report is generated solely from checked-in source manifests.
 ## bhsa
 
 - Owner: ETCBC, Vrije Universiteit Amsterdam
-- Upstream: <https://github.com/ETCBC/bhsa>
+- Upstream: <https://github.com/ETCBC/bhsa/releases/download/v1.8.1/complete.zip>
 - License: CC-BY-NC-4.0 (verified)
 - Distribution: metadata-only
-- Citation: ETCBC, Biblia Hebraica Stuttgartensia Amstelodamensis; DOI 10.17026/dans-z6y-skyh.
+- Citation: ETCBC, Biblia Hebraica Stuttgartensia Amstelodamensis, release v1.8.1, Text-Fabric 2021; DOI 10.17026/dans-z6y-skyh.
 
 ## cdsl-ap
 

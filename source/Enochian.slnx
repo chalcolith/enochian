@@ -61,6 +61,7 @@
     <File Path="../samples/english_test/austen_persuasion_single.txt" />
   </Folder>
   <Project Path="Enochian.Cdsl/Enochian.Cdsl.csproj" />
+  <Project Path="Enochian.Bhsa/Enochian.Bhsa.csproj" />
   <Project Path="Enochian.Console/Enochian.Console.csproj" />
   <Project Path="Enochian.Controls/Enochian.Controls.csproj" />
   <Project Path="Enochian.IntegrationTests/Enochian.IntegrationTests.csproj" />
