@@ -46,6 +46,7 @@
     "part_of_speech": { "type": ["string", "null"], "minLength": 1 },
     "definition": { "type": ["string", "null"] },
     "frequency": { "type": ["number", "null"], "minimum": 0 },
+    "rank": { "type": ["integer", "null"], "minimum": 1 },
     "source_encoding": { "type": "string", "minLength": 1 },
     "ipa": { "type": "string", "minLength": 1 },
     "ipa_conversion": { "$ref": "#/$defs/ipa_conversion" },

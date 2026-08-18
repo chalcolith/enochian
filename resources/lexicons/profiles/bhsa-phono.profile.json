@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/ipa-conversion-profile.schema.json",
+  "schema_version": "1.0.0",
+  "provider_id": "etcbc-phono",
+  "provider_version": "2.1",
+  "profile_id": "hbo-etcbc-phono",
+  "profile_version": "1.0.0",
+  "provider_kind": "external",
+  "language": "hbo",
+  "input_normalization": "NFC",
+  "output_notation": "IPA",
+  "execution_boundary": "out-of-process",
+  "packages": [
+    {
+      "name": "text-fabric",
+      "version": "13.1.0",
+      "license": "MIT"
+    },
+    {
+      "name": "ETCBC-phono",
+      "version": "2.1 (aba4367b49750089e4e4122415a77cac43bd97bc)",
+      "license": "MIT"
+    }
+  ],
+  "notes": "ETCBC BHSA phonological transcription v2.1 for Biblical Hebrew in Text-Fabric 2021; this project does not claim a complete reconstructed historical pronunciation. Tiberian vocalization is retained as source orthography and the raw ETCBC phono value is preserved in conversion diagnostics. Profile 1.0.0 maps ETCBC's documented long and reduced vowels, BGDKPT fricatives, emphatics, shin/sin, matres, and glides to segmental IPA; removes structural qere, Tetragrammaton, boundary, and punctuation markers; and omits stress that upstream documents as not consistently phonetic. Multiple observed readings remain separate auditable artifacts. Unmapped symbols make conversion incomplete. Resulting lexical data remains subject to BHSA CC-BY-NC-4.0."
+}

@@ -99,6 +99,23 @@ public class FlowConfigurationTests
     }
 
     [TestMethod]
+    public void ConfiguresOptionalBiblicalHebrewFromFrozenArtifact()
+    {
+        var configPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../../samples/biblical-hebrew-panel.json"));
+
+        var flow = new Flow.Flow(configPath);
+
+        AssertUtils.NoErrors(flow);
+        var lexicon = flow.Lexicons.OfType<NormalizedLexicon>().Single();
+        Assert.AreEqual("BHSA-Biblical-Hebrew", lexicon.Id);
+        Assert.AreEqual("IPA", lexicon.Encoding?.Id);
+        var matcher = flow.Steps?.Children.OfType<DTWMatcher>().Single()
+            ?? throw new AssertFailedException("Biblical Hebrew matcher was not configured.");
+        Assert.AreEqual(lexicon, matcher.Lexicons.Single());
+    }
+
+    [TestMethod]
     public void ReadsTypedJsonNodeConfigurationValues()
     {
         var config = JsonNode.Parse(

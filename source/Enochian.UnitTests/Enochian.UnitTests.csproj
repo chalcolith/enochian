@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSTest.Sdk">
   <ItemGroup>
     <PackageReference Include="JsonSchema.Net" />
+    <ProjectReference Include="..\Enochian.Bhsa\Enochian.Bhsa.csproj" />
     <ProjectReference Include="..\Enochian.Cdsl\Enochian.Cdsl.csproj" />
     <ProjectReference Include="..\Enochian.Controls\Enochian.Controls.csproj" />
     <ProjectReference Include="..\Enochian\Enochian.csproj" />

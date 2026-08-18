@@ -1,0 +1,48 @@
+{
+  "id": "Optional Biblical Hebrew Control",
+  "description": "Searches an authorized frozen BHSA Biblical Hebrew artifact when locally available.",
+  "features": [
+    {
+      "path": "../resources/encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "id": "IPA",
+      "features": "Default",
+      "path": "../resources/encodings/ipa.json"
+    }
+  ],
+  "lexicons": [
+    {
+      "id": "BHSA-Biblical-Hebrew",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/bhsa-generated/bhsa.jsonl",
+      "manifest": "../resources/lexicons/manifests/bhsa.manifest.json",
+      "qualityReport": "../.enoch/bhsa-generated/bhsa.loader-quality.json"
+    }
+  ],
+  "steps": [
+    {
+      "id": "Biblical Hebrew Sample",
+      "type": "SampleText",
+      "features": "Default",
+      "text": "bəreʃit"
+    },
+    {
+      "id": "Encode Biblical Hebrew Sample",
+      "type": "Transducer",
+      "features": "Default",
+      "encoding": "IPA"
+    },
+    {
+      "id": "Search Biblical Hebrew",
+      "type": "DTWMatcher",
+      "lexicon": "BHSA-Biblical-Hebrew",
+      "numOptions": 5,
+      "tolerance": 0.0
+    }
+  ]
+}

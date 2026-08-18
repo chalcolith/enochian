@@ -258,6 +258,74 @@ by the IPA audit. Both languages are therefore blocked from confirmatory use by
 unknown IPA and pending blinded review; these records are counted rather than
 silently rewritten.
 
+## Optional Biblical Hebrew control
+
+`Enochian.Bhsa` exports unique Biblical Hebrew lexemes from an authorized local
+BHSA/Text-Fabric snapshot. BHSA is CC BY-NC 4.0, metadata-only, optional, and
+never downloaded, bundled, published, or required by the default build and test
+path. Its manifest pins BHSA `v1.8.1`, commit
+`b112c161cfd21eae403d51a2733740d8743460e7`, Text-Fabric version 2021, and DOI
+`10.17026/dans-z6y-skyh`.
+
+A fresh checkout reports the optional state successfully:
+
+```powershell
+dotnet run --project Enochian.Bhsa -- status ..
+```
+
+Authorized users must obtain the source archives under their own license terms
+and place them at these ignored paths:
+
+- `.enoch/bhsa/complete.zip`: BHSA `v1.8.1` release asset, SHA-256
+  `8104fae1151c926cfcfd01f7e8a30a09af8c607546f14482990833b624b73168`.
+- `.enoch/bhsa/tf-2021.zip`: ETCBC phono `v2.1` TF-2021 asset, SHA-256
+  `8b46294e98f54fc5b70c1892159a320da78e889555478b20a43e7bbe8a9310ab`.
+
+Install the optional Python environment from `tools/bhsa/requirements.txt`,
+then validate, extract, export, aggregate, and audit both snapshots:
+
+```powershell
+dotnet run --project Enochian.Bhsa -- export-normalize .. <python-path>
+```
+
+No command downloads either archive. The command rejects checksum mismatches
+and unsafe ZIP paths, loads only local Text-Fabric data, writes occurrence JSONL
+under `.enoch/bhsa/`, and writes normalized, conversion, quality, audit, and
+blinded-review artifacts under `.enoch/bhsa-generated/`. Runtime consumers use
+only a deliberately frozen normalized artifact; none is included by default.
+`samples/biblical-hebrew-panel.json` is the corresponding runtime-only flow and
+does not invoke Text-Fabric or access the source archives.
+
+The adapter groups word occurrences by BHSA lexeme, verifies the resulting
+frequency against `freq_lex`, retains BHSA rank and gloss, and emits one unique
+lexeme. Distinct occurrence-level `phono` values remain separate conversion
+artifacts. The normalized lexeme selects the most frequent accepted reading,
+breaking ties by ordinal IPA order. Aramaic lexemes and records lacking a
+vocalized form or `phono` reading are reported and excluded from the explicitly
+Biblical Hebrew output.
+
+Profile `hbo-etcbc-phono` version 1.0.0 means the ETCBC BHSA phonological
+transcription from phono `v2.1`; it does not claim a complete reconstructed
+historical pronunciation. Tiberian vocalization is retained as NFC source
+orthography. Matres lectionis, niqqud, shewa, dagesh, begadkefat, gutturals,
+and silent marks follow the pinned ETCBC algorithm. Profile 1.0.0 maps its
+documented alphabet to segmental IPA, omits structural markers and stress that
+upstream says is not consistently phonetic, and preserves the raw transcription
+in conversion diagnostics. Any residual symbol blocks confirmatory use. Multiple
+readings are auditable in conversion diagnostics. Normalized records and
+quality reports say `Biblical Hebrew`; review sheets deliberately omit corpus
+identity under the shared blinded-review contract.
+
+At least 100 accepted readings are required for the deterministic stratified
+review set. Pending review, insufficient samples, or unknown IPA yield a
+nonzero normalization result and a machine-readable blocker rather than silent
+eligibility.
+
+Ordinary tests use selected vocalized forms from Open Scriptures Hebrew Lexicon
+at commit `21c9add13bc727d3a951361778e97e3ff7afd1ce` under CC BY 4.0, plus
+synthetic occurrence counts and IPA. The fixture contains no BHSA or ETCBC
+phono data and is explicitly not evidence of equivalent coverage or quality.
+
 ## Commands
 
 Run from `source/`:
