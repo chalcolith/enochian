@@ -42,6 +42,7 @@
     "original_form": { "type": "string", "minLength": 1 },
     "form": { "type": "string", "minLength": 1 },
     "entry_kind": { "enum": ["lemma", "inflected", "proper-name", "abbreviation"] },
+    "transliteration": { "type": ["string", "null"], "minLength": 1 },
     "dialect": { "type": ["string", "null"], "minLength": 1 },
     "part_of_speech": { "type": ["string", "null"], "minLength": 1 },
     "definition": { "type": ["string", "null"] },

@@ -34,6 +34,10 @@ public sealed class ControlPipeline
         [
             ControlManifest.Load(Path.Combine(manifestRoot, "zemberek.manifest.json")),
             ControlManifest.Load(Path.Combine(manifestRoot, "magyar-ispell.manifest.json")),
+            ControlManifest.Load(Path.Combine(manifestRoot, "unimorph-hin.manifest.json")),
+            ControlManifest.Load(Path.Combine(manifestRoot, "unimorph-ben.manifest.json")),
+            ControlManifest.Load(Path.Combine(manifestRoot, "unimorph-guj.manifest.json")),
+            ControlManifest.Load(Path.Combine(manifestRoot, "unimorph-fas.manifest.json")),
         ];
     }
 
@@ -96,7 +100,24 @@ public sealed class ControlPipeline
         var auditPath = prefix + ".g2p-audit.json";
         var reviewPath = prefix + ".review.jsonl";
         var qualityPath = prefix + ".quality.json";
-        var profileId = manifest.Language == "tur" ? "tur-Latn" : "hun-Latn";
+        var inflectedPath = prefix + ".inflected-forms.jsonl";
+        var plan = ControlLanguagePlan.For(manifest.Language);
+        var profileId = plan.ProfileId;
+        var inflectedForms = source.InflectedForms ?? [];
+        WriteJsonLines(inflectedPath, inflectedForms.Select(form => CreateInflected(manifest, plan, form)));
+        if (string.IsNullOrEmpty(profileId))
+        {
+            return WriteExploratoryOutputs(
+                manifest,
+                source,
+                plan,
+                normalizedPath,
+                conversionPath,
+                auditPath,
+                reviewPath,
+                qualityPath);
+        }
+
         provider.Convert(profileId, manifest.SourceId, manifest.Language, source.Lemmas, conversionPath);
 
         var audit = CreateAuditor().Audit(conversionPath, GetProfilePath(profileId), sampleSize);
@@ -138,6 +159,11 @@ public sealed class ControlPipeline
             blockers.Add("insufficient_review_sample");
         }
 
+        if (!plan.ConfirmatoryCandidate && plan.AdequacyBlocker != null)
+        {
+            blockers.Add(plan.AdequacyBlocker);
+        }
+
         var report = new ControlQualityReport
         {
             AdapterVersion = AdapterVersion,
@@ -149,9 +175,10 @@ public sealed class ControlPipeline
             ProfileVersion = ProfileVersion,
             ProviderVersion = ProviderVersion,
             TransformCommand = TransformCommand,
-            SourceRecords = source.Lemmas.Count + source.Rejections.Count,
+            SourceRecords = inflectedForms.Count > 0 ? inflectedForms.Count : source.Lemmas.Count + source.Rejections.Count,
             LemmaRecords = source.Lemmas.Count,
             GeneratedMorphologyRecords = 0,
+            InflectedFormRecords = inflectedForms.Count,
             EmittedRecords = normalized.Length,
             ExcludedRecords = source.Rejections.Count + audit.Summary.RejectedRecords,
             ReviewRecords = audit.ReviewRows.Count,
@@ -173,6 +200,12 @@ public sealed class ControlPipeline
         if (manifest.SourceId == "zemberek")
         {
             return ZemberekDictionaryAdapter.Parse(rawPath);
+        }
+
+        if (manifest.SourceId.StartsWith("unimorph-", StringComparison.Ordinal))
+        {
+            var plan = ControlLanguagePlan.For(manifest.Language);
+            return UniMorphAdapter.Parse(rawPath, plan.RequireArabicVowelMarks);
         }
 
         var extractionRoot = Path.Combine(repositoryRoot, ".enoch", "controls", "magyarispell-v1.9.1");
@@ -227,8 +260,9 @@ public sealed class ControlPipeline
             Lemma = lemma.NormalizedForm,
             OriginalForm = lemma.OriginalForm,
             Form = lemma.NormalizedForm,
+            Transliteration = null,
             PartOfSpeech = lemma.PartOfSpeech,
-            SourceEncoding = "Latin",
+            SourceEncoding = ControlLanguagePlan.For(manifest.Language).SourceEncoding,
             Ipa = artifact.Ipa,
             License = manifest.License,
             IpaConversion = new()
@@ -242,6 +276,71 @@ public sealed class ControlPipeline
                 ProfileVersion = ProfileVersion,
             },
         };
+    }
+
+    private static ControlInflectedEntry CreateInflected(
+        ControlManifest manifest,
+        ControlLanguagePlan plan,
+        ControlInflectedForm form) => new()
+        {
+            EntryId = $"{manifest.SourceId}:{manifest.Language}:{form.RecordId}",
+            SourceRecordId = form.RecordId,
+            Source = manifest.SourceId,
+            SourceVersion = manifest.Revision,
+            Language = manifest.Language,
+            Lemma = form.Lemma,
+            Form = form.Form,
+            Script = plan.SourceEncoding,
+            Transliteration = null,
+            Features = form.Features,
+            License = manifest.License,
+        };
+
+    private static ControlQualityReport WriteExploratoryOutputs(
+        ControlManifest manifest,
+        ControlSourceResult source,
+        ControlLanguagePlan plan,
+        string normalizedPath,
+        string conversionPath,
+        string auditPath,
+        string reviewPath,
+        string qualityPath)
+    {
+        WriteJsonLines<ControlNormalizedEntry>(normalizedPath, []);
+        WriteJsonLines<IpaConversionArtifact>(conversionPath, []);
+        IpaArtifactAuditor.WriteReviewSheet(reviewPath, []);
+        IpaArtifactAuditor.WriteSummary(auditPath, new IpaAuditSummary());
+        var inflectedForms = source.InflectedForms ?? [];
+        var report = new ControlQualityReport
+        {
+            AdapterVersion = AdapterVersion,
+            SourceId = manifest.SourceId,
+            SourceVersion = manifest.Revision,
+            InputSha256 = manifest.Sha256,
+            Language = manifest.Language,
+            ProfileId = plan.ProfileId,
+            ProfileVersion = ProfileVersion,
+            ProviderVersion = ProviderVersion,
+            TransformCommand = TransformCommand,
+            SourceRecords = inflectedForms.Count,
+            LemmaRecords = source.Lemmas.Count,
+            GeneratedMorphologyRecords = 0,
+            InflectedFormRecords = inflectedForms.Count,
+            EmittedRecords = 0,
+            ExcludedRecords = source.Lemmas.Count + source.Rejections.Count,
+            ReviewRecords = 0,
+            UnknownIpaRate = 0,
+            ConfirmatoryEligible = false,
+            EligibilityBlockers = [plan.AdequacyBlocker!, "insufficient_review_sample"],
+            ExclusionCounts = new SortedDictionary<string, int>(
+                source.Rejections.GroupBy(rejection => rejection.Category, StringComparer.Ordinal)
+                    .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal),
+                StringComparer.Ordinal),
+            SourceRejections = source.Rejections,
+        };
+        ((SortedDictionary<string, int>)report.ExclusionCounts)[plan.AdequacyBlocker!] = source.Lemmas.Count;
+        WriteReport(qualityPath, report);
+        return report;
     }
 
     private static void WriteJsonLines<T>(string path, IEnumerable<T> records)

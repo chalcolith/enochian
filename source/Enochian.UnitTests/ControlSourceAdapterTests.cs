@@ -1,4 +1,5 @@
 using Enochian.Controls;
+using System.Text;
 
 namespace Enochian.UnitTests;
 
@@ -7,6 +8,34 @@ public sealed class ControlSourceAdapterTests
 {
     private static readonly string FixtureRoot = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "../../../../../source/Enochian.UnitTests/Fixtures/Controls"));
+
+    [TestMethod]
+    public void ParsesUniMorphWithoutPromotingInflectedFormsToLemmas()
+    {
+        var result = UniMorphAdapter.Parse(Path.Combine(FixtureRoot, "unimorph-indic.fixture.tsv"));
+
+        Assert.HasCount(4, result.Lemmas);
+        Assert.HasCount(5, result.InflectedForms!);
+        Assert.IsTrue(result.Lemmas.All(lemma => lemma.RecordId.StartsWith("lemma:", StringComparison.Ordinal)));
+        Assert.IsTrue(result.InflectedForms!.All(form => form.RecordId.StartsWith("form:", StringComparison.Ordinal)));
+        Assert.IsFalse(result.Lemmas.Any(lemma => lemma.NormalizedForm is "क़लमों" or "हँसता"));
+        Assert.IsTrue(result.Lemmas.Any(lemma => lemma.NormalizedForm.Contains('्')));
+        Assert.IsTrue(result.Lemmas.Any(lemma => lemma.NormalizedForm.Contains('़')));
+        Assert.IsTrue(result.Lemmas.Any(lemma => lemma.NormalizedForm.Contains('ँ')));
+        Assert.IsTrue(result.Lemmas.All(lemma => lemma.NormalizedForm.IsNormalized(NormalizationForm.FormC)));
+    }
+
+    [TestMethod]
+    public void ExcludesUnvocalizedPersoArabicLemmasFromPhonology()
+    {
+        var result = UniMorphAdapter.Parse(
+            Path.Combine(FixtureRoot, "unimorph-persian.fixture.tsv"),
+            requireArabicVowelMarks: true);
+
+        Assert.AreEqual("کِتاب", result.Lemmas.Single().NormalizedForm);
+        Assert.HasCount(2, result.InflectedForms!);
+        Assert.AreEqual("uncertain_unvocalized_orthography", result.Rejections.Single().Category);
+    }
 
     [TestMethod]
     public void ParsesTurkishOrthographyAndAttributesWithFrozenExclusions()

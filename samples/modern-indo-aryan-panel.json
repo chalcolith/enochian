@@ -1,0 +1,22 @@
+{
+  "id": "Modern Indo-Aryan Bridge Control Panel",
+  "description": "Searches only the predeclared Hindi candidate; Bengali, Gujarati, and Persian remain exploratory.",
+  "features": [{ "path": "../resources/encodings/features.json" }],
+  "encodings": [{ "id": "IPA", "features": "Default", "path": "../resources/encodings/ipa.json" }],
+  "lexicons": [
+    {
+      "id": "UniMorph-Hindi",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/indo-iranian-generated/unimorph-hin.jsonl",
+      "manifest": "../resources/lexicons/manifests/unimorph-hin.manifest.json",
+      "qualityReport": "../.enoch/indo-iranian-generated/unimorph-hin.loader-quality.json"
+    }
+  ],
+  "steps": [
+    { "id": "Control Sample", "type": "SampleText", "features": "Default", "text": "kələm" },
+    { "id": "Encode Control Sample", "type": "Transducer", "features": "Default", "encoding": "IPA" },
+    { "id": "Search Hindi", "type": "DTWMatcher", "lexicon": "UniMorph-Hindi", "numOptions": 5, "tolerance": 0.0 }
+  ]
+}

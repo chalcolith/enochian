@@ -23,6 +23,87 @@ public sealed class ControlPipelineTests
     };
 
     [TestMethod]
+    public void UniMorphPipelineKeepsFormsOutOfPrimaryLemmas()
+    {
+        using var fixture = new TemporaryDirectory();
+        var first = Path.Combine(fixture.Path, "first");
+        var second = Path.Combine(fixture.Path, "second");
+        var source = UniMorphAdapter.Parse(Path.Combine(FixtureRoot, "unimorph-indic.fixture.tsv"));
+        var manifest = LoadManifest("unimorph-hin.manifest.json");
+        var provider = new FixtureIpaProvider(source.Lemmas.ToDictionary(
+            lemma => lemma.NormalizedForm,
+            _ => "kalam",
+            StringComparer.Ordinal));
+        var pipeline = new ControlPipeline(RepositoryRoot);
+
+        var report = pipeline.Normalize(manifest, source, provider, sampleSize: 4, first);
+        _ = pipeline.Normalize(manifest, source, provider, sampleSize: 4, second);
+
+        Assert.AreEqual(5, report.SourceRecords);
+        Assert.AreEqual(4, report.LemmaRecords);
+        Assert.AreEqual(5, report.InflectedFormRecords);
+        Assert.AreEqual(0, report.GeneratedMorphologyRecords);
+        Assert.AreEqual(4, report.EmittedRecords);
+        Assert.AreEqual("pending_blinded_review", report.EligibilityBlockers.Single());
+        Assert.IsTrue(provider.SeenRecordIds.All(recordId => recordId.StartsWith("lemma:", StringComparison.Ordinal)));
+        Assert.IsFalse(provider.SeenForms.Contains("क़लमों", StringComparer.Ordinal));
+        AssertInflectedEntries(first, "unimorph-hin.inflected-forms.jsonl", expectedCount: 5);
+        AssertDeterministic(first, second, "unimorph-hin");
+    }
+
+    [TestMethod]
+    public void UnsupportedGujaratiProfileProducesExploratoryOutputsWithoutCallingProvider()
+    {
+        using var fixture = new TemporaryDirectory();
+        var source = UniMorphAdapter.Parse(Path.Combine(FixtureRoot, "unimorph-indic.fixture.tsv"));
+        var manifest = LoadManifest("unimorph-guj.manifest.json");
+        var provider = new FixtureIpaProvider(new Dictionary<string, string>(StringComparer.Ordinal));
+
+        var report = new ControlPipeline(RepositoryRoot).Normalize(
+            manifest,
+            source,
+            provider,
+            sampleSize: 4,
+            fixture.Path);
+
+        Assert.HasCount(0, provider.SeenRecordIds);
+        Assert.AreEqual(0, report.EmittedRecords);
+        Assert.AreEqual(4, report.ExcludedRecords);
+        Assert.AreEqual(4, report.ExclusionCounts["inadequate_or_unavailable_g2p_profile"]);
+        Assert.AreEqual(0, report.ReviewRecords);
+        Assert.IsFalse(report.ConfirmatoryEligible);
+        CollectionAssert.Contains(report.EligibilityBlockers.ToArray(), "inadequate_or_unavailable_g2p_profile");
+        AssertInflectedEntries(fixture.Path, "unimorph-guj.inflected-forms.jsonl", expectedCount: 5);
+    }
+
+    [TestMethod]
+    public void PersianRemainsExploratoryAfterUnvocalizedLemmasAreExcluded()
+    {
+        using var fixture = new TemporaryDirectory();
+        var source = UniMorphAdapter.Parse(
+            Path.Combine(FixtureRoot, "unimorph-persian.fixture.tsv"),
+            requireArabicVowelMarks: true);
+        var manifest = LoadManifest("unimorph-fas.manifest.json");
+        var provider = new FixtureIpaProvider(new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["کِتاب"] = "ketab",
+        });
+
+        var report = new ControlPipeline(RepositoryRoot).Normalize(
+            manifest,
+            source,
+            provider,
+            sampleSize: 1,
+            fixture.Path);
+
+        Assert.AreEqual(1, report.EmittedRecords);
+        Assert.AreEqual(2, report.InflectedFormRecords);
+        Assert.AreEqual(1, report.ExclusionCounts["uncertain_unvocalized_orthography"]);
+        CollectionAssert.Contains(report.EligibilityBlockers.ToArray(), "unvocalized_orthography");
+        Assert.IsFalse(report.ConfirmatoryEligible);
+    }
+
+    [TestMethod]
     public void TurkishPipelinePreservesProviderOutputAndBlocksUnknownIpa()
     {
         using var fixture = new TemporaryDirectory();
@@ -136,9 +217,38 @@ public sealed class ControlPipelineTests
         }
     }
 
+    private static void AssertInflectedEntries(string directory, string fileName, int expectedCount)
+    {
+        var schema = JsonSchema.FromText(File.ReadAllText(Path.Combine(
+            RepositoryRoot,
+            "resources",
+            "lexicons",
+            "schemas",
+            "inflected-form.schema.json")),
+            new BuildOptions { SchemaRegistry = new SchemaRegistry() });
+        var entries = File.ReadLines(Path.Combine(directory, fileName))
+            .Select(line => JsonDocument.Parse(line))
+            .ToArray();
+        try
+        {
+            Assert.HasCount(expectedCount, entries);
+            Assert.IsTrue(entries.All(entry => schema.Evaluate(entry.RootElement).IsValid));
+            Assert.IsTrue(entries.All(entry => entry.RootElement.GetProperty("entry_kind").GetString() == "inflected_form"));
+            Assert.IsTrue(entries.All(entry => entry.RootElement.GetProperty("source_record_id").GetString()!
+                .StartsWith("form:", StringComparison.Ordinal)));
+        }
+        finally
+        {
+            foreach (var entry in entries)
+            {
+                entry.Dispose();
+            }
+        }
+    }
+
     private static void AssertDeterministic(string first, string second, string prefix)
     {
-        foreach (var suffix in new[] { ".jsonl", ".conversions.jsonl", ".g2p-audit.json", ".review.jsonl", ".quality.json" })
+        foreach (var suffix in new[] { ".jsonl", ".conversions.jsonl", ".g2p-audit.json", ".review.jsonl", ".quality.json", ".inflected-forms.jsonl" })
         {
             CollectionAssert.AreEqual(
                 File.ReadAllBytes(Path.Combine(first, prefix + suffix)),
@@ -149,6 +259,10 @@ public sealed class ControlPipelineTests
 
     private sealed class FixtureIpaProvider(IReadOnlyDictionary<string, string> outputs) : IControlIpaProvider
     {
+        public List<string> SeenRecordIds { get; } = [];
+
+        public List<string> SeenForms { get; } = [];
+
         public void Convert(
             string profileId,
             string sourceId,
@@ -160,6 +274,8 @@ public sealed class ControlPipelineTests
             using var writer = new StreamWriter(outputPath, false, new UTF8Encoding(false)) { NewLine = "\n" };
             foreach (var lemma in lemmas)
             {
+                SeenRecordIds.Add(lemma.RecordId);
+                SeenForms.Add(lemma.NormalizedForm);
                 var artifact = new IpaConversionArtifact
                 {
                     Schema = "ipa-conversion-artifact.schema.json",

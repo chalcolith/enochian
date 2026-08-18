@@ -116,6 +116,27 @@ public class FlowConfigurationTests
     }
 
     [TestMethod]
+    public void ConfiguresOnlyEligibleModernIndoAryanCandidates()
+    {
+        var configPath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "../../../../../samples/modern-indo-aryan-panel.json"));
+
+        var flow = new Flow.Flow(configPath);
+
+        AssertUtils.NoErrors(flow);
+        var lexicons = flow.Lexicons.OfType<NormalizedLexicon>().ToArray();
+        AssertUtils.SequenceEquals(["UniMorph-Hindi"], lexicons.Select(lexicon => lexicon.Id));
+        Assert.IsFalse(lexicons.Any(lexicon =>
+            lexicon.Id?.Contains("Bengali", StringComparison.Ordinal) == true ||
+            lexicon.Id?.Contains("Gujarati", StringComparison.Ordinal) == true ||
+            lexicon.Id?.Contains("Persian", StringComparison.Ordinal) == true));
+        var matchers = flow.Steps?.Children.OfType<DTWMatcher>().ToArray()
+            ?? throw new AssertFailedException("Modern Indo-Aryan matchers were not configured.");
+        Assert.HasCount(1, matchers);
+        Assert.IsTrue(matchers.All(matcher => matcher.Lexicons.Count == 1));
+    }
+
+    [TestMethod]
     public void ReadsTypedJsonNodeConfigurationValues()
     {
         var config = JsonNode.Parse(

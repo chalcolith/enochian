@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "unimorph-fas",
+  "status": "acquired",
+  "owner": "UniMorph contributors",
+  "language": "fas",
+  "family": "Indo-European/Indo-Iranian/Iranian",
+  "url": "https://raw.githubusercontent.com/unimorph/fas/b0e4f832b6ffe5fc2457b8549c02525955b2ff97/fas",
+  "revision": { "kind": "commit", "value": "b0e4f832b6ffe5fc2457b8549c02525955b2ff97" },
+  "retrieval_date": "2026-08-18",
+  "sha256": "58e271562c184ed0bc38d85bf91e0d5427c32e4b5a55f2bf42bbdeb0843ca232",
+  "license": "CC-BY-SA-3.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "UniMorph Persian dataset: 37,128 forms and 273 unique lemmas at the pinned revision; predeclared as exploratory because ordinary Perso-Arabic spelling omits vowels required for auditable lexical IPA.",
+  "parser": { "id": "unimorph-tsv", "version": "1.0.0" },
+  "raw_path": ".enoch/unimorph/fas.tsv",
+  "generated_artifact_path": ".enoch/indo-iranian-generated/unimorph-fas.jsonl",
+  "filters": {
+    "include": ["explicitly vowel-marked unique lemmas for exploratory G2P", "all valid form rows in the separate inflected-form artifact"],
+    "exclude": ["inflected forms from primary lemmas", "malformed TSV records", "unvocalized lemmas from phonological output", "Persian from the frozen panel pending adequate vowel evidence"]
+  }
+}

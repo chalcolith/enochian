@@ -45,7 +45,10 @@ def convert_line(converter, profile, request):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("profile", choices=("tur-Latn", "hun-Latn"))
+    parser.add_argument(
+        "profile",
+        choices=("tur-Latn", "hun-Latn", "hin-Deva", "ben-Beng", "fas-Arab"),
+    )
     arguments = parser.parse_args()
     converter = epitran.Epitran(arguments.profile)
     for line_number, line in enumerate(sys.stdin, start=1):

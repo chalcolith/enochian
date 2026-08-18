@@ -98,6 +98,14 @@ This report is generated solely from checked-in source manifests.
 - Distribution: vendored
 - Citation: Shabda-Sagara Sanskrit dictionary digitization; repository snapshot first recorded in commit 1920f557. Redistribution terms for this exact snapshot require verification.
 
+## unimorph-ben
+
+- Owner: UniMorph contributors
+- Upstream: <https://raw.githubusercontent.com/unimorph/ben/55a44fa60e9b7a3a5ff7acbed66b07571ceefa79/ben>
+- License: CC-BY-SA-3.0 (verified)
+- Distribution: download-on-demand
+- Citation: UniMorph Bengali dataset: 4,443 forms and 136 unique lemmas at the pinned revision; selected before cross-language scoring and retained as exploratory after only 48 readings passed strict IPA audit.
+
 ## unimorph-candidates
 
 - Owner: UniMorph project and individual language-repository contributors
@@ -105,6 +113,30 @@ This report is generated solely from checked-in source manifests.
 - License: NOASSERTION (unverified)
 - Distribution: metadata-only
 - Citation: UniMorph language repositories; each selected language requires its own pinned manifest and license verification before acquisition.
+
+## unimorph-fas
+
+- Owner: UniMorph contributors
+- Upstream: <https://raw.githubusercontent.com/unimorph/fas/b0e4f832b6ffe5fc2457b8549c02525955b2ff97/fas>
+- License: CC-BY-SA-3.0 (verified)
+- Distribution: download-on-demand
+- Citation: UniMorph Persian dataset: 37,128 forms and 273 unique lemmas at the pinned revision; predeclared as exploratory because ordinary Perso-Arabic spelling omits vowels required for auditable lexical IPA.
+
+## unimorph-guj
+
+- Owner: UniMorph contributors
+- Upstream: <https://raw.githubusercontent.com/unimorph/guj/f98348eea353912a61ca5d5af5c68c602a483ebe/guj>
+- License: CC-BY-SA-3.0 (verified)
+- Distribution: download-on-demand
+- Citation: UniMorph Gujarati dataset: 7,505 valid forms and 397 unique lemmas at the pinned revision; predeclared as exploratory because Epitran 1.35.2 has no Gujarati profile.
+
+## unimorph-hin
+
+- Owner: UniMorph contributors
+- Upstream: <https://raw.githubusercontent.com/unimorph/hin/ae6231f736fa5a08205c768ca23ff6c19e80d25e/hin>
+- License: CC-BY-SA-3.0 (verified)
+- Distribution: download-on-demand
+- Citation: UniMorph Hindi dataset: 54,438 forms and 258 unique lemmas at the pinned revision; selected before cross-language scoring.
 
 ## zemberek
 

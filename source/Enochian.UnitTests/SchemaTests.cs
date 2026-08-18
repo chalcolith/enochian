@@ -15,6 +15,8 @@ public class SchemaTests
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
         LoadSchema("resources/lexicons/schemas/normalized-entry.schema.json");
+    private static readonly JsonSchema InflectedFormSchema =
+        LoadSchema("resources/lexicons/schemas/inflected-form.schema.json");
     private static readonly JsonSchema IpaConversionArtifactSchema =
         LoadSchema("resources/lexicons/schemas/ipa-conversion-artifact.schema.json");
     private static readonly JsonSchema IpaConversionRequestSchema =
@@ -49,6 +51,11 @@ public class SchemaTests
             "resources/lexicons/manifests/magyar-ispell.manifest.json");
         AssertValid(SourceManifestSchema,
             "resources/lexicons/manifests/bhsa.manifest.json");
+        foreach (var language in new[] { "hin", "ben", "guj", "fas" })
+        {
+            AssertValid(SourceManifestSchema,
+                $"resources/lexicons/manifests/unimorph-{language}.manifest.json");
+        }
         AssertValid(IpaConversionProfileSchema,
             "resources/lexicons/profiles/latin-classical-restored.profile.json");
         AssertValid(IpaConversionProfileSchema,
@@ -57,10 +64,18 @@ public class SchemaTests
             "resources/lexicons/profiles/epitran-hun-Latn.profile.json");
         AssertValid(IpaConversionProfileSchema,
             "resources/lexicons/profiles/bhsa-phono.profile.json");
+        foreach (var profile in new[] { "hin-Deva", "ben-Beng", "fas-Arab" })
+        {
+            AssertValid(IpaConversionProfileSchema,
+                $"resources/lexicons/profiles/epitran-{profile}.profile.json");
+        }
         AssertValid(IpaReviewSheetSchema,
             "resources/lexicons/examples/ipa-review-sheet.example.json");
         AssertValid(IpaAuditSummarySchema,
             "resources/lexicons/examples/ipa-audit-summary.example.json");
+        using var inflected = JsonDocument.Parse(
+            """{"schema_version":"1.0.0","entry_id":"unimorph-hin:hin:form:00000001","source_record_id":"form:00000001","source":"unimorph-hin","source_version":"pinned","language":"hin","lemma":"करना","form":"करता","entry_kind":"inflected_form","script":"Devanagari","transliteration":null,"features":["V","PRS"],"unicode_normalization":"NFC","license":"CC-BY-SA-3.0"}""");
+        Assert.IsTrue(InflectedFormSchema.Evaluate(inflected.RootElement).IsValid);
     }
 
     [TestMethod]

@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "unimorph-hin",
+  "status": "acquired",
+  "owner": "UniMorph contributors",
+  "language": "hin",
+  "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+  "url": "https://raw.githubusercontent.com/unimorph/hin/ae6231f736fa5a08205c768ca23ff6c19e80d25e/hin",
+  "revision": { "kind": "commit", "value": "ae6231f736fa5a08205c768ca23ff6c19e80d25e" },
+  "retrieval_date": "2026-08-18",
+  "sha256": "3c9228053925a69fa5c20c5bafc880268c294afd8d267504258ee405597fb18a",
+  "license": "CC-BY-SA-3.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "UniMorph Hindi dataset: 54,438 forms and 258 unique lemmas at the pinned revision; selected before cross-language scoring.",
+  "parser": { "id": "unimorph-tsv", "version": "1.0.0" },
+  "raw_path": ".enoch/unimorph/hin.tsv",
+  "generated_artifact_path": ".enoch/indo-iranian-generated/unimorph-hin.jsonl",
+  "filters": {
+    "include": ["unique NFC-normalized lemma column as confirmatory candidate", "all valid form rows in the separate inflected-form artifact"],
+    "exclude": ["inflected forms from primary lemmas", "malformed TSV records"]
+  }
+}
