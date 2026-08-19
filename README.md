@@ -141,6 +141,39 @@ distance functions must return finite, non-negative costs. Euclidean element
 distance overflow throws `OverflowException`; accumulated matrix-cost overflow
 produces positive infinity.
 
+`DTWMatcher` applies `numOptions` independently to every configured lexicon.
+Equal-cost candidates are ordered by entry ID and source-record ID. Each match
+has a one-based within-lexicon rank and a stable scored-record ID; the existing
+`MatchReport` HTML remains unchanged.
+
+Add `scoredExport` to a matcher to write auditable quantitative artifacts:
+
+```json
+{
+	"id": "Search panel",
+	"type": "DTWMatcher",
+	"lexicons": ["latin", "turkish"],
+	"numOptions": 20,
+	"scoredExport": {
+		"jsonl": "output/scored-matches.jsonl",
+		"csv": "output/scored-matches.csv",
+		"metadata": "output/scored-matches.metadata.json",
+		"schema": "../experiments/schemas/scored-match.schema.json",
+		"definitions": "output/scored-match-definitions.jsonl"
+	}
+}
+```
+
+Paths are relative to the flow configuration. JSONL rows use UTF-8 and LF;
+CSV follows RFC 4180 with UTF-8, CRLF, invariant-culture numbers, and round-trip
+double precision. Rows sort by query ID, lexicon ID, rank, and candidate ID.
+The metadata records schema, configuration, and core software SHA-256 hashes.
+Quantitative rows never contain definitions. The optional `definitions` path
+writes a separate candidate-ID join artifact; omit it for blinded runs. A
+matcher accumulates records across input chunks and atomically rewrites the
+artifacts after each chunk. Enumerate all matcher outputs to complete a
+multi-chunk export.
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to

@@ -54,6 +54,8 @@ public class SegmentOption
     public int? DtwPathLength => MatchResult?.PathLength;
     public double? MeanPathDistance => MatchResult?.MeanPathCost;
     public double? MeanInputLengthDistance => MatchResult?.MeanInputLengthCost;
+    public int? WithinLexiconRank { get; set; }
+    public string? ScoredRecordId { get; set; }
 }
 
 public class OptionComparer : IComparer<SegmentOption>
