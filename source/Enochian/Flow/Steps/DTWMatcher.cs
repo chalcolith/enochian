@@ -197,7 +197,7 @@ public class DTWMatcher(IConfigurable parent, IFlowResources resources) : TextFl
             var srcPhones = ExpandPhones(srcOption.Phones, srcConsonantIndex);
 
             double leastBestDistance = double.MaxValue;
-            var bestEntries = new List<(double, LexiconEntry)>();
+            var bestEntries = new List<(Math.DynamicTimeWarpResult Result, LexiconEntry Entry)>();
             foreach (var lexicon in Lexicons)
             {
                 int consonantIndex = GetConsonantIndex(lexicon.Encoding ?? Encoding.Default);
@@ -206,33 +206,34 @@ public class DTWMatcher(IConfigurable parent, IFlowResources resources) : TextFl
                 {
                     var entryPhones = ExpandPhones(entry.Phones, consonantIndex);
 
-                    double distance = Math.DynamicTimeWarp
-                        .GetSequenceDistance(srcPhones, entryPhones,
+                    var result = Math.DynamicTimeWarp
+                        .GetSequenceResult(srcPhones, entryPhones,
                             Math.DynamicTimeWarp.EuclideanDistance, Tolerance);
 
-                    if (distance < leastBestDistance || bestEntries.Count < NumOptions)
+                    if (result.Cost < leastBestDistance || bestEntries.Count < NumOptions)
                     {
-                        bestEntries.Add((distance, entry));
+                        bestEntries.Add((result, entry));
                         bestEntries.Sort(entryComparer);
                         while (bestEntries.Count > NumOptions)
                         {
                             bestEntries.RemoveAt(bestEntries.Count - 1);
                         }
 
-                        leastBestDistance = bestEntries.Last().Item1;
+                        leastBestDistance = bestEntries.Last().Result.Cost;
                     }
                 }
             }
 
             if (bestEntries.Count != 0)
             {
-                foreach (var de in bestEntries)
+                foreach (var (result, entry) in bestEntries)
                 {
                     yield return new SegmentOption
                     {
-                        Text = de.Item2.Lemma,
-                        Entry = de.Item2,
-                        Phones = de.Item2.Phones,
+                        Text = entry.Lemma,
+                        Entry = entry,
+                        Phones = entry.Phones,
+                        MatchResult = result,
                         Tags = TextTag.Match,
                     };
                 }
@@ -271,11 +272,13 @@ public class DTWMatcher(IConfigurable parent, IFlowResources resources) : TextFl
         return result;
     }
 
-    private sealed class EntryComparer : IComparer<(double, LexiconEntry)>
+    private sealed class EntryComparer : IComparer<(Math.DynamicTimeWarpResult Result, LexiconEntry Entry)>
     {
-        public int Compare((double, LexiconEntry) x, (double, LexiconEntry) y)
+        public int Compare(
+            (Math.DynamicTimeWarpResult Result, LexiconEntry Entry) x,
+            (Math.DynamicTimeWarpResult Result, LexiconEntry Entry) y)
         {
-            return x.Item1.CompareTo(y.Item1);
+            return x.Result.Cost.CompareTo(y.Result.Cost);
         }
     }
 }

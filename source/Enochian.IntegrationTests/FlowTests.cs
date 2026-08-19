@@ -194,6 +194,13 @@ public class FlowTests
             var options = dtwLine.Segments[i].Options;
             var found = options.Any(opt => opt.Text?.StartsWith(expected, StringComparison.OrdinalIgnoreCase) == true);
             Assert.IsTrue(found, "did not find a CMU entry for " + expected);
+            Assert.IsTrue(options
+                .Where(option => (option.Tags & TextTag.Match) != TextTag.None)
+                .All(option => option.MatchResult != null
+                    && option.RawDistance == option.MatchResult.Cost
+                    && option.DtwPathLength == option.MatchResult.PathLength
+                    && option.MeanPathDistance == option.MatchResult.MeanPathCost
+                    && option.MeanInputLengthDistance == option.MatchResult.MeanInputLengthCost));
         }
     }
 

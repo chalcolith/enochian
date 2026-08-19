@@ -1,5 +1,6 @@
 ﻿using Enochian.Flow;
 using Enochian.Lexicons;
+using Enochian.Math;
 
 namespace Enochian.Text;
 
@@ -48,6 +49,11 @@ public class SegmentOption
     }
     public string? Text { get; set; }
     public IList<double[]> Phones { get; set; } = [];
+    public DynamicTimeWarpResult? MatchResult { get; set; }
+    public double? RawDistance => MatchResult?.Cost;
+    public int? DtwPathLength => MatchResult?.PathLength;
+    public double? MeanPathDistance => MatchResult?.MeanPathCost;
+    public double? MeanInputLengthDistance => MatchResult?.MeanInputLengthCost;
 }
 
 public class OptionComparer : IComparer<SegmentOption>

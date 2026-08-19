@@ -20,7 +20,7 @@ public static class RetrievalEvaluator
                         candidate.EntryId,
                         measurement.Cost,
                         measurement.PathLength,
-                        measurement.NormalizedDistance,
+                        measurement.MeanPathCost,
                         query.RelevantEntryIds.Contains(candidate.EntryId));
                 })
                 .OrderBy(candidate => candidate.NormalizedDistance)
