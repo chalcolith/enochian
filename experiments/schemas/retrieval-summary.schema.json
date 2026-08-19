@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/retrieval-summary-1.json",
+  "title": "Enochian tidy retrieval benchmark summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["benchmark_id", "scope", "language", "length_band", "profile_id", "profile_version", "candidate_mode", "query_count", "recall_at_1", "recall_at_5", "recall_at_20", "mean_reciprocal_rank", "mean_normalized_distance", "passed", "blockers"],
+  "properties": {
+    "benchmark_id": { "type": "string" },
+    "scope": { "enum": ["aggregate", "language", "length_band", "language_length_band"] },
+    "language": { "type": ["string", "null"] },
+    "length_band": { "type": ["string", "null"] },
+    "profile_id": { "type": "string" },
+    "profile_version": { "type": "string" },
+    "candidate_mode": { "enum": ["source-included", "source-excluded"] },
+    "query_count": { "type": "integer", "minimum": 1 },
+    "recall_at_1": { "type": "number", "minimum": 0, "maximum": 1 },
+    "recall_at_5": { "type": "number", "minimum": 0, "maximum": 1 },
+    "recall_at_20": { "type": "number", "minimum": 0, "maximum": 1 },
+    "mean_reciprocal_rank": { "type": "number", "minimum": 0, "maximum": 1 },
+    "mean_normalized_distance": { "type": ["number", "null"], "minimum": 0 },
+    "passed": { "type": "boolean" },
+    "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+  }
+}

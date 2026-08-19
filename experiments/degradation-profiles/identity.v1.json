@@ -1,0 +1,7 @@
+{
+  "$schema": "../schemas/degradation-profile.schema.json",
+  "id": "identity",
+  "version": "1.0.0",
+  "language_neutral": true,
+  "operations": []
+}

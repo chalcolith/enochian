@@ -1,0 +1,12 @@
+{
+  "$schema": "../schemas/degradation-profile.schema.json",
+  "id": "mask-laryngeal",
+  "version": "1.0.0",
+  "language_neutral": true,
+  "operations": [
+    {
+      "kind": "feature_masking",
+      "features": ["Voice", "SpreadGlottis", "ConstrictedGlottis"]
+    }
+  ]
+}

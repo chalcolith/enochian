@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" />
+    <ProjectReference Include="..\Enochian.Provenance\Enochian.Provenance.csproj" />
+    <ProjectReference Include="..\Enochian\Enochian.csproj" />
+  </ItemGroup>
+</Project>

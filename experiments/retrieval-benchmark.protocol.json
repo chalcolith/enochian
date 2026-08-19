@@ -1,0 +1,97 @@
+{
+  "$schema": "schemas/retrieval-benchmark.schema.json",
+  "schema_version": "1.0.0",
+  "benchmark_id": "m2-06-known-language-retrieval",
+  "frozen": true,
+  "sampling_seed": 15485863,
+  "samples_per_stratum": 25,
+  "minimum_phonemes": 3,
+  "maximum_phonemes": 20,
+  "required_length_bands": ["03-05", "06-09", "10-20"],
+  "thresholds": {
+    "minimum_review_records": 100,
+    "minimum_review_accuracy": 0.95,
+    "minimum_recall_at_1": 0.8,
+    "minimum_recall_at_5": 0.95,
+    "minimum_recall_at_20": 0.99,
+    "minimum_mean_reciprocal_rank": 0.85,
+    "maximum_mean_normalized_distance": 0.35
+  },
+  "sources": [
+    {
+      "source_id": "perseus-lewis-short",
+      "language": "lat",
+      "lexicon_path": "../.enoch/perseus-generated/perseus-lewis-short.jsonl",
+      "review_path": "../.enoch/perseus-generated/perseus-lewis-short.review.jsonl",
+      "confirmatory": true,
+      "required": true
+    },
+    {
+      "source_id": "zemberek",
+      "language": "tur",
+      "lexicon_path": "../.enoch/controls-generated/zemberek.jsonl",
+      "review_path": "../.enoch/controls-generated/zemberek.review.jsonl",
+      "confirmatory": true,
+      "required": true
+    },
+    {
+      "source_id": "magyar-ispell",
+      "language": "hun",
+      "lexicon_path": "../.enoch/controls-generated/magyar-ispell.jsonl",
+      "review_path": "../.enoch/controls-generated/magyar-ispell.review.jsonl",
+      "confirmatory": true,
+      "required": true
+    },
+    {
+      "source_id": "unimorph-hin",
+      "language": "hin",
+      "lexicon_path": "../.enoch/indo-iranian-generated/unimorph-hin.jsonl",
+      "review_path": "../.enoch/indo-iranian-generated/unimorph-hin.review.jsonl",
+      "confirmatory": true,
+      "required": true
+    },
+    {
+      "source_id": "bhsa",
+      "language": "hbo",
+      "lexicon_path": "../.enoch/bhsa-generated/bhsa.jsonl",
+      "review_path": "../.enoch/bhsa-generated/bhsa.review.jsonl",
+      "confirmatory": true,
+      "required": false
+    },
+    {
+      "source_id": "unimorph-ben",
+      "language": "ben",
+      "lexicon_path": "../.enoch/indo-iranian-generated/unimorph-ben.jsonl",
+      "review_path": "../.enoch/indo-iranian-generated/unimorph-ben.review.jsonl",
+      "confirmatory": false,
+      "required": false
+    },
+    {
+      "source_id": "unimorph-guj",
+      "language": "guj",
+      "lexicon_path": "../.enoch/indo-iranian-generated/unimorph-guj.jsonl",
+      "review_path": "../.enoch/indo-iranian-generated/unimorph-guj.review.jsonl",
+      "confirmatory": false,
+      "required": false
+    },
+    {
+      "source_id": "unimorph-fas",
+      "language": "fas",
+      "lexicon_path": "../.enoch/indo-iranian-generated/unimorph-fas.jsonl",
+      "review_path": "../.enoch/indo-iranian-generated/unimorph-fas.review.jsonl",
+      "confirmatory": false,
+      "required": false
+    }
+  ],
+  "degradation_profiles": [
+    "degradation-profiles/identity.v1.json",
+    "degradation-profiles/deletion.v1.json",
+    "degradation-profiles/feature-merger.v1.json",
+    "degradation-profiles/feature-masking.v1.json"
+  ],
+  "outputs": {
+    "scores": "../reports/retrieval-benchmark/scores.jsonl",
+    "summaries": "../reports/retrieval-benchmark/summaries.jsonl",
+    "quality_report": "../reports/retrieval-benchmark/quality-report.json"
+  }
+}

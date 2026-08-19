@@ -8,9 +8,21 @@
     <File Path="../experiments/confirmatory.protocol.json" />
     <File Path="../experiments/exploratory.example.json" />
     <File Path="../experiments/protocol.md" />
+    <File Path="../experiments/retrieval-benchmark.protocol.json" />
+  </Folder>
+  <Folder Name="/Solution Items/experiments/degradation-profiles/">
+    <File Path="../experiments/degradation-profiles/deletion.v1.json" />
+    <File Path="../experiments/degradation-profiles/feature-masking.v1.json" />
+    <File Path="../experiments/degradation-profiles/feature-merger.v1.json" />
+    <File Path="../experiments/degradation-profiles/identity.v1.json" />
   </Folder>
   <Folder Name="/Solution Items/experiments/schemas/">
+    <File Path="../experiments/schemas/degradation-profile.schema.json" />
     <File Path="../experiments/schemas/experiment.schema.json" />
+    <File Path="../experiments/schemas/retrieval-benchmark.schema.json" />
+    <File Path="../experiments/schemas/retrieval-quality-report.schema.json" />
+    <File Path="../experiments/schemas/retrieval-score.schema.json" />
+    <File Path="../experiments/schemas/retrieval-summary.schema.json" />
   </Folder>
   <Folder Name="/Solution Items/reports/">
     <File Path="../reports/enochian.css" />
@@ -62,6 +74,7 @@
   </Folder>
   <Project Path="Enochian.Cdsl/Enochian.Cdsl.csproj" />
   <Project Path="Enochian.Bhsa/Enochian.Bhsa.csproj" />
+  <Project Path="Enochian.Benchmark/Enochian.Benchmark.csproj" />
   <Project Path="Enochian.Console/Enochian.Console.csproj" />
   <Project Path="Enochian.Controls/Enochian.Controls.csproj" />
   <Project Path="Enochian.IntegrationTests/Enochian.IntegrationTests.csproj" />
