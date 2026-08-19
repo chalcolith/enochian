@@ -119,6 +119,28 @@ method on it, returning the resulting output. If you implement only
 return`, the flow process will be asynchronous; it will only process as many
 items as are needed to return one output.
 
+### Dynamic time warping results
+
+`DynamicTimeWarp.GetSequenceResult` returns the accumulated cost, selected path
+length, both input lengths, and an optional diagnostic path. The existing
+`GetSequenceDistance` method remains a compatibility wrapper that returns only
+the accumulated cost. `DTWMatcher` stores the full result on each matched
+`SegmentOption` without adding the values to the HTML report.
+
+Mean-path normalization is `cost / pathLength`. Mean-input-length
+normalization is `cost / ((sourceLength + targetLength) / 2)`. Two empty inputs
+have zero cost and path length; one empty input has positive-infinite cost and
+zero path length. In both cases, the diagnostic path is empty when requested.
+
+For equal predecessor costs, DTW selects the shorter predecessor path and then
+uses match, insertion, deletion order. Tolerance must be finite and between
+zero and one. Zero tolerance starts at the matrix origin; positive tolerance
+permits a free prefix of up to the corresponding fraction of each input.
+Feature vectors must have equal dimensions and finite values, and element
+distance functions must return finite, non-negative costs. Euclidean element
+distance overflow throws `OverflowException`; accumulated matrix-cost overflow
+produces positive infinity.
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to

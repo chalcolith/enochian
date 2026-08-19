@@ -36,8 +36,3 @@ public sealed record RetrievalMetrics(
     double? RelevantNormalizedDistance,
     double? NearestNormalizedDistance,
     int CandidateCount);
-
-public sealed record DtwMeasurement(double Cost, int PathLength)
-{
-    public double NormalizedDistance => PathLength == 0 ? 0 : Cost / PathLength;
-}
