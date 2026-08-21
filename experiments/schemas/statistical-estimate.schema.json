@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://chalcolith.github.io/enochian/schemas/statistical-estimate-1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "analysis_id", "analysis_mode", "requested_size", "scope", "stratum", "metric", "contrast_id", "group_id", "estimate", "query_count", "sample_count"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "analysis_id": { "type": "string" }, "analysis_mode": { "type": "string" },
+    "requested_size": { "type": "integer", "minimum": 1 }, "scope": { "enum": ["overall", "length", "section", "frequency-band"] }, "stratum": { "type": "string" },
+    "metric": { "enum": ["paired-median-difference", "rank-biserial-effect", "winner-proportion", "median-raw-distance", "median-empirical-percentile", "median-standardized-score"] }, "contrast_id": { "type": ["string", "null"] }, "group_id": { "type": ["string", "null"] },
+    "estimate": { "type": "number" }, "query_count": { "type": "integer", "minimum": 1 }, "sample_count": { "type": "integer", "minimum": 1 }
+  }
+}

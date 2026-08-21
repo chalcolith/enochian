@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/nearest-distance-1.json",
+  "title": "Enochian nearest-distance statistical input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "analysis_id", "analysis_mode", "sample_id", "requested_size", "repetition", "query_id", "query_length", "section", "frequency_band", "weight", "language", "family", "is_null", "null_kind", "distance"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "analysis_id": { "type": "string", "minLength": 1 },
+    "analysis_mode": { "enum": ["type-primary", "token-weighted"] },
+    "sample_id": { "type": "string", "minLength": 1 },
+    "requested_size": { "type": "integer", "minimum": 1 },
+    "repetition": { "type": "integer", "minimum": 1 },
+    "query_id": { "type": "string", "minLength": 1 },
+    "query_length": { "type": "integer", "minimum": 1 },
+    "section": { "type": "string", "minLength": 1 },
+    "frequency_band": { "type": "string", "minLength": 1 },
+    "weight": { "type": "integer", "minimum": 1 },
+    "language": { "type": "string", "minLength": 1 },
+    "family": { "type": "string", "minLength": 1 },
+    "is_null": { "type": "boolean" },
+    "null_kind": { "type": ["string", "null"] },
+    "distance": { "type": "number", "minimum": 0 }
+  }
+}

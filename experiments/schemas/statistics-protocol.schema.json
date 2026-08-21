@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/statistics-protocol-1.json",
+  "title": "Enochian calibrated-score statistical protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "statistics_id", "phase", "experiment_path", "input_path", "input_schema_path", "calibration_null_kind", "score_metric", "seed", "permutation_count", "bootstrap_count", "confidence_level", "contrasts", "outputs"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "const": "1.0.0" },
+    "statistics_id": { "$ref": "#/$defs/id" },
+    "phase": { "enum": ["exploratory", "confirmatory"] },
+    "experiment_path": { "$ref": "#/$defs/path" },
+    "input_path": { "$ref": "#/$defs/path" },
+    "input_schema_path": { "$ref": "#/$defs/path" },
+    "calibration_null_kind": { "enum": ["unigram-pseudoword", "biphone-pseudoword"] },
+    "score_metric": { "const": "null-standardized-nearest-distance" },
+    "seed": { "type": "integer", "minimum": 0 },
+    "permutation_count": { "type": "integer", "minimum": 1 },
+    "bootstrap_count": { "type": "integer", "minimum": 2 },
+    "confidence_level": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+    "contrasts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contrast_id", "primary", "target_families", "control_families", "alternative"],
+        "properties": {
+          "contrast_id": { "$ref": "#/$defs/id" },
+          "primary": { "type": "boolean" },
+          "target_families": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "control_families": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "alternative": { "enum": ["greater", "less", "two-sided"] }
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calibrated_scores", "estimates", "intervals", "tests", "adjusted_p_values", "diagnostics"],
+      "properties": {
+        "calibrated_scores": { "$ref": "#/$defs/path" },
+        "estimates": { "$ref": "#/$defs/path" },
+        "intervals": { "$ref": "#/$defs/path" },
+        "tests": { "$ref": "#/$defs/path" },
+        "adjusted_p_values": { "$ref": "#/$defs/path" },
+        "diagnostics": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" }
+  }
+}

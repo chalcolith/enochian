@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://chalcolith.github.io/enochian/schemas/adjusted-p-value-1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "analysis_id", "analysis_mode", "requested_size", "contrast_id", "p_value", "adjusted_p_value", "correction_method", "family_size"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "analysis_id": { "type": "string" }, "analysis_mode": { "type": "string" },
+    "requested_size": { "type": "integer", "minimum": 1 }, "contrast_id": { "type": "string" }, "p_value": { "type": "number", "minimum": 0, "maximum": 1 },
+    "adjusted_p_value": { "type": "number", "minimum": 0, "maximum": 1 }, "correction_method": { "const": "holm" }, "family_size": { "type": "integer", "minimum": 1 }
+  }
+}

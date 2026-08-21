@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://chalcolith.github.io/enochian/schemas/statistical-diagnostic-1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "severity", "code", "message", "analysis_id", "analysis_mode", "requested_size", "sample_id", "query_id", "language", "contrast_id"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "severity": { "enum": ["warning", "error"] }, "code": { "type": "string" }, "message": { "type": "string" },
+    "analysis_id": { "type": ["string", "null"] }, "analysis_mode": { "type": ["string", "null"] }, "requested_size": { "type": ["integer", "null"] },
+    "sample_id": { "type": ["string", "null"] }, "query_id": { "type": ["string", "null"] }, "language": { "type": ["string", "null"] }, "contrast_id": { "type": ["string", "null"] }
+  }
+}

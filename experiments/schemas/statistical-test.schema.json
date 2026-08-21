@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://chalcolith.github.io/enochian/schemas/statistical-test-1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "analysis_id", "analysis_mode", "requested_size", "contrast_id", "primary", "metric", "estimate", "p_value", "alternative", "configured_randomization_count", "randomization_count", "exact", "planned_correction_method", "query_count"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "analysis_id": { "type": "string" }, "analysis_mode": { "type": "string" },
+    "requested_size": { "type": "integer", "minimum": 1 }, "contrast_id": { "type": "string" }, "primary": { "type": "boolean" }, "metric": { "const": "paired-median-difference" },
+    "estimate": { "type": "number" }, "p_value": { "type": "number", "minimum": 0, "maximum": 1 }, "alternative": { "enum": ["greater", "less", "two-sided"] },
+    "configured_randomization_count": { "type": "integer", "minimum": 1 }, "randomization_count": { "type": "integer", "minimum": 1 }, "exact": { "type": "boolean" }, "planned_correction_method": { "const": "holm" }, "query_count": { "type": "integer", "minimum": 1 }
+  }
+}

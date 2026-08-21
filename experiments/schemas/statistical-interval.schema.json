@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "https://chalcolith.github.io/enochian/schemas/statistical-interval-1.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "analysis_id", "analysis_mode", "requested_size", "contrast_id", "metric", "lower", "upper", "confidence_level", "bootstrap_count", "resampling_unit"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "analysis_id": { "type": "string" }, "analysis_mode": { "type": "string" },
+    "requested_size": { "type": "integer", "minimum": 1 }, "contrast_id": { "type": "string" }, "metric": { "const": "paired-median-difference" },
+    "lower": { "type": "number" }, "upper": { "type": "number" }, "confidence_level": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+    "bootstrap_count": { "type": "integer", "minimum": 2 }, "resampling_unit": { "const": "lexicon-samples-and-query-types" }
+  }
+}

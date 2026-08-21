@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/calibrated-score-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "statistics_id", "analysis_id", "analysis_mode", "sample_id", "requested_size", "repetition", "query_id", "query_length", "section", "frequency_band", "weight", "language", "family", "calibration_null_kind", "raw_distance", "empirical_percentile", "standardized_score", "null_count", "null_mean", "null_standard_deviation"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "statistics_id": { "type": "string" }, "analysis_id": { "type": "string" },
+    "analysis_mode": { "enum": ["type-primary", "token-weighted"] }, "sample_id": { "type": "string" }, "requested_size": { "type": "integer", "minimum": 1 },
+    "repetition": { "type": "integer", "minimum": 1 }, "query_id": { "type": "string" }, "query_length": { "type": "integer", "minimum": 1 },
+    "section": { "type": "string" }, "frequency_band": { "type": "string" }, "weight": { "type": "integer", "minimum": 1 },
+    "language": { "type": "string" }, "family": { "type": "string" }, "calibration_null_kind": { "type": "string" },
+    "raw_distance": { "type": "number", "minimum": 0 }, "empirical_percentile": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "standardized_score": { "type": ["number", "null"] }, "null_count": { "type": "integer", "minimum": 0 },
+    "null_mean": { "type": ["number", "null"] }, "null_standard_deviation": { "type": ["number", "null" ] }
+  }
+}
