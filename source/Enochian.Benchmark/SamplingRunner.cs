@@ -42,16 +42,18 @@ public sealed class SamplingRunner(string repositoryRoot, FeatureSet features, T
             var nulls = sampling.Memberships
                 .GroupBy(membership => membership.SampleId, StringComparer.Ordinal)
                 .OrderBy(group => group.Key, StringComparer.Ordinal)
-                .SelectMany(group => SequenceNullGenerator.GenerateForSample(
-                    analysis.AnalysisId,
-                    group.Key,
-                    group.First().RequestedSize,
-                    group.Select(membership => candidatesById[membership.CandidateId]).DistinctBy(candidate => candidate.CandidateId),
-                    queries,
-                    protocol.Mapping,
-                    group.First().Repetition,
-                    protocol.Seed,
-                    protocol.GeneratorVersion))
+                .SelectMany(group => Enumerable.Range(1, protocol.NullRepetitions).SelectMany(nullRepetition =>
+                    SequenceNullGenerator.GenerateForSample(
+                        analysis.AnalysisId,
+                        group.Key,
+                        group.First().RequestedSize,
+                        group.Select(membership => candidatesById[membership.CandidateId]).DistinctBy(candidate => candidate.CandidateId),
+                        queries,
+                        protocol.Mapping,
+                        group.First().Repetition,
+                        protocol.Seed,
+                        protocol.GeneratorVersion,
+                        nullRepetition)))
                 .ToArray();
             WriteJsonLines(Resolve(analysis.Outputs.Memberships, protocolDirectory), sampling.Memberships);
             WriteJsonLines(Resolve(analysis.Outputs.Nulls, protocolDirectory), nulls);

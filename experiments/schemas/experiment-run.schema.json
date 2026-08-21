@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/experiment-run-1.json",
+  "title": "Enochian reproducible experiment run protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "runner_version", "config_id", "phase", "experiment_path", "experiment_schema_path", "sampling_protocol_path", "statistics_protocol_path", "manifest_schema_path", "manifests", "families", "dtw_tolerance", "match_scores_path", "nearest_distances_path", "report_inputs_path", "run_manifest_path", "definitions_path"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+    "schema_version": { "const": "1.0.0" },
+    "runner_version": { "const": "experiment-runner-v1" },
+    "config_id": { "$ref": "#/$defs/id" },
+    "phase": { "enum": ["exploratory", "confirmatory"] },
+    "experiment_path": { "$ref": "#/$defs/path" },
+    "experiment_schema_path": { "$ref": "#/$defs/path" },
+    "sampling_protocol_path": { "$ref": "#/$defs/path" },
+    "statistics_protocol_path": { "$ref": "#/$defs/path" },
+    "manifest_schema_path": { "$ref": "#/$defs/path" },
+    "manifests": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/path" } },
+    "families": { "type": "object", "minProperties": 2, "additionalProperties": { "type": "string", "minLength": 1 } },
+    "dtw_tolerance": { "type": "number", "minimum": 0, "maximum": 1 },
+    "match_scores_path": { "$ref": "#/$defs/path" },
+    "nearest_distances_path": { "$ref": "#/$defs/path" },
+    "report_inputs_path": { "$ref": "#/$defs/path" },
+    "run_manifest_path": { "$ref": "#/$defs/path" },
+    "definitions_path": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/statistics-protocol.schema.json",
+  "schema_version": "1.0.0",
+  "statistics_id": "synthetic-smoke",
+  "phase": "exploratory",
+  "experiment_path": "experiment.json",
+  "input_path": "outputs/nearest-distances.jsonl",
+  "input_schema_path": "../schemas/nearest-distance.schema.json",
+  "calibration_null_kind": "biphone-pseudoword",
+  "score_metric": "null-standardized-nearest-distance",
+  "seed": 103,
+  "permutation_count": 64,
+  "bootstrap_count": 200,
+  "confidence_level": 0.9,
+  "contrasts": [
+    { "contrast_id": "target-vs-control", "primary": true, "target_families": ["target"], "control_families": ["control"], "alternative": "greater" }
+  ],
+  "outputs": {
+    "calibrated_scores": "outputs/calibrated-scores.jsonl",
+    "estimates": "outputs/estimates.jsonl",
+    "intervals": "outputs/intervals.jsonl",
+    "tests": "outputs/tests.jsonl",
+    "adjusted_p_values": "outputs/adjusted-p-values.jsonl",
+    "diagnostics": "outputs/diagnostics.jsonl"
+  }
+}

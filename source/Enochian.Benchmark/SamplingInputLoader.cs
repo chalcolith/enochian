@@ -64,7 +64,9 @@ public static class SamplingInputLoader
                 GetString(root, "query_id"),
                 GetString(root, "text"),
                 [.. root.GetProperty("symbols").EnumerateArray().Select(symbol => symbol.GetString() ?? string.Empty)],
-                root.GetProperty("token_frequency").GetInt32()));
+                root.GetProperty("token_frequency").GetInt32(),
+                GetOptionalString(root, "section", "unknown"),
+                GetOptionalString(root, "frequency_band", "unknown")));
         }
 
         return [.. queries.OrderBy(query => query.QueryId, StringComparer.Ordinal)];
@@ -74,6 +76,11 @@ public static class SamplingInputLoader
         element.TryGetProperty(name, out var property) && property.ValueKind == JsonValueKind.String
             ? property.GetString() ?? string.Empty
             : throw new InvalidDataException($"Sampling input lacks string field '{name}'.");
+
+    private static string GetOptionalString(JsonElement element, string name, string fallback) =>
+        element.TryGetProperty(name, out var property) && property.ValueKind == JsonValueKind.String
+            ? property.GetString() ?? fallback
+            : fallback;
 
     private static double? GetNullableDouble(JsonElement element, string name)
     {

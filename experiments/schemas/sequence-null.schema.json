@@ -4,7 +4,7 @@
   "title": "Enochian generated sequence null",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "analysis_id", "sample_id", "requested_size", "null_id", "is_null", "null_kind", "analysis_mode", "weight", "repetition", "seed", "generator_version", "language", "query_id", "query_length", "phones"],
+  "required": ["schema_version", "analysis_id", "sample_id", "requested_size", "null_id", "is_null", "null_kind", "analysis_mode", "weight", "repetition", "null_repetition", "seed", "generator_version", "language", "query_id", "query_length", "phones"],
   "properties": {
     "schema_version": { "const": "1.0.0" },
     "analysis_id": { "type": "string", "minLength": 1 },
@@ -16,6 +16,7 @@
     "analysis_mode": { "enum": ["type-primary", "token-weighted"] },
     "weight": { "type": "integer", "minimum": 1 },
     "repetition": { "type": "integer", "minimum": 1 },
+    "null_repetition": { "type": "integer", "minimum": 1 },
     "seed": { "type": "integer", "minimum": 0 },
     "generator_version": { "const": "balanced-nulls-v1" },
     "language": { "type": "string", "minLength": 1 },

@@ -11,6 +11,7 @@ try
     {
         "sample" => "sample",
         "statistics" => "statistics",
+        "experiment" => "experiment",
         _ => "benchmark",
     };
     var protocolIndex = mode == "benchmark" ? 0 : 1;
@@ -35,6 +36,7 @@ try
     {
         "sample" => new Enochian.Benchmark.SamplingRunner(repositoryRoot, features, encoding).Run(protocolPath),
         "statistics" => new Enochian.Benchmark.StatisticsRunner(repositoryRoot).Run(protocolPath),
+        "experiment" => new Enochian.Benchmark.ExperimentRunner(repositoryRoot, features, encoding).Run(protocolPath),
         _ => new Enochian.Benchmark.BenchmarkRunner(repositoryRoot, features, encoding).Run(protocolPath),
     };
 }
@@ -49,6 +51,7 @@ static int ShowUsage()
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark statistics <statistics-protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark experiment <run-protocol-json> [repository-root]");
     return 1;
 }
 

@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/experiment.schema.json",
+  "schema_version": "1.0.0",
+  "experiment_id": "synthetic-smoke",
+  "phase": "exploratory",
+  "frozen": false,
+  "corpus_split": {
+    "selection_basis": "predeclared_loci",
+    "selection_uses_comparative_scores": false,
+    "evaluation_partition": { "id": "synthetic-evaluation", "loci": ["q01", "q02", "q03", "q04", "q05", "q06"] },
+    "holdout_partition": { "id": "synthetic-holdout", "loci": ["holdout-q01"] }
+  },
+  "transcription": { "id": "synthetic", "version": "1.0.0" },
+  "mapping": { "id": "synthetic-four-phone", "version": "1.0.0" },
+  "tokenization": { "method": "synthetic-types", "version": "1.0.0", "unicode_normalization": "NFC", "uncertain_tokens": "exclude" },
+  "feature_set": { "id": "enochian-default", "version": "1.0.0" },
+  "dtw": { "distance_metric": "euclidean", "normalization": "path_length", "window": null, "mapping_selection": "predeclared_single" },
+  "length_filters": { "minimum_phonemes": 3, "maximum_phonemes": 3 },
+  "lexicon_filters": { "entry_kinds": ["lemma"], "parts_of_speech": [], "duplicate_forms": "deduplicate_globally", "proper_names": "exclude", "abbreviations": "exclude", "inflected_forms": "exclude" },
+  "randomization": { "seeds": { "sampling": 101, "null_generation": 101, "permutation": 103 }, "sample_count": 6, "permutation_count": 64 },
+  "planned_contrasts": [
+    { "id": "target-vs-control", "primary": true, "target_groups": ["target"], "control_groups": ["control"], "expected_direction": "lower" }
+  ],
+  "statistics": { "primary_statistic": "mean_normalized_dtw_difference", "correction_method": "holm", "alpha": 0.05, "confidence_level": 0.9 },
+  "outputs": { "root_directory": "outputs", "scores": "match-scores.jsonl", "quality_report": "sampling-report.json", "metadata": "run-manifest.json" }
+}

@@ -12,6 +12,7 @@
     "generator_version": { "const": "balanced-nulls-v1" },
     "seed": { "type": "integer", "minimum": 0 },
     "repetitions": { "type": "integer", "minimum": 1 },
+    "null_repetitions": { "type": "integer", "minimum": 1 },
     "queries_path": { "$ref": "#/$defs/path" },
     "mapping": {
       "type": "object",

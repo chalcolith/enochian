@@ -3,6 +3,7 @@
 
 .enoch/
 reports/*.html
+experiments/synthetic-smoke/outputs/
 
 # User-specific files
 *.suo
