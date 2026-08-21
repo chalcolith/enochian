@@ -219,6 +219,57 @@ query length; every null row records its sample ID and requested size. Every nul
 `type-primary` with weight 1 and once as `token-weighted` with the frozen token
 frequency.
 
+### Calibrated scores and statistical comparisons
+
+Run a validated M3-04 statistics protocol from `source/`:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- statistics ../experiments/statistics.json ..
+```
+
+The protocol follows
+`experiments/schemas/statistics-protocol.schema.json`. It freezes the input and
+schema paths, calibration null kind, randomization seed, permutation and
+bootstrap counts, confidence level, contrasts, and distinct output paths. A
+confirmatory protocol must name exactly one primary contrast, and every
+contrast must exactly match its ID, primary status, groups, and expected
+direction in the referenced frozen confirmatory experiment config. Because a
+smaller raw distance is better, a frozen `lower` direction maps to a `greater`
+alternative for the standardized score.
+
+The UTF-8 nearest-distance JSONL input conforms to
+`experiments/schemas/nearest-distance.schema.json`. Each observed or null row
+explicitly records its analysis mode, sample and repetition, requested
+dictionary size, unique query type, length/section/frequency strata, frozen
+weight, language/family, null status and kind, and nearest normalized distance.
+Observed rows must be unique by analysis, mode, sample, query, and language.
+Rows marked `type-primary` must have weight 1; token frequencies are used only
+as weights in the secondary analysis and are never expanded into independent
+observations.
+
+For observed distance `d`, calibration against `N` matched null distances uses
+the midrank empirical percentile `(count(null < d) + 0.5 * count(null = d)) / N`.
+The standardized score is `(null mean - d) / null sample standard deviation`,
+so larger values indicate a closer-than-null match. Empty, singleton, and
+zero-variance null distributions produce diagnostics and nullable standardized
+scores rather than fabricated values.
+
+Contrasts use one target/control pair per unique query type after collapsing
+repeated lexicon samples. The runner reports weighted paired median
+differences, matched-pairs rank-biserial effects, sign-flip permutation tests,
+and percentile intervals from a hierarchical bootstrap over lexicon samples
+and query types. Exact sign enumeration is used when it fits within the
+configured permutation count; outputs record both configured and actual
+counts. Holm adjustment is applied within each analysis/mode/dictionary-size
+family. Per-language raw, percentile, standardized, and winner summaries are
+emitted overall and by query length, manuscript section, and frequency band.
+
+All outputs are deterministic UTF-8 JSONL written atomically. Separate tidy
+tables contain calibrated scores, estimates, intervals, tests, adjusted
+p-values, and diagnostics; each has a versioned schema under
+`experiments/schemas/`. Missing query/language pairs and insufficient bootstrap
+samples remain explicit diagnostics and never become zero-valued estimates.
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to

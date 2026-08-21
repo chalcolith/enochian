@@ -7,8 +7,13 @@ try
         return ShowUsage();
     }
 
-    var isSampling = string.Equals(args[0], "sample", StringComparison.Ordinal);
-    var protocolIndex = isSampling ? 1 : 0;
+    var mode = args[0] switch
+    {
+        "sample" => "sample",
+        "statistics" => "statistics",
+        _ => "benchmark",
+    };
+    var protocolIndex = mode == "benchmark" ? 0 : 1;
     var rootIndex = protocolIndex + 1;
     if (args.Length <= protocolIndex || args.Length > rootIndex + 1)
     {
@@ -26,9 +31,12 @@ try
     var features = flow.FeatureSets.Single(featureSet => featureSet.Id == "Default");
     var encoding = flow.Encodings.Single(candidate => candidate.Id == "IPA");
     var protocolPath = Path.GetFullPath(args[protocolIndex]);
-    return isSampling
-        ? new Enochian.Benchmark.SamplingRunner(repositoryRoot, features, encoding).Run(protocolPath)
-        : new Enochian.Benchmark.BenchmarkRunner(repositoryRoot, features, encoding).Run(protocolPath);
+    return mode switch
+    {
+        "sample" => new Enochian.Benchmark.SamplingRunner(repositoryRoot, features, encoding).Run(protocolPath),
+        "statistics" => new Enochian.Benchmark.StatisticsRunner(repositoryRoot).Run(protocolPath),
+        _ => new Enochian.Benchmark.BenchmarkRunner(repositoryRoot, features, encoding).Run(protocolPath),
+    };
 }
 catch (Exception exception)
 {
@@ -40,6 +48,7 @@ static int ShowUsage()
 {
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark statistics <statistics-protocol-json> [repository-root]");
     return 1;
 }
 
