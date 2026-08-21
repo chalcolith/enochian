@@ -2,12 +2,20 @@ using Enochian.Flow;
 
 try
 {
-    if (args.Length is < 1 or > 2)
+    if (args.Length is < 1 or > 3)
     {
         return ShowUsage();
     }
 
-    var repositoryRoot = args.Length == 2 ? Path.GetFullPath(args[1]) : FindRepositoryRoot();
+    var isSampling = string.Equals(args[0], "sample", StringComparison.Ordinal);
+    var protocolIndex = isSampling ? 1 : 0;
+    var rootIndex = protocolIndex + 1;
+    if (args.Length <= protocolIndex || args.Length > rootIndex + 1)
+    {
+        return ShowUsage();
+    }
+
+    var repositoryRoot = args.Length > rootIndex ? Path.GetFullPath(args[rootIndex]) : FindRepositoryRoot();
     var flow = new Flow(Path.Combine(repositoryRoot, "samples", "ipatransducer.json"));
     var errors = flow.Errors.Select(error => error.Message).ToArray();
     if (errors.Length != 0)
@@ -17,7 +25,10 @@ try
 
     var features = flow.FeatureSets.Single(featureSet => featureSet.Id == "Default");
     var encoding = flow.Encodings.Single(candidate => candidate.Id == "IPA");
-    return new Enochian.Benchmark.BenchmarkRunner(repositoryRoot, features, encoding).Run(Path.GetFullPath(args[0]));
+    var protocolPath = Path.GetFullPath(args[protocolIndex]);
+    return isSampling
+        ? new Enochian.Benchmark.SamplingRunner(repositoryRoot, features, encoding).Run(protocolPath)
+        : new Enochian.Benchmark.BenchmarkRunner(repositoryRoot, features, encoding).Run(protocolPath);
 }
 catch (Exception exception)
 {
@@ -28,6 +39,7 @@ catch (Exception exception)
 static int ShowUsage()
 {
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");
     return 1;
 }
 
