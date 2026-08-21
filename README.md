@@ -174,6 +174,51 @@ matcher accumulates records across input chunks and atomically rewrites the
 artifacts after each chunk. Enumerate all matcher outputs to complete a
 multi-chunk export.
 
+### Balanced sampling and sequence nulls
+
+Run a validated M3-03 sampling protocol from `source/`:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- sample ../experiments/sampling.json ..
+```
+
+The protocol follows
+`experiments/schemas/sampling-protocol.schema.json`. It freezes the seed,
+generator version, repetition count, character-to-feature mapping, query file,
+named analyses, included entry kinds, optional frequency bands, source
+lexicons, smaller sample sizes, and output paths. Analyses are explicitly
+labelled `primary`, `full`, or `inflected`; all analysis IDs and membership,
+null, and report paths must be distinct.
+
+The query file is UTF-8 JSONL. Each row contains a stable `query_id`, source
+`text`, an ordered `symbols` array, and positive `token_frequency`:
+
+```json
+{"query_id":"voynich-type-0001","text":"qokeedy","symbols":["q","o","k","e","e","d","y"],"token_frequency":12}
+```
+
+For each analysis, candidate construction first keeps one deterministic
+pronunciation per normalized lemma, then collapses identical phonologies while
+retaining all matching source entry memberships. Entry kinds not named by the
+analysis are excluded. Sampling strata use phoneme-length bands and, when
+configured, frequency bands; missing frequencies form an explicit `missing`
+stratum. The largest common size is the sum of each stratum's minimum capacity
+across languages. Every language receives exactly that size and each smaller
+predeclared size without replacement for every repetition. Reports include all
+per-language/stratum shortages and counts excluded by balancing.
+
+The runner emits deterministic UTF-8 JSONL membership and null artifacts plus
+a JSON report. Membership rows record analysis/sample IDs, repetition,
+requested size, seed, generator version, stratum, candidate, entry kind, and
+source memberships. Null rows conform to
+`experiments/schemas/sequence-null.schema.json` and require `is_null: true`, a
+`null.*` ID, and one of `unigram-pseudoword`, `biphone-pseudoword`,
+`mapping-assignment-shuffle`, or `within-query-shuffle`. Language-conditioned
+pseudowords are fitted to each exact balanced membership set and match each
+query length; every null row records its sample ID and requested size. Every null is emitted once as
+`type-primary` with weight 1 and once as `token-weighted` with the frozen token
+frequency.
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to
