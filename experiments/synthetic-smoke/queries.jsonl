@@ -1,0 +1,6 @@
+{"query_id":"q01","text":"tdt","symbols":["t","d","t"],"token_frequency":1,"section":"a","frequency_band":"common"}
+{"query_id":"q02","text":"tst","symbols":["t","s","t"],"token_frequency":2,"section":"a","frequency_band":"common"}
+{"query_id":"q03","text":"dzd","symbols":["d","z","d"],"token_frequency":3,"section":"a","frequency_band":"rare"}
+{"query_id":"q04","text":"sds","symbols":["s","d","s"],"token_frequency":4,"section":"b","frequency_band":"common"}
+{"query_id":"q05","text":"ztz","symbols":["z","t","z"],"token_frequency":5,"section":"b","frequency_band":"rare"}
+{"query_id":"q06","text":"dsd","symbols":["d","s","d"],"token_frequency":6,"section":"b","frequency_band":"rare"}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/experiment-run-manifest-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "runner_version", "run_id", "config_id", "phase", "network_allowed_after_validation", "inputs", "stages", "artifacts"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "runner_version": { "const": "experiment-runner-v1" }, "run_id": { "$ref": "#/$defs/hash" },
+    "config_id": { "type": "string" }, "phase": { "enum": ["exploratory", "confirmatory"] }, "network_allowed_after_validation": { "const": false },
+    "inputs": { "type": "array", "items": { "$ref": "#/$defs/artifact" } },
+    "stages": { "type": "array", "items": { "$ref": "#/$defs/stage" } },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact" } }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "artifact": { "type": "object", "additionalProperties": false, "required": ["path", "sha256", "bytes"], "properties": { "path": { "type": "string" }, "sha256": { "$ref": "#/$defs/hash" }, "bytes": { "type": "integer", "minimum": 0 } } },
+    "stage": { "type": "object", "additionalProperties": false, "required": ["stage_id", "input_sha256", "outputs"], "properties": { "stage_id": { "enum": ["sampling", "matching", "statistics", "report-inputs"] }, "input_sha256": { "$ref": "#/$defs/hash" }, "outputs": { "type": "array", "items": { "$ref": "#/$defs/artifact" } } } }
+  }
+}

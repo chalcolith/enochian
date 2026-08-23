@@ -10,6 +10,7 @@ public sealed class SamplingProtocol
     public string GeneratorVersion { get; init; } = string.Empty;
     public int Seed { get; init; }
     public int Repetitions { get; init; }
+    public int NullRepetitions { get; init; } = 1;
     public string QueriesPath { get; init; } = string.Empty;
     public IReadOnlyDictionary<string, double[]> Mapping { get; init; } = new Dictionary<string, double[]>(StringComparer.Ordinal);
     public IReadOnlyList<SamplingAnalysis> Analyses { get; init; } = [];

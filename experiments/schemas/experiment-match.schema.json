@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/experiment-match-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "analysis_id", "analysis_mode", "sample_id", "requested_size", "repetition", "query_id", "query_length", "section", "frequency_band", "weight", "language", "family", "is_null", "null_id", "null_kind", "candidate_id", "raw_cost", "path_length", "mean_path_cost", "mean_input_length_cost", "within_sample_rank"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" }, "analysis_id": { "type": "string" }, "analysis_mode": { "enum": ["type-primary", "token-weighted"] },
+    "sample_id": { "type": "string" }, "requested_size": { "type": "integer", "minimum": 1 }, "repetition": { "type": "integer", "minimum": 1 },
+    "query_id": { "type": "string" }, "query_length": { "type": "integer", "minimum": 1 }, "section": { "type": "string" }, "frequency_band": { "type": "string" },
+    "weight": { "type": "integer", "minimum": 1 }, "language": { "type": "string" }, "family": { "type": "string" }, "is_null": { "type": "boolean" },
+    "null_id": { "type": ["string", "null"] }, "null_kind": { "type": ["string", "null"] }, "candidate_id": { "type": "string" },
+    "raw_cost": { "type": "number", "minimum": 0 }, "path_length": { "type": "integer", "minimum": 1 }, "mean_path_cost": { "type": "number", "minimum": 0 },
+    "mean_input_length_cost": { "type": "number", "minimum": 0 }, "within_sample_rank": { "type": "integer", "minimum": 1 }
+  }
+}

@@ -42,25 +42,28 @@ public static class SequenceNullGenerator
         IReadOnlyDictionary<string, double[]> mapping,
         int repetition,
         int seed,
-        string generatorVersion)
+        string generatorVersion,
+        int nullRepetition = 1)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(analysisId);
         ArgumentException.ThrowIfNullOrWhiteSpace(sampleId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(requestedSize);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(repetition);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(nullRepetition);
         ArgumentOutOfRangeException.ThrowIfNegative(seed);
         var candidateArray = candidates.OrderBy(candidate => candidate.CandidateId, StringComparer.Ordinal).ToArray();
         var queryArray = queries.OrderBy(query => query.QueryId, StringComparer.Ordinal).ToArray();
         ValidateQueries(queryArray, mapping);
         var rows = new List<SequenceNullRecord>();
-        var shuffledMapping = ShuffleMapping(mapping, seed, repetition);
+        var randomizationRepetition = checked((repetition * 100000) + nullRepetition);
+        var shuffledMapping = ShuffleMapping(mapping, seed, randomizationRepetition);
         foreach (var query in queryArray)
         {
             double[][] observed = [.. query.Symbols.Select(symbol => mapping[symbol])];
             AddModes(rows, analysisId, sampleId, requestedSize, "mapping-assignment-shuffle", "all", query,
-                [.. query.Symbols.Select(symbol => shuffledMapping[symbol])], repetition, seed, generatorVersion);
+                [.. query.Symbols.Select(symbol => shuffledMapping[symbol])], repetition, nullRepetition, seed, generatorVersion);
             AddModes(rows, analysisId, sampleId, requestedSize, "within-query-shuffle", "all", query,
-                ShufflePhones(observed, seed, repetition, query.QueryId), repetition, seed, generatorVersion);
+                ShufflePhones(observed, seed, randomizationRepetition, query.QueryId), repetition, nullRepetition, seed, generatorVersion);
         }
 
         foreach (var languageGroup in candidateArray.GroupBy(candidate => candidate.Language).OrderBy(group => group.Key, StringComparer.Ordinal))
@@ -69,9 +72,9 @@ public static class SequenceNullGenerator
             foreach (var query in queryArray)
             {
                 AddModes(rows, analysisId, sampleId, requestedSize, "unigram-pseudoword", languageGroup.Key, query,
-                    model.GenerateUnigram(query.Symbols.Count, seed, repetition, query.QueryId), repetition, seed, generatorVersion);
+                    model.GenerateUnigram(query.Symbols.Count, seed, randomizationRepetition, query.QueryId), repetition, nullRepetition, seed, generatorVersion);
                 AddModes(rows, analysisId, sampleId, requestedSize, "biphone-pseudoword", languageGroup.Key, query,
-                    model.GenerateBiphone(query.Symbols.Count, seed, repetition, query.QueryId), repetition, seed, generatorVersion);
+                    model.GenerateBiphone(query.Symbols.Count, seed, randomizationRepetition, query.QueryId), repetition, nullRepetition, seed, generatorVersion);
             }
         }
 
@@ -150,12 +153,13 @@ public static class SequenceNullGenerator
         SamplingQuery query,
         IReadOnlyList<double[]> phones,
         int repetition,
+        int nullRepetition,
         int seed,
         string generatorVersion)
     {
         var nullId = string.Create(
             CultureInfo.InvariantCulture,
-            $"null.{sampleId}.{nullKind}.{language}.{query.QueryId}");
+            $"null.{sampleId}.{nullKind}.{language}.{query.QueryId}.draw-{nullRepetition:D4}");
         rows.Add(Create("type-primary", 1));
         rows.Add(Create("token-weighted", query.TokenFrequency));
 
@@ -170,6 +174,7 @@ public static class SequenceNullGenerator
             mode,
             weight,
             repetition,
+            nullRepetition,
             seed,
             generatorVersion,
             language,

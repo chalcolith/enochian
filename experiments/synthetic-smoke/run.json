@@ -1,0 +1,20 @@
+{
+  "$schema": "../schemas/experiment-run.schema.json",
+  "schema_version": "1.0.0",
+  "runner_version": "experiment-runner-v1",
+  "config_id": "synthetic-smoke",
+  "phase": "exploratory",
+  "experiment_path": "experiment.json",
+  "experiment_schema_path": "../schemas/experiment.schema.json",
+  "sampling_protocol_path": "sampling.json",
+  "statistics_protocol_path": "statistics.json",
+  "manifest_schema_path": "../../resources/lexicons/schemas/source-manifest.schema.json",
+  "manifests": ["target.manifest.json", "control.manifest.json"],
+  "families": { "tar": "target", "ctl": "control" },
+  "dtw_tolerance": 0,
+  "match_scores_path": "outputs/match-scores.jsonl",
+  "nearest_distances_path": "outputs/nearest-distances.jsonl",
+  "report_inputs_path": "outputs/report-inputs.json",
+  "run_manifest_path": "outputs/run-manifest.json",
+  "definitions_path": null
+}

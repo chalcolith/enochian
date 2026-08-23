@@ -67,7 +67,9 @@ public sealed record SamplingQuery(
     string QueryId,
     string Text,
     IReadOnlyList<string> Symbols,
-    int TokenFrequency);
+    int TokenFrequency,
+    string Section = "unknown",
+    string FrequencyBand = "unknown");
 
 public sealed record SequenceNullRecord(
     string SchemaVersion,
@@ -80,6 +82,7 @@ public sealed record SequenceNullRecord(
     string AnalysisMode,
     int Weight,
     int Repetition,
+    int NullRepetition,
     int Seed,
     string GeneratorVersion,
     string Language,

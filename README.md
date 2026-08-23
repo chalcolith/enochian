@@ -212,7 +212,8 @@ a JSON report. Membership rows record analysis/sample IDs, repetition,
 requested size, seed, generator version, stratum, candidate, entry kind, and
 source memberships. Null rows conform to
 `experiments/schemas/sequence-null.schema.json` and require `is_null: true`, a
-`null.*` ID, and one of `unigram-pseudoword`, `biphone-pseudoword`,
+`null.*` ID, a one-based null-draw repetition, and one of
+`unigram-pseudoword`, `biphone-pseudoword`,
 `mapping-assignment-shuffle`, or `within-query-shuffle`. Language-conditioned
 pseudowords are fitted to each exact balanced membership set and match each
 query length; every null row records its sample ID and requested size. Every null is emitted once as
@@ -269,6 +270,38 @@ tables contain calibrated scores, estimates, intervals, tests, adjusted
 p-values, and diagnostics; each has a versioned schema under
 `experiments/schemas/`. Missing query/language pairs and insufficient bootstrap
 samples remain explicit diagnostics and never become zero-valued estimates.
+
+### Reproducible experiment runner
+
+From `source/`, one command reproduces the complete checked-in M3-05 synthetic
+analysis:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- experiment ../experiments/synthetic-smoke/run.json ..
+```
+
+The run protocol validates the experiment, stage protocols, schemas, source
+manifests, pinned revisions, and source checksums before execution. No network
+access is allowed after that validation boundary. It then runs balanced
+sampling and null generation, scores observed and null sequences against each
+exact sample membership, computes the statistical tables, and writes the
+report-input hash table. Candidate-level DTW records remain available in
+`match-scores.jsonl` for audit.
+
+After every completed stage, the runner atomically checkpoints a run manifest.
+Each stage records a content hash of its inputs and the path, SHA-256, and byte
+count of every output. A later invocation reuses a stage only when its input
+hash and all output hashes still match; changed or interrupted downstream
+stages are rebuilt. Confirmatory runs additionally require a frozen protocol,
+one predeclared mapping, pinned acquired sources, the complete registered
+contrast set, matching randomization and sampling fields, disjoint evaluation
+and holdout partitions, and no definitions in scoring exports.
+
+The smoke profile uses two six-entry synthetic lexicons, six query types, two
+balanced samples, and 16 null draws. A clean run is expected to finish in under
+one minute with less than 512 MiB of memory on a development machine. It writes
+about 13 MiB, dominated by the roughly 11 MiB candidate-level match export;
+reruns normally complete by hash-verifying and reusing those artifacts.
 
 ## Linguistic Resources
 
