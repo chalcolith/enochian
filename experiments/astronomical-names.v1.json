@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "astronomical-names-v1",
+  "frozen": true,
+  "manifest": "resources/lexicons/manifests/hyg-4.1.manifest.json",
+  "pronunciation_panel": "resources/lexicons/pronunciation-panel.v1.json",
+  "pronunciation_panel_sha256": "6a646913242084a7be3ddd10c650769b083d01a1d5bce53959f12da2d5f1da90",
+  "output_directory": ".enoch/astronomy/v1",
+  "report_path": "reports/pronunciation-profiles/v1/astronomy-registration.json",
+  "rules": [
+    "catalog:all-nonempty-proper-except-solar-id-0",
+    "key:trim-nfc-ordinal-case-sensitive-no-transliteration",
+    "duplicates:retain-catalog-ids-and-flag-ambiguous-keys",
+    "languages:all-panel-languages-identical-selection-rules",
+    "links:exact-local-name-or-explicit-dictionary-translation-link-only",
+    "ambiguity:retain-all-linked-forms-no-gloss-or-score-selection",
+    "pronunciation:require-matching-frozen-profile-no-inferred-arabic",
+    "missing:report-unmatched-or-insufficient-evidence-not-zero-score",
+    "analysis:proper-names-separate-from-primary-lemma-panel",
+    "voynich:no-proposed-star-identification-as-ground-truth",
+    "execution:register-only-no-cross-language-or-voynich-scoring"
+  ]
+}

@@ -10,6 +10,8 @@ try
         "attribution" => GenerateAttribution(repositoryRoot, args),
         "ipa-audit" => AuditIpa(repositoryRoot, args),
         "pronunciation-audit" or "pronunciation-acquire" => await AuditPronunciations(repositoryRoot, args),
+        "pronunciation-profiles" or "pronunciation-profiles-acquire" => await BuildPronunciationProfiles(repositoryRoot, args),
+        "astronomy-register" or "astronomy-acquire" => await RegisterAstronomy(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -124,6 +126,10 @@ static int ShowUsage()
         "  Enochian.Provenance ipa-audit <artifacts-jsonl> <profile-json> <review-jsonl> <summary-json> [sample-size]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-audit [protocol-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-acquire [protocol-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-profiles [panel-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-profiles-acquire [panel-json]");
+    Console.Error.WriteLine("  Enochian.Provenance astronomy-register [protocol-json]");
+    Console.Error.WriteLine("  Enochian.Provenance astronomy-acquire [protocol-json]");
     return 1;
 }
 
@@ -138,6 +144,35 @@ static async Task<int> AuditPronunciations(string repositoryRoot, string[] argum
         : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-audit.protocol.json");
     await new PronunciationAudit(repositoryRoot).RunAsync(plan, arguments[0] == "pronunciation-acquire");
     Console.WriteLine("Pronunciation coverage audit completed. This does not grant confirmatory admission.");
+    return 0;
+}
+
+static async Task<int> BuildPronunciationProfiles(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var panel = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-panel.v1.json");
+    await new PronunciationAudit(repositoryRoot).RunPanelAsync(
+        panel, arguments[0] == "pronunciation-profiles-acquire");
+    Console.WriteLine("Profile artifacts built. No confirmatory admission or Voynich comparisons were performed.");
+    return 0;
+}
+
+static async Task<int> RegisterAstronomy(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var protocol = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "experiments", "astronomical-names.v1.json");
+    await new AstronomicalNameRegistry(repositoryRoot).RunAsync(protocol, arguments[0] == "astronomy-acquire");
+    Console.WriteLine("Astronomical name analysis registered; no pronunciations inferred or Voynich identifications scored.");
     return 0;
 }
 

@@ -58,6 +58,14 @@ This report is generated solely from checked-in source manifests.
 - Distribution: vendored
 - Citation: CMU Pronouncing Dictionary, version 0.7b, Carnegie Mellon University.
 
+## hyg-4.1
+
+- Owner: David Nash / Astronexus and HYG catalog contributors
+- Upstream: <https://raw.githubusercontent.com/astronexus/HYG-Database/c7f7f883fe678cc7680169a50ccd7dcc49b060ce/hyg/CURRENT/hygdata_v41.csv>
+- License: CC-BY-SA-4.0 (verified)
+- Distribution: download-on-demand
+- Citation: David Nash and HYG contributors, HYG 4.1 (Hipparcos-Yale-Gliese), frozen GitHub archive commit c7f7f883fe678cc7680169a50ccd7dcc49b060ce, hyg/CURRENT/hygdata_v41.csv. CC BY-SA 4.0 as stated in LICENSE and hyg/README.md at that commit. Common names include IAU-derived names and explicitly unofficial companion names; neither Arabic etymology nor original Arabic pronunciation is asserted. The archive has since moved to Codeberg; this analysis deliberately retains the pinned 4.1 snapshot.
+
 ## ipa-dict-ar
 
 - Owner: open-dict-data/ipa-dict contributors

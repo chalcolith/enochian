@@ -56,7 +56,25 @@ The first acquisition downloads approximately 3 GB of compressed raw Wiktionary
 data plus small comparison lists. Use `pronunciation-audit` instead to rebuild
 offline from retained snapshots. See the [audit guide](resources/lexicons/README.md#dictionary-pronunciation-audit-m2-07)
 for policy, outputs, and limitations. M2-07 reports candidates and exclusions;
-it does not implement M2-08 historical profiles or M2-09 admission gates.
+its original artifacts remain unchanged.
+
+M2-08 freezes Italianate ecclesiastical Latin, Tiberian Biblical Hebrew,
+**4th-century CE Koine** for Ancient Greek, and Classical Arabic citation forms
+with explicit source vowels/endings. Rebuild the versioned panel and register
+the separate astronomical-name analysis offline:
+
+```powershell
+dotnet run --project Enochian.Provenance -- pronunciation-profiles
+dotnet run --project Enochian.Provenance -- astronomy-register
+```
+
+See the [profile guide](resources/lexicons/README.md#dictionary-first-pronunciation-profiles-m2-08)
+and [coverage report](reports/pronunciation-profiles/v1/coverage.md).
+Classical Arabic remains excluded without usable Classical evidence; MSA is
+not substituted. No human annotation is required. All nonempty profiles remain
+exploratory until M2-09 implements the revised admission/retrieval protocol.
+The star-name catalog is separately pinned and licensed; `astronomy-acquire`
+explicitly downloads it (about 34 MB) when it is not already retained.
 
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/astronomical-names-1.json",
+  "title": "Separate astronomical-name analysis registration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "analysis_id", "frozen", "manifest", "pronunciation_panel", "pronunciation_panel_sha256", "output_directory", "report_path", "rules"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "analysis_id": { "const": "astronomical-names-v1" },
+    "frozen": { "const": true },
+    "manifest": { "type": "string", "minLength": 1 },
+    "pronunciation_panel": { "type": "string", "minLength": 1 },
+    "pronunciation_panel_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "output_directory": { "type": "string", "minLength": 1 },
+    "report_path": { "type": "string", "minLength": 1 },
+    "rules": {
+      "const": [
+        "catalog:all-nonempty-proper-except-solar-id-0",
+        "key:trim-nfc-ordinal-case-sensitive-no-transliteration",
+        "duplicates:retain-catalog-ids-and-flag-ambiguous-keys",
+        "languages:all-panel-languages-identical-selection-rules",
+        "links:exact-local-name-or-explicit-dictionary-translation-link-only",
+        "ambiguity:retain-all-linked-forms-no-gloss-or-score-selection",
+        "pronunciation:require-matching-frozen-profile-no-inferred-arabic",
+        "missing:report-unmatched-or-insufficient-evidence-not-zero-score",
+        "analysis:proper-names-separate-from-primary-lemma-panel",
+        "voynich:no-proposed-star-identification-as-ground-truth",
+        "execution:register-only-no-cross-language-or-voynich-scoring"
+      ]
+    }
+  }
+}

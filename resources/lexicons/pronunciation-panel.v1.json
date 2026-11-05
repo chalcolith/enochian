@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "m2-08-dictionary-first-panel-v1",
+  "frozen": true,
+  "dictionary_protocol": "resources/lexicons/pronunciation-audit.protocol.json",
+  "dictionary_protocol_sha256": "cb4815179c2fc68a286aeb6c98b43c4d74decf5dc13cd8d3960c2a82b5e8aa80",
+  "output_directory": ".enoch/pronunciation-profiles/v1",
+  "report_directory": "reports/pronunciation-profiles/v1",
+  "fallback_source_manifests": [],
+  "profiles": [
+    {
+      "id": "lat-ecclesiastical-italianate",
+      "version": "1.0.0",
+      "language": "lat",
+      "convention": "ecclesiastical-italianate",
+      "required_labels": ["modern Italianate Ecclesiastical"],
+      "rejected_labels": ["Classical-Latin", "Classical", "Vulgar"],
+      "fallback": "none",
+      "rules": {
+        "source": "Require the explicit modern Italianate Ecclesiastical source note; generic Ecclesiastical is insufficient to establish the selected regional convention.",
+        "consonants": "Italianate c/g before front vowels, sc/gn, ti contexts, v and gemination are supplied by the labelled dictionary reading, not obtained by relabelling Classical IPA.",
+        "vowels": "Retain dictionary vowel qualities and lengths; normalize only the shared IPA delimiters, syllable separators and stress. Do not equate Classical quantity with Italianate allophonic length.",
+        "gaps": "Exclude dictionary gaps. The old Classical converter is not an Italianate fallback; a new independently validated converter/version is required before gap filling.",
+        "scope": "A selected research assumption, not a reconstruction of uniform late-medieval Latin."
+      }
+    },
+    {
+      "id": "hbo-tiberian",
+      "version": "1.0.0",
+      "language": "hbo",
+      "convention": "tiberian",
+      "required_labels": ["Tiberian", "Tiberian-Hebrew"],
+      "rejected_labels": ["Modern", "Israeli", "Sephardi", "Yemenite"],
+      "fallback": "none",
+      "rules": {
+        "source": "Only explicitly Tiberian dictionary IPA; generic reconstructed Biblical, niqqud and ETCBC phono do not establish this convention.",
+        "shewa": "Preserve the supplied vocalic/silent shewa interpretation and its vowel quality. Bare consonants or shewa marks alone do not supply syllabic or contextual resolution.",
+        "dagesh": "Preserve supplied gemination and stop/fricative distinctions. Dagesh lene/forte and mappiq require morphological/syllabic context; do not infer them from an undifferentiated dot.",
+        "begadkefat": "Retain the six stop/fricative distinctions b/v, g/gh, d/dh, k/kh, p/f, t/th as actually represented in the source IPA, without Modern Hebrew substitution.",
+        "gutturals": "Retain source glottal/pharyngeal segments and context-conditioned reduced vowels. Do not delete gutturals or invent epenthetic vowels.",
+        "vowels": "Retain Tiberian vowel quality, reduction and quantity supplied by the source, including qamats/patah and tsere/segol distinctions; unsupported diacritics are exclusions.",
+        "context": "Any future spelling converter needs resolved qere/ketiv, full vocalization, syllable/stress context, shewa and dagesh interpretation, matres and word-boundary context. No such converter is asserted here.",
+        "bhsa": "BHSA remains optional, non-commercial and unbundled; old BHSA outputs are join targets only, never Tiberian pronunciation references or candidate IPA."
+      }
+    },
+    {
+      "id": "ara-classical-citation",
+      "version": "1.0.0",
+      "language": "ara",
+      "convention": "classical-arabic",
+      "required_labels": ["Classical", "Classical-Arabic"],
+      "rejected_labels": ["Modern-Standard-Arabic", "Modern", "Egyptian", "Levantine", "Gulf", "Moroccan"],
+      "fallback": "classical-arabic-vocalized-v1",
+      "rules": {
+        "source": "Classical source classification is required independently of vocalization; MSA/dialect and unclassified Arabic are not substitutes.",
+        "citation": "Keep the citation form exactly as supplied, including explicit final vowels and tanwin. Do not supply missing case endings, strip explicit endings, or generate a pausal alternative.",
+        "vowels": "Require an explicit short vowel, tanwin or sukun on each consonant, except the declared article/mater rules. Fatha/alif or alif maqsura, damma/waw and kasra/ya give long vowels; consonantal w/y with sukun remain diphthongal where applicable.",
+        "consonants": "Use the conventional Classical citation inventory, including j as /d͡ʒ/, emphatics /sˤ dˤ tˤ ðˤ/, gutturals /ħ ʕ/, and qaf /q/. This is not a reconstruction of early lateral dad or a modern dialect.",
+        "gemination": "Expand explicit shadda to two consonant segments. Never infer shadda from an unmarked spelling.",
+        "article": "At citation onset al-/wasl is /ʔal/ before moon letters; before sun letters omit l only with explicit sun-letter shadda. No connected-speech wasl deletion or invented vocalization.",
+        "orthography": "Handle explicit madda, dagger alif with fatha and final support alif after fathatan. Ta marbuta with an explicit ending is /t/ plus that ending; unmarked ta marbuta is unresolved and excluded. Unrecognized marks, boundaries and missing context are exclusions.",
+        "validation": "Converter candidates remain exploratory. No independently held-out Classical reference set or licensed Classical lexical snapshot is currently configured. The acquired IPA Dictionary Arabic snapshot is MSA and supplies no Classical fallback."
+      }
+    },
+    {
+      "id": "grc-koine-4c",
+      "version": "1.0.0",
+      "language": "grc",
+      "convention": "4th-century-ce-koine",
+      "required_labels": ["4ᵗʰ CE Koine"],
+      "rejected_labels": ["1ˢᵗ CE Egyptian", "5ᵗʰ BCE Attic", "10ᵗʰ CE Medieval", "15ᵗʰ CE Constantinopolitan", "Classical", "Classical-Attic", "Modern"],
+      "fallback": "none",
+      "rules": {
+        "stage": "Use only the Wiktionary raw sound note 4th CE Koine, including its ordinal superscripts. Do not pool the 1st CE Egyptian inventory or later stages.",
+        "vowels": "Preserve the selected source convention: eta/ei/iota merger to /i/, omicron/omega to /o/, and upsilon/oi as /y/. No Attic phonemic vowel length is inferred.",
+        "diphthongs": "Preserve source ai /e/, ou /u/, and context-conditioned au/eu fricative realizations; do not regenerate Attic diphthongs.",
+        "aspiration": "The selected source uses phi /ɸ/, theta /θ/, chi /x/ (including palatal contexts) rather than Attic aspirated stops; rough-breathing h is not restored.",
+        "consonants": "Retain source beta/gamma/delta fricatives and context-dependent stop/nasal/palatal realizations. No modern f-for-phi substitution.",
+        "stress": "Source stress remains in original IPA evidence, but is removed from normalized segmental IPA under the shared feature-space policy. No Attic pitch accent is synthesized.",
+        "gaps": "Ancient/Classical Greek lemmas supply the lexical inventory. Unlabelled or wrong-stage readings are excluded; no spelling converter fills gaps."
+      }
+    },
+    {
+      "id": "asm-dictionary", "version": "1.0.0", "language": "asm", "convention": "assamese",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; retain source labels and unknown origins. No converter rescue or historical-convention claim; unresolved regional variation remains exploratory." }
+    },
+    {
+      "id": "ben-dictionary", "version": "1.0.0", "language": "ben", "convention": "bengali",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; prior Epitran exclusions are baseline observations, not exclusions of new dictionary evidence. Preserve alternatives and source regional labels." }
+    },
+    {
+      "id": "bho-dictionary", "version": "1.0.0", "language": "bho", "convention": "bhojpuri",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Audit the pinned bho code even when coverage is zero; no substitution of Hindi, invented pronunciation or assertion that all Bhojpuri dictionaries lack data." }
+    },
+    {
+      "id": "guj-dictionary", "version": "1.0.0", "language": "guj", "convention": "gujarati",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; old converter eligibility does not determine dictionary eligibility. Missing/unknown segments and regional variation remain explicit." }
+    },
+    {
+      "id": "hin-dictionary", "version": "1.0.0", "language": "hin", "convention": "hindi",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; do not merge Hindustani/Urdu or transliterate joins automatically. Preserve alternatives and derivation uncertainty." }
+    },
+    {
+      "id": "mar-dictionary", "version": "1.0.0", "language": "mar", "convention": "marathi",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first, independently of the old converter panel; no unvalidated gap filling." }
+    },
+    {
+      "id": "pan-dictionary", "version": "1.0.0", "language": "pan", "convention": "punjabi",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; retain source dialect/script labels and unsupported tonal/segmental marks as diagnostics rather than discarding them." }
+    },
+    {
+      "id": "rom-dictionary", "version": "1.0.0", "language": "rom", "convention": "romani-unspecified-dialect-audit-only",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Unspecified Romani dialect remains audit-only/exploratory. No pooling into a confirmatory dialect or reuse of restricted RomLex data as open dictionary evidence." }
+    },
+    {
+      "id": "san-dictionary", "version": "1.0.0", "language": "san", "convention": "sanskrit",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary IPA first; CDSL remains a lexical join target, not an independent pronunciation reference. Script-mismatched joins stay unmatched rather than guessed." }
+    },
+    {
+      "id": "fas-dictionary", "version": "1.0.0", "language": "fas", "convention": "modern-persian",
+      "required_labels": [], "rejected_labels": ["Dari", "Classical", "Classical-Persian"], "fallback": "none",
+      "rules": { "selection": "Dictionary-first modern Persian bridge; reject Classical/Dari labels and unverified IPA Dictionary entry kinds. No alphabetic/lexical fallback silently supplies vowels." }
+    },
+    {
+      "id": "pus-dictionary", "version": "1.0.0", "language": "pus", "convention": "pashto",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Dictionary-first Iranian bridge inventory; preserve regional alternatives and unknown derivation. No assumed modern converter validation." }
+    },
+    {
+      "id": "tur-dictionary", "version": "1.0.0", "language": "tur", "convention": "turkish",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Use dictionary IPA before any Epitran fallback; Zemberek stems are join targets only. Old held-out review status is not transferred." }
+    },
+    {
+      "id": "hun-dictionary", "version": "1.0.0", "language": "hun", "convention": "hungarian",
+      "required_labels": [], "rejected_labels": [], "fallback": "none",
+      "rules": { "selection": "Use dictionary IPA before any Epitran fallback; Magyar Ispell entries are join targets only. Old converter failures do not exclude dictionary data." }
+    }
+  ]
+}

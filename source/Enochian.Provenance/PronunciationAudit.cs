@@ -22,7 +22,56 @@ public sealed class PronunciationAudit(string repositoryRoot)
     public async Task RunAsync(string planPath, bool acquire, CancellationToken cancellationToken = default)
     {
         var plan = LoadPlan(planPath);
-        var sources = LoadSources(plan);
+        await RunAsync(planPath, plan, acquire, null, cancellationToken);
+    }
+
+    public async Task RunPanelAsync(string panelPath, bool acquire, CancellationToken cancellationToken = default)
+    {
+        var panel = PronunciationPanel.Load(panelPath, repositoryRoot);
+        var protocolPath = Resolve(panel.DictionaryProtocol);
+        if (HashConfiguration(protocolPath) != panel.DictionaryProtocolSha256)
+        {
+            throw new InvalidDataException($"{protocolPath}: frozen dictionary protocol hash mismatch.");
+        }
+
+        var baseline = LoadPlan(protocolPath);
+        var profiles = panel.Profiles.ToDictionary(profile => profile.Language, StringComparer.Ordinal);
+        if (!baseline.Languages.Select(language => language.Language).ToHashSet(StringComparer.Ordinal)
+            .SetEquals(profiles.Keys))
+        {
+            throw new InvalidDataException("The panel must explicitly revisit every dictionary-audit language.");
+        }
+
+        var plan = baseline with
+        {
+            PolicyId = panel.PolicyId,
+            OutputDirectory = panel.OutputDirectory,
+            ReportDirectory = panel.ReportDirectory,
+            SourceManifests = [.. baseline.SourceManifests.Concat(panel.FallbackSourceManifests)],
+            Languages = [.. baseline.Languages.Select(language => language with
+            {
+                Convention = profiles[language.Language].Convention,
+                RequiredLabels = profiles[language.Language].RequiredLabels,
+                RejectedLabels = profiles[language.Language].RejectedLabels,
+            })],
+        };
+        if (Resolve(plan.OutputDirectory) == Resolve(baseline.OutputDirectory) ||
+            Resolve(plan.ReportDirectory) == Resolve(baseline.ReportDirectory))
+        {
+            throw new InvalidDataException("Profile outputs and reports must not overwrite the M2-07 audit.");
+        }
+
+        await RunAsync(panelPath, plan, acquire, profiles, cancellationToken);
+    }
+
+    private async Task RunAsync(
+        string planPath,
+        PronunciationPlan plan,
+        bool acquire,
+        IReadOnlyDictionary<string, PronunciationProfile>? profiles,
+        CancellationToken cancellationToken)
+    {
+        var sources = LoadSnapshots(plan.SourceManifests);
         if (acquire)
         {
             using var client = new HttpClient { Timeout = TimeSpan.FromHours(2) };
@@ -43,8 +92,8 @@ public sealed class PronunciationAudit(string repositoryRoot)
         _ = Directory.CreateDirectory(work);
         try
         {
-            SpoolSources(plan, sources, work, cancellationToken);
-            WriteOutputs(planPath, plan, sources, work, output);
+            SpoolSources(plan, sources, work, profiles, cancellationToken);
+            WriteOutputs(planPath, plan, sources, work, output, profiles);
         }
         finally
         {
@@ -56,6 +105,7 @@ public sealed class PronunciationAudit(string repositoryRoot)
         PronunciationPlan plan,
         IEnumerable<PronunciationSnapshot> sources,
         string work,
+        IReadOnlyDictionary<string, PronunciationProfile>? profiles,
         CancellationToken cancellationToken)
     {
         var writers = new Dictionary<string, StreamWriter>(StringComparer.Ordinal);
@@ -97,6 +147,15 @@ public sealed class PronunciationAudit(string repositoryRoot)
                                 "unverified_entry_kind", [reading]), JsonOptions));
                     }
                 }
+                else if (source.Parser == "classical-arabic-lexemes" &&
+                    profiles?.GetValueOrDefault("ara")?.Fallback == "classical-arabic-vocalized-v1")
+                {
+                    foreach (var lexeme in ClassicalArabicConverter.ReadLexemes(reader, source))
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        writers["ara"].WriteLine(JsonSerializer.Serialize(lexeme, JsonOptions));
+                    }
+                }
                 else
                 {
                     throw new InvalidDataException($"Unsupported pronunciation parser: {source.Parser}.");
@@ -117,14 +176,16 @@ public sealed class PronunciationAudit(string repositoryRoot)
         PronunciationPlan plan,
         PronunciationSnapshot[] sources,
         string work,
-        string output)
+        string output,
+        IReadOnlyDictionary<string, PronunciationProfile>? profiles)
     {
         var encoder = CreateEncoder();
         var coverage = new List<PronunciationCoverage>();
         var artifacts = new List<string>();
         foreach (var language in plan.Languages.OrderBy(language => language.Language, StringComparer.Ordinal))
         {
-            var builder = new PronunciationCoverageBuilder(language, plan.Policy, encoder);
+            var profile = profiles?.GetValueOrDefault(language.Language);
+            var builder = new PronunciationCoverageBuilder(language, plan.Policy, encoder, profile);
             using (var reader = new StreamReader(
                 Path.Combine(work, language.Language + ".jsonl"), new UTF8Encoding(false, true)))
             {
@@ -139,11 +200,35 @@ public sealed class PronunciationAudit(string repositoryRoot)
             var references = language.ReferencePath == null ? []
                 : ReadReferences(Resolve(language.ReferencePath));
             var (report, evidence, entries, joins) = builder.Build(lexicon, references);
-            var prefix = Path.Combine(output, language.Language);
+            var prefix = Path.Combine(output, profile?.ArtifactStem ?? language.Language);
             WriteLines(prefix + ".evidence.jsonl", evidence);
             WriteLines(prefix + ".jsonl", entries);
             WriteLines(prefix + ".joins.jsonl", joins);
             artifacts.AddRange([prefix + ".evidence.jsonl", prefix + ".jsonl", prefix + ".joins.jsonl"]);
+            if (profile != null)
+            {
+                var manifestPath = prefix + ".manifest.json";
+                WriteJson(manifestPath, new
+                {
+                    SchemaVersion = "1.0.0",
+                    Profile = profile,
+                    ProfileSha256 = profile.Fingerprint,
+                    PanelSha256 = HashConfiguration(planPath),
+                    SoftwareSha256 = Hash(typeof(PronunciationAudit).Assembly.Location),
+                    FeatureSha256 = Hash(Resolve("resources/encodings/features.json")),
+                    EncodingSha256 = Hash(Resolve("resources/encodings/ipa.json")),
+                    SourceManifests = plan.SourceManifests.Select(path => new { Path = path, Sha256 = Hash(Resolve(path)) }),
+                    Artifacts = new[] { prefix + ".jsonl", prefix + ".evidence.jsonl", prefix + ".joins.jsonl" }
+                        .Select(path => new
+                        {
+                            Path = Path.GetRelativePath(repositoryRoot, path).Replace('\\', '/'),
+                            Sha256 = Hash(path),
+                        }),
+                    Status = entries.Length == 0 ? "excluded_no_usable_readings" : "exploratory",
+                    report.Blockers,
+                });
+                artifacts.Add(manifestPath);
+            }
             coverage.Add(report);
             Console.WriteLine(FormattableString.Invariant(
                 $"{language.Language}: {report.UsableLemmas}/{report.EligibleLexicalUnits} usable source lexical units; {report.SupportedEvidenceLemmas} supported; exploratory."));
@@ -159,7 +244,7 @@ public sealed class PronunciationAudit(string repositoryRoot)
         {
             SchemaVersion = "1.0.0",
             plan.PolicyId,
-            PolicySha256 = Hash(planPath),
+            PolicySha256 = profiles == null ? Hash(planPath) : HashConfiguration(planPath),
             plan.Frozen,
             plan.DumpDate,
             plan.ExtractionDate,
@@ -195,7 +280,7 @@ public sealed class PronunciationAudit(string repositoryRoot)
             }),
             Languages = coverage,
         });
-        WriteText(Path.Combine(reports, "coverage.md"), RenderMatrix(plan, sources, coverage));
+        WriteText(Path.Combine(reports, "coverage.md"), RenderMatrix(plan, sources, coverage, profiles != null));
     }
 
     public static async Task AcquireAsync(
@@ -238,6 +323,12 @@ public sealed class PronunciationAudit(string repositoryRoot)
     {
         using var stream = File.OpenRead(path);
         return Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
+    }
+
+    public static string HashConfiguration(string path)
+    {
+        var text = File.ReadAllText(path, new UTF8Encoding(false, true)).Replace("\r\n", "\n", StringComparison.Ordinal);
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
     }
 
     public static void Verify(PronunciationSnapshot source)
@@ -301,9 +392,9 @@ public sealed class PronunciationAudit(string repositoryRoot)
         return plan;
     }
 
-    private PronunciationSnapshot[] LoadSources(PronunciationPlan plan)
+    public PronunciationSnapshot[] LoadSnapshots(IEnumerable<string> manifestPaths)
     {
-        var paths = plan.SourceManifests.Select(Resolve).ToArray();
+        var paths = manifestPaths.Select(Resolve).ToArray();
         var validator = new ManifestValidator(repositoryRoot, Resolve("resources/lexicons/schemas/source-manifest.schema.json"));
         var validation = validator.Validate(paths);
         if (!validation.IsValid)
@@ -405,7 +496,8 @@ public sealed class PronunciationAudit(string repositoryRoot)
     private static string RenderMatrix(
         PronunciationPlan plan,
         IEnumerable<PronunciationSnapshot> sources,
-        IEnumerable<PronunciationCoverage> coverage)
+        IEnumerable<PronunciationCoverage> coverage,
+        bool profiled)
     {
         var lines = new List<string>
         {
@@ -414,7 +506,9 @@ public sealed class PronunciationAudit(string repositoryRoot)
             $"Policy: `{plan.PolicyId}`; Wiktionary dump: {plan.DumpDate}; extraction: {plan.ExtractionDate}.",
             string.Empty,
             "Counts are source-specific lexical units, not independent language evidence. IPA coverage is not accuracy.",
-            "All profiles remain exploratory pending M2-08/M2-09. No human annotation or Voynich scoring was performed.",
+            profiled
+                ? "Profiles are frozen; retrieval/admission remains pending M2-09. Empty profiles are excluded from use. No human annotation or Voynich scoring was performed."
+                : "All profiles remain exploratory pending M2-08/M2-09. No human annotation or Voynich scoring was performed.",
             string.Empty,
             "| Language | Convention | Eligible units | With IPA | Convention matched | Usable | Supported evidence |",
             "| --- | --- | ---: | ---: | ---: | ---: | ---: |",

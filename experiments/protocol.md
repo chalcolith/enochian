@@ -23,6 +23,14 @@ The [M2-07 through M2-09 specifications](../docs/milestone-pr-specs.md#m2-07-acq
 require new evidence artifacts, profile implementations, executable validation,
 and a separately versioned/frozen protocol before M4-01 can run.
 
+M2-07 acquisition/evidence auditing and M2-08's
+[versioned pronunciation panel](../resources/lexicons/pronunciation-panel.v1.json)
+are implemented separately. The selected Greek stage is 4th-century CE Koine;
+Arabic retains explicit source citation vowels/endings without inferred ones.
+The [astronomical-name registration](astronomical-names.v1.json) remains outside
+the primary lemma analysis. These additions do not change the version 1
+experiment contract below; M2-09 admission/retrieval migration remains pending.
+
 Keep the original protocol and artifacts reproducible. Freeze revised sources,
 language eligibility, historical profiles, contrasts, and astronomical-name
 analysis before inspecting comparative output. Proper names remain excluded

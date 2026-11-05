@@ -7,8 +7,10 @@ namespace Enochian.Provenance;
 public sealed class PronunciationCoverageBuilder(
     PronunciationLanguage language,
     PronunciationPolicy policy,
-    IpaEncoder encoder)
+    IpaEncoder encoder,
+    PronunciationProfile? profile = null)
 {
+    private readonly string? profileFingerprint = profile?.Fingerprint;
     private readonly HashSet<string> eligible = new(StringComparer.Ordinal);
     private readonly List<PronunciationReading> readings = [];
     private readonly SortedDictionary<string, int> sourceExclusions = new(StringComparer.Ordinal);
@@ -50,6 +52,16 @@ public sealed class PronunciationCoverageBuilder(
                 .ThenBy(reading => reading.OriginalForm ?? reading.Lemma, StringComparer.Ordinal).First())
             .ToArray();
         var evidence = unique.Select(CreateEvidence).OrderBy(row => row.EntryId, StringComparer.Ordinal).ToArray();
+        if (profile != null)
+        {
+            var dictionaryKeys = evidence.Where(row => row.Origin != "converter-generated" && row.Exclusions.Length == 0)
+                .Select(row => row.Lemma + "\u001f" + row.PartOfSpeech).ToHashSet(StringComparer.Ordinal);
+            evidence = [.. evidence.Select(row =>
+                row.Origin == "converter-generated" && row.Exclusions.Length == 0 &&
+                dictionaryKeys.Contains(row.Lemma + "\u001f" + row.PartOfSpeech)
+                    ? row with { Exclusions = ["dictionary_preferred"], EvidenceStatus = "exploratory" } : row)];
+        }
+
         var usable = evidence.Where(row => row.Exclusions.Length == 0).ToArray();
         var alternatives = usable.GroupBy(row => row.Source + "\u001f" + row.LexicalIdentity, StringComparer.Ordinal)
             .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
@@ -73,6 +85,7 @@ public sealed class PronunciationCoverageBuilder(
             Form = row.Lemma,
             PartOfSpeech = row.PartOfSpeech,
             Ipa = row.NormalizedIpa,
+            Dialect = profile?.ArtifactStem,
             License = evidenceById[row.EntryId].License,
         }).ToArray();
         var joins = lexiconPath == null || !File.Exists(lexiconPath) ? [] : Join(lexiconPath, usable);
@@ -97,8 +110,15 @@ public sealed class PronunciationCoverageBuilder(
             blockers.Add("insufficient_supported_evidence");
         }
 
-        // M2-07 audits candidate data; M2-08/M2-09 must implement profiles and admission.
-        blockers.Add("profile_and_retrieval_admission_pending_m2_08_m2_09");
+        blockers.Add(profile == null
+            ? "profile_and_retrieval_admission_pending_m2_08_m2_09"
+            : "retrieval_and_admission_pending_m2_09");
+        if (profile != null)
+        {
+            blockers.Add(profile.Fallback == "none"
+                ? "dictionary_gaps_excluded_no_validated_fallback"
+                : "converter_candidates_not_independently_validated");
+        }
         var exclusions = new SortedDictionary<string, int>(sourceExclusions, StringComparer.Ordinal);
         foreach (var code in evidence.SelectMany(row => row.Exclusions))
         {
@@ -207,6 +227,11 @@ public sealed class PronunciationCoverageBuilder(
             exclusions.Add("convention_mismatch");
         }
 
+        if (profile?.Fallback == "none" && reading.Origin == "converter-generated")
+        {
+            exclusions.Add("profile_fallback_disabled");
+        }
+
         if (unknown.Count != 0)
         {
             exclusions.Add("unknown_ipa");
@@ -255,8 +280,9 @@ public sealed class PronunciationCoverageBuilder(
             reading.Origin, reading.Generator, string.Join('\u001e', reading.Dependencies.Order(StringComparer.Ordinal)),
             reading.EntryKind);
 
-    private static string CreateEntryId(PronunciationReading reading) =>
-        reading.Source + ":" + reading.Language + ":" + PronunciationPolicyEvaluator.StableId(ReadingKey(reading));
+    private string CreateEntryId(PronunciationReading reading) =>
+        reading.Source + ":" + reading.Language + ":" + PronunciationPolicyEvaluator.StableId(
+            profileFingerprint == null ? ReadingKey(reading) : profileFingerprint + "\u001f" + ReadingKey(reading));
 
     private static int LexicalCount(IEnumerable<PronunciationEvidence> rows) =>
         rows.Select(row => row.Source + "\u001f" + row.LexicalIdentity).Distinct(StringComparer.Ordinal).Count();
