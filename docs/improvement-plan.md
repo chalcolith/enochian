@@ -1,6 +1,23 @@
 # Lexical Expansion and Comparative Evaluation Plan
 
-Research checked 2026-08-05.
+Initial resource research checked 2026-08-05. Automation-first plan revised
+2026-11-05; new resource coverage and licensing remain to be measured.
+
+## Current direction and implementation status
+
+The project must be runnable by one researcher without recruiting annotators.
+Prefer existing online pronunciation dictionaries over generating pronunciation
+from spelling. Automate acquisition, normalization, evidence checks, retrieval
+benchmarks, exclusions, and reporting. Human pronunciation review and semantic
+annotation are not prerequisites.
+
+M0 through M3 implementation is merged, but the existing converters, review
+sheets, schemas, and frozen configurations implement the earlier plan. Complete
+M2-07 through M2-09 in the [PR specifications](milestone-pr-specs.md) before
+M4-01. This revision changes the research design, not the current executable
+behavior. Preserve old protocols and artifacts; version and freeze replacements
+before inspecting comparative Voynich results. Do not mark pending human review
+rows as accepted or reinterpret automated checks as human judgments.
 
 ## Goal
 
@@ -38,16 +55,45 @@ replication of a Sanskrit effect.
 
 | Language/family | Primary resource | Phonological route | Important caveat |
 | --- | --- | --- | --- |
-| Hebrew, Semitic | [ETCBC BHSA](https://github.com/ETCBC/bhsa) provides Biblical Hebrew lexemes, glosses, frequencies, vocalized forms, and a companion [`phono`](https://github.com/ETCBC/phono) dataset. [Open Scriptures Hebrew Lexicon](https://github.com/openscriptures/HebrewLexicon) is a simpler XML alternative containing BDB, Strong, and an index. | Prefer BHSA's vocalized/phonological representation. As a redistributable fallback, use the vocalized UniMorph Hebrew file and a documented niqqud-to-IPA converter. | BHSA data are CC BY-NC 4.0 and require attribution to DOI `10.17026/dans-z6y-skyh`; they must remain an optional research download rather than a dependency that silently imposes non-commercial terms. Open Scriptures is CC BY 4.0 but is a work in progress. This is Biblical, not Modern, Hebrew. |
-| Latin, Italic Indo-European | [PerseusDL Lexica](https://github.com/PerseusDL/lexica), especially Lewis and Short in TEI XML; UniMorph Latin supplies 509,182 forms and 17,214 paradigms. | Implement and test an explicit Classical Latin orthography-to-phoneme profile, or use a pinned CLTK phonology implementation after verifying its output. | Perseus repository content is generally CC BY-SA 4.0 but component-level notices must be checked. Do not mix Classical and ecclesiastical pronunciation in one run. |
-| Turkish, Turkic | [Zemberek-NLP](https://github.com/ahmetaa/zemberek-nlp) has a UTF-8 `master-dictionary.dict`, morphology, and frequency-oriented resources. UniMorph Turkish has 275,460 forms and 3,579 paradigms. | [Epitran](https://github.com/dmort27/epitran) supports `tur-Latn`; pin its version and retain the IPA it generates. | Zemberek is Apache 2.0 and in slow maintenance mode. Exclude proper names, abbreviations, and obsolete entries in the primary run. UniMorph nouns/adjectives are sourced from unverified Wiktionary data, so use Zemberek as the primary lexicon. |
-| Hungarian, Uralic | [Magyar Ispell](https://github.com/laszlonemeth/magyarispell) is an actively maintained spelling and morphological dictionary; UniMorph Hungarian documents 21,963 noun/adjective/verb lemmas and over one million inflected forms. | Epitran supports `hun-Latn`. Validate digraphs, long vowels, and geminates against a hand-reviewed sample. | Magyar Ispell is multi-licensed GPL/LGPL/MPL; select and record the applicable option before redistribution. UniMorph Hungarian is CC BY-SA 3.0 and derived from English Wiktionary. Use lemmas, not its million inflections, in the primary run. |
+| Biblical Hebrew, Semitic | Convention-labelled pronunciation dictionaries where available; [ETCBC BHSA](https://github.com/ETCBC/bhsa)/[`phono`](https://github.com/ETCBC/phono) and [Open Scriptures Hebrew Lexicon](https://github.com/openscriptures/HebrewLexicon) supply candidate lexical/vocalization data. | Use **Tiberian** pronunciation. Prefer explicitly Tiberian dictionary IPA; otherwise implement a pinned, documented Tiberian conversion from sufficiently vocalized forms and validate against independent references. | Neither niqqud nor a generic Hebrew IPA field establishes Tiberian pronunciation. Do not substitute Modern Israeli or Sephardi readings. BHSA remains optional, non-commercial, metadata-only, and never bundled by default; cite DOI `10.17026/dans-z6y-skyh`. |
+| Latin, Italic Indo-European | Pronunciation-labelled Wiktionary data via Kaikki/Wiktextract; [PerseusDL Lexica](https://github.com/PerseusDL/lexica) supplies Lewis and Short lemmas and definitions where needed. | Use **ecclesiastical Latin**, with an explicitly named Italianate convention. Prefer matching dictionary IPA and use a versioned converter only for gaps. | This is the selected research assumption, not a claim that all late-medieval Latin used one pronunciation. Reject Classical-only IPA from this profile; do not silently relabel the existing Classical converter. Check component-level Perseus licenses. |
+| Classical Arabic, Semitic | Audit Wiktionary/Kaikki pronunciation and vocalized lexical entries first; seek additional licensed pronunciation dictionaries if coverage is inadequate. | Use explicitly Classical Arabic readings or a pinned conversion from fully vocalized Classical forms, including a frozen case-ending, pause, and article-assimilation policy. | Modern Standard Arabic or dialect IPA is not automatically Classical Arabic. Do not guess missing short vowels. Include Arabic as a full lexical test language, with a separate astronomical-name analysis below. |
+| Ancient/Classical Greek, Hellenic Indo-European | Audit Ancient Greek Wiktionary/Kaikki entries with dated pronunciation labels; use licensed historical lexica to extend lexical metadata where useful. | Use **Koine pronunciation only** for this lexicon. Freeze one dated/regional Koine profile and source-label mapping before acquisition is finalized. | Koine changed over time. Do not pool Classical Attic, different Koine stages, Byzantine, or Modern Greek IPA. A Classical Attic pronunciation arm is not requested. |
+| Turkish, Turkic | Prefer dictionary IPA matched to [Zemberek-NLP](https://github.com/ahmetaa/zemberek-nlp) lexical stems, or a sufficiently covered pronunciation-bearing lemma dictionary. | Use dictionary pronunciations first; pinned Epitran `tur-Latn` is a gap-filling candidate, not an independent reference. | Zemberek is Apache 2.0. Exclude proper names, abbreviations, and obsolete entries in the primary run. Measure coverage and join ambiguity instead of assuming every lemma has pronunciation data. |
+| Hungarian, Uralic | Prefer dictionary IPA matched to [Magyar Ispell](https://github.com/laszlonemeth/magyarispell) or UniMorph lemmas, or a pronunciation-bearing lemma dictionary. | Use dictionary pronunciations first; pinned Epitran `hun-Latn` may fill validated gaps. | Record the selected Magyar Ispell license option. UniMorph Hungarian is CC BY-SA 3.0. Do not expand morphology to inflate coverage; test digraphs, long vowels, and geminates automatically. |
 
-These controls are intentionally diverse. Latin controls for a different
-Indo-European branch; Hebrew for Semitic; Turkish for Turkic; and Hungarian for
-Uralic. Add Persian or Pashto as an Indo-Iranian but non-Indo-Aryan bridge
-control in phase 2. This helps distinguish a specifically Indo-Aryan result from
-a broad Indo-European or areal result.
+These comparisons are intentionally diverse. Latin and Greek represent other
+Indo-European branches; Hebrew and Arabic represent Semitic; Turkish represents
+Turkic; and Hungarian represents Uralic. Arabic is also a separately reported
+historical candidate, not merely a pooled control. Retain Persian or Pashto as
+an Indo-Iranian but non-Indo-Aryan bridge. Freeze group membership and additional
+contrasts before evaluation, and include all confirmatory contrasts in the
+multiplicity policy. Do not count Hebrew/Arabic or Latin/Greek as independent
+family replications.
+
+### Pronunciation dictionaries first
+
+Start with [Kaikki raw Wiktextract downloads](https://kaikki.org/dictionary/rawdata.html),
+which expose Wiktionary pronunciation data in structured JSONL. Prefer the raw
+extraction over the deprecated postprocessed downloads. Pin the dump date,
+extraction/tool revision, raw checksum, and attribution/license terms. Entry
+counts do not establish IPA coverage; measure usable lemma coverage separately
+for every requested pronunciation convention.
+
+[IPA Dictionary](https://github.com/open-dict-data/ipa-dict) is another candidate,
+including Persian and Modern Standard Arabic. Its Arabic data are not evidence
+for Classical Arabic without additional provenance, and its manual/semi-automatic
+generation must be recorded. Audit each selected component's license and
+derivation rather than assuming independent hand-transcribed reference data.
+
+For every language, including Sanskrit and modern Indo-Aryan sources, prefer
+usable dictionary IPA, then sufficiently specified source phonology, then a
+versioned deterministic converter. Join by normalized lemma, lexical identity,
+and pronunciation convention, never by an attractive gloss or Voynich score.
+Keep homographs and pronunciation alternatives identifiable. Unsupported,
+ambiguous, or unvocalized entries are excluded and counted rather than guessed.
+Automated exclusions or exploratory status replace a requirement to find human
+annotators.
 
 ### Shared phonology tooling
 
@@ -95,6 +141,13 @@ source headword -> normalized orthography/transliteration -> IPA ->
 Enochian feature vectors
 ```
 
+Record pronunciation provenance in a versioned per-entry artifact joined by
+stable ID: source entry URL/ID, source snapshot, original IPA, normalized IPA,
+convention, lexical join decision, and whether the reading is dictionary-supplied,
+template-generated, or converter-generated. Preserve the generating module or
+provider revision when available; mark unknown derivation explicitly. Dictionary
+publication does not by itself establish independent pronunciation evidence.
+
 Never silently discard an unknown character. A record with incomplete
 conversion is excluded and counted. Pin CDSL and UniMorph commits, Epitran/CLTK
 versions, and every custom G2P profile in experiment metadata.
@@ -104,8 +157,9 @@ versions, and every custom G2P profile in experiment metadata.
 ### 1. Generalize lexical ingestion
 
 1. Add a generic normalized lexicon loader rather than one C# class per source.
-2. Write source adapters for CDSL, Zemberek, Magyar Ispell/UniMorph, Perseus,
-   and BHSA/Open Scriptures that produce the common artifact.
+2. Extend source adapters for CDSL, Zemberek, Magyar Ispell/UniMorph, Perseus,
+   and BHSA/Open Scriptures with pronunciation-dictionary ingestion and joins.
+   Add Classical Arabic and Ancient Greek/Koine adapters to the common artifact.
 3. Extend `LexiconEntry` with stable ID, language/source metadata, IPA, POS,
    frequency, and entry kind. Version the binary cache cookie when its serialized
    shape changes.
@@ -170,9 +224,34 @@ language profile:
    or lexical neighbors rather than identity.
 
 This extends the existing CMU demonstration and reveals whether one language's
-G2P or phoneme inventory makes it artificially easy or hard to match. Hand-check
-at least 100 G2P outputs per language, stratified by word length and unusual
-graphemes. Set an acceptable conversion-error threshold before the Voynich run.
+phoneme inventory makes it artificially easy or hard to match. It tests
+retrieval, not whether the input pronunciation is historically correct.
+
+Replace the 100-item human-review gate with machine-readable evidence:
+
+- Report total eligible lemmas, dictionary IPA coverage, convention-matched
+  coverage, joins, ambiguities, exclusions, unknown symbols, evidence origin,
+  and counts by phoneme-length band. Publish both numerator and denominator.
+- Direct dictionary IPA requires a traceable snapshot, compatible convention,
+  deterministic normalization, and zero unknown segments in admitted entries.
+  Template-generated or unknown-origin IPA remains labelled as such; it does not
+  acquire independent-reference status by being published in a dictionary.
+- Converter gap-filling requires at least 100 overlapping reference lemmas,
+  deterministically stratified by length and unusual graphemes, and at least
+  95% exact agreement after a frozen IPA normalization. Report phone edit
+  distance as a diagnostic. These are agreement statistics, not human accuracy.
+  Hold reference lemmas out of converter tuning and include disagreement counts.
+- References generated by the same converter, shared Wiktionary module, copied
+  dictionary, or common upstream source are not independent. If independence
+  is unknown, record it as unknown rather than counting a second website as
+  corroboration. Unvalidated generated readings remain exploratory.
+- M2-07 must measure coverage and freeze minimum eligible lexicon sizes,
+  reference evidence policy, join ambiguity policy, and length-band coverage
+  before any Voynich comparison. Missing data or failed gates produce explicit
+  exclusion/exploratory decisions, not a human-annotation task or relaxed cutoff.
+- Retain the frozen retrieval thresholds in every required length band and
+  degradation profile. M2-09 must implement/version the replacement evidence
+  gate; never manufacture accepted human-review sheets to satisfy old code.
 
 ### Stage B: construct comparable lexicons
 
@@ -236,14 +315,26 @@ Report at minimum:
   feature weights, and mapping variants;
 - Stage A retrieval accuracy and all data-quality exclusion counts.
 
-### Stage E: semantic follow-up
+### Stage E: optional automated contextual follow-up
 
-Only after phonological scoring is frozen, reveal definitions for the top
-matches. Have at least two annotators, blind to source language and score, label
-whether a gloss fits a predeclared manuscript context. Measure inter-annotator
-agreement and compare acceptance rates across languages. Treat this as secondary
-evidence: illustrated pages, broad dictionary senses, and post-hoc gloss choice
-create substantial researcher degrees of freedom.
+Human semantic annotation is removed from the required workflow. The primary
+result and holdout replication depend on phonological evidence only. A
+reproducible post-scoring appendix may join glosses and existing dictionary
+domain labels, but must not claim independently validated semantic fits.
+
+For the Arabic star-name motivation, predeclare a separate astronomical
+vocabulary/name set across comparison languages, including proper names only in
+that secondary analysis. Pin a licensed external catalog and deterministic
+selection/join rules before viewing matches. Do not select only attractive
+Arabic names or visually identified Voynich words. Freeze manuscript contexts
+from external metadata, or omit contextual scoring if suitable metadata do not
+exist. Keep names out of the primary lemma-only experiment. Control vocabulary
+size, compare languages and nulls, and report unmatched or ambiguous names.
+
+Do not substitute LLM-generated correctness labels for human ground truth.
+Any automated semantic scores require a separately frozen method and are
+exploratory, not an admission gate, mapping-selection tool, or prerequisite to
+the holdout. The appendix may be omitted entirely.
 
 ## Delivery sequence
 
@@ -274,13 +365,17 @@ zero or explicitly reviewed; duplicate handling is deterministic.
 
 ### Milestone 2: control panel
 
-- Add Latin, Turkish, Hungarian, and Biblical Hebrew lemma lexicons.
-- Implement/pin IPA conversion profiles and complete blinded G2P review.
+- Add ecclesiastical Latin, Turkish, Hungarian, Tiberian Biblical Hebrew,
+  Classical Arabic, and Ancient/Classical Greek with Koine pronunciation.
+- Prefer online dictionary pronunciation; implement/pin converters only for
+  gaps and complete automated evidence and coverage checks.
 - Add Persian or Pashto as the bridge control and selected modern Indo-Aryan
   UniMorph lemma sets as positive-family breadth.
 
-**Exit criterion:** every profile meets the predeclared G2P quality threshold and
-passes the Stage A retrieval benchmark at all reported length bands.
+**Exit criterion:** each admitted profile meets the newly frozen automated
+evidence/coverage policy and passes Stage A in all required length bands.
+Unavailable profiles are explicitly exploratory/excluded; no human labels are
+needed. Coverage limitations and source dependencies remain visible.
 
 ### Milestone 3: scored comparative runner
 
@@ -298,7 +393,8 @@ fixtures do not, and a repeated run is byte-identical apart from timestamps.
 - Run the frozen protocol on the evaluation set without inspecting definitions.
 - Publish complete configs, manifests, software commit, quality reports, tidy
   results, plots, and null/sensitivity analyses.
-- Run semantic annotation, then evaluate the untouched folio holdout once.
+- Evaluate the untouched folio holdout once without waiting for semantic
+  annotation. Optionally publish the automated contextual appendix.
 
 **Exit criterion:** another researcher can reproduce every reported number from
 the pinned sources, or can obtain the restricted BHSA input by following a
@@ -325,6 +421,13 @@ appears.
 - [UniMorph catalog and schema](https://unimorph.github.io/), including [Turkish](https://github.com/unimorph/tur), [Hungarian](https://github.com/unimorph/hun), and [Hebrew](https://github.com/unimorph/heb) source notes.
 - [ETCBC BHSA](https://github.com/ETCBC/bhsa) documentation, provenance, Text-Fabric access, and CC BY-NC terms.
 - [Open Scriptures Hebrew Lexicon](https://github.com/openscriptures/HebrewLexicon), XML contents and CC BY 4.0 terms.
+- [Kaikki raw Wiktextract data](https://kaikki.org/dictionary/rawdata.html),
+  downloadable pronunciation-bearing Wiktionary extractions; verify each
+  selected snapshot's license, coverage, and generating templates.
+- [IPA Dictionary](https://github.com/open-dict-data/ipa-dict), word-to-IPA
+  lists with mixed manual/semi-automatic derivation.
+- [Wiktionary Ancient Greek pronunciation periods](https://en.wiktionary.org/wiki/Wiktionary:Ancient_Greek_transliteration),
+  distinguishing Classical, Koine, medieval, and modern conventions.
 - [PerseusDL Lexica](https://github.com/PerseusDL/lexica), TEI lexica and repository reuse notice.
 - [Zemberek-NLP](https://github.com/ahmetaa/zemberek-nlp), Turkish morphology dictionaries and Apache 2.0 license.
 - [Magyar Ispell](https://github.com/laszlonemeth/magyarispell), Hungarian spelling/morphology sources and licenses.

@@ -1,5 +1,15 @@
 # Lexicon Provenance
 
+The [current research roadmap](../../docs/improvement-plan.md) prefers online
+pronunciation dictionaries and automated evidence checks without human
+annotation. The historical converters and review-sheet commands documented
+below still implement the earlier protocol. M2-07 through M2-09 in the
+[PR specifications](../../docs/milestone-pr-specs.md) must add dictionary
+acquisition/joins, ecclesiastical Latin and Tiberian Hebrew profiles, Classical
+Arabic, Ancient Greek with Koine pronunciation, and versioned automated gates.
+Do not treat existing Classical Latin or generic Hebrew output as those new
+profiles, or convert pending human reviews into automated acceptances.
+
 Every current or planned lexicon source has one `*.manifest.json` file in
 `manifests/`. The files conform to `schemas/source-manifest.schema.json` and are
 the sole input to `ATTRIBUTION.md`. Validation is offline and never downloads a
