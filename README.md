@@ -44,6 +44,20 @@ gates and a versioned protocol migration before the confirmatory run. Existing
 frozen configs and human-review validators still implement the earlier design;
 this roadmap revision does not bypass them.
 
+M2-07 adds an offline pronunciation-dictionary coverage/evidence audit, with
+explicit pinned acquisition and no human labels:
+
+```powershell
+cd source
+dotnet run --project Enochian.Provenance -- pronunciation-acquire
+```
+
+The first acquisition downloads approximately 3 GB of compressed raw Wiktionary
+data plus small comparison lists. Use `pronunciation-audit` instead to rebuild
+offline from retained snapshots. See the [audit guide](resources/lexicons/README.md#dictionary-pronunciation-audit-m2-07)
+for policy, outputs, and limitations. M2-07 reports candidates and exclusions;
+it does not implement M2-08 historical profiles or M2-09 admission gates.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

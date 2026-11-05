@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-reference-1.json",
+  "title": "Held-out converter reference comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["lemma_id", "generated_ipa", "reference_ipa", "reference_origin", "generator_dependencies", "reference_dependencies", "held_out", "independence_established"],
+  "properties": {
+    "lemma_id": { "type": "string", "minLength": 1 },
+    "generated_ipa": { "type": "string", "minLength": 1 },
+    "reference_ipa": { "type": "string", "minLength": 1 },
+    "reference_origin": { "enum": ["dictionary-supplied", "template-generated", "converter-generated", "unknown"] },
+    "generator_dependencies": { "$ref": "#/$defs/dependencies" },
+    "reference_dependencies": { "$ref": "#/$defs/dependencies" },
+    "held_out": { "type": "boolean" },
+    "independence_established": { "type": "boolean" }
+  },
+  "$defs": {
+    "dependencies": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

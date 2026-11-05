@@ -10,6 +10,111 @@ Arabic, Ancient Greek with Koine pronunciation, and versioned automated gates.
 Do not treat existing Classical Latin or generic Hebrew output as those new
 profiles, or convert pending human reviews into automated acceptances.
 
+## Dictionary pronunciation audit (M2-07)
+
+Run from `source/`:
+
+```powershell
+# Explicit network acquisition followed by the offline audit:
+dotnet run --project Enochian.Provenance -- pronunciation-acquire
+
+# Recompute only from retained, checksum-verified local snapshots:
+dotnet run --project Enochian.Provenance -- pronunciation-audit
+```
+
+Both commands accept an optional protocol path. Paths inside the protocol are
+repository-relative, not relative to the shell or protocol file. The versioned
+policy is [pronunciation-audit.protocol.json](pronunciation-audit.protocol.json).
+No network calls occur during `pronunciation-audit`, lexicon loading, or tests.
+
+The pinned raw English Wiktionary extraction is approximately 3 GB compressed.
+Its mutable Kaikki URL is protected by SHA-256 verification; an upstream update
+fails acquisition rather than changing the experiment. Retain the original
+compressed bytes under `.enoch/pronunciation/raw/` for reproduction when the
+upstream no longer serves that snapshot. Two smaller pinned IPA Dictionary
+Arabic/Persian sources are also audited. Their plain wordlists do not identify
+lemmas versus inflections, so they cannot silently become primary lemma data.
+Arabic is explicitly Modern Standard Arabic, not Classical Arabic.
+
+The audit streams the compressed extraction once, spools compact per-language
+records, then processes one language at a time. It does not expand the full
+25 GB dump to disk. Temporary spool directories are removed on normal success
+or failure. Large raw and derived data remain gitignored.
+
+Outputs:
+
+- `reports/pronunciation-dictionaries/coverage.md`: all-language coverage matrix.
+- `reports/pronunciation-dictionaries/coverage.json`: schema-validated report
+  contract with source/input/software/feature hashes, output checksums and byte
+  counts, label inventories, exclusions, source overlap, join statuses, and
+  converter-reference diagnostics.
+- `.enoch/pronunciation/generated/<language>.jsonl`: convention-, length-, and
+  symbol-compatible candidate readings using the existing normalized-entry
+  contract. These are exploratory candidates, not confirmatory admissions.
+- `.enoch/pronunciation/generated/<language>.evidence.jsonl`: versioned ID-joined
+  provenance, original/normalized IPA, convention labels, origin, dependencies,
+  alternatives, unknown symbols, exclusions, and evidence status for all
+  extracted readings, including rejected ones.
+- `.enoch/pronunciation/generated/<language>.joins.jsonl`: stable target-entry
+  joins with `matched`, `ambiguous`, or `unmatched` status.
+
+The audit covers Sanskrit, Romani, Hindi, Bengali, Gujarati, Assamese, Marathi,
+Punjabi, Bhojpuri, Persian, Pashto, Latin, Biblical Hebrew, Arabic, Ancient Greek,
+Turkish, and Hungarian. A zero is a measured absence under the configured
+dictionary code/convention, not proof that no dictionary exists anywhere.
+Greek inventories the source's labelled Koine stages separately in evidence;
+M2-08 must choose one dated/regional profile, not pool them into an experiment.
+
+### Frozen audit rules and interpretation
+
+- The minimum candidate floor is 100 source-specific lexical units, with at
+  least 25 in each existing `03-05`, `06-09`, and `10-20` benchmark band. These
+  floors reuse the original 100-item language threshold and 25-item benchmark
+  stratum size; they are not a power calculation or a replacement for M2-09's
+  balanced experiment-size decision. The policy is fixed before Voynich
+  comparison, not tuned to make a source pass.
+- Only traceable `dictionary-supplied` origin can receive supported evidence
+  status under this policy. Template-generated, converter-generated, and unknown
+  origins stay explicit and exploratory. Wiktextract often does not expose
+  per-reading derivation; absence of template metadata means unknown, not
+  hand-transcribed. A second website or copied dictionary is not independent
+  corroboration.
+- Converter gap-filling needs at least 100 unique, held-out independent reference
+  lemmas, at least 25 per required band, and at least 95% normalized exact
+  agreement. Optional `reference_path` JSONL follows the reference schema.
+  Selection is deterministic by band, unusual IPA content, and stable lemma
+  hash. Shared upstream dependencies, unknown independence, tuning examples,
+  duplicate IDs, unsupported IPA, and unvalidated reference origins cannot
+  satisfy the gate. Phone-vector Levenshtein distance is a separate diagnostic.
+  Agreement is not human accuracy.
+- IPA normalization uses NFC, removes paired outer `/.../` or `[...]`, stress
+  marks, and syllable dots. It does not guess vowels, remove unknown diacritics,
+  or add features. Every admitted candidate must encode without unknown
+  segments using the unchanged IPA feature set. Rejections are retained.
+- Each source lexical identity counts once regardless of pronunciation count.
+  Compatible alternatives have equal weights summing to one per lexical unit;
+  band counts use its ordinally first normalized reading. Future consumers must
+  honor the sidecar weighting rather than treating alternatives as independent
+  lexical evidence. `source_overlap` counts cross-source lemma/IPA coincidences,
+  including rejected readings, without asserting source independence.
+- Joins use NFC lemma, exact POS when available, and a unique dictionary lexical
+  identity, never definitions or Voynich scores. Homographs remain distinct.
+  No accent stripping, transliteration, or cross-script inference is performed;
+  for example, CDSL SLP1 and Wiktionary Devanagari will remain unmatched until a
+  versioned join profile is implemented. Multiple target homographs or
+  dictionary identities are ambiguous and cannot silently choose a reading.
+- `source_*` exclusions count source records; other exclusion counters count
+  distinct pronunciation readings. Coverage denominators are eligible
+  source-specific lexical identities, not senses, raw inflected-form totals, or
+  sums of alternatives. Missing optional target lexica are explicitly reported;
+  missing configured reference files or invalid pinned inputs fail the command.
+
+All M2-07 language statuses remain exploratory. Source coverage does not prove
+historical pronunciation accuracy, and self-retrieval does not validate G2P.
+M2-08 must implement historical profiles and resolve source limitations; M2-09
+must wire evidence and retrieval into confirmatory admission. Existing human
+review protocols and outputs remain unchanged. No human annotation is required.
+
 Every current or planned lexicon source has one `*.manifest.json` file in
 `manifests/`. The files conform to `schemas/source-manifest.schema.json` and are
 the sole input to `ATTRIBUTION.md`. Validation is offline and never downloads a

@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "kaikki-raw",
+  "status": "acquired",
+  "owner": "Wiktionary contributors; Kaikki/Wiktextract extraction by Tatu Ylonen and contributors",
+  "language": "mul",
+  "family": "multiple",
+  "url": "https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz",
+  "revision": { "kind": "release", "value": "enwiktionary-20261001-extracted-20261030" },
+  "retrieval_date": "2026-11-05",
+  "sha256": "5ff2c072f8099f2d2ce484bd6957bf179f046d2ad37bc36555edf8bb84cb5291",
+  "license": "CC-BY-SA-4.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "Wiktionary contributors, English Wiktionary dump 2026-10-01; Kaikki raw Wiktextract extraction dated 2026-10-30. Tatu Ylonen, Wiktextract: Wiktionary as Machine-Readable Structured Data, LREC 2022, pp. 1317-1325. Text reused under CC BY-SA 4.0 (Wiktionary:Copyrights); source page links are retained per pronunciation. Media are not acquired. The download URL is mutable: retain the compressed snapshot and reject changed bytes.",
+  "parser": { "id": "wiktextract-raw", "version": "1.0.0" },
+  "raw_path": ".enoch/pronunciation/raw/enwiktionary-20261001.jsonl.gz",
+  "generated_artifact_path": "reports/pronunciation-dictionaries/coverage.json",
+  "filters": {
+    "include": ["languages in pronunciation-audit.protocol.json", "lemma-like entries and source pronunciation labels", "all pronunciation origins retained explicitly, including unknown"],
+    "exclude": ["deprecated postprocessed Kaikki downloads", "proper names, abbreviations, form-only entries, and unsupported IPA from candidate lemma outputs", "all media downloads"]
+  }
+}

@@ -1,7 +1,9 @@
 # Lexical Expansion and Comparative Evaluation Plan
 
 Initial resource research checked 2026-08-05. Automation-first plan revised
-2026-11-05; new resource coverage and licensing remain to be measured.
+2026-11-05. M2-07's [coverage matrix](../reports/pronunciation-dictionaries/coverage.md)
+records measured coverage and pinned snapshot licensing; unselected source
+candidates still require evaluation.
 
 ## Current direction and implementation status
 
@@ -18,6 +20,13 @@ M4-01. This revision changes the research design, not the current executable
 behavior. Preserve old protocols and artifacts; version and freeze replacements
 before inspecting comparative Voynich results. Do not mark pending human review
 rows as accepted or reinterpret automated checks as human judgments.
+
+The M2-07 audit covers 17 language profiles without human labels. It finds
+substantial ecclesiastical Latin and Koine-labelled Greek candidate coverage,
+but no explicitly Classical Arabic IPA under the frozen label rules. Tiberian
+Hebrew has limited long-word coverage. Per-reading derivation is unknown in the
+selected snapshots, so all profiles remain exploratory pending M2-08/M2-09;
+availability is not independent validation or confirmatory admission.
 
 ## Goal
 

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-evidence-1.json",
+  "title": "Dictionary pronunciation evidence sidecar row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entry_id", "source", "snapshot", "source_entry", "language", "lemma", "part_of_speech", "lexical_identity", "convention", "labels", "original_ipa", "normalized_ipa", "origin", "generator", "generator_revision", "dependencies", "independence", "normalization_policy", "alternative_policy", "alternative_count", "alternative_weight", "phoneme_length", "length_band", "unknown_segments", "exclusions", "evidence_status"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "entry_id": { "type": "string", "pattern": "^[a-z0-9-]+:[a-z]{3}:[a-f0-9]{64}$" },
+    "source": { "type": "string", "minLength": 1 },
+    "snapshot": { "type": "string", "minLength": 1 },
+    "source_entry": { "type": "string", "format": "uri" },
+    "language": { "type": "string", "pattern": "^[a-z]{3}$" },
+    "lemma": { "type": "string", "minLength": 1 },
+    "part_of_speech": { "type": "string", "minLength": 1 },
+    "lexical_identity": { "type": "string", "minLength": 1 },
+    "convention": { "type": "string", "minLength": 1 },
+    "labels": { "$ref": "#/$defs/strings" },
+    "original_ipa": { "type": "string", "minLength": 1 },
+    "normalized_ipa": { "type": "string" },
+    "origin": { "enum": ["dictionary-supplied", "template-generated", "converter-generated", "unknown"] },
+    "generator": { "type": ["string", "null"] },
+    "generator_revision": { "type": ["string", "null"] },
+    "dependencies": { "$ref": "#/$defs/strings" },
+    "independence": { "const": "unknown" },
+    "normalization_policy": { "const": "ipa-nfc-delimiters-stress-syllables-v1" },
+    "alternative_policy": { "const": "one-lexical-unit-equal-reading-weights-v1" },
+    "alternative_count": { "type": "integer", "minimum": 0 },
+    "alternative_weight": { "type": "number", "minimum": 0, "maximum": 1 },
+    "phoneme_length": { "type": "integer", "minimum": 0 },
+    "length_band": { "enum": ["03-05", "06-09", "10-20", "outside"] },
+    "unknown_segments": { "$ref": "#/$defs/strings" },
+    "exclusions": { "$ref": "#/$defs/strings" },
+    "evidence_status": { "enum": ["supported", "exploratory"] }
+  },
+  "$defs": {
+    "strings": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  }
+}

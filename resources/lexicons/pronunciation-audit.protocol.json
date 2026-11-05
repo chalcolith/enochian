@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "m2-07-dictionary-evidence-v1",
+  "frozen": true,
+  "dump_date": "2026-10-01",
+  "extraction_date": "2026-10-30",
+  "extractor_revision": "19f9a3006a405fb7bfb40193dca41c7117a009a5",
+  "processor_revision": "6f96ddf5f3466707f1869fe6618390fd77dfd109",
+  "source_manifests": [
+    "resources/lexicons/manifests/kaikki-raw.manifest.json",
+    "resources/lexicons/manifests/ipa-dict-ar.manifest.json",
+    "resources/lexicons/manifests/ipa-dict-fa.manifest.json"
+  ],
+  "output_directory": ".enoch/pronunciation/generated",
+  "report_directory": "reports/pronunciation-dictionaries",
+  "policy": {
+    "minimum_lemmas": 100,
+    "minimum_per_band": 25,
+    "minimum_references": 100,
+    "minimum_agreement": 0.95,
+    "minimum_phonemes": 3,
+    "maximum_phonemes": 20,
+    "required_bands": ["03-05", "06-09", "10-20"],
+    "admitted_origins": ["dictionary-supplied"]
+  },
+  "languages": [
+    { "language": "asm", "dictionary_code": "as", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "assamese", "required_labels": [], "rejected_labels": [] },
+    { "language": "ben", "dictionary_code": "bn", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "bengali", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/indo-iranian-generated/unimorph-ben.jsonl" },
+    { "language": "bho", "dictionary_code": "bho", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "bhojpuri", "required_labels": [], "rejected_labels": [] },
+    { "language": "guj", "dictionary_code": "gu", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "gujarati", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/indo-iranian-generated/unimorph-guj.jsonl" },
+    { "language": "hin", "dictionary_code": "hi", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "hindi", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/indo-iranian-generated/unimorph-hin.jsonl" },
+    { "language": "mar", "dictionary_code": "mr", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "marathi", "required_labels": [], "rejected_labels": [] },
+    { "language": "pan", "dictionary_code": "pa", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "punjabi", "required_labels": [], "rejected_labels": [] },
+    { "language": "rom", "dictionary_code": "rom", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "romani-unspecified-dialect-audit-only", "required_labels": [], "rejected_labels": [] },
+    { "language": "san", "dictionary_code": "sa", "family": "Indo-European/Indo-Iranian/Indo-Aryan", "convention": "sanskrit", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/cdsl-generated/cdsl-mw.jsonl" },
+    { "language": "fas", "dictionary_code": "fa", "family": "Indo-European/Indo-Iranian/Iranian", "convention": "modern-persian", "required_labels": [], "rejected_labels": ["Dari", "Classical", "Classical-Persian"], "lexicon_path": ".enoch/indo-iranian-generated/unimorph-fas.jsonl" },
+    { "language": "pus", "dictionary_code": "ps", "family": "Indo-European/Indo-Iranian/Iranian", "convention": "pashto", "required_labels": [], "rejected_labels": [] },
+    { "language": "lat", "dictionary_code": "la", "family": "Indo-European/Italic", "convention": "ecclesiastical-italianate", "required_labels": ["Ecclesiastical", "Ecclesiastical-Latin", "modern Italianate Ecclesiastical"], "rejected_labels": ["Classical-Latin"], "lexicon_path": ".enoch/perseus-generated/perseus-lewis-short.jsonl" },
+    { "language": "hbo", "dictionary_code": "he", "family": "Afro-Asiatic/Semitic", "convention": "tiberian", "required_labels": ["Tiberian", "Tiberian-Hebrew"], "rejected_labels": ["Modern", "Israeli", "Sephardi"], "lexicon_path": ".enoch/bhsa-generated/bhsa.jsonl" },
+    { "language": "ara", "dictionary_code": "ar", "family": "Afro-Asiatic/Semitic", "convention": "classical-arabic", "required_labels": ["Classical", "Classical-Arabic"], "rejected_labels": ["Modern-Standard-Arabic"] },
+    { "language": "grc", "dictionary_code": "grc", "family": "Indo-European/Hellenic", "convention": "koine-stage-inventory-audit-only", "required_labels": ["1ˢᵗ CE Egyptian", "4ᵗʰ CE Koine"], "rejected_labels": ["Classical", "Classical-Attic", "Modern"] },
+    { "language": "tur", "dictionary_code": "tr", "family": "Turkic", "convention": "turkish", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/controls-generated/zemberek.jsonl" },
+    { "language": "hun", "dictionary_code": "hu", "family": "Uralic", "convention": "hungarian", "required_labels": [], "rejected_labels": [], "lexicon_path": ".enoch/controls-generated/magyar-ispell.jsonl" }
+  ]
+}

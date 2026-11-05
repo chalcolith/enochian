@@ -7,6 +7,11 @@ M2-07 through M2-09. Counts and exclusions below remain observations about the
 old artifacts, not final admission decisions for the revised protocol. Existing
 runtime gates remain unchanged until that migration is implemented.
 
+The [M2-07 dictionary coverage matrix](../reports/pronunciation-dictionaries/coverage.md)
+now records additional Hindi, Bengali, Gujarati, and bridge-language
+pronunciations. These exploratory candidates do not retroactively change the
+converter counts below or establish independent pronunciation validation.
+
 This selection was frozen on 2026-08-18 before any Voynich comparison. A
 language needed a pinned UniMorph repository with at least 100 unique lemmas,
 verified redistribution terms, and a native-script dataset. Confirmatory
