@@ -5,7 +5,8 @@ This document records the 2026-08-18 converter-based baseline. The
 requirements and requires a new dictionary-pronunciation coverage audit in
 M2-07 through M2-09. Counts and exclusions below remain observations about the
 old artifacts, not final admission decisions for the revised protocol. Existing
-runtime gates remain unchanged until that migration is implemented.
+v1 runtime gates remain unchanged; the
+[implemented v2 amendment](../experiments/protocol-v2.md) uses automated gates.
 
 The [M2-07 dictionary coverage matrix](../reports/pronunciation-dictionaries/coverage.md)
 now records additional Hindi, Bengali, Gujarati, and bridge-language
@@ -15,8 +16,10 @@ converter counts below or establish independent pronunciation validation.
 M2-08's [versioned dictionary-first panel](../resources/lexicons/pronunciation-panel.v1.json)
 now revisits these languages without converter rescue. Its
 [coverage report](../reports/pronunciation-profiles/v1/coverage.md) supersedes
-neither the historical counts below nor the still-pending M2-09 admission
-migration; newly available dictionary evidence is reported separately.
+neither the historical counts below nor the
+[M2-09 admission decisions](../reports/automated-admission/v2/coverage.md);
+newly available dictionary evidence is reported separately. All required
+anchors remain blocked by unsupported reading origins, not human-review tasks.
 
 This selection was frozen on 2026-08-18 before any Voynich comparison. A
 language needed a pinned UniMorph repository with at least 100 unique lemmas,

@@ -4,6 +4,9 @@
 .enoch/
 reports/*.html
 experiments/synthetic-smoke/outputs/
+experiments/automated-smoke/outputs/
+experiments/automated-smoke/admission.json
+experiments/automated-smoke/admission.md
 
 # User-specific files
 *.suo

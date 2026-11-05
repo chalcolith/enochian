@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "profile": {
+    "id": "tar-synthetic",
+    "version": "1.0.0",
+    "language": "tar",
+    "convention": "artificial-test-only",
+    "required_labels": [
+      "Synthetic"
+    ],
+    "rejected_labels": [
+      "Wrong"
+    ],
+    "fallback": "none",
+    "rules": {
+      "scope": "Artificial executable fixture; never research evidence."
+    }
+  },
+  "profile_sha256": "39997219e47e7a3892bf1105fc405c79209ad45cad76a9e8725d22cd38ae64e5",
+  "panel_sha256": "ce37589232fa80a116771ba4d47c30dd5c2e63f723954d79f6dbdc7170eae44e",
+  "software_sha256": "d7be05a504abda4cfe1901cfe5739165dadce1ca3072867ee2ac799c655bd5c1",
+  "feature_sha256": "9bbdb0bb4af749e802613e9eeca692268191ec24b9100cb5142a02fde0c889f9",
+  "encoding_sha256": "77e89ca65b7eff673f219a233b82aeb2cd84b9842e06b4f6d71f8a4ed6a0fd2c",
+  "source_manifests": [
+    {
+      "path": "experiments/automated-smoke/tar-synthetic.source.json",
+      "sha256": "c84558041b865717a11cd59c8acd4b11c5a6334d899cf4c348af93717d4759c8"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/automated-smoke/tar-synthetic-v1.0.0.jsonl",
+      "sha256": "e564ea6e34f2e9620fe1da1a769b14714db42c653a0ce6f4b29bb008c3b099ce"
+    },
+    {
+      "path": "experiments/automated-smoke/tar-synthetic-v1.0.0.evidence.jsonl",
+      "sha256": "8bc601770e8a37d7c2cf52934f99078d5b33ccc5f52daa3a55aed9c6bf5eb1a6"
+    }
+  ],
+  "status": "synthetic",
+  "blockers": []
+}

@@ -1,0 +1,42 @@
+{
+  "id": "IPA",
+  "description": "Artificial integration-test encoding; not linguistic pronunciation data.",
+  "patterns": [
+    {
+      "input": "p",
+      "features": [
+        "\u002BLabial"
+      ]
+    },
+    {
+      "input": "t",
+      "features": [
+        "\u002BCoronal"
+      ]
+    },
+    {
+      "input": "s",
+      "features": [
+        "\u002BContinuant"
+      ]
+    },
+    {
+      "input": "k",
+      "features": [
+        "\u002BDorsal"
+      ]
+    },
+    {
+      "input": "m",
+      "features": [
+        "\u002BNasal"
+      ]
+    },
+    {
+      "input": "n",
+      "features": [
+        "\u002BLateral"
+      ]
+    }
+  ]
+}

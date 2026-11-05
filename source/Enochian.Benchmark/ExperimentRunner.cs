@@ -19,6 +19,11 @@ public sealed class ExperimentRunner(string repositoryRoot, FeatureSet features,
     public int Run(string protocolPath)
     {
         var resolvedProtocol = Path.GetFullPath(protocolPath);
+        if (AutomatedProtocol.IsRevised(resolvedProtocol))
+        {
+            return new AutomatedExperiment(repositoryRoot, features, encoding).Run(resolvedProtocol);
+        }
+
         var root = Path.GetDirectoryName(resolvedProtocol)!;
         var protocol = ExperimentRunProtocol.Load(resolvedProtocol);
         var paths = ResolvePaths(protocol, root);

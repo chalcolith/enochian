@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/profile-artifact-manifest-1.json",
+  "title": "M2-08 profile artifact provenance envelope",
+  "type": "object",
+  "required": ["schema_version", "profile", "profile_sha256", "panel_sha256", "software_sha256", "feature_sha256", "encoding_sha256", "source_manifests", "artifacts", "status", "blockers"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "profile": { "type": "object" },
+    "profile_sha256": { "$ref": "#/$defs/hash" },
+    "panel_sha256": { "$ref": "#/$defs/hash" },
+    "software_sha256": { "$ref": "#/$defs/hash" },
+    "feature_sha256": { "$ref": "#/$defs/hash" },
+    "encoding_sha256": { "$ref": "#/$defs/hash" },
+    "source_manifests": { "type": "array", "items": { "$ref": "#/$defs/artifact" } },
+    "artifacts": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/artifact" } },
+    "status": { "type": "string" },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "artifact": {
+      "type": "object", "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

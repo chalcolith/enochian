@@ -2,6 +2,18 @@ using Enochian.Flow;
 
 try
 {
+    if (args.Length == 2 && args[0] == "register-v2")
+    {
+        Enochian.Benchmark.AutomatedRegistration.Freeze(Path.GetFullPath(args[1]));
+        return 0;
+    }
+
+    if (args.Length == 3 && args[0] == "synthetic-v2")
+    {
+        _ = Enochian.Benchmark.AutomatedRegistration.CreateSynthetic(Path.GetFullPath(args[2]), args[1]);
+        return 0;
+    }
+
     if (args.Length is < 1 or > 3)
     {
         return ShowUsage();
@@ -12,6 +24,8 @@ try
         "sample" => "sample",
         "statistics" => "statistics",
         "experiment" => "experiment",
+        "admit" => "admit",
+        "preflight" => "preflight",
         _ => "benchmark",
     };
     var protocolIndex = mode == "benchmark" ? 0 : 1;
@@ -22,7 +36,10 @@ try
     }
 
     var repositoryRoot = args.Length > rootIndex ? Path.GetFullPath(args[rootIndex]) : FindRepositoryRoot();
-    var flow = new Flow(Path.Combine(repositoryRoot, "samples", "ipatransducer.json"));
+    var protocolPath = Path.GetFullPath(args[protocolIndex]);
+    var revised = Enochian.Benchmark.AutomatedProtocol.IsRevised(protocolPath);
+    var flow = revised ? Enochian.Benchmark.AutomatedExperiment.CreateFlow(protocolPath, repositoryRoot)
+        : new Flow(Path.Combine(repositoryRoot, "samples", "ipatransducer.json"));
     var errors = flow.Errors.Select(error => error.Message).ToArray();
     if (errors.Length != 0)
     {
@@ -31,7 +48,22 @@ try
 
     var features = flow.FeatureSets.Single(featureSet => featureSet.Id == "Default");
     var encoding = flow.Encodings.Single(candidate => candidate.Id == "IPA");
-    var protocolPath = Path.GetFullPath(args[protocolIndex]);
+    if (revised)
+    {
+        if (mode is "sample" or "statistics")
+        {
+            throw new InvalidDataException("V2 uses the combined experiment protocol; use admit, preflight or experiment.");
+        }
+
+        return new Enochian.Benchmark.AutomatedExperiment(repositoryRoot, features, encoding).Run(
+            protocolPath, mode == "benchmark" ? "admit" : mode);
+    }
+
+    if (mode is "admit" or "preflight")
+    {
+        throw new InvalidDataException("Automated admission/preflight requires a v2 protocol; v1 review rules are unchanged.");
+    }
+
     return mode switch
     {
         "sample" => new Enochian.Benchmark.SamplingRunner(repositoryRoot, features, encoding).Run(protocolPath),
@@ -52,6 +84,9 @@ static int ShowUsage()
     Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark statistics <statistics-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark experiment <run-protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark admit|preflight <automated-v2-protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark synthetic-v2 <fixture-directory> <repository-root>");
+    Console.Error.WriteLine("       Enochian.Benchmark register-v2 <repository-root>");
     return 1;
 }
 

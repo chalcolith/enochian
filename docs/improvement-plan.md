@@ -14,18 +14,18 @@ benchmarks, exclusions, and reporting. Human pronunciation review and semantic
 annotation are not prerequisites.
 
 M0 through M3 implementation is merged, but the existing converters, review
-sheets, schemas, and frozen configurations implement the earlier plan. Complete
-M2-07 through M2-09 in the [PR specifications](milestone-pr-specs.md) before
-M4-01. This revision changes the research design, not the current executable
-behavior. Preserve old protocols and artifacts; version and freeze replacements
-before inspecting comparative Voynich results. Do not mark pending human review
+sheets, schemas, and frozen v1 configurations implement the earlier plan.
+M2-07 through M2-09 now provide the separate dictionary-first
+[v2 execution path](../experiments/protocol-v2.md). M4-01 remains blocked by
+machine-checkable data gates. Preserve old protocols and artifacts; freeze
+replacements before inspecting comparative Voynich results. Do not mark pending human review
 rows as accepted or reinterpret automated checks as human judgments.
 
 The M2-07 audit covers 17 language profiles without human labels. It finds
 substantial ecclesiastical Latin and Koine-labelled Greek candidate coverage,
 but no explicitly Classical Arabic IPA under the frozen label rules. Tiberian
 Hebrew has limited long-word coverage. Per-reading derivation is unknown in the
-selected snapshots, so all profiles remain exploratory pending M2-08/M2-09;
+selected snapshots, so all nonempty profiles remain exploratory under v2;
 availability is not independent validation or confirmatory admission.
 
 M2-08 now [freezes and materializes](../resources/lexicons/README.md#dictionary-first-pronunciation-profiles-m2-08)
@@ -37,8 +37,15 @@ excluded without usable licensed Classical lexical evidence; no MSA is
 substituted. Unvalidated spelling fallbacks for other profiles are disabled.
 The [astronomical-name analysis](../experiments/astronomical-names.v1.json) is
 separately registered against pinned HYG 4.1 with identical cross-language
-linkage rules, not executed or mixed into primary lemmas. M2-09's revised
-admission/retrieval migration is still required before M4-01.
+linkage rules, not executed or mixed into primary lemmas. M2-09 freezes
+100-unit samples (34/33/33 length quotas), required Hindi/Sanskrit/Turkish/
+Hungarian anchors, unrelated-family controls, separate Latin/Greek, Iranian
+and Arabic contrasts, and a fixed eight-slot Holm correction family.
+Its [final admission table](../reports/automated-admission/v2/coverage.md)
+leaves every profile unadmitted; this is not a request for human labeling.
+Better independently traceable evidence and a pinned query/mapping amendment
+must pass preflight before M4-01. Astronomy remains a separate exploratory
+registration with at least 25 shared catalog objects per language pair.
 
 ## Goal
 
@@ -271,12 +278,14 @@ Replace the 100-item human-review gate with machine-readable evidence:
   before any Voynich comparison. Missing data or failed gates produce explicit
   exclusion/exploratory decisions, not a human-annotation task or relaxed cutoff.
 - Retain the frozen retrieval thresholds in every required length band and
-  degradation profile. M2-09 must implement/version the replacement evidence
+  degradation profile. M2-09 implements/versions the replacement evidence
   gate; never manufacture accepted human-review sheets to satisfy old code.
 
 ### Stage B: construct comparable lexicons
 
-Use unique lemmas as the primary unit. Apply the same POS and entry-kind policy
+Use lemma-level lexical identities as the primary unit, retaining homographs.
+V2 deduplicates complete weighted pronunciation distributions rather than
+choosing one favorable reading. Apply the same POS and entry-kind policy
 to every language, exclude entries outside a predeclared phoneme-length range,
 and deduplicate identical phoneme sequences within each language.
 

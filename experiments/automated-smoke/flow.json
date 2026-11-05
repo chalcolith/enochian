@@ -1,0 +1,15 @@
+{
+  "id": "Synthetic v2 fixture",
+  "features": [
+    {
+      "path": "../../resources/encodings/features.json"
+    }
+  ],
+  "encodings": [
+    {
+      "features": "Default",
+      "path": "synthetic-ipa.json"
+    }
+  ],
+  "steps": []
+}

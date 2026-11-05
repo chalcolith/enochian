@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "profile": {
+    "id": "ctl-synthetic",
+    "version": "1.0.0",
+    "language": "ctl",
+    "convention": "artificial-test-only",
+    "required_labels": [
+      "Synthetic"
+    ],
+    "rejected_labels": [
+      "Wrong"
+    ],
+    "fallback": "none",
+    "rules": {
+      "scope": "Artificial executable fixture; never research evidence."
+    }
+  },
+  "profile_sha256": "4153647106b02b5582b1078a00b1716434e0a678fb530687a6db56ad2bc67ee4",
+  "panel_sha256": "ce37589232fa80a116771ba4d47c30dd5c2e63f723954d79f6dbdc7170eae44e",
+  "software_sha256": "d7be05a504abda4cfe1901cfe5739165dadce1ca3072867ee2ac799c655bd5c1",
+  "feature_sha256": "9bbdb0bb4af749e802613e9eeca692268191ec24b9100cb5142a02fde0c889f9",
+  "encoding_sha256": "77e89ca65b7eff673f219a233b82aeb2cd84b9842e06b4f6d71f8a4ed6a0fd2c",
+  "source_manifests": [
+    {
+      "path": "experiments/automated-smoke/ctl-synthetic.source.json",
+      "sha256": "f9550bf04a6147388b89a6554ac00eb26a2d0b3396d919a0138b2fbbda163bd4"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "experiments/automated-smoke/ctl-synthetic-v1.0.0.jsonl",
+      "sha256": "6399afd5802bea2df4a6abaf5402c3ec0f6e8e81284d531cb101bbb0f1d647f4"
+    },
+    {
+      "path": "experiments/automated-smoke/ctl-synthetic-v1.0.0.evidence.jsonl",
+      "sha256": "62757182521cb03abc327c70f149c647409dc671371b86f278443461e3e09428"
+    }
+  ],
+  "status": "synthetic",
+  "blockers": []
+}

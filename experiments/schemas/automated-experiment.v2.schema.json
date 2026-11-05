@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/automated-experiment-2.json",
+  "title": "Dictionary-first automated experiment and admission v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "config_id", "phase", "frozen", "phonology", "panel", "retrieval_policy", "degradations", "sources", "groups", "contrasts", "length_quotas", "sampling_seed", "null_seed", "permutation_seed", "repetitions", "null_repetitions", "permutation_count", "bootstrap_count", "confidence_level", "alpha", "calibration_null", "evaluation_loci", "holdout_loci", "queries", "mapping", "astronomy", "output_directory", "admission_report"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "2.0.0" },
+    "config_id": { "type": "string", "minLength": 1 },
+    "phase": { "enum": ["confirmatory", "synthetic"] },
+    "frozen": { "const": true },
+    "phonology": {
+      "type": "object", "additionalProperties": false,
+      "required": ["flow", "features", "encoding"],
+      "properties": {
+        "flow": { "$ref": "#/$defs/pin" },
+        "features": { "$ref": "#/$defs/pin" },
+        "encoding": { "$ref": "#/$defs/pin" }
+      }
+    },
+    "panel": { "$ref": "#/$defs/pin" },
+    "retrieval_policy": { "$ref": "#/$defs/pin" },
+    "degradations": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/pin" } },
+    "sources": {
+      "type": "array", "minItems": 2,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["profile_id", "language", "family", "required", "confirmatory_eligible", "profile_manifest"],
+        "properties": {
+          "profile_id": { "type": "string", "minLength": 1 },
+          "language": { "type": "string", "pattern": "^[a-z]{3}$" },
+          "family": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "confirmatory_eligible": { "type": "boolean" },
+          "profile_manifest": { "$ref": "#/$defs/pin" },
+          "references": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] }
+        }
+      }
+    },
+    "groups": {
+      "type": "object", "minProperties": 2,
+      "additionalProperties": { "$ref": "#/$defs/strings" }
+    },
+    "contrasts": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "primary", "required", "target_groups", "control_groups"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "primary": { "type": "boolean" },
+          "required": { "type": "boolean" },
+          "target_groups": { "$ref": "#/$defs/strings" },
+          "control_groups": { "$ref": "#/$defs/strings" }
+        }
+      }
+    },
+    "length_quotas": { "const": { "03-05": 34, "06-09": 33, "10-20": 33 } },
+    "sampling_seed": { "type": "integer", "minimum": 0 },
+    "null_seed": { "type": "integer", "minimum": 0 },
+    "permutation_seed": { "type": "integer", "minimum": 0 },
+    "repetitions": { "type": "integer", "minimum": 2 },
+    "null_repetitions": { "type": "integer", "minimum": 3 },
+    "permutation_count": { "type": "integer", "minimum": 1 },
+    "bootstrap_count": { "type": "integer", "minimum": 2 },
+    "confidence_level": { "const": 0.95 },
+    "alpha": { "const": 0.05 },
+    "calibration_null": { "const": "biphone-pseudoword" },
+    "evaluation_loci": { "$ref": "#/$defs/strings" },
+    "holdout_loci": { "$ref": "#/$defs/strings" },
+    "queries": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+    "mapping": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+    "astronomy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["registration", "policy", "manifest", "status", "minimum_shared_objects", "balancing", "contexts", "nulls", "multiplicity"],
+      "properties": {
+        "registration": { "$ref": "#/$defs/pin" },
+        "policy": { "$ref": "#/$defs/pin" },
+        "manifest": { "$ref": "#/$defs/pin" },
+        "status": { "const": "exploratory_not_part_of_primary" },
+        "minimum_shared_objects": { "const": 25 },
+        "balancing": { "const": "paired-common-catalog-ids-equal-object-weights-stable-hash-selection" },
+        "contexts": { "const": "HYG-constellation-identifiers-only-no-inferred-manuscript-context" },
+        "nulls": { "const": ["catalog-label-permutation-within-language-and-length-band", "within-query-shuffle"] },
+        "multiplicity": { "const": "separate-holm-family-arabic-versus-each-other-panel-language-exploratory-only" }
+      }
+    },
+    "output_directory": { "$ref": "#/$defs/path" },
+    "admission_report": { "$ref": "#/$defs/path" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "phase": { "const": "confirmatory" } } },
+      "then": {
+        "properties": {
+          "phonology": {
+            "properties": {
+              "flow": { "properties": { "path": { "const": "samples/ipatransducer.json" } } },
+              "features": { "properties": { "path": { "const": "resources/encodings/features.json" } } },
+              "encoding": { "properties": { "path": { "const": "resources/encodings/ipa.json" } } }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "pin": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "strings": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  }
+}

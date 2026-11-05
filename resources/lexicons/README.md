@@ -5,8 +5,10 @@ pronunciation dictionaries and automated evidence checks without human
 annotation. The historical converters and review-sheet commands documented
 below still implement the earlier protocol. M2-07 implements dictionary
 acquisition/joins, and M2-08 adds the versioned dictionary-first profiles below.
-M2-09 in the [PR specifications](../../docs/milestone-pr-specs.md) must still
-implement the revised automated admission/retrieval gates.
+M2-09 implements the separate
+[v2 automated admission/retrieval path](../../experiments/protocol-v2.md).
+Its [final table](../../reports/automated-admission/v2/coverage.md) still blocks
+real confirmatory execution because all selected reading origins are unsupported.
 Do not treat existing Classical Latin or generic Hebrew output as those new
 profiles, or convert pending human reviews into automated acceptances.
 
@@ -140,7 +142,8 @@ Exploratory sample flows:
 [4th-century Koine](../../samples/koine-greek-panel.v1.json).
 The Arabic flow has no lexical candidates until a usable Classical source is
 configured. Empty coverage must never be treated as a comparative score.
-These ordinary matcher demos do not implement M2-09's evidence-aware consumers.
+These ordinary matcher demos do not implement M2-09's evidence-aware consumers;
+use the v2 `admit`, `preflight`, and `experiment` commands instead.
 
 ### Separate astronomical-name registration
 
@@ -270,8 +273,8 @@ inventory is not pooled into an experiment.
 
 All M2-07 language statuses remain exploratory. Source coverage does not prove
 historical pronunciation accuracy, and self-retrieval does not validate G2P.
-M2-08 must implement historical profiles and resolve source limitations; M2-09
-must wire evidence and retrieval into confirmatory admission. Existing human
+M2-08 implements historical profiles; M2-09 wires evidence and retrieval into
+confirmatory admission without resolving missing source evidence. Existing human
 review protocols and outputs remain unchanged. No human annotation is required.
 
 Every current or planned lexicon source has one `*.manifest.json` file in

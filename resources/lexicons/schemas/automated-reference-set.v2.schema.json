@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/automated-reference-set-2.json",
+  "title": "Profile-bound independently sourced automated reference set",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "profile_sha256", "generator_revision", "reference_sources", "records"],
+  "properties": {
+    "schema_version": { "const": "2.0.0" },
+    "profile_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generator_revision": { "type": "string", "minLength": 1 },
+    "reference_sources": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["manifest", "dependencies"],
+        "properties": {
+          "manifest": {
+            "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          },
+          "dependencies": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["lemma_id", "generated_ipa", "reference_ipa", "reference_origin", "generator_dependencies", "reference_dependencies", "held_out", "independence_established"],
+        "properties": {
+          "lemma_id": { "type": "string", "minLength": 1 },
+          "generated_ipa": { "type": "string", "minLength": 1 },
+          "reference_ipa": { "type": "string", "minLength": 1 },
+          "reference_origin": { "enum": ["dictionary-supplied", "converter-generated", "template-generated", "unknown"] },
+          "generator_dependencies": { "$ref": "#/$defs/dependencies" },
+          "reference_dependencies": { "$ref": "#/$defs/dependencies" },
+          "held_out": { "type": "boolean" },
+          "independence_established": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "dependencies": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
