@@ -9,6 +9,7 @@ try
         "validate" => ValidateManifests(repositoryRoot, args),
         "attribution" => GenerateAttribution(repositoryRoot, args),
         "ipa-audit" => AuditIpa(repositoryRoot, args),
+        "pronunciation-audit" or "pronunciation-acquire" => await AuditPronunciations(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -121,7 +122,23 @@ static int ShowUsage()
     Console.Error.WriteLine("  Enochian.Provenance attribution [manifest-directory] [output-file]");
     Console.Error.WriteLine(
         "  Enochian.Provenance ipa-audit <artifacts-jsonl> <profile-json> <review-jsonl> <summary-json> [sample-size]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-audit [protocol-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-acquire [protocol-json]");
     return 1;
+}
+
+static async Task<int> AuditPronunciations(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var plan = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-audit.protocol.json");
+    await new PronunciationAudit(repositoryRoot).RunAsync(plan, arguments[0] == "pronunciation-acquire");
+    Console.WriteLine("Pronunciation coverage audit completed. This does not grant confirmatory admission.");
+    return 0;
 }
 
 static string FindRepositoryRoot()

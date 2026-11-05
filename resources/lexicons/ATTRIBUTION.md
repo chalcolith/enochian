@@ -58,6 +58,30 @@ This report is generated solely from checked-in source manifests.
 - Distribution: vendored
 - Citation: CMU Pronouncing Dictionary, version 0.7b, Carnegie Mellon University.
 
+## ipa-dict-ar
+
+- Owner: open-dict-data/ipa-dict contributors
+- Upstream: <https://raw.githubusercontent.com/open-dict-data/ipa-dict/972cd67dd5f96bc5660e28070cde26e3928abcd7/data/ar.txt>
+- License: MIT (verified)
+- Distribution: download-on-demand
+- Citation: open-dict-data/ipa-dict, copyright 2016 dohliam, MIT license; ar.txt at commit 972cd67dd5f96bc5660e28070cde26e3928abcd7. README identifies Modern Standard Arabic and mixed manual/semi-automatic compilation, not a Classical Arabic reference. Preserve LICENSE when redistributing derived lists.
+
+## ipa-dict-fa
+
+- Owner: open-dict-data/ipa-dict contributors
+- Upstream: <https://raw.githubusercontent.com/open-dict-data/ipa-dict/972cd67dd5f96bc5660e28070cde26e3928abcd7/data/fa.txt>
+- License: MIT (verified)
+- Distribution: download-on-demand
+- Citation: open-dict-data/ipa-dict, copyright 2016 dohliam, MIT license; fa.txt at commit 972cd67dd5f96bc5660e28070cde26e3928abcd7. README describes mixed manual/semi-automatic compilation. Per-reading derivation and reference independence are unknown. Preserve LICENSE when redistributing derived lists.
+
+## kaikki-raw
+
+- Owner: Wiktionary contributors; Kaikki/Wiktextract extraction by Tatu Ylonen and contributors
+- Upstream: <https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz>
+- License: CC-BY-SA-4.0 (verified)
+- Distribution: download-on-demand
+- Citation: Wiktionary contributors, English Wiktionary dump 2026-10-01; Kaikki raw Wiktextract extraction dated 2026-10-30. Tatu Ylonen, Wiktextract: Wiktionary as Machine-Readable Structured Data, LREC 2022, pp. 1317-1325. Text reused under CC BY-SA 4.0 (Wiktionary:Copyrights); source page links are retained per pronunciation. Media are not acquired. The download URL is mutable: retain the compressed snapshot and reject changed bytes.
+
 ## magyar-ispell
 
 - Owner: Magyar Ispell contributors

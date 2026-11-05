@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-coverage-1.json",
+  "title": "Dictionary pronunciation coverage and evidence matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_id", "policy_sha256", "frozen", "dump_date", "extraction_date", "extractor_revision", "processor_revision", "software_sha256", "feature_sha256", "encoding_sha256", "policy", "inputs", "artifacts", "sources", "languages"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "policy_id": { "type": "string", "minLength": 1 },
+    "policy_sha256": { "$ref": "#/$defs/hash" },
+    "frozen": { "const": true },
+    "dump_date": { "type": "string", "format": "date" },
+    "extraction_date": { "type": "string", "format": "date" },
+    "extractor_revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "processor_revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "software_sha256": { "$ref": "#/$defs/hash" },
+    "feature_sha256": { "$ref": "#/$defs/hash" },
+    "encoding_sha256": { "$ref": "#/$defs/hash" },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_lemmas", "minimum_per_band", "minimum_references", "minimum_agreement", "minimum_phonemes", "maximum_phonemes", "required_bands", "admitted_origins"],
+      "properties": {
+        "minimum_lemmas": { "type": "integer", "minimum": 100 },
+        "minimum_per_band": { "type": "integer", "minimum": 25 },
+        "minimum_references": { "type": "integer", "minimum": 100 },
+        "minimum_agreement": { "type": "number", "minimum": 0.95, "maximum": 1 },
+        "minimum_phonemes": { "const": 3 },
+        "maximum_phonemes": { "const": 20 },
+        "required_bands": { "const": ["03-05", "06-09", "10-20"] },
+        "admitted_origins": { "const": ["dictionary-supplied"] }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["language", "lexicon_path", "lexicon_sha256", "reference_path", "reference_sha256"],
+        "properties": {
+          "language": { "type": "string" },
+          "lexicon_path": { "type": ["string", "null"] },
+          "lexicon_sha256": { "oneOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+          "reference_path": { "type": ["string", "null"] },
+          "reference_sha256": { "oneOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "bytes"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "$ref": "#/$defs/hash" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "url", "hash", "revision", "license", "citation"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "hash": { "$ref": "#/$defs/hash" },
+          "revision": { "type": "string" },
+          "license": { "type": "string" },
+          "citation": { "type": "string" }
+        }
+      }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["language", "convention", "source_records", "eligible_lexical_units", "lemmas_with_ipa", "convention_matched_lemmas", "usable_lemmas", "supported_evidence_lemmas", "duplicate_readings", "length_bands", "origins", "labels", "exclusions", "unknown_segments", "source_overlap", "lexicon_status", "target_lemmas", "joins", "converter_agreement", "blockers", "status"],
+        "properties": {
+          "language": { "type": "string", "pattern": "^[a-z]{3}$" },
+          "convention": { "type": "string", "minLength": 1 },
+          "source_records": { "$ref": "#/$defs/count" },
+          "eligible_lexical_units": { "$ref": "#/$defs/count" },
+          "lemmas_with_ipa": { "$ref": "#/$defs/count" },
+          "convention_matched_lemmas": { "$ref": "#/$defs/count" },
+          "usable_lemmas": { "$ref": "#/$defs/count" },
+          "supported_evidence_lemmas": { "$ref": "#/$defs/count" },
+          "duplicate_readings": { "$ref": "#/$defs/count" },
+          "length_bands": { "$ref": "#/$defs/counts" },
+          "origins": { "$ref": "#/$defs/counts" },
+          "labels": { "$ref": "#/$defs/counts" },
+          "exclusions": { "$ref": "#/$defs/counts" },
+          "unknown_segments": { "$ref": "#/$defs/counts" },
+          "source_overlap": { "$ref": "#/$defs/counts" },
+          "lexicon_status": { "enum": ["available", "missing", "not_configured"] },
+          "target_lemmas": { "$ref": "#/$defs/count" },
+          "joins": { "$ref": "#/$defs/counts" },
+          "converter_agreement": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "supplied_references", "independent_references", "sampled_references", "exact_agreement", "mean_phone_edit_distance", "sampled_bands", "diagnostics"],
+            "properties": {
+              "status": { "enum": ["pass", "exploratory"] },
+              "supplied_references": { "$ref": "#/$defs/count" },
+              "independent_references": { "$ref": "#/$defs/count" },
+              "sampled_references": { "$ref": "#/$defs/count" },
+              "exact_agreement": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "mean_phone_edit_distance": { "type": ["number", "null"], "minimum": 0 },
+              "sampled_bands": { "$ref": "#/$defs/counts" },
+              "diagnostics": { "$ref": "#/$defs/counts" }
+            }
+          },
+          "blockers": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "status": { "const": "exploratory" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "count": { "type": "integer", "minimum": 0 },
+    "counts": { "type": "object", "additionalProperties": { "$ref": "#/$defs/count" } }
+  }
+}

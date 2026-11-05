@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "ipa-dict-fa",
+  "status": "acquired",
+  "owner": "open-dict-data/ipa-dict contributors",
+  "language": "fas",
+  "family": "Indo-European/Indo-Iranian/Iranian",
+  "url": "https://raw.githubusercontent.com/open-dict-data/ipa-dict/972cd67dd5f96bc5660e28070cde26e3928abcd7/data/fa.txt",
+  "revision": { "kind": "commit", "value": "972cd67dd5f96bc5660e28070cde26e3928abcd7" },
+  "retrieval_date": "2026-11-05",
+  "sha256": "bbe97b7b356e47c34db189577dd0a36023a870ac3912eb35be8a4775e1be4a84",
+  "license": "MIT",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "open-dict-data/ipa-dict, copyright 2016 dohliam, MIT license; fa.txt at commit 972cd67dd5f96bc5660e28070cde26e3928abcd7. README describes mixed manual/semi-automatic compilation. Per-reading derivation and reference independence are unknown. Preserve LICENSE when redistributing derived lists.",
+  "parser": { "id": "ipa-dict-tsv", "version": "1.0.0" },
+  "raw_path": ".enoch/pronunciation/raw/ipa-dict-fa.txt",
+  "generated_artifact_path": ".enoch/pronunciation/generated/fas.evidence.jsonl",
+  "filters": {
+    "include": ["audit all word/IPA pairs and pronunciation alternatives"],
+    "exclude": ["claims of independent reference origin", "unsupported or ambiguous readings from usable candidates"]
+  }
+}
