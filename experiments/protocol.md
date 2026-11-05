@@ -6,6 +6,30 @@ before language-comparison output is produced. The checked-in examples contain
 configuration and synthetic provenance only; they contain no comparison
 results.
 
+## Planned amendment: dictionary-first automation (2026-11-05)
+
+The [current roadmap](../docs/improvement-plan.md) removes human pronunciation
+review and semantic annotation as execution prerequisites. It prefers online
+pronunciation dictionaries, specifies ecclesiastical Latin and Tiberian Biblical
+Hebrew, and adds Classical Arabic plus an Ancient/Classical Greek lexicon with
+Koine pronunciation only. Coverage, provenance, reference independence,
+automated agreement where needed, and retrieval will determine admission.
+
+This is a planned protocol amendment, not a change to the version 1 runtime
+contract documented below. Existing frozen JSON configurations, schemas,
+Classical Latin output, and human-review validators are unchanged. Do not
+relabel old pronunciations or create accepted review rows from automated checks.
+The [M2-07 through M2-09 specifications](../docs/milestone-pr-specs.md#m2-07-acquire-pronunciation-dictionaries-and-freeze-automated-evidence-policy)
+require new evidence artifacts, profile implementations, executable validation,
+and a separately versioned/frozen protocol before M4-01 can run.
+
+Keep the original protocol and artifacts reproducible. Freeze revised sources,
+language eligibility, historical profiles, contrasts, and astronomical-name
+analysis before inspecting comparative output. Proper names remain excluded
+from the primary lemma-only experiment. Human semantic annotation is no longer
+a prerequisite to the holdout; an optional automated contextual appendix cannot
+serve as independent semantic ground truth.
+
 ## Versioning
 
 Every instance has a `schema_version` in semantic-version form. Version 1

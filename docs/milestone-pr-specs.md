@@ -8,6 +8,30 @@ are ordered by dependency, but PRs that share only a completed prerequisite may
 be developed in parallel. A PR must not include the work assigned to a later PR
 merely because the adjacent code is convenient to change.
 
+## Automation-first revision (2026-11-05)
+
+The current roadmap requires no human pronunciation labeling or semantic
+annotation. Prefer online pronunciation dictionaries and use automated,
+provenance-aware evidence and retrieval gates. The language assumptions are
+ecclesiastical Latin, Tiberian Biblical Hebrew, Classical Arabic, and an
+Ancient/Classical Greek lexicon with Koine pronunciation only, alongside the
+existing comparison languages.
+
+M0 through M3 have merged implementations. M2-01 through M2-06 below retain their
+original scopes as implementation history, not current requirements to recruit
+reviewers or use Classical Latin pronunciation. M2-07 through M2-09 supersede
+their pronunciation sourcing, profile selection, and human-review acceptance
+criteria. The original source-availability decisions in the modern Indo-Iranian
+panel must also be re-evaluated against dictionary pronunciation coverage.
+These new implementation PRs are prerequisites to M4-01, not algorithmic changes
+to slip into a data release.
+
+Preserve old frozen configurations, schemas, and results. Add a versioned
+replacement protocol and explicit runner support; documentation changes do not
+make current human-review validators pass. Do not populate human decisions with
+automated labels. M4-03 is now an optional automated appendix and does not block
+the holdout or final report.
+
 ## Conventions for every PR
 
 Every PR description must contain:
@@ -63,10 +87,16 @@ flowchart TD
     M302 --> M303
     M303 --> M304[M3-04 Statistical comparisons]
     M304 --> M305[M3-05 Reproducible runner]
+    M201 --> M207[M2-07 Pronunciation dictionaries and evidence policy]
+    M206 --> M207
+    M207 --> M208[M2-08 Historical profiles, Arabic and Greek]
+    M208 --> M209[M2-09 Automated quality gates and protocol migration]
+    M305 --> M209
+    M209 --> M401
     M305 --> M401[M4-01 Frozen evaluation run]
     M401 --> M402[M4-02 Comparative report]
-    M402 --> M403[M4-03 Blinded semantic review]
-    M403 --> M404[M4-04 Holdout and final report]
+    M402 -. optional .-> M403[M4-03 Automated contextual appendix]
+    M402 --> M404[M4-04 Holdout and final report]
 ```
 
 ## Milestone 0: Protocol and manifests
@@ -386,6 +416,9 @@ overlap.
 
 ## Milestone 2: Multilingual control panel
 
+M2-01 through M2-06 describe the merged baseline. For remaining work, apply the
+superseding M2-07 through M2-09 specifications below.
+
 ### M2-01: Define the IPA conversion-provider boundary
 
 **Depends on:** M1-02.
@@ -610,6 +643,157 @@ bridge, and multi-language Indo-Aryan dataset has reproducible phonology and
 passes the known-language benchmark, or is explicitly excluded before the
 confirmatory experiment.
 
+### M2-07: Acquire pronunciation dictionaries and freeze automated evidence policy
+
+**Depends on:** M2-01 and M2-06.
+
+**Purpose:** replace the need to recruit language reviewers with reproducible
+pronunciation sourcing and explicit evidence limitations.
+
+**Scope**
+
+- Audit Kaikki raw Wiktextract JSONL and other licensed pronunciation lexica for
+  every planned language, including Sanskrit, modern Indo-Aryan languages, the
+  bridge, and the new Arabic/Greek profiles. Do not infer IPA coverage from
+  dictionary entry totals. Avoid deprecated postprocessed Kaikki downloads.
+- Pin dump dates, extraction/module revisions where available, checksums,
+  licenses, attribution, and permitted redistribution. Preserve raw bytes
+  outside the repository unless distribution is explicitly permitted.
+- Add a shared adapter/join path using existing normalized lexicon contracts.
+  Match normalized lemma, lexical identity, and pronunciation convention;
+  count ambiguous/unmatched joins and keep homographs separate. Do not use
+  Voynich matches or appealing definitions to select readings.
+- Prefer convention-compatible dictionary IPA, then documented source
+  phonology, then deterministic conversion. Preserve original and normalized
+  IPA and alternatives with stable IDs and an explicit alternative-weight policy
+  so more pronunciations cannot silently inflate one language's evidence.
+- Add versioned pronunciation evidence metadata, inline or in an ID-joined
+  artifact: source entry, snapshot, convention, evidence origin, generating
+  module/provider, reference dependencies, and normalization/join policy.
+  Distinguish supplied, template-generated, converter-generated, and unknown
+  evidence. Unknown independence must remain unknown.
+- Report eligible lemma totals, usable IPA coverage by convention and length,
+  duplicates, exclusions, joins, and source overlap. Freeze minimum eligible
+  sizes, required length-band coverage, and admission rules before Voynich
+  scoring; record the measured rationale without choosing cutoffs to favor
+  particular language results.
+- For converter-filled readings, require at least 100 held-out, stratified
+  independent reference lemmas and at least 95% normalized exact agreement.
+  Report phone edit distance and disagreement categories separately. Do not tune
+  a converter on these reference lemmas. Shared modules and copied sources are
+  not independent references. Unvalidated generated readings are exploratory.
+- Direct dictionary IPA must pass provenance, convention, normalization, and
+  symbol checks; dictionary origin alone does not establish historical accuracy.
+  Report template-generated/unknown derivation and freeze how those evidence
+  tiers affect eligibility. No tier may silently claim human validation.
+
+**Tests and acceptance criteria**
+
+- Fixtures cover multiple conventions, missing IPA, multiple readings,
+  ambiguous joins, template-generated IPA, copied-source dependence, and
+  unknown provenance.
+- Input order cannot affect normalized records, joins, or coverage counts.
+- Every admitted IPA segment is supported by the frozen feature encoding;
+  necessary feature changes require separate versioning and regression tests.
+- Acquisition is explicit; normalization and evidence checks run offline from
+  pinned inputs. Failed gates exclude/downgrade data rather than request labels.
+- Publish a coverage/evidence matrix before M2-08 selects final source/profile
+  routes. No confirmatory Voynich run occurs in this PR.
+
+### M2-08: Add historical pronunciation profiles, Classical Arabic, and Greek
+
+**Depends on:** M2-07.
+
+**Purpose:** implement the revised historical language panel using the strongest
+available automated pronunciation evidence.
+
+**Scope**
+
+- Replace the Latin research assumption with a named ecclesiastical/Italianate
+  profile. Prefer matching dictionary IPA and version converter gap-filling.
+  Preserve the old Classical profile and identify it as a different convention,
+  not an interchangeable cache or artifact. Do not infer medieval regional
+  uniformity from the selected assumption.
+- Require Tiberian pronunciation for Biblical Hebrew. Document shewa, dagesh,
+  begadkefat, gutturals, vowel distinctions, and the required vocalization/context.
+  Generic Hebrew IPA or BHSA phonology is not automatically Tiberian. Exclude
+  readings with insufficient information; keep BHSA optional and restricted.
+- Add Classical Arabic as a full lexical test language with frozen policies for
+  short vowels, vowel length, emphatics, gemination, case endings, pause, and
+  article assimilation. No silent substitution of Modern Standard or dialectal
+  readings and no guessed vowels from unvocalized spelling.
+- Add an Ancient/Classical Greek lemma lexicon with Koine pronunciation only.
+  Freeze one named dated/regional Koine convention and map source pronunciation
+  labels explicitly. Test vowel mergers, diphthongs, aspiration, consonant
+  changes, and stress under that convention. Do not mix Attic, Byzantine,
+  modern, or distinct Koine stages.
+- Revisit Turkish, Hungarian, Hindi, other Indo-Aryan languages, and the bridge
+  using dictionary pronunciation before converter fallback. Historical M2-05
+  exclusions remain baseline observations, not proof that dictionary data fail.
+- Add versioned panel configs, manifests, attribution, provenance/evidence
+  reports, and per-profile deterministic normalized artifacts.
+- Register a separate Arabic astronomical vocabulary/name analysis using a
+  pinned licensed catalog and deterministic rules applied across comparison
+  languages. Keep proper names out of the primary lemma-only experiment; do
+  not assume proposed Voynich star identifications are ground truth.
+
+**Tests and acceptance criteria**
+
+- Fixtures reject incompatible pronunciation labels and insufficient
+  vocalization, preserve homographs/alternatives, and test the profile rules.
+- Latin/Hebrew convention changes cannot reuse incompatible cache identities
+  or pass under old artifact hashes.
+- Arabic and Greek have complete ingestion paths and documented coverage;
+  missing evidence produces explicit exploratory/excluded status, not fabricated
+  readings or an alternative pronunciation chosen after seeing results.
+- No comparative Voynich result determines language eligibility or profile.
+
+### M2-09: Replace human-review gates and freeze the revised experiment
+
+**Depends on:** M2-08 and M3-05.
+
+**Purpose:** wire the dictionary-first evidence policy through every executable
+surface before the research release.
+
+**Scope**
+
+- Version schemas/protocols for automated pronunciation evidence and admission
+  decisions. Preserve the old human-review contract; never reinterpret an
+  automated agreement statistic as a human decision or accuracy estimate.
+- Update the retrieval benchmark, experiment orchestration/preflight,
+  checkpoint identities, CLI commands, quality reports, examples, and tests to
+  consume evidence artifacts without human sheets under the revised protocol.
+- Retain existing numerical retrieval thresholds for every required length
+  band and degradation profile. Keep retrieval and pronunciation evidence as
+  distinct gates: self-retrieval cannot prove pronunciation correctness.
+- Freeze final source eligibility, minimum balanced sizes, required bands,
+  profile versions, group memberships, primary and additional contrasts, and
+  the correction family before comparative evaluation. Report Arabic separately
+  and avoid treating same-family languages as independent family replication.
+- Freeze the astronomical analysis's selection, name policy, contexts if
+  externally available, balancing, nulls, and multiplicity/exploratory status.
+  Do not require human semantic annotation or automated semantic labels.
+- Publish the protocol amendment, compatibility/migration instructions, and
+  final language coverage/exclusion table. Leave failed sources visibly
+  exploratory/excluded and state how exclusions limit the original claim.
+
+**Tests and acceptance criteria**
+
+- An end-to-end synthetic revised run succeeds with no human annotation files.
+- Missing provenance, wrong conventions, insufficient reference evidence,
+  shared-source pseudo-independence, and failed retrieval metrics block
+  admission or produce the predeclared exploratory decision.
+- Old protocol validation is unchanged; incompatible evidence/protocol/profile
+  hashes cannot resume an old run. Repeated revised runs remain byte-stable.
+- Holdout leakage, definitions-free scoring, and source-license checks remain
+  enforced. The synthetic smoke profile and relevant regression suites pass.
+- M4-01 is blocked until the replacement protocol and all admitted profiles
+  satisfy these machine-checkable gates.
+
+**Revised Milestone 2 exit:** the expanded language panel has dictionary-first
+pronunciation, versioned historical conventions, automated evidence and
+retrieval results, and explicit exclusions. No human annotation is required.
+
 ## Milestone 3: Scored comparative runner
 
 ### M3-01: Return DTW cost, path, and normalization
@@ -810,7 +994,7 @@ new runner version; affected runs are invalidated and repeated from the start.
 
 ### M4-01: Freeze inputs and execute the evaluation partition
 
-**Depends on:** M3-05 and signed-off Milestone 2 quality reviews.
+**Depends on:** M3-05 and M2-09's frozen automated quality decisions.
 
 **Purpose:** create the immutable run bundle for the non-holdout Voynich data
 without inspecting semantic definitions.
@@ -818,8 +1002,9 @@ without inspecting semantic definitions.
 **Scope**
 
 - Replace all planned manifests with exact artifact revisions and checksums.
-- Record completed G2P review results and final language inclusion/exclusion
-  decisions made under the frozen thresholds.
+- Record dictionary pronunciation coverage, evidence provenance, automated
+  reference agreement where required, retrieval results, and final language
+  inclusion/exclusion decisions under the amended frozen protocol.
 - Tag or otherwise identify the protocol, mapping, normalized lexicons, runner
   commit, environment, and evaluation partition.
 - Execute confirmatory mode once for the evaluation partition.
@@ -858,7 +1043,9 @@ without inspecting semantic definitions.
 - Include per-language distributions, winner proportions, length/section
   strata, lexicon-subsample stability, null distributions, and all planned
   sensitivity analyses.
-- Include Stage A retrieval and G2P quality results beside comparative results.
+- Include Stage A retrieval, dictionary coverage, pronunciation convention,
+  evidence origin/dependencies, and automated reference agreement where required
+  beside comparative results. Do not label agreement as human accuracy.
 - State exclusions, missing data, multiplicity family, and whether the primary
   decision rule was met.
 - Link every table/figure to the run ID and source tidy artifact.
@@ -879,45 +1066,49 @@ without inspecting semantic definitions.
 - Definitions and semantic judgments remain absent.
 - The report can be rebuilt without rerunning matching or statistics.
 
-### M4-03: Conduct blinded semantic annotation
+### M4-03: Publish an optional automated contextual appendix
 
 **Depends on:** M4-02.
 
-**Purpose:** evaluate contextual gloss plausibility as secondary evidence after
-phonological results are frozen.
+**Purpose:** expose reproducible lexical/contextual metadata after phonological
+results are frozen, without recruiting annotators or claiming semantic ground
+truth. This appendix is optional and does not block M4-04.
 
 **Scope**
 
-- Generate an annotation packet with stable randomized candidate IDs, context,
-  gloss, and predeclared label set while hiding language, source dictionary,
-  phonological score, rank, and hypothesis status.
-- Include candidates sampled by a rule fixed before annotation, including
-  control-language candidates and negative examples.
-- Require at least two independent annotators and record consent/attribution
-  policy for publishing annotations.
-- Compute inter-annotator agreement, adjudication status, and acceptance rates
-  by language only after annotations are locked and unblinded.
-- Publish the packet generator, blank template, locked responses where permitted,
-  and analysis script/results.
+- Join definitions and existing dictionary domain/catalog labels by stable
+  candidate ID only after quantitative outputs are frozen. Retain the
+  definitions-free primary scoring artifacts.
+- Present the separately registered astronomical vocabulary/name analysis
+  across languages, with balanced sizes, nulls, missing joins, and exclusions.
+  Selection rules and any externally sourced contexts must have been frozen in
+  M2-09, not chosen from appealing matches.
+- Publish deterministic generation/configuration, pinned source provenance,
+  permitted outputs, and limitations. Domain labels do not establish that a
+  Voynich token denotes a star.
+- Do not require human labels, inter-annotator metrics, or adjudication.
+  LLM-generated judgments are not independent reference annotations. Any
+  automated semantic scoring is separately versioned and exploratory only;
+  it cannot tune the mapping or determine holdout admission.
 
 **Tests**
 
-- Packet tests prove hidden fields are absent and row order is seed-stable.
-- Metric tests cover agreement, missing labels, abstentions, and adjudication.
-- Unblinding requires a separate mapping artifact not included in annotator
-  packets.
+- Joins and catalog selection are deterministic and report missing/ambiguous
+  records without selecting alternate glosses to improve apparent fit.
+- Proper names cannot enter primary lemma-only score artifacts.
+- The main report/holdout workflow succeeds when this appendix is omitted.
+- Contextual processing cannot read holdout-derived data before holdout execution.
 
 **Acceptance criteria**
 
-- Annotation instructions do not reveal the expected language or theory.
-- No annotator sees scores/ranks before responses are locked.
-- Agreement and all language acceptance rates are reported, not only favorable
-  examples.
-- Semantic results are explicitly labelled secondary.
+- No annotation workforce is needed.
+- All compared languages and negative results appear, not selected examples.
+- Contextual results are secondary; automated semantic scoring, if any, is
+  exploratory and is never represented as validated human judgment.
 
 ### M4-04: Execute the holdout once and publish the final report
 
-**Depends on:** M4-03.
+**Depends on:** M4-02. M4-03 is optional and is not a prerequisite.
 
 **Purpose:** test replication on untouched folios and issue the final research
 bundle.
@@ -933,7 +1124,8 @@ bundle.
   replication success or failure under the predeclared rule.
 - Publish a final index containing protocol, manifests, licenses/citations,
   environment, commits, quality reports, evaluation and holdout run IDs,
-  quantitative reports, semantic report, limitations, and reproduction steps.
+  quantitative reports, optional contextual appendix, limitations, and
+  reproduction steps.
 - Archive or release large permitted artifacts with checksums; document the
   authorized acquisition path for non-redistributable inputs.
 
@@ -955,8 +1147,8 @@ bundle.
   exact instructions for the optional restricted stage.
 
 **Milestone 4 exit:** the complete evaluation and holdout evidence is published
-with provenance, uncertainty, nulls, semantic results, and enough information
-for independent reproduction.
+with provenance, uncertainty, nulls, any optional contextual results, and enough
+information for independent reproduction. No human annotation is required.
 
 ## Suggested PR labels and review ownership
 
@@ -966,14 +1158,15 @@ Use milestone labels (`milestone-0` through `milestone-4`) plus one primary area
 | --- | --- | --- |
 | `build` | M0-00 | SDK support, CI, unchanged behavior |
 | `research-protocol` | M0-01, M4-01, M4-04 | leakage prevention, preregistration, decision rules |
-| `provenance` | M0-02, M1-03, M2-02 through M2-05 | pinned sources, checksums, licenses, citations |
+| `provenance` | M0-02, M1-03, M2-02 through M2-05, M2-07 through M2-09 | pinned sources, checksums, licenses, evidence dependencies |
 | `lexicons` | M1-01 through M1-04 | parsing, Unicode, duplicates, cache compatibility |
-| `phonology` | M2-01 through M2-06 | IPA accuracy, review blinding, historical convention |
+| `phonology` | M2-01 through M2-09 | pronunciation provenance, automated agreement, historical convention |
 | `matching` | M3-01, M3-02 | DTW correctness, ranking, export traceability |
 | `statistics` | M3-03 through M3-05, M4-02 | sampling, nulls, inference, reproducibility |
-| `semantics` | M4-03 | annotation blinding, agreement, secondary status |
+| `semantics` | M4-03 | deterministic metadata joins, no ground-truth claims, optional/secondary status |
 
-Protocol, phonology, and statistics PRs should each receive a domain review in
-addition to code review. A PR author should not be the only person signing off
-on a blinded G2P sample, confirmatory protocol mutation, or semantic annotation
-unblinding.
+Independent protocol, phonology, and statistics feedback is desirable when
+available, but recruiting a domain reviewer or annotation team is not an
+execution prerequisite. For a solo workflow, publish versioned assumptions,
+machine-checkable gates, source dependencies, exclusions, and limitations.
+Automated checks do not substitute for independent scientific validation.

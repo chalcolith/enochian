@@ -33,6 +33,17 @@ analyzer, and style diagnostics fail the build.
 
 ## Research Protocol
 
+The [current research roadmap](docs/improvement-plan.md) was revised on
+2026-11-05 for a solo, automation-first workflow: prefer online pronunciation
+dictionaries, use ecclesiastical Latin and Tiberian Biblical Hebrew, and add
+Classical Arabic and Ancient/Classical Greek with Koine pronunciation only.
+Human pronunciation labeling and semantic annotation are no longer planned
+prerequisites. M2-07 through M2-09 in the
+[PR specifications](docs/milestone-pr-specs.md) must implement automated evidence
+gates and a versioned protocol migration before the confirmatory run. Existing
+frozen configs and human-review validators still implement the earlier design;
+this roadmap revision does not bypass them.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

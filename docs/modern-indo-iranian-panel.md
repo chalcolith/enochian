@@ -1,5 +1,12 @@
 # Modern Indo-Aryan and Indo-Iranian panel
 
+This document records the 2026-08-18 converter-based baseline. The
+[2026-11-05 roadmap revision](improvement-plan.md) supersedes its human-review
+requirements and requires a new dictionary-pronunciation coverage audit in
+M2-07 through M2-09. Counts and exclusions below remain observations about the
+old artifacts, not final admission decisions for the revised protocol. Existing
+runtime gates remain unchanged until that migration is implemented.
+
 This selection was frozen on 2026-08-18 before any Voynich comparison. A
 language needed a pinned UniMorph repository with at least 100 unique lemmas,
 verified redistribution terms, and a native-script dataset. Confirmatory
