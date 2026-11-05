@@ -1,0 +1,27 @@
+{
+  "$schema": "../schemas/source-manifest.schema.json",
+  "schema_version": "1.0.0",
+  "source_id": "hyg-4.1",
+  "status": "acquired",
+  "owner": "David Nash / Astronexus and HYG catalog contributors",
+  "language": "mul",
+  "family": "multiple",
+  "url": "https://raw.githubusercontent.com/astronexus/HYG-Database/c7f7f883fe678cc7680169a50ccd7dcc49b060ce/hyg/CURRENT/hygdata_v41.csv",
+  "revision": { "kind": "commit", "value": "c7f7f883fe678cc7680169a50ccd7dcc49b060ce" },
+  "retrieval_date": "2026-11-05",
+  "sha256": "d9f69fd86bbf90a4e4d52b4c5c53eacfa6dfc0bfdef85bfd94f095e0bebe4ebd",
+  "license": "CC-BY-SA-4.0",
+  "license_status": "verified",
+  "distribution_policy": "download-on-demand",
+  "usage_policy": "unrestricted",
+  "optional": true,
+  "default_bundle": false,
+  "citation": "David Nash and HYG contributors, HYG 4.1 (Hipparcos-Yale-Gliese), frozen GitHub archive commit c7f7f883fe678cc7680169a50ccd7dcc49b060ce, hyg/CURRENT/hygdata_v41.csv. CC BY-SA 4.0 as stated in LICENSE and hyg/README.md at that commit. Common names include IAU-derived names and explicitly unofficial companion names; neither Arabic etymology nor original Arabic pronunciation is asserted. The archive has since moved to Codeberg; this analysis deliberately retains the pinned 4.1 snapshot.",
+  "parser": { "id": "hyg-csv", "version": "1.0.0" },
+  "raw_path": ".enoch/pronunciation/raw/hygdata_v41.csv",
+  "generated_artifact_path": ".enoch/astronomy/v1/catalog-names.jsonl",
+  "filters": {
+    "include": ["all nonempty proper-name fields for non-Solar records", "unofficial companion qualifiers retained verbatim", "catalog IDs retained separately from name match keys"],
+    "exclude": ["id 0 (the Sun)", "empty proper-name fields", "coordinate or Voynich-driven filtering", "inferred Arabic forms, etymologies or IPA"]
+  }
+}

@@ -47,6 +47,25 @@ public sealed class NormalizedLexiconTests
         Assert.AreEqual("invalid_field", lexicon.QualityReport?.Rejections.Single().ReasonCode);
     }
 
+    [TestMethod]
+    public void DifferentConventionArtifactPathsCannotReuseAnIncompatibleCache()
+    {
+        using var environment = new NormalizedLexiconTestEnvironment();
+        var classicalPath = environment.CreateSource("latin-classical-v1.jsonl");
+        var italianatePath = environment.CreateSource("latin-italianate-v1.jsonl");
+        var classical = CreateRecord(1);
+        classical["ipa"] = "winum";
+        var italianate = CreateRecord(2);
+        italianate["ipa"] = "vinum";
+        File.WriteAllText(classicalPath, classical.ToJsonString() + "\n");
+        File.WriteAllText(italianatePath, italianate.ToJsonString() + "\n");
+
+        Assert.AreEqual("winum", environment.Load(classicalPath).Entries.Single().Ipa);
+        Assert.AreEqual("vinum", environment.Load(italianatePath).Entries.Single().Ipa);
+        Assert.HasCount(2, environment.CachePaths);
+        Assert.AreEqual("winum", environment.Load(classicalPath).Entries.Single().Ipa);
+    }
+
     private static readonly string[] ExpectedRejectionReasons =
     [
         "duplicate_entry_id",
@@ -208,6 +227,9 @@ public sealed class NormalizedLexiconTests
         public string ManifestPath { get; }
 
         public string ReportPath { get; }
+
+        public string[] CachePaths => Directory.GetFiles(
+            Path.GetFullPath(Path.Combine(".", Configurable.CacheDir)), sourcePrefix + "*.bin");
 
         public string CopyFixture(string fileName)
         {

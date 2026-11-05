@@ -1,0 +1,22 @@
+{
+  "id": "Ancient Greek with Fourth-Century Koine v1",
+  "description": "Exploratory Greek lemma panel with one dated Koine pronunciation; no Attic, Egyptian, Byzantine or Modern pooling.",
+  "features": [{ "path": "../resources/encodings/features.json" }],
+  "encodings": [{ "id": "IPA", "features": "Default", "path": "../resources/encodings/ipa.json" }],
+  "lexicons": [
+    {
+      "id": "grc-koine-4c-v1.0.0",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.jsonl",
+      "manifest": "../.enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.manifest.json",
+      "qualityReport": "../.enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.loader-quality.json"
+    }
+  ],
+  "steps": [
+    { "id": "Sample", "type": "SampleText", "features": "Default", "text": "ɸoni" },
+    { "id": "Encode", "type": "Transducer", "features": "Default", "encoding": "IPA" },
+    { "id": "Search", "type": "DTWMatcher", "lexicon": "grc-koine-4c-v1.0.0", "numOptions": 5, "tolerance": 0.0 }
+  ]
+}

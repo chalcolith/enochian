@@ -3,12 +3,170 @@
 The [current research roadmap](../../docs/improvement-plan.md) prefers online
 pronunciation dictionaries and automated evidence checks without human
 annotation. The historical converters and review-sheet commands documented
-below still implement the earlier protocol. M2-07 through M2-09 in the
-[PR specifications](../../docs/milestone-pr-specs.md) must add dictionary
-acquisition/joins, ecclesiastical Latin and Tiberian Hebrew profiles, Classical
-Arabic, Ancient Greek with Koine pronunciation, and versioned automated gates.
+below still implement the earlier protocol. M2-07 implements dictionary
+acquisition/joins, and M2-08 adds the versioned dictionary-first profiles below.
+M2-09 in the [PR specifications](../../docs/milestone-pr-specs.md) must still
+implement the revised automated admission/retrieval gates.
 Do not treat existing Classical Latin or generic Hebrew output as those new
 profiles, or convert pending human reviews into automated acceptances.
+
+## Dictionary-first pronunciation profiles (M2-08)
+
+Run from `source/`:
+
+```powershell
+dotnet run --project Enochian.Provenance -- pronunciation-profiles
+dotnet run --project Enochian.Provenance -- astronomy-register
+```
+
+These are offline commands. Explicit `pronunciation-profiles-acquire` and
+`astronomy-acquire` commands acquire missing pinned snapshots before processing.
+Each accepts an optional panel/protocol path; paths inside configuration remain
+repository-relative. No human review sheets or Voynich comparisons are run.
+
+[pronunciation-panel.v1.json](pronunciation-panel.v1.json) references the
+unchanged M2-07 protocol and fixes all 17 profiles before comparisons. Every
+profile has its own ID, version, rules, label mapping and SHA-256 identity.
+Configuration pins canonicalize UTF-8 text to LF to tolerate Git's CRLF
+checkouts; downloaded source checksums always cover exact original bytes.
+
+### Historical conventions
+
+| Language | Selected convention | Gaps and exclusions |
+| --- | --- | --- |
+| Latin | The raw source note `modern Italianate Ecclesiastical` | Generic Ecclesiastical and Classical-only readings do not establish this convention. The old Classical converter is preserved, not renamed. |
+| Biblical Hebrew | Explicit `Tiberian`/`Tiberian-Hebrew` IPA | Generic Biblical reconstruction, Modern, Sephardi and BHSA phono are not substitutes. BHSA remains optional, non-commercial and unbundled; it is only a lexical join target here. |
+| Classical Arabic | Explicit Classical readings; citation form **as supplied** | Keep explicit short vowels, case endings and tanwin. No inferred missing vowels, automatic pausal alternative, MSA or dialect substitution. |
+| Ancient/Classical Greek | The raw note `4ᵗʰ CE Koine` only | Exclude 1st-century Egyptian, Attic, Medieval, Constantinopolitan, Modern and unlabelled readings. A Classical lexicon is not a request for Classical pronunciation. |
+
+Italianate consonant rules and vowel qualities come from the selected dictionary
+reading, not transformations of Classical IPA. Likewise, selected Koine data
+retain the source's vowel mergers, monophthongs, contextual au/eu fricatives,
+phi /ɸ/, theta /θ/, chi realizations, and beta/gamma/delta changes. Original IPA
+and stress are retained in evidence; shared segmental normalization removes
+stress and syllable separators. Tests exercise selection and preservation, not
+an assertion of independently validated historical phonology.
+
+Tiberian source IPA must already resolve vocalic versus silent shewa,
+contextual reduced vowels, dagesh lene/forte and mappiq, begadkefat stop/fricative
+alternation, gutturals, vowel quality and quantity. A future Hebrew spelling
+converter additionally needs resolved qere/ketiv, full vocalization,
+syllabification/stress, matres and boundary context. Bare niqqud or generic
+ETCBC phono is insufficient; no such spelling converter is asserted here.
+
+Dictionary gaps in Latin, Hebrew, Greek and modern languages remain excluded.
+Their versioned fallback policy is `none`, not an unvalidated converter rescue.
+The old Epitran/Latin/BHSA results and human-review statuses are not transferred.
+All modern Indo-Aryan, Turkish, Hungarian and bridge profiles are re-audited
+dictionary-first, preserving labels, homographs, alternatives and unknown
+origin. Unresolved regional mixtures (especially unspecified Romani) remain
+exploratory inventories, not frozen confirmatory dialects.
+
+### Classical Arabic ingestion and remaining source gap
+
+The acquired Arabic IPA Dictionary is explicitly MSA and supplies no Classical
+readings. No additional licensed Classical lexical snapshot is configured in
+this panel, so the real Arabic artifact is empty and explicitly
+`excluded_no_usable_readings`, not a zero language score. The Quranic Arabic
+Corpus download requires contact-email verification and has additional stated
+terms; it was not acquired or silently substituted as a lemma dictionary (see its
+[download terms](https://corpus.quran.com/download/) and
+[license page](https://corpus.quran.com/license.jsp)).
+
+A complete optional offline route accepts a pinned source manifest with
+`language: "ara"` and parser `classical-arabic-lexemes`. Add that manifest to a
+**new version** of the panel's `fallback_source_manifests`, after verifying
+license, historical classification and lexical provenance. UTF-8 JSONL rows
+require these fields:
+
+```json
+{"language":"ara","convention":"classical-arabic","lemma":"source lemma","form":"fully vocalized citation spelling","part_of_speech":"noun","lexical_identity":"stable source lexical ID","entry_kind":"lemma"}
+```
+
+This illustrates the contract, not real lexical data. An Arabic-looking spelling
+does not establish Classical provenance. Proper names and inflections are not
+primary lemma inputs. Homographs need distinct lexical IDs; conflicting lemma
+or POS reuse of an ID is an error.
+
+The versioned `classical-arabic-vocalized-v1` converter:
+
+- Requires explicit vowels/tanwin/sukun on consonants, except declared
+  article/mater rules; unknown marks or insufficient context yield diagnostics
+  and **no partial IPA**.
+- Preserves short/long vowels, explicit diphthongal w/y, gutturals, conventional
+  Classical emphatics, qaf /q/ and jim /d͡ʒ/. This is a traditional citation
+  inventory, not a reconstruction of early lateral dad.
+- Expands explicit shadda; never invents gemination.
+- Uses citation-initial /ʔal/ for the article before moon letters; sun-letter
+  assimilation requires explicit shadda. It does not infer connected-speech
+  wasl deletion.
+- Handles declared madda/dagger-alif/support-alif contexts. Ta marbuta requires
+  an explicit final vowel/ending; unresolved pausal contexts are excluded.
+- Keeps explicit final vowels and tanwin; never adds endings or chooses a
+  more favorable pause reading.
+
+Compatible dictionary readings take priority over converter readings with the
+same NFC lemma and POS. Fallbacks are conservatively excluded even if a
+cross-source homograph identity cannot be resolved; no dictionary reading is
+chosen by gloss. Rejected fallback evidence remains visible.
+Converter-generated IPA remains exploratory, pending the M2-07 independent
+held-out reference thresholds and M2-09 admission. Synthetic tests establish
+implementation behavior, not independent linguistic accuracy.
+
+### Artifacts, manifests and sample flows
+
+- `.enoch/pronunciation-profiles/v1/<profile-id>-v<version>.jsonl`: normalized
+  candidate entries. Proper names are excluded.
+- Corresponding `.evidence.jsonl` and `.joins.jsonl`: original IPA, source
+  labels/derivation, exclusions, equal alternative weights and join status.
+- Corresponding `.manifest.json`: generated **profile manifest**, not the
+  source-manifest v1 contract; embeds the frozen profile, profile/panel/software/
+  encoding hashes, upstream manifest hashes, artifact hashes and explicit
+  exploratory/excluded status.
+- [coverage.md](../../reports/pronunciation-profiles/v1/coverage.md) and
+  [coverage.json](../../reports/pronunciation-profiles/v1/coverage.json): measured
+  all-language coverage, exclusions, joins and missing-validation diagnostics.
+
+Profile hashes participate in entry IDs; profile IDs/versions participate in
+artifact paths and dialect identity. Separate source/manifest/quality-report
+paths isolate loader caches. Existing Classical Latin, generic BHSA and M2-07
+artifacts are not overwritten. The shared normalized-entry/evidence/report
+contracts and feature/IPA resources remain unchanged.
+
+Exploratory sample flows:
+[Italianate Latin](../../samples/latin-ecclesiastical-panel.v1.json),
+[Tiberian Hebrew](../../samples/tiberian-hebrew-panel.v1.json),
+[Classical Arabic](../../samples/classical-arabic-panel.v1.json), and
+[4th-century Koine](../../samples/koine-greek-panel.v1.json).
+The Arabic flow has no lexical candidates until a usable Classical source is
+configured. Empty coverage must never be treated as a comparative score.
+These ordinary matcher demos do not implement M2-09's evidence-aware consumers.
+
+### Separate astronomical-name registration
+
+[astronomical-names.v1.json](../../experiments/astronomical-names.v1.json)
+registers a separate analysis using the pinned, CC BY-SA 4.0
+[HYG 4.1 manifest](manifests/hyg-4.1.manifest.json). The retained CSV is about
+34 MB; names are materialized under `.enoch/astronomy/v1/`, with an aggregate
+[registration report](../../reports/pronunciation-profiles/v1/astronomy-registration.json).
+
+Select every nonempty `proper` name except Solar record 0, retain companion
+qualifiers and catalog IDs, and use trim/NFC/ordinal case-sensitive keys.
+Duplicate keys are flagged, not arbitrarily resolved. No constellation,
+coordinate, etymological or Voynich-result filter selects favorable names.
+
+The same frozen linkage rules apply to **all 17 comparison languages**:
+exact local-name matches or explicit dictionary translation links only,
+retaining unresolved alternatives. No guessed transliteration, Arabic etymology,
+vocalization or IPA is derived from Latinized names. HYG includes modern and
+unofficial names; these are catalog labels, not medieval Arabic ground truth.
+Missing historical readings must remain unmatched/insufficient evidence.
+
+This command registers the catalog and rules only. It does not yet execute
+multilingual dictionary linkage, pronunciation scoring or Voynich comparisons;
+each language is explicitly `not_evaluated`. Proper names stay outside the
+primary lemma-only panel, and proposed Voynich star identifications are never
+ground truth.
 
 ## Dictionary pronunciation audit (M2-07)
 
@@ -63,7 +221,8 @@ Punjabi, Bhojpuri, Persian, Pashto, Latin, Biblical Hebrew, Arabic, Ancient Gree
 Turkish, and Hungarian. A zero is a measured absence under the configured
 dictionary code/convention, not proof that no dictionary exists anywhere.
 Greek inventories the source's labelled Koine stages separately in evidence;
-M2-08 must choose one dated/regional profile, not pool them into an experiment.
+M2-08 selects 4th-century CE Koine in a separate versioned panel; this original
+inventory is not pooled into an experiment.
 
 ### Frozen audit rules and interpretation
 

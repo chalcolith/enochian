@@ -28,6 +28,18 @@ Hebrew has limited long-word coverage. Per-reading derivation is unknown in the
 selected snapshots, so all profiles remain exploratory pending M2-08/M2-09;
 availability is not independent validation or confirmatory admission.
 
+M2-08 now [freezes and materializes](../resources/lexicons/README.md#dictionary-first-pronunciation-profiles-m2-08)
+Italianate ecclesiastical Latin, Tiberian Hebrew, **4th-century CE Koine** and
+Classical Arabic citation forms with explicit source vowels/endings. All 17
+languages are revisited dictionary-first in a separate versioned panel.
+Classical Arabic has a tested fully vocalized ingestion route but remains
+excluded without usable licensed Classical lexical evidence; no MSA is
+substituted. Unvalidated spelling fallbacks for other profiles are disabled.
+The [astronomical-name analysis](../experiments/astronomical-names.v1.json) is
+separately registered against pinned HYG 4.1 with identical cross-language
+linkage rules, not executed or mixed into primary lemmas. M2-09's revised
+admission/retrieval migration is still required before M4-01.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

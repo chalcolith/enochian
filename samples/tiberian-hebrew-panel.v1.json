@@ -1,0 +1,22 @@
+{
+  "id": "Tiberian Biblical Hebrew v1",
+  "description": "Optional exploratory Tiberian dictionary IPA only; BHSA phono is not a substitute.",
+  "features": [{ "path": "../resources/encodings/features.json" }],
+  "encodings": [{ "id": "IPA", "features": "Default", "path": "../resources/encodings/ipa.json" }],
+  "lexicons": [
+    {
+      "id": "hbo-tiberian-v1.0.0",
+      "type": "NormalizedLexicon",
+      "features": "Default",
+      "encoding": "IPA",
+      "path": "../.enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.jsonl",
+      "manifest": "../.enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.manifest.json",
+      "qualityReport": "../.enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.loader-quality.json"
+    }
+  ],
+  "steps": [
+    { "id": "Sample", "type": "SampleText", "features": "Default", "text": "ʔɔːðɔːm" },
+    { "id": "Encode", "type": "Transducer", "features": "Default", "encoding": "IPA" },
+    { "id": "Search", "type": "DTWMatcher", "lexicon": "hbo-tiberian-v1.0.0", "numOptions": 5, "tolerance": 0.0 }
+  ]
+}

@@ -12,6 +12,12 @@ now records additional Hindi, Bengali, Gujarati, and bridge-language
 pronunciations. These exploratory candidates do not retroactively change the
 converter counts below or establish independent pronunciation validation.
 
+M2-08's [versioned dictionary-first panel](../resources/lexicons/pronunciation-panel.v1.json)
+now revisits these languages without converter rescue. Its
+[coverage report](../reports/pronunciation-profiles/v1/coverage.md) supersedes
+neither the historical counts below nor the still-pending M2-09 admission
+migration; newly available dictionary evidence is reported separately.
+
 This selection was frozen on 2026-08-18 before any Voynich comparison. A
 language needed a pinned UniMorph repository with at least 100 unique lemmas,
 verified redistribution terms, and a native-script dataset. Confirmatory
