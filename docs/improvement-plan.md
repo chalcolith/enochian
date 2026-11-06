@@ -65,6 +65,13 @@ covers 600 selected units across 582 distinct pages. Actual v2 admission finds
 all required sources remain below the unchanged gates. No manuscript scoring
 was performed.
 
+M2-11 (#48) adds a [pinned external MediaWiki/Scribunto replay path](../tools/wiktionary/README.md)
+for the recovered required-anchor transclusions. Its new artifacts retain exact
+original IPA comparisons, execution-time dependency pins, and unchanged
+alternatives/weights. Reproduced generated readings remain exploratory until
+independent-reference agreement and the existing retrieval gates pass; later
+anchor population and manuscript mapping work remain separate prerequisites.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

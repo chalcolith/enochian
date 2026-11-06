@@ -101,6 +101,14 @@ The [measured amendment](reports/pronunciation-provenance/v1/admission.md)
 has 85 supported Turkish units and zero for the other required anchors; none
 passes admission. Generated readings still require independent validation.
 
+M2-11 (#48) adds a separate pinned MediaWiki/Scribunto offline replay path for
+those four required anchors. Run `pronunciation-replay-acquire`, then
+`pronunciation-replay` from the provenance CLI; Docker and the explicitly pulled
+digest-pinned runtime are required. See the
+[isolated replay guide](tools/wiktionary/README.md) for acquisition, byte pins,
+licensing, unresolved dependencies, and the new independent-reference contract.
+Reproduced generation remains exploratory and never grants admission alone.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,
