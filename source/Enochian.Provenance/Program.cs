@@ -14,6 +14,7 @@ try
         "astronomy-register" or "astronomy-acquire" => await RegisterAstronomy(repositoryRoot, args),
         "pronunciation-provenance" or "pronunciation-provenance-acquire" => await RecoverPronunciationProvenance(repositoryRoot, args),
         "pronunciation-replay" or "pronunciation-replay-acquire" => await ReplayPronunciationGenerators(repositoryRoot, args),
+        "pronunciation-references" => AuditPronunciationReferences(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -136,7 +137,22 @@ static int ShowUsage()
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-provenance-acquire [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-replay [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-replay-acquire [plan-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-references [plan-json]");
     return 1;
+}
+
+static int AuditPronunciationReferences(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var plan = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-reference-audit.v1.json");
+    new PronunciationReferenceAudit(repositoryRoot).Run(plan);
+    Console.WriteLine("Independent pronunciation-reference audit completed. Exploratory results do not grant admission.");
+    return 0;
 }
 
 static async Task<int> AuditPronunciations(string repositoryRoot, string[] arguments)

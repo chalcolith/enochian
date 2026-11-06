@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-reference-audit-1.json",
+  "title": "Pinned independent pronunciation-reference source audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "parent_protocol", "selection_seed", "profiles", "candidates",
+    "output_directory", "amendment_path", "report_path"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "parent_protocol": { "$ref": "#/$defs/pin" },
+    "selection_seed": { "type": "integer" },
+    "profiles": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["language", "manifest", "generator"],
+        "properties": {
+          "language": { "enum": ["hin", "san", "tur", "hun"] },
+          "manifest": { "$ref": "#/$defs/pin" },
+          "generator": { "enum": ["wiktionary:hi-IPA", "wiktionary:sa-IPA", "wiktionary:tr-IPA", "wiktionary:hu-IPA"] }
+        }
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/candidate" }
+    },
+    "output_directory": { "const": ".enoch/pronunciation-references/v1" },
+    "amendment_path": { "const": "experiments/confirmatory.references.v1.json" },
+    "report_path": { "const": "reports/pronunciation-references/v1/coverage.json" }
+  },
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "language", "url", "revision", "license", "license_status", "usage_policy",
+        "evidence_kind", "machine_readable", "immutable", "independence", "convention",
+        "manifest", "records", "dependencies", "decision", "reasons"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "language": { "enum": ["hin", "san", "tur", "hun"] },
+        "url": { "type": "string", "format": "uri" },
+        "revision": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 },
+        "license_status": { "enum": ["verified", "unverified"] },
+        "usage_policy": { "enum": ["unrestricted", "non-commercial", "unverified"] },
+        "evidence_kind": {
+          "enum": ["dictionary-ipa", "generated-pronunciation", "orthography", "audio", "not-target-language"]
+        },
+        "machine_readable": { "type": "boolean" },
+        "immutable": { "type": "boolean" },
+        "independence": { "enum": ["established", "shared", "unknown"] },
+        "convention": { "type": "string", "minLength": 1 },
+        "manifest": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+        "records": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "decision": { "enum": ["eligible", "excluded"] },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

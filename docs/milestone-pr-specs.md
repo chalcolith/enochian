@@ -94,7 +94,8 @@ flowchart TD
     M305 --> M209
     M209 --> M210[M2-10 Per-reading source provenance]
     M210 --> M211[M2-11 Pinned offline generator replay]
-    M211 --> M401
+    M211 --> M212[M2-12 Independent pronunciation references]
+    M212 --> M401
     M209 --> M401
     M305 --> M401[M4-01 Frozen evaluation run]
     M401 --> M402[M4-02 Comparative report]
@@ -880,6 +881,46 @@ See the [external replay guide](../tools/wiktionary/README.md) for commands,
 licensing, runtime boundaries, and retained inputs. Independent-reference
 acquisition, balanced anchor expansion, retrieval changes, mapping approval,
 and evaluation queries remain separately scoped work.
+
+### M2-12: Acquire independent pronunciation references and validate generators
+
+**Depends on:** M2-11. **Blocks:** supported anchor expansion and M4-01.
+Tracked in #50.
+
+**Scope**
+
+- Audit direct pronunciation datasets for Hindi, Sanskrit, Turkish, and
+  Hungarian. Pin source-search decisions, licenses, revisions, dependency
+  roots, conventions, and machine-readable artifacts.
+- Reject spelling/transliteration lists, audio without pinned transcriptions,
+  generated or unknown-origin pronunciations, unavailable target languages,
+  shared Wiktionary/Kaikki/WikiPron roots, and unverified licenses.
+- Bind any eligible references to the exact M2-11 profile, generator ID,
+  generator package revision, and complete generated/reference alternative
+  distributions. Preserve all alternatives; never select the favorable one.
+- Deterministically sample all eligible held-out joins only after source and
+  independence checks. Tuning examples cannot enter the held-out sample.
+- Retain the frozen minimum of 100 references, 25 per length band, and 95%
+  normalized exact agreement. Phone edit distance remains diagnostic.
+
+**Tests and acceptance**
+
+- Offline replay/profile verification and exact plan/source pins reproduce the
+  audit and any successful definitions-free reference envelopes.
+- Wrong profile/generator revisions, conventions, shared or unknown dependency
+  roots, tuning leakage, ambiguous alternatives, and alternative removal are
+  rejected explicitly.
+- Successful sources use the new full-alternative reference contract without
+  changing v2.0/v2.1 validators. If no qualifying source exists, publish the
+  measured exploratory result and keep M4-01 blocked.
+- No human pronunciation labels, manuscript scores, or relaxed thresholds are
+  introduced.
+
+The [frozen audit plan](../resources/lexicons/pronunciation-reference-audit.v1.json)
+and [measured report](../reports/pronunciation-references/v1/coverage.json)
+cover 16 candidates. No candidate satisfies the independent direct-pronunciation
+contract, so no reference envelope is emitted and all four profiles remain
+exploratory.
 
 ## Milestone 3: Scored comparative runner
 

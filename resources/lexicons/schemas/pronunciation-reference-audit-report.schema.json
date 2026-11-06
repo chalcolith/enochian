@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-reference-audit-report-1.json",
+  "title": "Measured independent pronunciation-reference feasibility report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "package", "selection_seed", "selection_policy", "candidates",
+    "languages", "pronunciation_admission", "manuscript_scoring"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "package": { "$ref": "#/$defs/pin" },
+    "selection_seed": { "type": "integer" },
+    "selection_policy": { "const": "all-eligible-joins-then-band-unusual-ipa-stable-lemma-hash-v1" },
+    "candidates": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "language", "url", "revision", "license", "license_status", "usage_policy",
+          "evidence_kind", "machine_readable", "immutable", "independence", "convention",
+          "decision", "reasons"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "language": { "enum": ["hin", "san", "tur", "hun"] },
+          "url": { "type": "string", "format": "uri" },
+          "revision": { "type": "string", "minLength": 1 },
+          "license": { "type": "string", "minLength": 1 },
+          "license_status": { "enum": ["verified", "unverified"] },
+          "usage_policy": { "enum": ["unrestricted", "non-commercial", "unverified"] },
+          "evidence_kind": { "type": "string", "minLength": 1 },
+          "machine_readable": { "type": "boolean" },
+          "immutable": { "type": "boolean" },
+          "independence": { "enum": ["established", "shared", "unknown"] },
+          "convention": { "type": "string", "minLength": 1 },
+          "decision": { "enum": ["eligible", "excluded"] },
+          "reasons": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "languages": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "language", "generator", "generator_revision", "generated_readings", "audited_candidates",
+          "eligible_sources", "joined_reference_lemmas", "agreement", "status", "blockers"
+        ],
+        "properties": {
+          "language": { "enum": ["hin", "san", "tur", "hun"] },
+          "generator": { "type": "string", "minLength": 1 },
+          "generator_revision": { "type": "string", "pattern": "^mediawiki-replay-v1:[a-f0-9]{64}$" },
+          "generated_readings": { "type": "integer", "minimum": 0 },
+          "audited_candidates": { "type": "integer", "minimum": 1 },
+          "eligible_sources": { "type": "integer", "minimum": 0 },
+          "joined_reference_lemmas": { "type": "integer", "minimum": 0 },
+          "agreement": { "type": ["object", "null"] },
+          "status": { "enum": ["pass", "exploratory"] },
+          "blockers": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "pronunciation_admission": { "const": false },
+    "manuscript_scoring": { "const": false }
+  },
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

@@ -36,31 +36,63 @@ public static class PronunciationPolicyEvaluator
         IEnumerable<PronunciationReference> references,
         PronunciationPolicy policy,
         IpaEncoder encoder)
+        => EvaluateReferencesCore(references.Select(row => new AlternativeRow(
+            row.LemmaId, [row.GeneratedIpa], [row.ReferenceIpa], row.ReferenceOrigin,
+            row.GeneratorDependencies, row.ReferenceDependencies, row.HeldOut, false,
+            row.IndependenceEstablished)), policy, encoder, null);
+
+    public static PronunciationAgreement EvaluateReferences(
+        IEnumerable<PronunciationAlternativeReference> references,
+        PronunciationPolicy policy,
+        IpaEncoder encoder)
+        => EvaluateReferencesCore(references.Select(row => new AlternativeRow(
+            row.LemmaId, row.GeneratedIpa, row.ReferenceIpa, row.ReferenceOrigin,
+            row.GeneratorDependencies, row.ReferenceDependencies, row.HeldOut, row.TuningExample,
+            row.IndependenceEstablished)), policy, encoder, 0);
+
+    public static PronunciationAgreement EvaluateReferences(
+        IEnumerable<PronunciationAlternativeReference> references,
+        PronunciationPolicy policy,
+        IpaEncoder encoder,
+        int selectionSeed)
+        => EvaluateReferencesCore(references.Select(row => new AlternativeRow(
+            row.LemmaId, row.GeneratedIpa, row.ReferenceIpa, row.ReferenceOrigin,
+            row.GeneratorDependencies, row.ReferenceDependencies, row.HeldOut, row.TuningExample,
+            row.IndependenceEstablished)), policy, encoder, selectionSeed);
+
+    private static PronunciationAgreement EvaluateReferencesCore(
+        IEnumerable<AlternativeRow> references,
+        PronunciationPolicy policy,
+        IpaEncoder encoder,
+        int? selectionSeed)
     {
         var rows = references.ToArray();
         var diagnostics = new SortedDictionary<string, int>(StringComparer.Ordinal);
-        var valid = new List<(PronunciationReference Row, string Generated, string Reference, int Length)>();
+        var valid = new List<(AlternativeRow Row, string[] Generated, string[] Reference, int Length)>();
         var duplicateIds = rows.GroupBy(row => row.LemmaId, StringComparer.Ordinal)
             .Where(group => group.Count() > 1).Select(group => group.Key).ToHashSet(StringComparer.Ordinal);
         foreach (var row in rows)
         {
-            var generated = NormalizeIpa(row.GeneratedIpa);
-            var reference = NormalizeIpa(row.ReferenceIpa);
-            var (_, _, generatedPhones) = encoder.GetTextAndPhones(
-                generated.Normalize(NormalizationForm.FormD), out var generatedUnknown);
-            var (_, _, referencePhones) = encoder.GetTextAndPhones(
-                reference.Normalize(NormalizationForm.FormD), out var referenceUnknown);
+            var generated = row.GeneratedIpa.Select(NormalizeIpa).Order(StringComparer.Ordinal).ToArray();
+            var reference = row.ReferenceIpa.Select(NormalizeIpa).Order(StringComparer.Ordinal).ToArray();
+            var generatedPhones = Encode(generated, encoder);
+            var referencePhones = Encode(reference, encoder);
+            var alternativeBands = referencePhones.Select(value => LengthBand(value.Count))
+                .Distinct(StringComparer.Ordinal).ToArray();
             var reason = duplicateIds.Contains(row.LemmaId) ? "duplicate_reference_lemma"
+                : generated.Length == 0 || reference.Length == 0 ? "missing_alternative_distribution"
                 : !row.HeldOut ? "not_held_out"
+                : row.TuningExample ? "tuning_leakage"
                 : row.GeneratorDependencies.Length == 0 || row.ReferenceDependencies.Length == 0 ||
                     !row.IndependenceEstablished ? "unknown_independence"
                 : row.GeneratorDependencies.Intersect(row.ReferenceDependencies, StringComparer.Ordinal).Any()
                     ? "shared_upstream"
                 : row.ReferenceOrigin != "dictionary-supplied" ? "unvalidated_reference_origin"
-                : generatedUnknown.Count != 0 || referenceUnknown.Count != 0 ||
-                    generatedPhones.Count == 0 || referencePhones.Count == 0 ? "unsupported_ipa"
-                : referencePhones.Count < policy.MinimumPhonemes ||
-                    referencePhones.Count > policy.MaximumPhonemes ? "outside_length"
+                : generatedPhones.Any(value => value.Unknown || value.Count == 0) ||
+                    referencePhones.Any(value => value.Unknown || value.Count == 0) ? "unsupported_ipa"
+                : alternativeBands.Length != 1 ? "inconsistent_alternative_length_band"
+                : referencePhones.Any(value => value.Count < policy.MinimumPhonemes ||
+                    value.Count > policy.MaximumPhonemes) ? "outside_length"
                 : null;
             if (reason != null)
             {
@@ -68,7 +100,7 @@ public static class PronunciationPolicyEvaluator
             }
             else
             {
-                valid.Add((row, generated, reference, referencePhones.Count));
+                valid.Add((row, generated, reference, referencePhones[0].Count));
             }
         }
 
@@ -77,20 +109,22 @@ public static class PronunciationPolicyEvaluator
             .Where(group => policy.RequiredBands.Contains(group.Key, StringComparer.Ordinal))
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .SelectMany(group => group
-                .OrderByDescending(item => item.Reference.Count(character => character > 127))
-                .ThenBy(item => StableId(item.Row.LemmaId), StringComparer.Ordinal).Take(perBand))
+                .OrderByDescending(item => item.Reference.Sum(value => value.Count(character => character > 127)))
+                .ThenBy(item => StableId(selectionSeed == null ? item.Row.LemmaId :
+                    selectionSeed.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                    "\u001f" + item.Row.LemmaId), StringComparer.Ordinal).Take(perBand))
             .ToArray();
         var bands = Counts(sample.Select(item => LengthBand(item.Length)));
         var agreement = sample.Length == 0 ? (double?)null
-            : (double)sample.Count(item => item.Generated == item.Reference) / sample.Length;
-        var disagreements = sample.Count(item => item.Generated != item.Reference);
+            : (double)sample.Count(item => item.Generated.SequenceEqual(item.Reference, StringComparer.Ordinal)) / sample.Length;
+        var disagreements = sample.Count(item => !item.Generated.SequenceEqual(item.Reference, StringComparer.Ordinal));
         if (disagreements != 0)
         {
             diagnostics["pronunciation_disagreement"] = disagreements;
         }
 
         var editDistance = sample.Length == 0 ? (double?)null : sample.Average(item =>
-            PhoneEditDistance(item.Generated, item.Reference, encoder));
+            AlternativeEditDistance(item.Generated, item.Reference, encoder));
         var enough = sample.Length >= policy.MinimumReferences &&
             policy.RequiredBands.All(band => bands.GetValueOrDefault(band) >= policy.MinimumPerBand);
         if (sample.Length < policy.MinimumReferences)
@@ -111,6 +145,27 @@ public static class PronunciationPolicyEvaluator
         return new PronunciationAgreement(
             enough && agreement >= policy.MinimumAgreement ? "pass" : "exploratory",
             rows.Length, valid.Count, sample.Length, agreement, editDistance, bands, diagnostics);
+    }
+
+    private static (int Count, bool Unknown)[] Encode(IEnumerable<string> alternatives, IpaEncoder encoder) =>
+        [.. alternatives.Select(ipa =>
+        {
+            var (_, _, phones) = encoder.GetTextAndPhones(
+                ipa.Normalize(NormalizationForm.FormD), out var unknown);
+            return (phones.Count, unknown.Count != 0);
+        })];
+
+    private static double AlternativeEditDistance(string[] generated, string[] reference, IpaEncoder encoder)
+    {
+        var common = System.Math.Min(generated.Length, reference.Length);
+        var total = generated.Length == reference.Length ? 0.0 :
+            System.Math.Abs(generated.Length - reference.Length);
+        for (var index = 0; index < common; index++)
+        {
+            total += PhoneEditDistance(generated[index], reference[index], encoder);
+        }
+
+        return total / System.Math.Max(generated.Length, reference.Length);
     }
 
     public static SortedDictionary<string, int> Counts(IEnumerable<string> values)
@@ -149,4 +204,9 @@ public static class PronunciationPolicyEvaluator
 
         return previous[right.Count];
     }
+
+    private sealed record AlternativeRow(
+        string LemmaId, string[] GeneratedIpa, string[] ReferenceIpa, string ReferenceOrigin,
+        string[] GeneratorDependencies, string[] ReferenceDependencies, bool HeldOut,
+        bool TuningExample, bool IndependenceEstablished);
 }
