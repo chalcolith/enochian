@@ -796,6 +796,45 @@ surface before the research release.
 - M4-01 is blocked until the replacement protocol and all admitted profiles
   satisfy these machine-checkable gates.
 
+### M2-10: Recover per-reading pronunciation provenance
+
+**Depends on:** M2-09. **Blocks:** M4-01. Tracked in #45.
+
+**Scope**
+
+- Preserve M2-07/M2-08 artifacts, the v2 protocol, and all research thresholds.
+  Acquire bounded, deterministic proof samples for Hindi, Sanskrit, Turkish,
+  and Hungarian: 50 compatible source units per required band, sorted by
+  source/lexical-identity SHA-256, retaining all compatible alternatives.
+- Pin historical page revisions at the original dump cutoff, exact API/HTML
+  bytes, site license metadata, and historical root-template/module revisions.
+  Retain raw source snapshots locally; publish definitions-free proofs and
+  quality reports.
+- Bind each original IPA alternative to its exact language, etymology, POS,
+  revision, and producing Parsoid transclusion. Entry-level metadata, normalized
+  phonemic/phonetic agreement, other-language readings, and ambiguous template
+  ownership cannot supply proof.
+- Admit explicit generic IPA formatting arguments only with the correct
+  language code. Specialized-template literal overrides remain unresolved
+  without established semantics. Generated readings require independently
+  validated references and established generator revisions/dependencies.
+  Rendering an old page can use later templates: historical root revisions
+  are diagnostics, not a complete rendered dependency closure.
+- Consume recovered evidence only through a separate, frozen v2-compatible
+  amendment and a v1.1 profile envelope that replays proof from pinned sources.
+  Protect and hash all transitive proof inputs and parser software.
+
+**Tests and acceptance**
+
+- Repeated offline replay is byte-stable; tampering, missing revisions, wrong
+  source identity/conventions, and altered alternatives/weights fail explicitly.
+- Literal/generated distinctions, multilingual/etymological scoping, comments,
+  dynamic arguments, ambiguity, and shared-source pseudo-independence are tested.
+- Publish measured coverage and actual admission effects without promising
+  admission. No human annotation or manuscript scoring is performed.
+- M4-01 remains blocked wherever pronunciation, retrieval, or query/mapping
+  gates fail. Retrieval algorithm changes require separate versioned work.
+
 **Revised Milestone 2 exit:** the expanded language panel has dictionary-first
 pronunciation, versioned historical conventions, automated evidence and
 retrieval results, and explicit exclusions. No human annotation is required.

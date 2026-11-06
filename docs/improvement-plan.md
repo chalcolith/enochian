@@ -47,6 +47,24 @@ Better independently traceable evidence and a pinned query/mapping amendment
 must pass preflight before M4-01. Astronomy remains a separate exploratory
 registration with at least 25 shared catalog objects per language pair.
 
+M2-10 (#45) addresses the pronunciation-provenance prerequisite separately
+from M4-01. Its [frozen recovery plan](../resources/lexicons/pronunciation-provenance.v1.json)
+selects 50 compatible units per length band and required language, ordered by
+source/lexical-identity SHA-256 without inspecting glosses or manuscript scores.
+All compatible alternatives and original memberships are preserved. Immutable
+page revisions and retained, checksummed Parsoid revision HTML bind individual
+IPA readings to their producing transclusions. Explicit generic IPA arguments
+can supply direct dictionary evidence; generated or unresolved readings are not
+promoted. Historical root-template/module revisions do not prove the complete
+dependency closure used to render HTML, and Wiktionary is not independent of
+its own generators. The separate amendment retains all v2 thresholds and
+leaves unresolved required-language gates visibly blocked.
+The [measured recovery](../reports/pronunciation-provenance/v1/coverage.md)
+covers 600 selected units across 582 distinct pages. Actual v2 admission finds
+85 supported Turkish units and zero supported Hindi/Sanskrit/Hungarian units;
+all required sources remain below the unchanged gates. No manuscript scoring
+was performed.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

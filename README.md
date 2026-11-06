@@ -92,6 +92,15 @@ without review sheets; its artificial phonology is not linguistic evidence.
 See the [migration guide](experiments/protocol-v2.md#compatibility-reproducibility-and-migration)
 for checkpoints, frozen contrasts, balanced quotas, and separate astronomy.
 
+M2-10 (#45) recovers per-reading source proof for the required Hindi, Sanskrit,
+Turkish, and Hungarian anchors. See the
+[recovery guide](resources/lexicons/README.md#per-reading-provenance-recovery-m2-10).
+It writes a separate amendment and leaves M4-01 blocked wherever evidence,
+retrieval, or query/mapping gates still fail; no human labeling is required.
+The [measured amendment](reports/pronunciation-provenance/v1/admission.md)
+has 85 supported Turkish units and zero for the other required anchors; none
+passes admission. Generated readings still require independent validation.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

@@ -1,0 +1,384 @@
+{
+  "$schema": "https://chalcolith.github.io/enochian/schemas/automated-experiment-2.json",
+  "schema_version": "2.0.0",
+  "config_id": "dictionary-first-provenance-v1",
+  "phase": "confirmatory",
+  "frozen": true,
+  "phonology": {
+    "flow": {
+      "path": "samples/ipatransducer.json",
+      "sha256": "77e211f7c8ebb9c589d5552805f18d991bc530ac54807c3b188a2cef6c402c26"
+    },
+    "features": {
+      "path": "resources/encodings/features.json",
+      "sha256": "121964dcbdcfb7e5aff61c3a135495ba9d10e4b9404ff5bf916cd3d4648c910c"
+    },
+    "encoding": {
+      "path": "resources/encodings/ipa.json",
+      "sha256": "fd39e5987ba284e6ff43323f42d3eabf7caebf0c654f2224e19e8c1b60542587"
+    }
+  },
+  "panel": {
+    "path": "resources/lexicons/pronunciation-panel.v1.json",
+    "sha256": "6a646913242084a7be3ddd10c650769b083d01a1d5bce53959f12da2d5f1da90"
+  },
+  "retrieval_policy": {
+    "path": "experiments/retrieval-benchmark.protocol.json",
+    "sha256": "9e84fef7c49cf3ec8d2fdd57061147387ab3073c725edcf417fd6d586a9ccdf7"
+  },
+  "degradations": [
+    {
+      "path": "experiments/degradation-profiles/identity.v1.json",
+      "sha256": "f1065f38ce738147ff383039d153f099555f37ba34b8e8cbffd48ebb64fcbd5c"
+    },
+    {
+      "path": "experiments/degradation-profiles/deletion.v1.json",
+      "sha256": "9ada0d3df1439430c876d813d05713be1e33280f295341145fd8d921c943f7e6"
+    },
+    {
+      "path": "experiments/degradation-profiles/feature-merger.v1.json",
+      "sha256": "dd3147e68f1456ca9dd3821a0c92e0c70a49b1109525718e69d64f0be7779877"
+    },
+    {
+      "path": "experiments/degradation-profiles/feature-masking.v1.json",
+      "sha256": "42c3de3c16aa9d9bfa15e0f44d88ecb39a72e29e17e88f2386576a16460acdf4"
+    }
+  ],
+  "sources": [
+    {
+      "profile_id": "lat-ecclesiastical-italianate",
+      "language": "lat",
+      "family": "Indo-European/Italic",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/lat-ecclesiastical-italianate-v1.0.0.manifest.json",
+        "sha256": "254b1bf8c0c8bf6e1810f96493be8193de1a757e5a668158b14b59f08fac796e"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "hbo-tiberian",
+      "language": "hbo",
+      "family": "Afro-Asiatic/Semitic",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.manifest.json",
+        "sha256": "54c110fb493f8c0198d320eb03dc92fa2abd46b06c9b9cdcb0532cfe16be5516"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "ara-classical-citation",
+      "language": "ara",
+      "family": "Afro-Asiatic/Semitic",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/ara-classical-citation-v1.0.0.manifest.json",
+        "sha256": "85ed1992683cebfc365342bcc3cbeeb3fefe094802f9a49a5efa08a6d2dc185d"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "grc-koine-4c",
+      "language": "grc",
+      "family": "Indo-European/Hellenic",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.manifest.json",
+        "sha256": "f76ca88f6c493d98bae5d7ed660d483eab24f1ed1d7b4081cc160aab697337cc"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "asm-dictionary",
+      "language": "asm",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/asm-dictionary-v1.0.0.manifest.json",
+        "sha256": "2f63d2afd09143ed2f5ef6e5e875f066ca81a288c43f1c9e2d6d55cacc728720"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "ben-dictionary",
+      "language": "ben",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/ben-dictionary-v1.0.0.manifest.json",
+        "sha256": "3eaaa2ad3a35f3714957c9608d2c6fd3cc3663c2eafb0d36ba88b8adaf69c071"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "bho-dictionary",
+      "language": "bho",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/bho-dictionary-v1.0.0.manifest.json",
+        "sha256": "e977ea3f732d3b2f1663eadc20c4af0ac29e725da3a2968b40bca93c8a1d9ad9"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "guj-dictionary",
+      "language": "guj",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/guj-dictionary-v1.0.0.manifest.json",
+        "sha256": "64b060bffa581903bb9177fddbb942f5eb62134902e7b3925f79182f0e7c509e"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "hin-dictionary",
+      "language": "hin",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-provenance/v1/profiles/hin-dictionary-v1.0.0.manifest.json",
+        "sha256": "301df2ad452c2e482e4b174a9e868e0d0d7367df8676f2f753bc6ad58e5ced43"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "mar-dictionary",
+      "language": "mar",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/mar-dictionary-v1.0.0.manifest.json",
+        "sha256": "0d295918f6367c6b70f6d34b2fc3281711b8b24f81f913c6026ebbb86af8a09c"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "pan-dictionary",
+      "language": "pan",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/pan-dictionary-v1.0.0.manifest.json",
+        "sha256": "a2e76a0b7fad44d3e2b6b5affef43e50541d157031c0860201da86fc52d07b08"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "rom-dictionary",
+      "language": "rom",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "confirmatory_eligible": false,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/rom-dictionary-v1.0.0.manifest.json",
+        "sha256": "e2d3592d6e4118d6e5668b89f5c86767f838cdcac1deaa5832081ed9f8d673c9"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "san-dictionary",
+      "language": "san",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-provenance/v1/profiles/san-dictionary-v1.0.0.manifest.json",
+        "sha256": "cd6c8771426477914218c9d5efca1a8607422033468941e98e3940e7f67894f6"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "fas-dictionary",
+      "language": "fas",
+      "family": "Indo-European/Indo-Iranian/Iranian",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/fas-dictionary-v1.0.0.manifest.json",
+        "sha256": "7b9f90cb58e566d6db45805d2b09970c80980b4746ec50d04247ade7c9357cff"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "pus-dictionary",
+      "language": "pus",
+      "family": "Indo-European/Indo-Iranian/Iranian",
+      "required": false,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/v1/pus-dictionary-v1.0.0.manifest.json",
+        "sha256": "7ede67f0a0756aff6b4599faf8657d7f7956962335c7f5524c71867453ef8abd"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "tur-dictionary",
+      "language": "tur",
+      "family": "Turkic",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-provenance/v1/profiles/tur-dictionary-v1.0.0.manifest.json",
+        "sha256": "7a48494bce9b0f324ce6c6f383529bed86b78cdb77d0996f7ddddb1ec1ade926"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "hun-dictionary",
+      "language": "hun",
+      "family": "Uralic",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-provenance/v1/profiles/hun-dictionary-v1.0.0.manifest.json",
+        "sha256": "2788dcc67e5f73f539abd004b1ebec85593fecc6ca7815b50f73d1ae487a6dd0"
+      },
+      "references": null
+    }
+  ],
+  "groups": {
+    "arabic": [
+      "ara"
+    ],
+    "hebrew-descriptive-only": [
+      "hbo"
+    ],
+    "indo-aryan": [
+      "hin",
+      "san",
+      "asm",
+      "ben",
+      "bho",
+      "guj",
+      "mar",
+      "pan",
+      "rom"
+    ],
+    "iranian-bridge": [
+      "fas",
+      "pus"
+    ],
+    "latin-greek": [
+      "lat",
+      "grc"
+    ],
+    "unrelated-controls": [
+      "tur",
+      "hun"
+    ]
+  },
+  "contrasts": [
+    {
+      "id": "indo-aryan-versus-unrelated-controls",
+      "primary": true,
+      "required": true,
+      "target_groups": [
+        "indo-aryan"
+      ],
+      "control_groups": [
+        "unrelated-controls"
+      ]
+    },
+    {
+      "id": "indo-aryan-versus-latin-greek",
+      "primary": false,
+      "required": false,
+      "target_groups": [
+        "indo-aryan"
+      ],
+      "control_groups": [
+        "latin-greek"
+      ]
+    },
+    {
+      "id": "iranian-bridge-versus-unrelated-controls",
+      "primary": false,
+      "required": false,
+      "target_groups": [
+        "iranian-bridge"
+      ],
+      "control_groups": [
+        "unrelated-controls"
+      ]
+    },
+    {
+      "id": "arabic-versus-indo-aryan",
+      "primary": false,
+      "required": false,
+      "target_groups": [
+        "arabic"
+      ],
+      "control_groups": [
+        "indo-aryan"
+      ]
+    }
+  ],
+  "length_quotas": {
+    "03-05": 34,
+    "06-09": 33,
+    "10-20": 33
+  },
+  "sampling_seed": 15485863,
+  "null_seed": 15485867,
+  "permutation_seed": 32452843,
+  "repetitions": 20,
+  "null_repetitions": 100,
+  "permutation_count": 10000,
+  "bootstrap_count": 2000,
+  "confidence_level": 0.95,
+  "alpha": 0.05,
+  "calibration_null": "biphone-pseudoword",
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_loci": [
+    "f3r",
+    "f3v",
+    "f4r",
+    "f4v"
+  ],
+  "queries": null,
+  "mapping": null,
+  "astronomy": {
+    "registration": {
+      "path": "reports/pronunciation-profiles/v1/astronomy-registration.json",
+      "sha256": "18845a93cd2b3698e77132689cfd86738968d6aa45dedb92f6fb96bf132ebe8a"
+    },
+    "policy": {
+      "path": "experiments/astronomical-names.v1.json",
+      "sha256": "86d955ba17c3842d9806f2511ee5e912e687b8b79cc1eb13ba5f78518836783e"
+    },
+    "manifest": {
+      "path": "resources/lexicons/manifests/hyg-4.1.manifest.json",
+      "sha256": "2f97d4710a4572e761cd141df4cb6d9045496d2f83d5bc7953cc000d1415a988"
+    },
+    "status": "exploratory_not_part_of_primary",
+    "minimum_shared_objects": 25,
+    "balancing": "paired-common-catalog-ids-equal-object-weights-stable-hash-selection",
+    "contexts": "HYG-constellation-identifiers-only-no-inferred-manuscript-context",
+    "nulls": [
+      "catalog-label-permutation-within-language-and-length-band",
+      "within-query-shuffle"
+    ],
+    "multiplicity": "separate-holm-family-arabic-versus-each-other-panel-language-exploratory-only"
+  },
+  "output_directory": ".enoch/experiments/provenance-v1",
+  "admission_report": "reports/pronunciation-provenance/v1/admission.json"
+}
