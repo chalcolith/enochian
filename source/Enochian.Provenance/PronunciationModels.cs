@@ -136,6 +136,35 @@ public sealed record PronunciationReference
     public required bool IndependenceEstablished { get; init; }
 }
 
+public sealed record PronunciationAlternativeReference
+{
+    public required string LemmaId { get; init; }
+    public required string[] SourceRecordIds { get; init; }
+    public required string[] GeneratedIpa { get; init; }
+    public required string[] ReferenceIpa { get; init; }
+    public required string ReferenceOrigin { get; init; }
+    public required string[] GeneratorDependencies { get; init; }
+    public required string[] ReferenceDependencies { get; init; }
+    public required bool HeldOut { get; init; }
+    public required bool TuningExample { get; init; }
+    public required bool IndependenceEstablished { get; init; }
+}
+
+public sealed record IndependentReferenceSource(RecoveryPin Manifest, string[] Dependencies);
+
+public sealed record GeneratorReferenceSet
+{
+    public required string SchemaVersion { get; init; }
+    public required string ProfileSha256 { get; init; }
+    public required string Generator { get; init; }
+    public required string GeneratorRevision { get; init; }
+    public required string Convention { get; init; }
+    public required int SelectionSeed { get; init; }
+    public required string SelectionPolicy { get; init; }
+    public required IndependentReferenceSource[] ReferenceSources { get; init; }
+    public required PronunciationAlternativeReference[] Records { get; init; }
+}
+
 public sealed record PronunciationAgreement(
     string Status,
     int SuppliedReferences,

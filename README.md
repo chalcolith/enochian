@@ -109,6 +109,15 @@ digest-pinned runtime are required. See the
 licensing, unresolved dependencies, and the new independent-reference contract.
 Reproduced generation remains exploratory and never grants admission alone.
 
+M2-12 (#50) audits independent pronunciation references for those reproduced
+generators. Run `pronunciation-references` from the provenance CLI after
+retaining the M2-11 replay package. The
+[measured audit](reports/pronunciation-references/v1/coverage.json) found no
+qualifying direct-pronunciation dataset among 16 candidates: spelling lists,
+audio corpora, generated pronunciations, WikiPron/Wiktionary derivatives,
+unlicensed services, and unsupported languages remain explicit exclusions.
+All four generated profiles therefore remain exploratory under unchanged gates.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

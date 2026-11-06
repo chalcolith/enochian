@@ -330,7 +330,13 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         PronunciationPolicy policy, IReadOnlyDictionary<string, SourceMetadata> generators, bool replayed)
     {
         using var document = files.Read(pin);
-        var replayReferences = document.RootElement.GetProperty("schema_version").GetString() == "2.1.0";
+        var version = document.RootElement.GetProperty("schema_version").GetString();
+        if (version == "2.2.0")
+        {
+            return EvaluateAlternativeReferences(document.RootElement, profile, evidence, policy, generators, replayed);
+        }
+
+        var replayReferences = version == "2.1.0";
         Require(!replayReferences || replayed, "replayed_references_require_replayed_profile");
         Require(LoadSchema(replayReferences ? "automated-reference-set.v2.1.schema.json" : "automated-reference-set.v2.schema.json")
             .Evaluate(document.RootElement).IsValid,
@@ -358,7 +364,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         Require(set.ReferenceSources.Length != 0, "missing_reference_sources");
         foreach (var source in set.ReferenceSources)
         {
-            var reference = ValidateSourceManifest(files.Pin(source.Manifest));
+            var reference = ValidateSourceManifest(files.Pin(
+                new PinnedInput(source.Manifest.Path, source.Manifest.Sha256)));
             Require(source.Dependencies.Length != 0 && !source.Dependencies.Any(IsUnknown) &&
                 !generators.Values.Any(generator => generator.Id == reference.Id || generator.Hash == reference.Hash ||
                     generator.Url == reference.Url), "shared_or_unknown_reference_source");
@@ -374,6 +381,48 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             generatorRoots.IsSubsetOf(row.GeneratorDependencies) && referenceRoots.IsSubsetOf(row.ReferenceDependencies)),
             "unbound_or_incomplete_reference_evidence");
         return PronunciationPolicyEvaluator.EvaluateReferences(set.Records, policy, encoder);
+    }
+
+    private PronunciationAgreement EvaluateAlternativeReferences(
+        JsonElement document, PronunciationProfile profile, IEnumerable<PronunciationEvidence> evidence,
+        PronunciationPolicy policy, IReadOnlyDictionary<string, SourceMetadata> generators, bool replayed)
+    {
+        Require(replayed && LoadSchema("automated-reference-set.v2.2.schema.json").Evaluate(document).IsValid,
+            "invalid_alternative_reference_set");
+        var set = JsonSerializer.Deserialize<GeneratorReferenceSet>(document, PronunciationAudit.JsonOptions)
+            ?? throw new InvalidDataException("empty_alternative_reference_set");
+        Require(set.ProfileSha256 == profile.Fingerprint && set.Convention == profile.Convention,
+            "reference_profile_hash_or_convention_mismatch");
+        var generated = evidence.Where(row => row.Origin == "template-generated" && row.GeneratorRevision != null).ToArray();
+        Require(generated.Length != 0 && generated.All(row => row.Generator == set.Generator &&
+            row.GeneratorRevision == set.GeneratorRevision), "reference_generator_identity_or_revision_mismatch");
+        var generatorRoots = generated.SelectMany(row => row.Dependencies).Concat(generated.Select(row => row.Source))
+            .ToHashSet(StringComparer.Ordinal);
+        Require(!generatorRoots.Any(IsUnknown), "unknown_generator_dependencies_or_revision");
+        var referenceRoots = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var source in set.ReferenceSources)
+        {
+            var reference = ValidateSourceManifest(files.Pin(
+                new PinnedInput(source.Manifest.Path, source.Manifest.Sha256)));
+            Require(source.Dependencies.Length != 0 && !source.Dependencies.Any(IsUnknown) &&
+                !generators.Values.Any(generator => generator.Id == reference.Id || generator.Hash == reference.Hash ||
+                    generator.Url == reference.Url), "shared_or_unknown_reference_source");
+            referenceRoots.UnionWith(source.Dependencies);
+            _ = referenceRoots.Add(reference.Id);
+        }
+
+        Require(!generatorRoots.Overlaps(referenceRoots), "shared_reference_dependencies");
+        var byId = generated.GroupBy(row => UnitId(profile, row.Source + "\u001f" + row.LexicalIdentity), StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Select(row =>
+                    PronunciationPolicyEvaluator.NormalizeIpa(row.OriginalIpa))
+                .Order(StringComparer.Ordinal).ToArray(), StringComparer.Ordinal);
+        Require(set.Records.All(row => byId.TryGetValue(row.LemmaId, out var alternatives) &&
+            alternatives.SequenceEqual(row.GeneratedIpa.Select(PronunciationPolicyEvaluator.NormalizeIpa)
+                .Order(StringComparer.Ordinal), StringComparer.Ordinal) &&
+            generatorRoots.IsSubsetOf(row.GeneratorDependencies) &&
+            referenceRoots.IsSubsetOf(row.ReferenceDependencies)),
+            "unbound_incomplete_or_cherry_picked_reference_evidence");
+        return PronunciationPolicyEvaluator.EvaluateReferences(set.Records, policy, encoder, set.SelectionSeed);
     }
 
     private SourceMetadata ValidateSourceManifest(string path)

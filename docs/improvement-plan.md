@@ -72,6 +72,18 @@ alternatives/weights. Reproduced generated readings remain exploratory until
 independent-reference agreement and the existing retrieval gates pass; later
 anchor population and manuscript mapping work remain separate prerequisites.
 
+M2-12 (#50) adds a separate
+[independent-reference source audit](../reports/pronunciation-references/v1/coverage.json)
+and a full-alternative reference contract. The frozen search covers 16
+candidate surfaces across Hindi, Sanskrit, Turkish, and Hungarian. None supplies
+licensed, immutable, convention-compatible direct dictionary pronunciation
+independent of the replayed English Wiktionary generators. UniMorph, CDSL,
+Zemberek, and Magyar Ispell are spelling/morphology resources; WikiPron shares
+the Wiktionary root; IPA-Dict does not cover these languages; and the remaining
+catalog/service candidates lack direct reusable pronunciation records. The
+result is an explicit infeasibility finding, not permission to substitute
+generated transcriptions or relax held-out agreement gates.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

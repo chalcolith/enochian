@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/independent-pronunciation-record-1.json",
+  "title": "Definitions-free independently supplied pronunciation record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "source_record_id", "language", "lemma", "convention", "ipa", "reference_origin",
+    "dependencies", "tuning_example", "independence_established"
+  ],
+  "properties": {
+    "source_record_id": { "type": "string", "minLength": 1 },
+    "language": { "enum": ["hin", "san", "tur", "hun"] },
+    "lemma": { "type": "string", "minLength": 1 },
+    "convention": { "type": "string", "minLength": 1 },
+    "ipa": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "reference_origin": { "const": "dictionary-supplied" },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tuning_example": { "type": "boolean" },
+    "independence_established": { "type": "boolean" }
+  }
+}

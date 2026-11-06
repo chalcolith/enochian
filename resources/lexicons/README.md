@@ -12,6 +12,41 @@ real confirmatory execution because all selected reading origins are unsupported
 Do not treat existing Classical Latin or generic Hebrew output as those new
 profiles, or convert pending human reviews into automated acceptances.
 
+## Independent pronunciation-reference audit (M2-12)
+
+The [frozen plan](pronunciation-reference-audit.v1.json) audits independent
+validation sources for the M2-11 Hindi, Sanskrit, Turkish, and Hungarian
+generator profiles. Run from `source/` with the retained replay and acquired
+lexicon snapshots:
+
+```powershell
+dotnet run --project Enochian.Provenance -- pronunciation-references
+dotnet run --project Enochian.Benchmark -- admit ..\experiments\confirmatory.references.v1.json
+```
+
+The first command is offline. It re-verifies the sealed replay package and
+profile envelopes, verifies acquired candidate manifest/source bytes, checks
+every eligibility decision, and writes a separate amendment and report. Any
+future eligible source must supply definitions-free direct dictionary
+pronunciations, an immutable verified license, exact convention, established
+independence, and complete dependency roots.
+
+The v2.2 reference contract binds the profile fingerprint, generator ID,
+generator package revision, convention, selection seed, source manifests, and
+full generated/reference alternative multisets. It rejects tuning leakage,
+shared roots, unknown dependencies, ambiguous source distributions, alternative
+removal, and favorable-alternative selection. Existing v2.0/v2.1 validators and
+the 100-reference, 25-per-band, 95%-agreement gates are unchanged.
+
+The [measured audit](../../reports/pronunciation-references/v1/coverage.json)
+finds zero eligible sources among 16 candidates. The pinned UniMorph Hindi,
+CDSL Sanskrit, Zemberek Turkish, and Magyar Ispell Hungarian artifacts are
+spelling/morphology resources, not pronunciation dictionaries. WikiPron shares
+the Wiktionary root, IPA-Dict lacks all four target languages, and surveyed
+catalog/service/audio candidates do not provide reusable direct pronunciation
+records. No empty or generated substitute envelope is published; all four
+profiles remain exploratory and admission remains blocked.
+
 ## Per-reading provenance recovery (M2-10)
 
 M2-11 adds the separate [offline generator replay tool](../../tools/wiktionary/README.md)

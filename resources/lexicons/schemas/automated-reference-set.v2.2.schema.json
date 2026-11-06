@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/automated-reference-set-2.2.json",
+  "title": "Independent held-out references preserving complete generated and reference alternatives",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "profile_sha256", "generator", "generator_revision", "convention",
+    "selection_seed", "selection_policy", "reference_sources", "records"
+  ],
+  "properties": {
+    "schema_version": { "const": "2.2.0" },
+    "profile_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generator": { "enum": ["wiktionary:hi-IPA", "wiktionary:sa-IPA", "wiktionary:tr-IPA", "wiktionary:hu-IPA"] },
+    "generator_revision": { "type": "string", "pattern": "^mediawiki-replay-v1:[a-f0-9]{64}$" },
+    "convention": { "type": "string", "minLength": 1 },
+    "selection_seed": { "type": "integer" },
+    "selection_policy": { "const": "all-eligible-joins-then-band-unusual-ipa-stable-lemma-hash-v1" },
+    "reference_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["manifest", "dependencies"],
+        "properties": {
+          "manifest": { "$ref": "#/$defs/pin" },
+          "dependencies": { "$ref": "#/$defs/dependencies" }
+        }
+      }
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lemma_id", "source_record_ids", "generated_ipa", "reference_ipa", "reference_origin",
+          "generator_dependencies", "reference_dependencies", "held_out", "tuning_example",
+          "independence_established"
+        ],
+        "properties": {
+          "lemma_id": { "type": "string", "minLength": 1 },
+          "source_record_ids": { "$ref": "#/$defs/dependencies" },
+          "generated_ipa": { "$ref": "#/$defs/alternatives" },
+          "reference_ipa": { "$ref": "#/$defs/alternatives" },
+          "reference_origin": { "const": "dictionary-supplied" },
+          "generator_dependencies": { "$ref": "#/$defs/dependencies" },
+          "reference_dependencies": { "$ref": "#/$defs/dependencies" },
+          "held_out": { "type": "boolean" },
+          "tuning_example": { "type": "boolean" },
+          "independence_established": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "alternatives": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
