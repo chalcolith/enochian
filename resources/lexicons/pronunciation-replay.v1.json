@@ -1,0 +1,28 @@
+{
+  "schema_version": "2.0.0",
+  "parent_protocol": {
+    "path": "experiments/confirmatory.provenance.v1.json",
+    "sha256": "405cc2a50cdb067607f0cb9a2b6b3c0938bf758fdc935810d8c371996c8d9ebe"
+  },
+  "profiles": [
+    {
+      "path": ".enoch/pronunciation-provenance/v1/profiles/hin-dictionary-v1.0.0.manifest.json",
+      "sha256": "301df2ad452c2e482e4b174a9e868e0d0d7367df8676f2f753bc6ad58e5ced43"
+    },
+    {
+      "path": ".enoch/pronunciation-provenance/v1/profiles/san-dictionary-v1.0.0.manifest.json",
+      "sha256": "cd6c8771426477914218c9d5efca1a8607422033468941e98e3940e7f67894f6"
+    },
+    {
+      "path": ".enoch/pronunciation-provenance/v1/profiles/tur-dictionary-v1.0.0.manifest.json",
+      "sha256": "7a48494bce9b0f324ce6c6f383529bed86b78cdb77d0996f7ddddb1ec1ade926"
+    },
+    {
+      "path": ".enoch/pronunciation-provenance/v1/profiles/hun-dictionary-v1.0.0.manifest.json",
+      "sha256": "2788dcc67e5f73f539abd004b1ebec85593fecc6ca7815b50f73d1ae487a6dd0"
+    }
+  ],
+  "cutoff": "2026-10-01T00:00:00Z",
+  "image": "mediawiki@sha256:9118f6e0ef4192b87d4bc602818a2812b2f471b5596928f0d1fd8256cde98be1",
+  "output_directory": ".enoch/pronunciation-replay/v1"
+}

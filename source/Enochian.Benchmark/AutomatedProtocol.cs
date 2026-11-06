@@ -133,6 +133,8 @@ public sealed record AutomatedReferenceSet
     public required string SchemaVersion { get; init; }
     public required string ProfileSha256 { get; init; }
     public required string GeneratorRevision { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Generator { get; init; }
     public required AutomatedReferenceSource[] ReferenceSources { get; init; }
     public required PronunciationReference[] Records { get; init; }
 }

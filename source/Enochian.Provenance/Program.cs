@@ -13,6 +13,7 @@ try
         "pronunciation-profiles" or "pronunciation-profiles-acquire" => await BuildPronunciationProfiles(repositoryRoot, args),
         "astronomy-register" or "astronomy-acquire" => await RegisterAstronomy(repositoryRoot, args),
         "pronunciation-provenance" or "pronunciation-provenance-acquire" => await RecoverPronunciationProvenance(repositoryRoot, args),
+        "pronunciation-replay" or "pronunciation-replay-acquire" => await ReplayPronunciationGenerators(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -133,6 +134,8 @@ static int ShowUsage()
     Console.Error.WriteLine("  Enochian.Provenance astronomy-acquire [protocol-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-provenance [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-provenance-acquire [plan-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-replay [plan-json]");
+    Console.Error.WriteLine("  Enochian.Provenance pronunciation-replay-acquire [plan-json]");
     return 1;
 }
 
@@ -202,5 +205,18 @@ static async Task<int> RecoverPronunciationProvenance(string repositoryRoot, str
         : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-provenance.v1.json");
     await new PronunciationRecovery(repositoryRoot).RunAsync(plan, arguments[0] == "pronunciation-provenance-acquire");
     Console.WriteLine("Per-reading proof recovery completed; use the separate amendment for admission/preflight.");
+    return 0;
+}
+
+static async Task<int> ReplayPronunciationGenerators(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var plan = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "resources", "lexicons", "pronunciation-replay.v1.json");
+    await new GeneratorReplay(repositoryRoot).RunAsync(plan, arguments[0] == "pronunciation-replay-acquire");
     return 0;
 }

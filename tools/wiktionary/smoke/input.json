@@ -1,0 +1,76 @@
+{
+  "sources": [
+    {
+      "title": "test", "revision": 1, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 1, "model": "wikitext", "language": "en",
+      "content": "Synthetic page-content input; not pronunciation evidence."
+    },
+    {
+      "title": "Template:hi-IPA", "revision": 2, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 2, "model": "wikitext", "language": "en",
+      "content": "{{#invoke:smoke-IPA|show}}"
+    },
+    {
+      "title": "Module:smoke-IPA", "revision": 3, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 3, "model": "Scribunto", "language": "en",
+      "content": "return {show = function(frame) local respelling = frame:getParent().args[1]; if respelling == 'respelling=literal' then respelling = 'respelling' end; local title = mw.title.getCurrentTitle(); local content = title:getContent(); local data = mw.loadData('Module:smoke/data'); local json = mw.loadJsonData('Module:smoke/json'); assert(json.verified == 'pinned-json'); local impl = require('Module:smoke/' .. respelling); return impl.render(data, content, title.text) end}"
+    },
+    {
+      "title": "Module:smoke/data", "revision": 4, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 4, "model": "Scribunto", "language": "en",
+      "content": "return {ipa = '/pat/'}"
+    },
+    {
+      "title": "Module:smoke/respelling", "revision": 5, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 5, "model": "Scribunto", "language": "en",
+      "content": "return {render = function(data, content, title) assert(title == 'test'); assert(content == 'Synthetic page-content input; not pronunciation evidence.'); return '<span class=\"IPA\">' .. data.ipa .. '</span><span class=\"IPA\">[pat]</span>' end}"
+    },
+    {
+      "title": "Template:hu-IPA", "revision": 6, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 6, "model": "wikitext", "language": "en",
+      "content": "{{#invoke:smoke-unsupported|show}}"
+    },
+    {
+      "title": "Module:smoke-unsupported", "revision": 7, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 7, "model": "Scribunto", "language": "en",
+      "content": "return {show = function() return mw.title.getCurrentTitle().categories end}"
+    },
+    {
+      "title": "Module:smoke/json", "revision": 8, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 8, "model": "json", "language": "en",
+      "content": "{\"verified\":\"pinned-json\"}"
+    },
+    {
+      "title": "Template:sa-IPA", "revision": 9, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 9, "model": "wikitext", "language": "en",
+      "content": "{{#invoke:smoke-jsonmissing|show}}"
+    },
+    {
+      "title": "Module:smoke-jsonmissing", "revision": 10, "timestamp": "2026-09-01T00:00:00Z",
+      "page_id": 10, "model": "Scribunto", "language": "en",
+      "content": "return {show = function() return mw.loadJsonData('Module:smoke/missing-json') end}"
+    }
+  ],
+  "requests": [
+    {
+      "id": "synthetic-reproduced", "title": "test", "page_revision": 1,
+      "template": "hi-IPA", "transclusion_id": "#smoke1",
+      "invocation": "{{hi-IPA|1=respelling=literal}}", "entry_ids": ["synthetic:1", "synthetic:2"]
+    },
+    {
+      "id": "synthetic-changed-frame", "title": "test", "page_revision": 1,
+      "template": "hi-IPA", "transclusion_id": "#smoke2",
+      "invocation": "{{hi-IPA|missing}}", "entry_ids": ["synthetic:3"]
+    },
+    {
+      "id": "synthetic-unsupported", "title": "test", "page_revision": 1,
+      "template": "hu-IPA", "transclusion_id": "#smoke3",
+      "invocation": "{{hu-IPA}}", "entry_ids": ["synthetic:4"]
+    },
+    {
+      "id": "synthetic-missing-json", "title": "test", "page_revision": 1,
+      "template": "sa-IPA", "transclusion_id": "#smoke4",
+      "invocation": "{{sa-IPA}}", "entry_ids": ["synthetic:5"]
+    }
+  ]
+}

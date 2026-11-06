@@ -14,6 +14,11 @@ profiles, or convert pending human reviews into automated acceptances.
 
 ## Per-reading provenance recovery (M2-10)
 
+M2-11 adds the separate [offline generator replay tool](../../tools/wiktionary/README.md)
+and [replay plan](pronunciation-replay.v1.json). It preserves these frozen M2-10
+inputs and writes new versioned envelopes, proofs, and an amendment. Reproduced
+generator origin does not establish independent pronunciation accuracy.
+
 The [frozen plan](pronunciation-provenance.v1.json) preserves the original v2
 protocol, source profiles, conventions, and thresholds. It selects 50 compatible
 units per length band for Hindi, Sanskrit, Turkish, and Hungarian, ordered by

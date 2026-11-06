@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-replay-proof-2.json",
+  "title": "Definitions-free per-reading pinned generator replay proof",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "entry_id", "parent_record_sha256", "language", "lexical_identity", "convention", "original_ipa", "request_id", "status", "generator", "generator_revision", "dependencies"],
+  "properties": {
+    "schema_version": { "const": "2.0.0" },
+    "entry_id": { "type": "string", "minLength": 1 },
+    "parent_record_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "language": { "enum": ["hin", "san", "tur", "hun"] },
+    "lexical_identity": { "type": "string", "minLength": 1 },
+    "convention": { "type": "string", "minLength": 1 },
+    "original_ipa": { "type": "string", "minLength": 1 },
+    "request_id": { "type": ["string", "null"] },
+    "status": {
+      "enum": ["reproduced", "unresolved_origin_or_frame", "unresolved_runtime_input", "missing_execution_dependency",
+        "missing_generator_dependency", "generator_execution_error", "original_ipa_mismatch", "alternative_distribution_mismatch"]
+    },
+    "generator": { "type": ["string", "null"] },
+    "generator_revision": { "type": ["string", "null"] },
+    "dependencies": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "reproduced" } } },
+      "then": {
+        "properties": {
+          "request_id": { "type": "string", "minLength": 1 },
+          "generator": { "enum": ["wiktionary:hi-IPA", "wiktionary:sa-IPA", "wiktionary:tr-IPA", "wiktionary:hu-IPA"] },
+          "generator_revision": { "type": "string", "pattern": "^mediawiki-replay-v1:[a-f0-9]{64}$" },
+          "dependencies": { "minItems": 1 }
+        }
+      },
+      "else": { "properties": { "generator": { "type": "null" }, "generator_revision": { "type": "null" } } }
+    }
+  ]
+}

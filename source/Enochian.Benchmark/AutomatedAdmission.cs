@@ -13,6 +13,7 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
     private readonly AutomatedFiles files = new(repositoryRoot);
     private readonly IpaEncoder encoder = new(features, encoding);
     private readonly Dictionary<string, SourceMetadata> sourceMetadata = new(StringComparer.Ordinal);
+    private readonly GeneratorReplay generatorReplay = new(repositoryRoot);
 
     public AutomatedAdmissionResult Evaluate(string protocolPath)
     {
@@ -143,11 +144,16 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         using var manifest = files.Read(source.ProfileManifest);
         var root = manifest.RootElement;
         var recovered = root.GetProperty("schema_version").GetString() == "1.1.0";
-        Require(LoadSchema(recovered ? "profile-artifact-manifest.v1.1.schema.json" : "profile-artifact-manifest.schema.json").Evaluate(root).IsValid,
+        var replayed = root.GetProperty("schema_version").GetString() == "1.2.0";
+        var envelopeSchema = replayed ? "profile-artifact-manifest.v1.2.schema.json"
+            : recovered ? "profile-artifact-manifest.v1.1.schema.json" : "profile-artifact-manifest.schema.json";
+        Require(LoadSchema(envelopeSchema).Evaluate(root).IsValid,
             "invalid_profile_artifact_manifest");
-        if (recovered)
+        if (recovered || replayed)
         {
-            foreach (var pin in new PronunciationRecovery(repositoryRoot).VerifyProfile(root))
+            var provenance = replayed ? generatorReplay.VerifyProfile(root)
+                : new PronunciationRecovery(repositoryRoot).VerifyProfile(root);
+            foreach (var pin in provenance)
             {
                 files.Track(files.Resolve(pin.Path));
             }
@@ -224,7 +230,7 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         Require(entries.Count == rows.Count, "missing_entry_evidence");
         var grouped = rows.Values.GroupBy(row => row.Source + "\u001f" + row.LexicalIdentity, StringComparer.Ordinal).ToArray();
         var compatible = grouped.Select(group => CreateUnit(profile, [.. group])).ToArray();
-        var agreement = source.References == null ? null : EvaluateReferences(source.References, profile, rows.Values, policy, upstream);
+        var agreement = source.References == null ? null : EvaluateReferences(source.References, profile, rows.Values, policy, upstream, replayed);
         var supportedIds = grouped.Where(group => group.All(row => row.Origin == "dictionary-supplied" ||
             (row.Origin is "converter-generated" or "template-generated" && agreement?.Status == "pass" &&
                 !string.IsNullOrWhiteSpace(row.Generator) && !string.IsNullOrWhiteSpace(row.GeneratorRevision))))
@@ -321,14 +327,26 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
 
     private PronunciationAgreement EvaluateReferences(
         PinnedInput pin, PronunciationProfile profile, IEnumerable<PronunciationEvidence> evidence,
-        PronunciationPolicy policy, IReadOnlyDictionary<string, SourceMetadata> generators)
+        PronunciationPolicy policy, IReadOnlyDictionary<string, SourceMetadata> generators, bool replayed)
     {
         using var document = files.Read(pin);
-        Require(LoadSchema("automated-reference-set.v2.schema.json").Evaluate(document.RootElement).IsValid,
+        var replayReferences = document.RootElement.GetProperty("schema_version").GetString() == "2.1.0";
+        Require(!replayReferences || replayed, "replayed_references_require_replayed_profile");
+        Require(LoadSchema(replayReferences ? "automated-reference-set.v2.1.schema.json" : "automated-reference-set.v2.schema.json")
+            .Evaluate(document.RootElement).IsValid,
             "invalid_reference_set");
         var set = JsonSerializer.Deserialize<AutomatedReferenceSet>(document.RootElement, AutomatedProtocol.JsonOptions)!;
         Require(set.ProfileSha256 == profile.Fingerprint, "reference_profile_hash_mismatch");
         var rows = evidence.ToArray();
+        if (replayReferences)
+        {
+            var generated = rows.Where(row => row.Origin is "converter-generated" or "template-generated" &&
+                row.GeneratorRevision != null).ToArray();
+            Require(generated.Length != 0 && generated.All(row => row.Generator == set.Generator &&
+                row.GeneratorRevision == set.GeneratorRevision), "reference_generator_identity_or_revision_mismatch");
+            rows = [.. rows.Where(row => row.Origin == "dictionary-supplied" ||
+                (row.Origin == "template-generated" && row.Generator == set.Generator && row.GeneratorRevision == set.GeneratorRevision))];
+        }
         var generatorRoots = rows.SelectMany(row => row.Dependencies).Concat(rows.Select(row => row.Source))
             .ToHashSet(StringComparer.Ordinal);
         Require(!generatorRoots.Any(IsUnknown) && rows.Where(row => row.Origin is "converter-generated" or "template-generated")

@@ -92,6 +92,9 @@ flowchart TD
     M207 --> M208[M2-08 Historical profiles, Arabic and Greek]
     M208 --> M209[M2-09 Automated quality gates and protocol migration]
     M305 --> M209
+    M209 --> M210[M2-10 Per-reading source provenance]
+    M210 --> M211[M2-11 Pinned offline generator replay]
+    M211 --> M401
     M209 --> M401
     M305 --> M401[M4-01 Frozen evaluation run]
     M401 --> M402[M4-02 Comparative report]
@@ -838,6 +841,45 @@ surface before the research release.
 **Revised Milestone 2 exit:** the expanded language panel has dictionary-first
 pronunciation, versioned historical conventions, automated evidence and
 retrieval results, and explicit exclusions. No human annotation is required.
+
+### M2-11: Pin and reproduce pronunciation generators offline
+
+**Depends on:** M2-10. **Blocks:** independent-reference validation and M4-01.
+Tracked in #48.
+
+**Scope**
+
+- Keep licensed Wiktionary generator code and its MediaWiki/Scribunto runtime
+  isolated from core-library code in an external acquisition tool.
+- Pin immutable template/module/data revisions at the frozen cutoff; trace and
+  retain execution-time dependencies, including dynamic loads and page-title,
+  content, respelling, and frame inputs.
+- Compare original IPA before normalization, retaining alternatives, weights,
+  language, etymology/POS ownership, conventions, and source memberships.
+- Publish a new source package, replay proofs, profile envelopes, and amendment.
+  Preserve M2-07 through M2-10 snapshots and validators.
+- Add explicit versioned support for reproduced generator IDs/revisions in the
+  independent-reference path. Reproducibility does not establish independence
+  or grant pronunciation admission.
+
+**Tests and acceptance**
+
+- Two offline executions from retained pinned inputs produce byte-identical,
+  definitions-free per-reading IPA/dependency outputs.
+- Changed source/root revisions, ambiguous ownership, unretained dependencies,
+  changed frames, and alternative/weight changes fail explicitly.
+- Unsupported runtime/data accesses and original IPA mismatches remain visible
+  blockers, never silently substituted readings.
+- Independent held-out agreement and all existing retrieval/admission thresholds
+  remain necessary; no human labels or manuscript scoring are used.
+- Focused replay tests and existing regression tests pass. Runtime acquisition
+  and container smoke checks are explicit, not prerequisites for the ordinary
+  network-free .NET test suite.
+
+See the [external replay guide](../tools/wiktionary/README.md) for commands,
+licensing, runtime boundaries, and retained inputs. Independent-reference
+acquisition, balanced anchor expansion, retrieval changes, mapping approval,
+and evaluation queries remain separately scoped work.
 
 ## Milestone 3: Scored comparative runner
 
