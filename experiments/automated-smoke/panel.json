@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "policy_id": "synthetic-v2-panel",
+  "frozen": true,
+  "dictionary_protocol": "resources/lexicons/pronunciation-audit.protocol.json",
+  "dictionary_protocol_sha256": "cb4815179c2fc68a286aeb6c98b43c4d74decf5dc13cd8d3960c2a82b5e8aa80",
+  "output_directory": "experiments/automated-smoke",
+  "report_directory": "experiments/automated-smoke/reports",
+  "fallback_source_manifests": [],
+  "profiles": [
+    {
+      "id": "tar-synthetic",
+      "version": "1.0.0",
+      "language": "tar",
+      "convention": "artificial-test-only",
+      "required_labels": [
+        "Synthetic"
+      ],
+      "rejected_labels": [
+        "Wrong"
+      ],
+      "fallback": "none",
+      "rules": {
+        "scope": "Artificial executable fixture; never research evidence."
+      }
+    },
+    {
+      "id": "ctl-synthetic",
+      "version": "1.0.0",
+      "language": "ctl",
+      "convention": "artificial-test-only",
+      "required_labels": [
+        "Synthetic"
+      ],
+      "rejected_labels": [
+        "Wrong"
+      ],
+      "fallback": "none",
+      "rules": {
+        "scope": "Artificial executable fixture; never research evidence."
+      }
+    }
+  ]
+}

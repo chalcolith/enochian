@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/automated-admission-2.json",
+  "title": "Automated pronunciation and retrieval admission; never human accuracy",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "runner_version", "validator_sha256", "config_id", "protocol_sha256", "ready_for_evaluation", "human_annotation_required", "sources", "blockers"],
+  "properties": {
+    "schema_version": { "const": "2.0.0" },
+    "runner_version": { "const": "automated-experiment-v2" },
+    "validator_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "config_id": { "type": "string" },
+    "protocol_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "ready_for_evaluation": { "type": "boolean" },
+    "human_annotation_required": { "const": false },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["profile_id", "language", "family", "required", "status", "compatible_lexical_units", "supported_lexical_units", "unique_phonological_units", "length_bands", "pronunciation_gate", "reference_agreement", "retrieval_gate", "retrieval", "blockers"],
+        "properties": {
+          "profile_id": { "type": "string" },
+          "language": { "type": "string" },
+          "family": { "type": "string" },
+          "required": { "type": "boolean" },
+          "status": { "enum": ["admitted", "exploratory", "excluded"] },
+          "compatible_lexical_units": { "type": "integer", "minimum": 0 },
+          "supported_lexical_units": { "type": "integer", "minimum": 0 },
+          "unique_phonological_units": { "type": "integer", "minimum": 0 },
+          "length_bands": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+          "pronunciation_gate": { "enum": ["passed", "failed"] },
+          "reference_agreement": { "type": ["object", "null"] },
+          "retrieval_gate": { "enum": ["passed", "failed", "not_run_invalid_provenance", "not_run_pronunciation_or_coverage_gate_failed"] },
+          "retrieval": {
+            "type": "array", "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["degradation_id", "length_band", "candidate_mode", "lexical_queries", "metrics", "passed", "blockers"],
+              "properties": {
+                "degradation_id": { "type": "string" },
+                "length_band": { "enum": ["03-05", "06-09", "10-20"] },
+                "candidate_mode": { "enum": ["source-included", "source-excluded"] },
+                "lexical_queries": { "type": "integer", "minimum": 0 },
+                "metrics": { "type": "object" },
+                "passed": { "type": "boolean" },
+                "blockers": { "$ref": "#/$defs/strings" }
+              }
+            }
+          },
+          "blockers": { "$ref": "#/$defs/strings" }
+        }
+      }
+    },
+    "blockers": { "$ref": "#/$defs/strings" }
+  },
+  "$defs": { "strings": { "type": "array", "items": { "type": "string" } } }
+}

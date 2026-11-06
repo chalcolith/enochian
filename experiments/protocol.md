@@ -6,7 +6,7 @@ before language-comparison output is produced. The checked-in examples contain
 configuration and synthetic provenance only; they contain no comparison
 results.
 
-## Planned amendment: dictionary-first automation (2026-11-05)
+## Implemented v2 amendment: dictionary-first automation (2026-11-05)
 
 The [current roadmap](../docs/improvement-plan.md) removes human pronunciation
 review and semantic annotation as execution prerequisites. It prefers online
@@ -15,7 +15,9 @@ Hebrew, and adds Classical Arabic plus an Ancient/Classical Greek lexicon with
 Koine pronunciation only. Coverage, provenance, reference independence,
 automated agreement where needed, and retrieval will determine admission.
 
-This is a planned protocol amendment, not a change to the version 1 runtime
+The [frozen v2 amendment](protocol-v2.md) and
+[combined configuration](confirmatory.v2.json) implement this design separately,
+not as a change to the version 1 runtime
 contract documented below. Existing frozen JSON configurations, schemas,
 Classical Latin output, and human-review validators are unchanged. Do not
 relabel old pronunciations or create accepted review rows from automated checks.
@@ -29,7 +31,11 @@ are implemented separately. The selected Greek stage is 4th-century CE Koine;
 Arabic retains explicit source citation vowels/endings without inferred ones.
 The [astronomical-name registration](astronomical-names.v1.json) remains outside
 the primary lemma analysis. These additions do not change the version 1
-experiment contract below; M2-09 admission/retrieval migration remains pending.
+experiment contract below. M2-09 now implements automated admission/retrieval,
+hash-safe execution/checkpoints, and explicit exclusions without human files.
+The [final table](../reports/automated-admission/v2/coverage.md) still blocks
+M4-01: no real profile has sufficient supported-origin evidence, and manuscript
+query/mapping pins remain deliberately unset.
 
 Keep the original protocol and artifacts reproducible. Freeze revised sources,
 language eligibility, historical profiles, contrasts, and astronomical-name

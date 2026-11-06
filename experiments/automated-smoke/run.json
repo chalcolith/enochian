@@ -1,0 +1,148 @@
+{
+  "$schema": "https://chalcolith.github.io/enochian/schemas/automated-experiment-2.json",
+  "schema_version": "2.0.0",
+  "config_id": "synthetic-automated-v2",
+  "phase": "synthetic",
+  "frozen": true,
+  "phonology": {
+    "flow": {
+      "path": "experiments/automated-smoke/flow.json",
+      "sha256": "3441ec573d7c0d0237be09164e066f22cc9e5201afbc129a352da598c442e699"
+    },
+    "features": {
+      "path": "resources/encodings/features.json",
+      "sha256": "121964dcbdcfb7e5aff61c3a135495ba9d10e4b9404ff5bf916cd3d4648c910c"
+    },
+    "encoding": {
+      "path": "experiments/automated-smoke/synthetic-ipa.json",
+      "sha256": "77e89ca65b7eff673f219a233b82aeb2cd84b9842e06b4f6d71f8a4ed6a0fd2c"
+    }
+  },
+  "panel": {
+    "path": "experiments/automated-smoke/panel.json",
+    "sha256": "ce37589232fa80a116771ba4d47c30dd5c2e63f723954d79f6dbdc7170eae44e"
+  },
+  "retrieval_policy": {
+    "path": "experiments/retrieval-benchmark.protocol.json",
+    "sha256": "9e84fef7c49cf3ec8d2fdd57061147387ab3073c725edcf417fd6d586a9ccdf7"
+  },
+  "degradations": [
+    {
+      "path": "experiments/degradation-profiles/identity.v1.json",
+      "sha256": "f1065f38ce738147ff383039d153f099555f37ba34b8e8cbffd48ebb64fcbd5c"
+    },
+    {
+      "path": "experiments/degradation-profiles/deletion.v1.json",
+      "sha256": "9ada0d3df1439430c876d813d05713be1e33280f295341145fd8d921c943f7e6"
+    },
+    {
+      "path": "experiments/degradation-profiles/feature-merger.v1.json",
+      "sha256": "dd3147e68f1456ca9dd3821a0c92e0c70a49b1109525718e69d64f0be7779877"
+    },
+    {
+      "path": "experiments/degradation-profiles/feature-masking.v1.json",
+      "sha256": "42c3de3c16aa9d9bfa15e0f44d88ecb39a72e29e17e88f2386576a16460acdf4"
+    }
+  ],
+  "sources": [
+    {
+      "profile_id": "tar-synthetic",
+      "language": "tar",
+      "family": "synthetic-tar",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": "experiments/automated-smoke/tar-synthetic-v1.0.0.manifest.json",
+        "sha256": "c28a2189cdec761869eabaed6d5efa9ca6e33db314c14cbba1f585bce479fc24"
+      },
+      "references": null
+    },
+    {
+      "profile_id": "ctl-synthetic",
+      "language": "ctl",
+      "family": "synthetic-ctl",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": "experiments/automated-smoke/ctl-synthetic-v1.0.0.manifest.json",
+        "sha256": "a2a01f0f647f53afd29e281b44140c66c64ce1c20c13903c10b8a8ab83cb055f"
+      },
+      "references": null
+    }
+  ],
+  "groups": {
+    "control": [
+      "ctl"
+    ],
+    "target": [
+      "tar"
+    ]
+  },
+  "contrasts": [
+    {
+      "id": "synthetic-target-versus-control",
+      "primary": true,
+      "required": true,
+      "target_groups": [
+        "target"
+      ],
+      "control_groups": [
+        "control"
+      ]
+    }
+  ],
+  "length_quotas": {
+    "03-05": 34,
+    "06-09": 33,
+    "10-20": 33
+  },
+  "sampling_seed": 15485863,
+  "null_seed": 15485867,
+  "permutation_seed": 32452843,
+  "repetitions": 2,
+  "null_repetitions": 8,
+  "permutation_count": 32,
+  "bootstrap_count": 32,
+  "confidence_level": 0.95,
+  "alpha": 0.05,
+  "calibration_null": "biphone-pseudoword",
+  "evaluation_loci": [
+    "synthetic-evaluation"
+  ],
+  "holdout_loci": [
+    "synthetic-holdout"
+  ],
+  "queries": {
+    "path": "experiments/automated-smoke/queries.jsonl",
+    "sha256": "ad87be2524d43611c052b613840a2b7dbb08e347d3d376bd10501b5b27bab843"
+  },
+  "mapping": {
+    "path": "experiments/automated-smoke/mapping.json",
+    "sha256": "894449925f5b5b57fd9df96afb537ffcb903cde2a389f169df5d24b6519cbd32"
+  },
+  "astronomy": {
+    "registration": {
+      "path": "reports/pronunciation-profiles/v1/astronomy-registration.json",
+      "sha256": "18845a93cd2b3698e77132689cfd86738968d6aa45dedb92f6fb96bf132ebe8a"
+    },
+    "policy": {
+      "path": "experiments/astronomical-names.v1.json",
+      "sha256": "86d955ba17c3842d9806f2511ee5e912e687b8b79cc1eb13ba5f78518836783e"
+    },
+    "manifest": {
+      "path": "resources/lexicons/manifests/hyg-4.1.manifest.json",
+      "sha256": "2f97d4710a4572e761cd141df4cb6d9045496d2f83d5bc7953cc000d1415a988"
+    },
+    "status": "exploratory_not_part_of_primary",
+    "minimum_shared_objects": 25,
+    "balancing": "paired-common-catalog-ids-equal-object-weights-stable-hash-selection",
+    "contexts": "HYG-constellation-identifiers-only-no-inferred-manuscript-context",
+    "nulls": [
+      "catalog-label-permutation-within-language-and-length-band",
+      "within-query-shuffle"
+    ],
+    "multiplicity": "separate-holm-family-arabic-versus-each-other-panel-language-exploratory-only"
+  },
+  "output_directory": "experiments/automated-smoke/outputs",
+  "admission_report": "experiments/automated-smoke/admission.json"
+}

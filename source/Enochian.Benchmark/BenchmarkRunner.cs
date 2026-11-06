@@ -14,6 +14,11 @@ public sealed class BenchmarkRunner(string repositoryRoot, FeatureSet features, 
     public int Run(string protocolPath)
     {
         var resolvedProtocol = Resolve(protocolPath, repositoryRoot);
+        if (AutomatedProtocol.IsRevised(resolvedProtocol))
+        {
+            return new AutomatedExperiment(repositoryRoot, features, encoding).Run(resolvedProtocol, "admit");
+        }
+
         var protocol = BenchmarkProtocol.Load(resolvedProtocol);
         var protocolDirectory = Path.GetDirectoryName(resolvedProtocol)!;
         var profiles = protocol.DegradationProfiles

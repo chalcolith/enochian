@@ -752,6 +752,12 @@ available automated pronunciation evidence.
 
 **Depends on:** M2-08 and M3-05.
 
+**Implementation:** [v2 amendment and migration](../experiments/protocol-v2.md),
+[frozen configuration](../experiments/confirmatory.v2.json), and
+[final admission table](../reports/automated-admission/v2/coverage.md).
+The synthetic no-human run passes; real M4-01 remains blocked by unsupported
+reading origins and missing explicit manuscript query/mapping pins.
+
 **Purpose:** wire the dictionary-first evidence policy through every executable
 surface before the research release.
 

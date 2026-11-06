@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "source_id": "tar-synthetic",
+  "status": "acquired",
+  "owner": "Enochian synthetic fixture",
+  "language": "tar",
+  "family": "synthetic-tar",
+  "url": "https://example.com/tar-synthetic",
+  "revision": {
+    "kind": "release",
+    "value": "synthetic-v1"
+  },
+  "retrieval_date": "2026-11-05",
+  "sha256": "e564ea6e34f2e9620fe1da1a769b14714db42c653a0ce6f4b29bb008c3b099ce",
+  "license": "MIT",
+  "license_status": "verified",
+  "distribution_policy": "vendored",
+  "usage_policy": "unrestricted",
+  "optional": false,
+  "default_bundle": false,
+  "citation": "Artificial integration fixture; not a natural-language pronunciation dictionary.",
+  "parser": {
+    "id": "synthetic-fixture",
+    "version": "1.0.0"
+  },
+  "raw_path": "experiments/automated-smoke/tar-synthetic-v1.0.0.jsonl",
+  "generated_artifact_path": "experiments/automated-smoke/tar-synthetic-v1.0.0.jsonl",
+  "filters": {
+    "include": [
+      "synthetic"
+    ],
+    "exclude": []
+  }
+}

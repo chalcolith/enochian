@@ -15,7 +15,7 @@ repository build from `source/` so the pinned SDK configuration is applied:
 cd source
 dotnet restore Enochian.slnx
 dotnet build Enochian.slnx --no-restore
-dotnet test Enochian.slnx --no-build
+dotnet test --solution Enochian.slnx --no-build
 ```
 
 At the start of the .NET 10 baseline migration, the repository discovered six
@@ -39,10 +39,9 @@ dictionaries, use ecclesiastical Latin and Tiberian Biblical Hebrew, and add
 Classical Arabic and Ancient/Classical Greek with Koine pronunciation only.
 Human pronunciation labeling and semantic annotation are no longer planned
 prerequisites. M2-07 through M2-09 in the
-[PR specifications](docs/milestone-pr-specs.md) must implement automated evidence
-gates and a versioned protocol migration before the confirmatory run. Existing
-frozen configs and human-review validators still implement the earlier design;
-this roadmap revision does not bypass them.
+[PR specifications](docs/milestone-pr-specs.md) define automated evidence gates.
+M2-09 now supplies the [frozen v2 amendment](experiments/protocol-v2.md).
+Existing v1 configs and human-review validators remain unchanged.
 
 M2-07 adds an offline pronunciation-dictionary coverage/evidence audit, with
 explicit pinned acquisition and no human labels:
@@ -72,9 +71,26 @@ See the [profile guide](resources/lexicons/README.md#dictionary-first-pronunciat
 and [coverage report](reports/pronunciation-profiles/v1/coverage.md).
 Classical Arabic remains excluded without usable Classical evidence; MSA is
 not substituted. No human annotation is required. All nonempty profiles remain
-exploratory until M2-09 implements the revised admission/retrieval protocol.
+exploratory under the implemented v2 admission/retrieval protocol.
 The star-name catalog is separately pinned and licensed; `astronomy-acquire`
 explicitly downloads it (about 34 MB) when it is not already retained.
+
+M2-09 replaces human review sheets only in the new dictionary-first path:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- admit ..\experiments\confirmatory.v2.json
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.v2.json
+dotnet run --project Enochian.Benchmark -- experiment ..\experiments\automated-smoke\run.json
+```
+
+The [17-language admission table](reports/automated-admission/v2/coverage.md)
+records zero supported-origin units, so the real commands correctly return a
+blocked status. M4-01 cannot run until required profiles pass both independent
+pronunciation-evidence and unchanged retrieval gates, and explicit query/mapping
+pins pass preflight. No human annotation is needed. The synthetic smoke succeeds
+without review sheets; its artificial phonology is not linguistic evidence.
+See the [migration guide](experiments/protocol-v2.md#compatibility-reproducibility-and-migration)
+for checkpoints, frozen contrasts, balanced quotas, and separate astronomy.
 
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
