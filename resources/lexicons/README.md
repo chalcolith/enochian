@@ -12,6 +12,67 @@ real confirmatory execution because all selected reading origins are unsupported
 Do not treat existing Classical Latin or generic Hebrew output as those new
 profiles, or convert pending human reviews into automated acceptances.
 
+## Per-reading provenance recovery (M2-10)
+
+The [frozen plan](pronunciation-provenance.v1.json) preserves the original v2
+protocol, source profiles, conventions, and thresholds. It selects 50 compatible
+units per length band for Hindi, Sanskrit, Turkish, and Hungarian, ordered by
+source/lexical-identity SHA-256. Selection never uses definitions or manuscript
+scores. All compatible alternatives and original memberships remain intact.
+
+Run from `source/`:
+
+```powershell
+dotnet run --project Enochian.Provenance -- pronunciation-provenance-acquire
+dotnet run --project Enochian.Provenance -- pronunciation-provenance
+dotnet run --project Enochian.Benchmark -- admit ..\experiments\confirmatory.provenance.v1.json
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.provenance.v1.json
+```
+
+The acquisition command makes at most 600 distinct lexical-page requests
+(two HTTP calls per page), plus license and generator-root requests, throttled
+to one request per second. It may take tens of minutes. Completed requests are
+content-addressed and resumable; an HTTP/API failure is explicit and does not
+seal incomplete data. The second command is entirely offline. Retain
+`.enoch/pronunciation-provenance/v1/`, the pinned parent artifacts, and the plan
+for reproduction. Sealed outputs cannot be silently replaced by different bytes.
+
+The snapshot pins exact MediaWiki revision responses and Parsoid revision HTML,
+with verified English Wiktionary CC-BY-SA-4.0 site metadata and attribution to
+Wiktionary contributors. Page titles/revision IDs reconstruct immutable entry
+links as `https://en.wiktionary.org/w/index.php?oldid=<revision>`.
+The revision response contains the original wikitext; its template/module
+revision, timestamp, and content can be audited offline. Raw API/HTML snapshots
+may contain definitions and are local source assets, not published proof exports.
+
+Proof binds each original IPA string (not merely normalized agreement) to its
+language, etymology, POS, and producing transclusion. Generic `IPA` templates
+qualify only with the matching language code and explicit literal IPA argument.
+Wrong-language, ambiguous, dynamically supplied, out-of-pronunciation, and
+unattributed readings remain unknown. Shared pronunciation before multiple
+numbered etymologies is conservatively unbound. Unverified specialized-template
+literal overrides are not promoted, even when an argument looks like IPA.
+
+Known language-specific generator transclusions establish generated origin,
+not independent accuracy. **An old page's HTML can use newer templates.**
+Pinned historical root versions are diagnostics, not proof of the rendered
+transitive dependency closure. Generated evidence therefore retains a null
+generator revision and explicit unknown-dependency marker. Wiktionary is not an
+independent reference for its own generators; the unchanged independent
+held-out agreement requirements still apply.
+
+New v1.1 profile envelopes pin the parent profile, sealed source package, and
+definitions-free per-reading proofs. Admission replays the proof, verifies all
+transitive byte pins and unchanged alternatives/weights, and tracks/protects
+source artifacts and parser binaries. The generated
+[separate amendment](../../experiments/confirmatory.provenance.v1.json) changes
+only the required source envelopes, run identity, and output locations. It does
+not change thresholds, sampling, contrasts, queries, mappings, or old inputs.
+See the [measured report](../../reports/pronunciation-provenance/v1/coverage.json)
+and [actual admission table](../../reports/pronunciation-provenance/v1/admission.md)
+for remaining blockers. Neither availability nor generated-origin recovery
+promises admission. No human labeling or manuscript evaluation is performed.
+
 ## Dictionary-first pronunciation profiles (M2-08)
 
 Run from `source/`:

@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "plan": {
+    "path": "resources/lexicons/pronunciation-provenance.v1.json",
+    "sha256": "7ca242a985e8a01a99842d76fda553cc978e1eb22a020a58f0cc395e80d43a06"
+  },
+  "snapshot": {
+    "path": ".enoch/pronunciation-provenance/v1/snapshot.json",
+    "sha256": "697d681b0ff6db4a10b827c259e0f74af0ad94d770554171450f663247827be6"
+  },
+  "license": "CC-BY-SA-4.0",
+  "pages": 582,
+  "generator_source_revisions": [
+    {
+      "title": "Template:hi-IPA",
+      "revision": 90143779,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/807139984dd7f594b138ea2c42213206640e6f11589fd3d153829a8396e776d5.json",
+        "sha256": "807139984dd7f594b138ea2c42213206640e6f11589fd3d153829a8396e776d5"
+      }
+    },
+    {
+      "title": "Module:hi-IPA",
+      "revision": 92750173,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/475b1f704c3c17c4a3470abefa1d064cd6df3d4e47c18d8b753e19f13dd84140.json",
+        "sha256": "475b1f704c3c17c4a3470abefa1d064cd6df3d4e47c18d8b753e19f13dd84140"
+      }
+    },
+    {
+      "title": "Template:sa-IPA",
+      "revision": 79053902,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/20c1ead566d672f0d6f8cc7fd60b9b11a046d31d0ffe31cc1895ec4258b99cfc.json",
+        "sha256": "20c1ead566d672f0d6f8cc7fd60b9b11a046d31d0ffe31cc1895ec4258b99cfc"
+      }
+    },
+    {
+      "title": "Module:sa-pronunc",
+      "revision": 91804574,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/b9a16f9f0601cb5c58dbe95f207feaea2930a9a04fd46ce6b9df6f4e0743277c.json",
+        "sha256": "b9a16f9f0601cb5c58dbe95f207feaea2930a9a04fd46ce6b9df6f4e0743277c"
+      }
+    },
+    {
+      "title": "Template:tr-IPA",
+      "revision": 85778185,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/5a336c7c9b2584603e75ca4aef8d1b082547ff7b1d5b5abf29d3ad7abd3b67ec.json",
+        "sha256": "5a336c7c9b2584603e75ca4aef8d1b082547ff7b1d5b5abf29d3ad7abd3b67ec"
+      }
+    },
+    {
+      "title": "Module:tr-IPA",
+      "revision": 88556184,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/b25cd4c3663b6d5488507b87cb2762f68402d028f7c8c901ad53d05d34696962.json",
+        "sha256": "b25cd4c3663b6d5488507b87cb2762f68402d028f7c8c901ad53d05d34696962"
+      }
+    },
+    {
+      "title": "Template:hu-IPA",
+      "revision": 79053032,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/7bd30f03f64037df39f1d97711e891bd4ea2ab7448213c4f9f8ba25b743e56bd.json",
+        "sha256": "7bd30f03f64037df39f1d97711e891bd4ea2ab7448213c4f9f8ba25b743e56bd"
+      }
+    },
+    {
+      "title": "Module:hu-pron",
+      "revision": 88547149,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/8a4e5976a4809581f3f653049c458d08b54ea2eae0131e43d3639b7f292a8a75.json",
+        "sha256": "8a4e5976a4809581f3f653049c458d08b54ea2eae0131e43d3639b7f292a8a75"
+      }
+    }
+  ],
+  "generator_revision_policy": "Historical root revisions are diagnostics, not the rendered transitive dependency closure.",
+  "sources": [
+    {
+      "language": "hin",
+      "selected_units": 150,
+      "selected_readings": 221,
+      "origins": {
+        "template-generated": 214,
+        "unknown": 7
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 7
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 0,
+      "generated_validation": "not_established"
+    },
+    {
+      "language": "san",
+      "selected_units": 150,
+      "selected_readings": 194,
+      "origins": {
+        "template-generated": 172,
+        "unknown": 22
+      },
+      "exclusions": {
+        "ambiguous_transclusion": 1,
+        "no_matching_scoped_reading": 21
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 0,
+      "generated_validation": "not_established"
+    },
+    {
+      "language": "tur",
+      "selected_units": 150,
+      "selected_readings": 158,
+      "origins": {
+        "dictionary-supplied": 88,
+        "template-generated": 64,
+        "unknown": 6
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 4,
+        "template_semantics_unresolved": 2
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 85,
+      "generated_validation": "not_established"
+    },
+    {
+      "language": "hun",
+      "selected_units": 150,
+      "selected_readings": 154,
+      "origins": {
+        "template-generated": 142,
+        "unknown": 12
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 12
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 0,
+      "generated_validation": "not_established"
+    }
+  ]
+}

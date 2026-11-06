@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-recovery-1.json",
+  "title": "M2-10 sealed acquisition and per-reading proof contracts",
+  "oneOf": [
+    { "$ref": "#/$defs/plan" },
+    { "$ref": "#/$defs/package" },
+    { "$ref": "#/$defs/page" },
+    { "$ref": "#/$defs/proof" }
+  ],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "pin": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": { "path": { "type": "string", "minLength": 1 }, "sha256": { "$ref": "#/$defs/hash" } }
+    },
+    "plan": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "parent_protocol", "page_cutoff", "units_per_band", "languages", "output_directory", "report_path", "amendment_path"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" }, "parent_protocol": { "$ref": "#/$defs/pin" },
+        "page_cutoff": { "const": "2026-10-01T00:00:00Z" }, "units_per_band": { "const": 50 },
+        "languages": { "const": ["hin", "san", "tur", "hun"] },
+        "output_directory": { "const": ".enoch/pronunciation-provenance/v1" },
+        "report_path": { "const": "reports/pronunciation-provenance/v1/coverage.json" },
+        "amendment_path": { "const": "experiments/confirmatory.provenance.v1.json" }
+      }
+    },
+    "page": {
+      "type": "object", "additionalProperties": false,
+      "required": ["title", "revision", "timestamp", "api", "html"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "revision": { "type": "integer", "minimum": 0 },
+        "timestamp": { "type": ["string", "null"] },
+        "api": { "$ref": "#/$defs/pin" },
+        "html": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] }
+      }
+    },
+    "package": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "plan", "license", "rights_info", "pages", "generator_sources"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" }, "plan": { "$ref": "#/$defs/pin" },
+        "license": { "const": "CC-BY-SA-4.0" }, "rights_info": { "$ref": "#/$defs/pin" },
+        "pages": { "type": "array", "items": { "$ref": "#/$defs/page" } },
+        "generator_sources": { "type": "array", "minItems": 8, "maxItems": 8, "items": { "$ref": "#/$defs/page" } }
+      }
+    },
+    "proof": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "entry_id", "parent_record_sha256", "language", "lexical_identity", "convention", "original_ipa", "page_revision", "html_sha256", "status", "origin", "template", "transclusion_id"],
+      "properties": {
+        "schema_version": { "const": "1.0.0" }, "entry_id": { "type": "string", "minLength": 1 },
+        "parent_record_sha256": { "$ref": "#/$defs/hash" },
+        "language": { "enum": ["hin", "san", "tur", "hun"] },
+        "lexical_identity": { "type": "string", "minLength": 1 },
+        "convention": { "type": "string", "minLength": 1 }, "original_ipa": { "type": "string", "minLength": 1 },
+        "page_revision": { "type": "integer", "minimum": 0 },
+        "html_sha256": { "oneOf": [{ "$ref": "#/$defs/hash" }, { "type": "null" }] },
+        "status": { "enum": ["no_matching_scoped_reading", "page_missing_at_cutoff", "ambiguous_transclusion", "literal_dictionary_ipa", "generated_revision_and_dependencies_unresolved", "template_semantics_unresolved"] },
+        "origin": { "enum": ["dictionary-supplied", "template-generated", "unknown"] },
+        "template": { "type": ["string", "null"] }, "transclusion_id": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

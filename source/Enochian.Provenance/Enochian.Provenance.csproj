@@ -4,6 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="JsonSchema.Net" />
     <ProjectReference Include="..\Enochian\Enochian.csproj" />
   </ItemGroup>

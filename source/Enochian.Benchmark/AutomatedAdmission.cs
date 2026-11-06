@@ -142,8 +142,19 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         Require(source.Language == profile.Language, "profile_language_mismatch");
         using var manifest = files.Read(source.ProfileManifest);
         var root = manifest.RootElement;
-        Require(LoadSchema("profile-artifact-manifest.schema.json").Evaluate(root).IsValid,
+        var recovered = root.GetProperty("schema_version").GetString() == "1.1.0";
+        Require(LoadSchema(recovered ? "profile-artifact-manifest.v1.1.schema.json" : "profile-artifact-manifest.schema.json").Evaluate(root).IsValid,
             "invalid_profile_artifact_manifest");
+        if (recovered)
+        {
+            foreach (var pin in new PronunciationRecovery(repositoryRoot).VerifyProfile(root))
+            {
+                files.Track(files.Resolve(pin.Path));
+            }
+
+            files.TrackSoftware(typeof(PronunciationRecovery).Assembly.Location);
+            files.TrackSoftware(typeof(HtmlAgilityPack.HtmlDocument).Assembly.Location);
+        }
         var recordedProfile = JsonSerializer.Deserialize<PronunciationProfile>(root.GetProperty("profile"), PronunciationAudit.JsonOptions);
         Require(recordedProfile?.Fingerprint == profile.Fingerprint &&
             root.GetProperty("profile_sha256").GetString() == profile.Fingerprint &&
@@ -385,6 +396,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             "resources/lexicons/schemas/automated-reference-set.v2.schema.json",
             "resources/lexicons/schemas/pronunciation-panel.schema.json",
             "resources/lexicons/schemas/profile-artifact-manifest.schema.json",
+            "resources/lexicons/schemas/profile-artifact-manifest.v1.1.schema.json",
+            "resources/lexicons/schemas/pronunciation-recovery.schema.json",
             "experiments/schemas/automated-experiment.v2.schema.json",
             "experiments/schemas/automated-admission.v2.schema.json",
         })

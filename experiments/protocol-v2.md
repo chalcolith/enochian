@@ -197,6 +197,22 @@ absent; it refuses to overwrite an existing frozen file. Changing source pins
 or research choices requires an explicit new amendment, never post-result
 threshold tuning.
 
+M2-10 adds a separate
+[per-reading recovery amendment](confirmatory.provenance.v1.json), not changes
+to the frozen initial registration. Its
+[v1.1 profile envelopes](../resources/lexicons/schemas/profile-artifact-manifest.v1.1.schema.json)
+retain the original profiles and normalized entries, pin the parent evidence
+and source package, and replay each recovered pronunciation proof before
+admission. All transitive source pins and parser binaries are protected and
+tracked. The original v1 envelope validator is unchanged. Generated readings
+with unresolved rendered generator revisions/dependencies remain unadmitted;
+the independent-reference and retrieval requirements are not relaxed.
+See the [recovery guide](../resources/lexicons/README.md#per-reading-provenance-recovery-m2-10).
+Exact replay of the sealed artifact envelopes requires the matching producing
+build; a different producing binary is not silently substituted in their
+software checksum. Parser/software changes or different output bytes require
+an explicit new version, retaining the old acquisition.
+
 ### Offline synthetic smoke
 
 ```powershell

@@ -1,0 +1,435 @@
+{
+  "schema_version": "2.0.0",
+  "runner_version": "automated-experiment-v2",
+  "validator_sha256": "25a861bae9f0886db2c5b927494330f21c7e3fc9820d1a13df8258023d90d0f5",
+  "config_id": "dictionary-first-provenance-v1",
+  "protocol_sha256": "405cc2a50cdb067607f0cb9a2b6b3c0938bf758fdc935810d8c371996c8d9ebe",
+  "ready_for_evaluation": false,
+  "human_annotation_required": false,
+  "sources": [
+    {
+      "profile_id": "ara-classical-citation",
+      "language": "ara",
+      "family": "Afro-Asiatic/Semitic",
+      "required": false,
+      "status": "excluded",
+      "compatible_lexical_units": 0,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {},
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "asm-dictionary",
+      "language": "asm",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 2940,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 2072,
+        "06-09": 822,
+        "10-20": 46
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "ben-dictionary",
+      "language": "ben",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 5491,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 3107,
+        "06-09": 2070,
+        "10-20": 314
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "bho-dictionary",
+      "language": "bho",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "excluded",
+      "compatible_lexical_units": 0,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {},
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "fas-dictionary",
+      "language": "fas",
+      "family": "Indo-European/Indo-Iranian/Iranian",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 4324,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 2383,
+        "06-09": 1717,
+        "10-20": 224
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "grc-koine-4c",
+      "language": "grc",
+      "family": "Indo-European/Hellenic",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 16464,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 3704,
+        "06-09": 10190,
+        "10-20": 2570
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "guj-dictionary",
+      "language": "guj",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 3213,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 1973,
+        "06-09": 1168,
+        "10-20": 72
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "hbo-tiberian",
+      "language": "hbo",
+      "family": "Afro-Asiatic/Semitic",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 571,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 396,
+        "06-09": 171,
+        "10-20": 4
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "hin-dictionary",
+      "language": "hin",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": true,
+      "status": "exploratory",
+      "compatible_lexical_units": 16019,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 7358,
+        "06-09": 7694,
+        "10-20": 967
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "hun-dictionary",
+      "language": "hun",
+      "family": "Uralic",
+      "required": true,
+      "status": "exploratory",
+      "compatible_lexical_units": 35158,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 8403,
+        "06-09": 18270,
+        "10-20": 8485
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "lat-ecclesiastical-italianate",
+      "language": "lat",
+      "family": "Indo-European/Italic",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 26064,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 3337,
+        "06-09": 15317,
+        "10-20": 7410
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "mar-dictionary",
+      "language": "mar",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 2815,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 1528,
+        "06-09": 1155,
+        "10-20": 132
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "pan-dictionary",
+      "language": "pan",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 1112,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 851,
+        "06-09": 255,
+        "10-20": 6
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "pus-dictionary",
+      "language": "pus",
+      "family": "Indo-European/Indo-Iranian/Iranian",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 871,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 555,
+        "06-09": 305,
+        "10-20": 11
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "rom-dictionary",
+      "language": "rom",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": false,
+      "status": "exploratory",
+      "compatible_lexical_units": 26,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 19,
+        "06-09": 7
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence",
+        "profile_is_exploratory_only"
+      ]
+    },
+    {
+      "profile_id": "san-dictionary",
+      "language": "san",
+      "family": "Indo-European/Indo-Iranian/Indo-Aryan",
+      "required": true,
+      "status": "exploratory",
+      "compatible_lexical_units": 6353,
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "length_bands": {
+        "03-05": 2755,
+        "06-09": 3333,
+        "10-20": 265
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "profile_id": "tur-dictionary",
+      "language": "tur",
+      "family": "Turkic",
+      "required": true,
+      "status": "exploratory",
+      "compatible_lexical_units": 10163,
+      "supported_lexical_units": 85,
+      "unique_phonological_units": 85,
+      "length_bands": {
+        "03-05": 3765,
+        "06-09": 5354,
+        "10-20": 1044
+      },
+      "pronunciation_gate": "failed",
+      "reference_agreement": null,
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "retrieval": [],
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    }
+  ],
+  "blockers": [
+    "hin-dictionary:not_admitted",
+    "hun-dictionary:not_admitted",
+    "indo-aryan-versus-unrelated-controls:no_admitted_comparison",
+    "san-dictionary:not_admitted",
+    "tur-dictionary:not_admitted"
+  ]
+}

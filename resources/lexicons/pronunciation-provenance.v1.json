@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "parent_protocol": {
+    "path": "experiments/confirmatory.v2.json",
+    "sha256": "256284e71dc9e7b7e19a47d448d26fe3b8a8562949ec381e43f6b11e18d506b6"
+  },
+  "page_cutoff": "2026-10-01T00:00:00Z",
+  "units_per_band": 50,
+  "languages": ["hin", "san", "tur", "hun"],
+  "output_directory": ".enoch/pronunciation-provenance/v1",
+  "report_path": "reports/pronunciation-provenance/v1/coverage.json",
+  "amendment_path": "experiments/confirmatory.provenance.v1.json"
+}
