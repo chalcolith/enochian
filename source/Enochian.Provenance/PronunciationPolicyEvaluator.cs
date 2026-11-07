@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using IpaEncoder = Enochian.Text.Encoder;
@@ -31,6 +32,14 @@ public static class PronunciationPolicyEvaluator
 
     public static string StableId(string value) =>
         Convert.ToHexString(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+
+    public static string WeightedDistributionKey(
+        IEnumerable<(IReadOnlyList<double[]> Phones, double Weight)> readings) => string.Join('\u001f',
+        readings.GroupBy(reading => string.Join(';', reading.Phones.Select(phone =>
+                string.Join(',', phone.Select(value => value.ToString("R", CultureInfo.InvariantCulture))))), StringComparer.Ordinal)
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .Select(group => group.Key + ":" + group.Sum(reading => reading.Weight)
+                .ToString("R", CultureInfo.InvariantCulture)));
 
     public static PronunciationAgreement EvaluateReferences(
         IEnumerable<PronunciationReference> references,

@@ -187,6 +187,37 @@ public sealed class PronunciationRecoveryTests
     }
 
     [TestMethod]
+    public void BalancedAnchorPlanFreezesLargerSampleAndEvidenceParents()
+    {
+        using var plan = JsonDocument.Parse(File.ReadAllText(Path.Combine(RepositoryRoot,
+            "resources", "lexicons", "pronunciation-provenance.v2.json")));
+        ValidateSchema(plan.RootElement);
+        Assert.AreEqual("2.0.0", plan.RootElement.GetProperty("schema_version").GetString());
+        Assert.AreEqual(75, plan.RootElement.GetProperty("units_per_band").GetInt32());
+        Assert.AreEqual(".enoch/pronunciation-provenance/v1/snapshot.json",
+            plan.RootElement.GetProperty("parent_snapshot").GetProperty("path").GetString());
+        Assert.AreEqual(".enoch/pronunciation-references/v1/audit.json",
+            plan.RootElement.GetProperty("reference_audit").GetProperty("path").GetString());
+    }
+
+    [TestMethod]
+    public void WeightedDistributionKeyPreservesWeightsAndIgnoresReadingOrder()
+    {
+        double[] phoneA = [1, 0];
+        double[] phoneB = [0, 1];
+        (IReadOnlyList<double[]> Phones, double Weight)[] readings =
+        [
+            ([phoneA], 0.25),
+            ([phoneB], 0.5),
+            ([phoneA], 0.25),
+        ];
+        var key = PronunciationPolicyEvaluator.WeightedDistributionKey(readings);
+        Assert.AreEqual(key, PronunciationPolicyEvaluator.WeightedDistributionKey(readings.Reverse()));
+        Assert.AreNotEqual(key, PronunciationPolicyEvaluator.WeightedDistributionKey(
+            readings.Select(reading => (reading.Phones, reading.Weight + 0.1))));
+    }
+
+    [TestMethod]
     public async Task OfflineRecoveryReplaysAndTamperedOriginsCannotPassEvenWithUpdatedBytePins()
     {
         var root = Path.Combine(Path.GetTempPath(), "enochian-recovery-" + Guid.NewGuid().ToString("N"));

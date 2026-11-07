@@ -1,0 +1,24 @@
+{
+  "schema_version": "2.0.0",
+  "parent_protocol": {
+    "path": "experiments/confirmatory.replay.v1.json",
+    "sha256": "9651cfc005d9fa96bf124c7d2ba43d31315efc99916e99701ab5d583c5dac486"
+  },
+  "page_cutoff": "2026-10-01T00:00:00Z",
+  "units_per_band": 75,
+  "languages": ["hin", "san", "tur", "hun"],
+  "output_directory": ".enoch/pronunciation-provenance/v2",
+  "report_path": "reports/pronunciation-anchors/v1/coverage.json",
+  "amendment_path": "experiments/confirmatory.anchors.v1.json",
+  "parent_snapshot": {
+    "path": ".enoch/pronunciation-provenance/v1/snapshot.json",
+    "sha256": "697d681b0ff6db4a10b827c259e0f74af0ad94d770554171450f663247827be6"
+  },
+  "reference_audit": {
+    "path": ".enoch/pronunciation-references/v1/audit.json",
+    "sha256": "9769f3e0daf56844b39ffbe69fd8d69f82bd6f395d4671e1e6055446d09af6db"
+  },
+  "config_id": "dictionary-first-balanced-anchors-v1",
+  "experiment_output_directory": ".enoch/experiments/anchors-v1",
+  "admission_report": "reports/pronunciation-anchors/v1/admission.json"
+}

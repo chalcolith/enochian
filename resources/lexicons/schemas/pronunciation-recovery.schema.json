@@ -1,9 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-recovery-1.json",
-  "title": "M2-10 sealed acquisition and per-reading proof contracts",
+  "title": "M2-10/M2-13 sealed acquisition and per-reading proof contracts",
   "oneOf": [
     { "$ref": "#/$defs/plan" },
+    { "$ref": "#/$defs/planV2" },
     { "$ref": "#/$defs/package" },
     { "$ref": "#/$defs/page" },
     { "$ref": "#/$defs/proof" }
@@ -24,6 +25,25 @@
         "output_directory": { "const": ".enoch/pronunciation-provenance/v1" },
         "report_path": { "const": "reports/pronunciation-provenance/v1/coverage.json" },
         "amendment_path": { "const": "experiments/confirmatory.provenance.v1.json" }
+      }
+    },
+    "planV2": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema_version", "parent_protocol", "page_cutoff", "units_per_band", "languages", "output_directory", "report_path", "amendment_path", "parent_snapshot", "reference_audit", "config_id", "experiment_output_directory", "admission_report"],
+      "properties": {
+        "schema_version": { "const": "2.0.0" },
+        "parent_protocol": { "$ref": "#/$defs/pin" },
+        "page_cutoff": { "const": "2026-10-01T00:00:00Z" },
+        "units_per_band": { "const": 75 },
+        "languages": { "const": ["hin", "san", "tur", "hun"] },
+        "output_directory": { "const": ".enoch/pronunciation-provenance/v2" },
+        "report_path": { "const": "reports/pronunciation-anchors/v1/coverage.json" },
+        "amendment_path": { "const": "experiments/confirmatory.anchors.v1.json" },
+        "parent_snapshot": { "$ref": "#/$defs/pin" },
+        "reference_audit": { "$ref": "#/$defs/pin" },
+        "config_id": { "const": "dictionary-first-balanced-anchors-v1" },
+        "experiment_output_directory": { "const": ".enoch/experiments/anchors-v1" },
+        "admission_report": { "const": "reports/pronunciation-anchors/v1/admission.json" }
       }
     },
     "page": {

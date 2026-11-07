@@ -479,11 +479,9 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
     private static string UnitId(PronunciationProfile profile, string identity) =>
         profile.Id + ":" + PronunciationPolicyEvaluator.StableId(identity);
 
-    private static string DistributionKey(EvidenceUnit unit) => string.Join('\u001f',
-        unit.Readings.GroupBy(reading => string.Join(';', reading.Phones.Select(phone =>
-                string.Join(',', phone.Select(value => value.ToString("R", CultureInfo.InvariantCulture))))), StringComparer.Ordinal)
-            .OrderBy(group => group.Key, StringComparer.Ordinal)
-            .Select(group => group.Key + ":" + group.Sum(reading => reading.Weight).ToString("R", CultureInfo.InvariantCulture)));
+    private static string DistributionKey(EvidenceUnit unit) =>
+        PronunciationPolicyEvaluator.WeightedDistributionKey(
+            unit.Readings.Select(reading => ((IReadOnlyList<double[]>)reading.Phones, reading.Weight)));
 
     private static void WriteCoverage(string reportPath, AutomatedAdmissionReport report)
     {
