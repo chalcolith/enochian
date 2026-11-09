@@ -1228,6 +1228,23 @@ materialization are tracked separately in #49.
 - No comparative score, language ranking, pronunciation label, or semantic
   annotation participates in the decision.
 
+The preliminary #49 extraction pins Reeds/Landini/Stolfi interlinear release
+1.6e6, Takeshi Takahashi's complete `H` layer, the archived attribution and
+permission statement, and the evaluation-only normalization policy. It reads
+only `f1r`/`f1v`/`f2r`/`f2v` text, publishes a deterministic 18-symbol basic-EVA
+inventory for #46, and reports ten uncertain `f1r` tokens excluded under the
+frozen uncertain-token rule. Holdout text is not tokenized. Query
+materialization, mapping pinning, the readiness amendment, and final preflight
+remain in #49 after the manual mapping decision.
+
+The pending #46 package now binds that inventory to the single unscored
+`vogt-basic-eva-complete-v1` proposal. It preserves available
+single-character legacy values, explicitly completes `i` and `q`, reduces the
+legacy multi-phone `o` value to one segment, disables multigraph replacement,
+and materializes all 18 schema-valid vectors. The sole remaining #46 blocker is
+the researcher's explicit approval of the exact proposal/checksum or an
+explicit decision not to run the confirmatory hypothesis.
+
 ### M4-01: Freeze inputs and execute the evaluation partition
 
 **Depends on:** M3-06, M4-00, and the frozen automated quality decisions.

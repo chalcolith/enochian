@@ -17,6 +17,10 @@ public class SchemaTests
         LoadSchema("experiments/schemas/degradation-profile.schema.json");
     private static readonly JsonSchema MappingPreregistrationSchema =
         LoadSchema("experiments/schemas/mapping-preregistration.schema.json");
+    private static readonly JsonSchema VoynichInventoryExtractionSchema =
+        LoadSchema("experiments/schemas/voynich-inventory-extraction.schema.json");
+    private static readonly JsonSchema MappingSymbolInventorySchema =
+        LoadSchema("experiments/schemas/mapping-symbol-inventory.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -47,6 +51,8 @@ public class SchemaTests
         AssertValid(DegradationProfileSchema, "experiments/degradation-profiles/feature-masking.v2.json");
         AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v2.protocol.json");
         AssertValid(MappingPreregistrationSchema, "experiments/mapping-preregistration.v1.json");
+        AssertValid(VoynichInventoryExtractionSchema, "resources/voynich/evaluation-inventory.v1.json");
+        AssertValid(MappingSymbolInventorySchema, "resources/voynich/evaluation-symbol-inventory.v1.json");
 
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");

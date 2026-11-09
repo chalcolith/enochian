@@ -194,7 +194,7 @@ public sealed class MappingPreregistrationTests
                 Features = ConfigurationPin("resources/encodings/features.json"),
                 IpaEncoding = ConfigurationPin("resources/encodings/ipa.json"),
                 Inventory = includeProposal
-                    ? new PinnedInput("artifacts/inventory.json", PronunciationAudit.Hash(Path("artifacts/inventory.json")))
+                    ? ConfigurationPin("artifacts/inventory.json")
                     : null,
                 Candidates = candidates,
                 ProposalCandidateId = includeProposal ? "test-proposal" : null,

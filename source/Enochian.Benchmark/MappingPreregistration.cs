@@ -80,8 +80,8 @@ public sealed record MappingSymbolInventory
 public sealed record MappingCandidateReport(
     string Id, string Version, string Kind, string Description, PinnedInput? Source, string LinguisticRationale,
     string[] DifferencesFromLegacy, MappingNormalization Normalization, MappingSegmentation Segmentation,
-    MappingAmbiguity[] TranscriptionAmbiguities, int MappedSymbols, string? MaterializedMapping,
-    string? MappingSha256);
+    MappingAmbiguity[] TranscriptionAmbiguities, SortedDictionary<string, string>? SymbolToIpa,
+    int MappedSymbols, string? MaterializedMapping, string? MappingSha256);
 
 public sealed record MappingPreregistrationReport(
     string SchemaVersion, string PreregistrationId, string Status, string PreregistrationSha256,
@@ -143,6 +143,7 @@ public sealed class MappingPreregistration(
                     candidate.Normalization,
                     candidate.Segmentation,
                     candidate.TranscriptionAmbiguities,
+                    candidate.SymbolToIpa,
                     candidate.SymbolToIpa?.Count ?? 0,
                     candidate.MaterializedMapping,
                     candidate == proposal ? mappingHash : null))],
@@ -229,7 +230,7 @@ public sealed class MappingPreregistration(
             return null;
         }
 
-        using var document = files.Read(config.Inventory, configuration: false);
+        using var document = files.Read(config.Inventory);
         var schemaPath = Path.Combine(repositoryRoot, "experiments", "schemas", "mapping-symbol-inventory.schema.json");
         var schema = JsonSchema.FromText(File.ReadAllText(schemaPath),
             new BuildOptions { SchemaRegistry = new SchemaRegistry() });
@@ -404,6 +405,14 @@ public sealed class MappingPreregistration(
                     : string.Join("; ", candidate.TranscriptionAmbiguities.Select(ambiguity =>
                         $"{ambiguity.Input} -> {ambiguity.Treatment} ({ambiguity.Rationale})"))));
             lines.Add($"Mapped symbols: {candidate.MappedSymbols.ToString(CultureInfo.InvariantCulture)}");
+            if (candidate.SymbolToIpa != null)
+            {
+                lines.Add(string.Empty);
+                lines.Add("| EVA symbol | Proposed IPA |");
+                lines.Add("|---|---|");
+                lines.AddRange(candidate.SymbolToIpa.Select(item => $"| `{item.Key}` | `{item.Value}` |"));
+            }
+
             if (candidate.MappingSha256 != null)
             {
                 lines.Add($"Materialized mapping SHA-256: `{candidate.MappingSha256}`");

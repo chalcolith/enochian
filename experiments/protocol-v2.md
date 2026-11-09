@@ -50,6 +50,14 @@ vector per evaluation symbol, and records the exact checksum to be approved.
 Pending and incomplete packages remain blocked; an explicit decline is recorded
 without producing a confirmatory mapping.
 
+The measured pending package binds the 18-symbol evaluation inventory to
+`vogt-basic-eva-complete-v1`, a character-level, one-segment completion of the
+legacy exploratory values. It explicitly adds `i` -> `/i/` and `q` -> `/q/`,
+reduces the legacy multi-phone `o` value to `/æ/`, disables legacy multigraph
+patterns, and records the materialized mapping SHA-256. These are unscored
+scientific assumptions awaiting explicit researcher approval or decline, not
+validated decipherment claims.
+
 ## Source and pronunciation admission
 
 - Freeze the complete M2-08 panel, profile versions/fingerprints, generated

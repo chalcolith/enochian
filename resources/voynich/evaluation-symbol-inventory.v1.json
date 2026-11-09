@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "inventory_id": "voynich-evaluation-symbol-inventory-v1",
+  "transcription": {
+    "path": "resources/voynich/interlinear_text16e6.evt",
+    "sha256": "f764f41d02b47810bdbb48946fc24b88e85746ee7fe5f229957770e7c781e319"
+  },
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_opened": false,
+  "symbols": [
+    {
+      "symbol": "a",
+      "token_count": 163,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "c",
+      "token_count": 199,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "d",
+      "token_count": 141,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "e",
+      "token_count": 96,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "f",
+      "token_count": 7,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r"
+      ]
+    },
+    {
+      "symbol": "h",
+      "token_count": 272,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "i",
+      "token_count": 162,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "k",
+      "token_count": 91,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "l",
+      "token_count": 106,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "m",
+      "token_count": 3,
+      "loci": [
+        "f1r",
+        "f1v"
+      ]
+    },
+    {
+      "symbol": "n",
+      "token_count": 96,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "o",
+      "token_count": 278,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "p",
+      "token_count": 19,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "q",
+      "token_count": 8,
+      "loci": [
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "r",
+      "token_count": 84,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "s",
+      "token_count": 116,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "t",
+      "token_count": 76,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    },
+    {
+      "symbol": "y",
+      "token_count": 176,
+      "loci": [
+        "f1r",
+        "f1v",
+        "f2r",
+        "f2v"
+      ]
+    }
+  ]
+}
