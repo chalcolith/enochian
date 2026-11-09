@@ -96,9 +96,11 @@ flowchart TD
     M210 --> M211[M2-11 Pinned offline generator replay]
     M211 --> M212[M2-12 Independent pronunciation references]
     M212 --> M213[M2-13 Balanced supported anchor lexicons]
-    M213 --> M401
+    M213 --> M306[M3-06 Real retrieval and masking semantics]
+    M305 --> M306
+    M306 --> M401
     M209 --> M401
-    M305 --> M401[M4-01 Frozen evaluation run]
+    M401[M4-01 Frozen evaluation run]
     M401 --> M402[M4-02 Comparative report]
     M402 -. optional .-> M403[M4-03 Automated contextual appendix]
     M402 --> M404[M4-04 Holdout and final report]
@@ -1155,6 +1157,41 @@ report inputs from one frozen configuration.
 behave as expected, all inferential outputs are reproducible, and raw scored
 records remain available for audit.
 
+### M3-06: Validate masking-distance semantics and real retrieval gates
+
+**Depends on:** M3-05 and M2-13. **Blocks:** M4-01. Tracked in #47.
+
+**Scope**
+
+- Reproduce the suspected masking floor using ordinary IPA and the exact
+  0.35 mean-distance threshold.
+- Distinguish an explicit query mask from a genuine zero/unset feature.
+  Exclude only explicitly masked query dimensions from local Euclidean cost;
+  leave candidate vectors and every unmasked dimension unchanged.
+- Preserve DTW path normalization, weighted alternatives, ranking/tie rules,
+  sampling, thresholds, and all non-masking degradation semantics.
+- Publish a new retrieval runner identity, masking profile, retrieval policy,
+  experiment amendment, and deterministic investigation/admission reports.
+  Preserve the v1 implementation and frozen outputs.
+
+**Tests and acceptance**
+
+- Real IPA tests cover the old numerical floor, corrected self-distance,
+  masked and unmasked distinctions, genuine unset values, reading weights,
+  empty/invalid inputs, path normalization, and the exact threshold.
+- Runner/profile/policy identities must agree. Legacy policy cannot silently
+  opt into the corrected semantics, and new outputs use a fresh directory.
+- Run 25 source-included queries per available required-language band and all
+  four preregistered degradation conditions. Report unavailable languages and
+  failed cells without lowering thresholds.
+
+The [measured investigation](../reports/retrieval-validation/v1/investigation.md)
+confirms a v1 `/p/` self-distance floor of `sqrt(3)`, above 0.35. All three
+corrected Turkish masking cells and all identity cells pass. Deletion and
+height-merger cells retain exact or near-exact ranks but fail mean distance.
+Hindi, Sanskrit, and Hungarian cannot run retrieval because pronunciation
+capacity remains blocked. M4-01 therefore remains blocked.
+
 ## Milestone 4: Confirmatory run and report
 
 Milestone 4 PRs are data/research releases. They must not introduce unreviewed
@@ -1163,7 +1200,7 @@ new runner version; affected runs are invalidated and repeated from the start.
 
 ### M4-01: Freeze inputs and execute the evaluation partition
 
-**Depends on:** M3-05 and M2-09's frozen automated quality decisions.
+**Depends on:** M3-06 and the frozen automated quality decisions.
 
 **Purpose:** create the immutable run bundle for the non-holdout Voynich data
 without inspecting semantic definitions.

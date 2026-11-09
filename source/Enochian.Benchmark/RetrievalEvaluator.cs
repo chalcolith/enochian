@@ -15,7 +15,8 @@ public static class RetrievalEvaluator
                     candidate.SourceRecordId != query.SourceRecordId)
                 .Select(candidate =>
                 {
-                    var measurement = BenchmarkDtw.Measure(query.Phones, candidate.Phones);
+                    var measurement = BenchmarkDtw.Measure(
+                        query.Phones, candidate.Phones, query.IgnoredQueryFeatureIndices);
                     return new RankedCandidate(
                         candidate.EntryId,
                         measurement.Cost,

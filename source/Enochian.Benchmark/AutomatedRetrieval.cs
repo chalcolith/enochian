@@ -23,10 +23,10 @@ public static class AutomatedRetrieval
                 {
                     var values = sample.SelectMany(unit => unit.Readings.Select(reading =>
                     {
-                        var query = BenchmarkDegrader.Apply(reading.Phones, degradation, features);
+                        var query = BenchmarkDegrader.ApplyWithSemantics(reading.Phones, degradation, features);
                         var ranking = units.Where(candidate => !excluded || candidate.Id != unit.Id)
                             .Select(candidate => new RankedCandidate(candidate.Id, 0, 0,
-                                Distance(query, candidate), candidate.Id == unit.Id))
+                                Distance(query.Phones, candidate, query.IgnoredQueryFeatureIndices), candidate.Id == unit.Id))
                             .OrderBy(candidate => candidate.NormalizedDistance)
                             .ThenBy(candidate => candidate.EntryId, StringComparer.Ordinal).ToArray();
                         return (reading.Weight, Metrics: RetrievalEvaluator.Evaluate(ranking));
@@ -55,6 +55,10 @@ public static class AutomatedRetrieval
         return [.. cells];
     }
 
-    public static double Distance(IReadOnlyList<double[]> query, EvidenceUnit candidate) =>
-        candidate.Readings.Sum(reading => reading.Weight * BenchmarkDtw.Measure(query, reading.Phones).MeanPathCost);
+    public static double Distance(
+        IReadOnlyList<double[]> query,
+        EvidenceUnit candidate,
+        IReadOnlySet<int>? ignoredQueryFeatureIndices = null) =>
+        candidate.Readings.Sum(reading => reading.Weight *
+            BenchmarkDtw.Measure(query, reading.Phones, ignoredQueryFeatureIndices).MeanPathCost);
 }

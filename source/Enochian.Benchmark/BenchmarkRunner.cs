@@ -140,15 +140,17 @@ public sealed class BenchmarkRunner(string repositoryRoot, FeatureSet features, 
             .Where(candidate => candidate.Source == entry.Source && candidate.SourceRecordId == entry.SourceRecordId)
             .Select(candidate => candidate.EntryId)
             .ToHashSet(StringComparer.Ordinal);
+        var degraded = BenchmarkDegrader.ApplyWithSemantics(entry.Phones, profile, features);
         return new(
             entry.EntryId,
             entry.Source,
             entry.SourceRecordId,
             entry.Language,
-            BenchmarkDegrader.Apply(entry.Phones, profile, features),
+            degraded.Phones,
             relevant,
             entry.LengthBand,
-            entry.UnusualCategory);
+            entry.UnusualCategory,
+            degraded.IgnoredQueryFeatureIndices);
     }
 
     private static BenchmarkScoreRow CreateScore(

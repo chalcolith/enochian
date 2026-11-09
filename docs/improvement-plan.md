@@ -95,6 +95,16 @@ generated, related-language, or human-labeled substitutes. The measured result
 admits Turkish pronunciation capacity at 122 unique distributions (40/37/45);
 Hindi, Sanskrit, and Hungarian remain blocked at 1, 0, and 0.
 
+M3-06 (#47) confirms that v1 query masking imposed a `sqrt(3)` self-distance
+floor on ordinary `/p/`, incompatible with the frozen 0.35 threshold. Its
+versioned correction ignores only explicitly masked query dimensions while
+retaining genuine unset zeros, unchanged candidate vectors, Euclidean local
+cost, DTW path-mean normalization, weighted alternatives, stable ranks, and
+all thresholds. Corrected Turkish masking and identity cells pass; deletion
+and height merger still fail mean distance, and the other required anchors
+remain unavailable. This is an explicit blocker, not permission to tune the
+threshold or degradation strength.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

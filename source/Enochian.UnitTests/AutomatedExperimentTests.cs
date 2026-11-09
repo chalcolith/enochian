@@ -378,6 +378,15 @@ public sealed class AutomatedExperimentTests
     }
 
     [TestMethod]
+    public void VersionedRetrievalRunnerRejectsLegacyPolicyAndMaskingProfile()
+    {
+        using var fixture = new Fixture();
+        fixture.Mutate("run.json", protocol =>
+            protocol["retrieval_runner"] = "masked-query-distance-v2");
+        _ = Assert.ThrowsExactly<InvalidDataException>(() => fixture.Run("admit"));
+    }
+
+    [TestMethod]
     public void UnpinnedEvidenceChangesCannotReuseAnAdmittedSource()
     {
         using var fixture = new Fixture();

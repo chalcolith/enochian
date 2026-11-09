@@ -21,8 +21,9 @@
   ],
   "properties": {
     "$schema": { "type": "string", "format": "uri-reference" },
-    "schema_version": { "const": "1.0.0" },
+    "schema_version": { "enum": ["1.0.0", "2.0.0"] },
     "benchmark_id": { "$ref": "#/$defs/id" },
+    "distance_semantics": { "const": "explicit-query-mask-ignored-euclidean-path-mean-v1" },
     "frozen": { "const": true },
     "sampling_seed": { "type": "integer", "minimum": 0 },
     "samples_per_stratum": { "type": "integer", "minimum": 1 },
@@ -87,6 +88,13 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "schema_version": { "const": "2.0.0" } } },
+      "then": { "required": ["distance_semantics"] },
+      "else": { "not": { "required": ["distance_semantics"] } }
+    }
+  ],
   "$defs": {
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
     "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" }

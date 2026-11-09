@@ -42,6 +42,8 @@ public class SchemaTests
         {
             AssertValid(DegradationProfileSchema, $"experiments/degradation-profiles/{profile}.v1.json");
         }
+        AssertValid(DegradationProfileSchema, "experiments/degradation-profiles/feature-masking.v2.json");
+        AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v2.protocol.json");
 
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");

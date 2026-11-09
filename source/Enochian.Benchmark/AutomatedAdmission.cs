@@ -47,7 +47,12 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             dictionary.Policy.RequiredBands.Order(StringComparer.Ordinal).SequenceEqual(protocol.LengthQuotas.Keys) &&
             dictionary.Policy.AdmittedOrigins.SequenceEqual(["dictionary-supplied"]), "modified_evidence_policy");
         var retrieval = BenchmarkProtocol.Load(files.Pin(protocol.RetrievalPolicy));
-        if (retrieval.RequiredLengthBands.Count != 3 ||
+        var revisedRetrieval = protocol.RetrievalRunner == "masked-query-distance-v2";
+        if (protocol.RetrievalRunner is not (null or "masked-query-distance-v2") ||
+            retrieval.SchemaVersion != (revisedRetrieval ? "2.0.0" : "1.0.0") ||
+            retrieval.DistanceSemantics != (revisedRetrieval
+                ? "explicit-query-mask-ignored-euclidean-path-mean-v1" : null) ||
+            retrieval.RequiredLengthBands.Count != 3 ||
             !retrieval.RequiredLengthBands.ToHashSet(StringComparer.Ordinal).SetEquals(protocol.LengthQuotas.Keys) ||
             retrieval.Thresholds != new BenchmarkThresholds(100, 0.95, 0.8, 0.95, 0.99, 0.85, 0.35) ||
             retrieval.SamplesPerStratum != 25 || protocol.Degradations.Length != retrieval.DegradationProfiles.Count)
@@ -76,6 +81,16 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             degradations.Select(profile => profile.Id).Distinct(StringComparer.Ordinal).Count() != degradations.Length)
         {
             throw new InvalidDataException("Missing, duplicated or substituted frozen degradation profiles.");
+        }
+
+        var masking = degradations.Single(profile => profile.Id == "mask-laryngeal");
+        var maskingOperations = masking.Operations.Where(operation => operation.Kind == "feature_masking").ToArray();
+        if (masking.Version != (revisedRetrieval ? "2.0.0" : "1.0.0") ||
+            maskingOperations.Length != 1 ||
+            maskingOperations[0].DistanceSemantics != (revisedRetrieval
+                ? "ignore-query-masked-dimensions" : null))
+        {
+            throw new InvalidDataException("Retrieval runner and feature-masking semantics do not match.");
         }
 
         TrackRuntime();
@@ -114,7 +129,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             }
         }
 
-        var report = new AutomatedAdmissionReport("2.0.0", AutomatedExperiment.RunnerVersion,
+        var report = new AutomatedAdmissionReport("2.0.0",
+            protocol.RetrievalRunner ?? AutomatedExperiment.RunnerVersion,
             PronunciationAudit.Hash(typeof(AutomatedAdmission).Assembly.Location), protocol.ConfigId, PronunciationAudit.HashConfiguration(protocolPath),
             blockers.Count == 0, false, [.. decisions], [.. blockers.Order(StringComparer.Ordinal)]);
         var reportPath = files.Resolve(protocol.AdmissionReport);
@@ -127,6 +143,11 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
 
         AutomatedFiles.Write(reportPath, report);
         WriteCoverage(reportPath, report);
+        if (protocol.RetrievalRunner == "masked-query-distance-v2")
+        {
+            WriteMaskingInvestigation(reportPath, protocol, report, retrieval, degradations);
+        }
+
         files.Protect(reportPath);
         files.Protect(Path.ChangeExtension(reportPath, ".md"));
         return new(protocol, report, admitted, files.Inputs, files.ProtectedPaths);
@@ -514,6 +535,112 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             "All required sources must pass before M4-01; excluded languages cannot be described as having passed or having a null effect.",
             string.Empty]);
         File.WriteAllText(Path.ChangeExtension(reportPath, ".md"), string.Join('\n', lines), new UTF8Encoding(false));
+    }
+
+    private void WriteMaskingInvestigation(
+        string reportPath,
+        AutomatedProtocol protocol,
+        AutomatedAdmissionReport report,
+        BenchmarkProtocol retrieval,
+        DegradationProfile[] degradations)
+    {
+        var masking = degradations.Single(profile => profile.Id == "mask-laryngeal");
+        var (_, _, encoded) = encoder.GetTextAndPhones("p");
+        var original = encoded.ToArray();
+        var query = BenchmarkDegrader.ApplyWithSemantics(original, masking, features);
+        var oldDistance = BenchmarkDtw.Measure(query.Phones, original).MeanPathCost;
+        var correctedDistance = BenchmarkDtw.Measure(
+            query.Phones, original, query.IgnoredQueryFeatureIndices).MeanPathCost;
+        var required = report.Sources.Where(source => source.Required)
+            .OrderBy(source => source.Language, StringComparer.Ordinal).ToArray();
+        var turkish = required.Single(source => source.Language == "tur");
+        var cells = turkish.Retrieval.Where(cell => cell.CandidateMode == "source-included")
+            .OrderBy(cell => cell.DegradationId, StringComparer.Ordinal)
+            .ThenBy(cell => cell.LengthBand, StringComparer.Ordinal).ToArray();
+        var investigationPath = Path.Combine(Path.GetDirectoryName(reportPath)!, "investigation.json");
+        var investigationMarkdownPath = Path.ChangeExtension(investigationPath, ".md");
+        if (files.ProtectedPaths.Contains(investigationPath, StringComparer.OrdinalIgnoreCase) ||
+            files.ProtectedPaths.Contains(investigationMarkdownPath, StringComparer.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("Masking investigation reports must not overwrite pinned inputs.");
+        }
+
+        AutomatedFiles.Write(investigationPath, new
+        {
+            SchemaVersion = "1.0.0",
+            Issue = 47,
+            DefectConfirmed = true,
+            protocol.RetrievalRunner,
+            protocol.RetrievalPolicy,
+            MaskingProfile = protocol.Degradations.Single(pin =>
+                pin.Path.EndsWith("feature-masking.v2.json", StringComparison.Ordinal)),
+            Semantics = new
+            {
+                ExplicitMaskOnly = true,
+                MaskedQueryDimensions = "excluded_from_local_euclidean_cost",
+                GenuineUnsetDimensions = "retained_as_numeric_zero_unless_explicitly_masked",
+                CandidateVectors = "unchanged",
+                LocalCost = "euclidean_over_remaining_dimensions",
+                Normalization = "total_cost_divided_by_dtw_path_length",
+                AlternativeAggregation = "candidate_reading_weighted_expectation",
+            },
+            RealisticExample = new
+            {
+                Ipa = "p",
+                MaskedFeatures = masking.Operations.Single().Features,
+                OldMeanPathDistance = oldDistance,
+                CorrectedMeanPathDistance = correctedDistance,
+                Threshold = retrieval.Thresholds.MaximumMeanNormalizedDistance,
+                OldExceedsThreshold = oldDistance > retrieval.Thresholds.MaximumMeanNormalizedDistance,
+                CorrectedPassesThreshold = correctedDistance <= retrieval.Thresholds.MaximumMeanNormalizedDistance,
+            },
+            RequiredSources = required.Select(source => new
+            {
+                source.Language,
+                source.PronunciationGate,
+                source.RetrievalGate,
+                source.SupportedLexicalUnits,
+                source.UniquePhonologicalUnits,
+                source.Blockers,
+            }),
+            TurkishSourceIncludedCells = cells,
+            OverallReady = report.ReadyForEvaluation,
+            Conclusion = "masking_defect_corrected_but_required_retrieval_admission_remains_blocked",
+        });
+
+        var lines = new List<string>
+        {
+            "# M3-06 masking-distance investigation",
+            string.Empty,
+            "Runner: `" + protocol.RetrievalRunner + "`; policy: `" + retrieval.BenchmarkId + "`.",
+            string.Empty,
+            "The v1 query mask wrote numeric zero into Voice, SpreadGlottis, and ConstrictedGlottis, then ordinary",
+            "Euclidean cost compared those zeros with candidate values. For real IPA `/p/`, even self-retrieval had",
+            "a path-mean floor of `" + oldDistance.ToString("R", CultureInfo.InvariantCulture) +
+                "`, above the unchanged `0.35` threshold.",
+            string.Empty,
+            "The versioned correction excludes only explicitly masked query dimensions from local Euclidean cost.",
+            "Candidate vectors are unchanged; genuine unset zeros in every other dimension remain measurable. DTW",
+            "path normalization, reading weights, rankings, ties, thresholds, and all non-masking degradations are unchanged.",
+            string.Empty,
+            "| Degradation | Band | Queries | R@1 | R@5 | R@20 | MRR | Mean distance | Passed | Blockers |",
+            "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |",
+        };
+        lines.AddRange(cells.Select(cell => string.Create(CultureInfo.InvariantCulture,
+            $"| {cell.DegradationId} | {cell.LengthBand} | {cell.LexicalQueries} | {cell.Metrics.RecallAt1:R} | {cell.Metrics.RecallAt5:R} | {cell.Metrics.RecallAt20:R} | {cell.Metrics.MeanReciprocalRank:R} | {cell.Metrics.MeanNormalizedDistance:R} | {cell.Passed.ToString().ToLowerInvariant()} | {string.Join("; ", cell.Blockers)} |")));
+        lines.AddRange(
+        [
+            string.Empty,
+            "All three corrected masking cells pass. Identity also passes. Deletion and height merger retain mostly exact",
+            "retrieval ranks but fail the unchanged mean-distance threshold. Hindi, Sanskrit, and Hungarian cannot run",
+            "real retrieval because their pronunciation/capacity gates remain blocked. M4-01 therefore remains blocked.",
+            string.Empty,
+        ]);
+        File.WriteAllText(
+            investigationMarkdownPath,
+            string.Join('\n', lines), new UTF8Encoding(false));
+        files.Protect(investigationPath);
+        files.Protect(investigationMarkdownPath);
     }
 
     private static bool IsUnknown(string dependency) => dependency.Contains("unknown", StringComparison.OrdinalIgnoreCase);
