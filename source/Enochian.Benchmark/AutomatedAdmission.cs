@@ -20,7 +20,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         var protocol = AutomatedProtocol.Load(protocolPath, repositoryRoot);
         files.Track(protocolPath);
         foreach (var pin in protocol.Sources.SelectMany(source => new[] { source.ProfileManifest, source.References })
-            .Concat([protocol.Queries, protocol.Mapping, protocol.Astronomy.Registration, protocol.Astronomy.Policy, protocol.Astronomy.Manifest])
+            .Concat([protocol.BaseProtocol, protocol.Queries, protocol.Mapping, protocol.MappingApproval,
+                protocol.Astronomy.Registration, protocol.Astronomy.Policy, protocol.Astronomy.Manifest])
             .OfType<PinnedInput>())
         {
             files.Protect(files.Resolve(pin.Path));
@@ -487,6 +488,7 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             "resources/lexicons/schemas/profile-artifact-manifest.v1.1.schema.json",
             "resources/lexicons/schemas/pronunciation-recovery.schema.json",
             "experiments/schemas/automated-experiment.v2.schema.json",
+            "experiments/schemas/automated-experiment-amendment.v2.schema.json",
             "experiments/schemas/automated-admission.v2.schema.json",
         })
         {

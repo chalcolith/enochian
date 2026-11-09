@@ -16,6 +16,7 @@ try
         "pronunciation-replay" or "pronunciation-replay-acquire" => await ReplayPronunciationGenerators(repositoryRoot, args),
         "pronunciation-references" => AuditPronunciationReferences(repositoryRoot, args),
         "voynich-inventory" => BuildVoynichInventory(repositoryRoot, args),
+        "voynich-queries" => BuildVoynichQueries(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -140,7 +141,24 @@ static int ShowUsage()
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-replay-acquire [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-references [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance voynich-inventory [plan-json]");
+    Console.Error.WriteLine("  Enochian.Provenance voynich-queries [plan-json]");
     return 1;
+}
+
+static int BuildVoynichQueries(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var plan = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "resources", "voynich", "evaluation-queries.v1.json");
+    var report = new VoynichEvaluationQueries(repositoryRoot).Run(plan);
+    Console.WriteLine(
+        $"Materialized {report.UniqueTypes} evaluation query types from {report.AcceptedTokens} token occurrences; " +
+        $"approved mapping {report.MappingSha256}.");
+    return report.ReadyForPreflight ? 0 : 1;
 }
 
 static int BuildVoynichInventory(string repositoryRoot, string[] arguments)

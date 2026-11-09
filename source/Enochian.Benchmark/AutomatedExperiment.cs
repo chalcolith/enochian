@@ -86,7 +86,16 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
 
         var preflight = new AutomatedPreflight("2.0.0", protocol.ConfigId, blockers.Count == 0,
             [.. blockers.Order(StringComparer.Ordinal)], inputs);
-        AutomatedFiles.Write(Path.Combine(output, "preflight.json"), preflight);
+        var preflightPath = protocol.PreflightReport == null
+            ? Path.Combine(output, "preflight.json")
+            : files.Resolve(protocol.PreflightReport);
+        if (admission.ProtectedPaths.Concat(files.ProtectedPaths)
+            .Contains(preflightPath, StringComparer.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("Preflight report must not overwrite a pinned input or admission report.");
+        }
+
+        AutomatedFiles.Write(preflightPath, preflight);
         if (!preflight.Ready)
         {
             Console.Error.WriteLine("V2 evaluation blocked: " + string.Join(", ", preflight.Blockers));
@@ -187,6 +196,11 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
             throw new InvalidDataException("Pinned queries with explicit loci and a single frozen mapping are required.");
         }
 
+        if (protocol.Phase == "confirmatory" && protocol.MappingApproval == null)
+        {
+            throw new InvalidDataException("Confirmatory mappings require a pinned approved preregistration decision.");
+        }
+
         var queryPath = files.Pin(protocol.Queries, configuration: false);
         var queries = File.ReadLines(queryPath).Select(line =>
             JsonSerializer.Deserialize<AutomatedQuery>(line, AutomatedProtocol.JsonOptions)
@@ -194,11 +208,17 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
         var mapping = JsonSerializer.Deserialize<SortedDictionary<string, double[]>>(
             File.ReadAllText(files.Pin(protocol.Mapping)), AutomatedProtocol.JsonOptions)
             ?? throw new InvalidDataException("Empty mapping.");
+        if (protocol.MappingApproval != null)
+        {
+            ValidateMappingApproval(protocol.MappingApproval, protocol.Mapping);
+        }
+
         if (mapping.Count == 0 || mapping.Any(item => string.IsNullOrWhiteSpace(item.Key) ||
             item.Value == null || item.Value.Length != features.NumDimensions || item.Value.Any(value =>
                 !double.IsFinite(value) || (value != features.MinusValue && value != features.UnsetValue && value != features.PlusValue))) ||
             queries.Length < 2 || queries.Select(query => query.QueryId).Distinct(StringComparer.Ordinal).Count() != queries.Length ||
             queries.Select(query => JsonSerializer.Serialize(query.Symbols)).Distinct(StringComparer.Ordinal).Count() != queries.Length ||
+            !protocol.EvaluationLoci.All(locus => queries.Any(query => query.Locus == locus)) ||
             queries.Any(query => string.IsNullOrWhiteSpace(query.QueryId) || !protocol.EvaluationLoci.Contains(query.Locus, StringComparer.Ordinal) ||
                 protocol.HoldoutLoci.Contains(query.Locus, StringComparer.Ordinal) || query.TokenFrequency <= 0 ||
                 query.Symbols.Length == 0 || query.Symbols.Any(symbol => !mapping.ContainsKey(symbol))))
@@ -207,6 +227,31 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
         }
 
         return ([.. queries.OrderBy(query => query.QueryId, StringComparer.Ordinal)], mapping);
+    }
+
+    private void ValidateMappingApproval(PinnedInput approval, PinnedInput mapping)
+    {
+        using var document = files.Read(approval);
+        var root = document.RootElement;
+        if (root.GetProperty("status").GetString() != "approved" ||
+            !root.GetProperty("ready_for_confirmatory").GetBoolean() ||
+            root.GetProperty("blockers").GetArrayLength() != 0)
+        {
+            throw new InvalidDataException("Pinned mapping preregistration is not approved.");
+        }
+
+        var proposalId = root.GetProperty("proposal_candidate_id").GetString();
+        var decision = root.GetProperty("decision");
+        var candidate = root.GetProperty("candidates").EnumerateArray()
+            .Single(item => item.GetProperty("id").GetString() == proposalId);
+        if (decision.GetProperty("status").GetString() != "approved" ||
+            decision.GetProperty("candidate_id").GetString() != proposalId ||
+            decision.GetProperty("mapping_sha256").GetString() != mapping.Sha256 ||
+            candidate.GetProperty("materialized_mapping").GetString() != mapping.Path ||
+            candidate.GetProperty("mapping_sha256").GetString() != mapping.Sha256)
+        {
+            throw new InvalidDataException("Pinned mapping does not match the approved proposal and checksum.");
+        }
     }
 
     private static IEnumerable<AutomatedMembership> Sample(AutomatedAdmissionResult admission)

@@ -14,11 +14,13 @@ units. Arabic and Bhojpuri are excluded; the other profiles are exploratory.
 These are evidence exclusions, not measured null effects. Retrieval is **not
 run** for unsupported profiles. M4-01 remains blocked.
 
-Run from `source/`, after retaining the pinned M2-08 profile artifacts:
+Run from `source/`, after retaining the pinned profile artifacts:
 
 ```powershell
 dotnet run --project Enochian.Benchmark -- admit ..\experiments\confirmatory.v2.json
 dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.v2.json
+dotnet run --project Enochian.Provenance -- voynich-queries
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.v1.json
 dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.v2.json
 ```
 
@@ -29,10 +31,11 @@ The benchmark's default command also dispatches v2 to admission. The combined
 v2 experiment owns sampling, matching, statistics, and report inputs; its
 configuration is not accepted by standalone v1 `sample`/`statistics` commands.
 
-The real configuration deliberately leaves `queries` and `mapping` null.
-M4-01 must materialize and pin definitions-free, locus-bearing query types and
-one predeclared mapping in a new protocol amendment; this implementation does
-not invent manuscript data or silently choose a mapping. Evaluation retains
+The original real configurations deliberately leave `queries` and `mapping`
+null. The #49 [readiness amendment](confirmatory.readiness.v1.json) pins the
+latest M3-06 protocol as its immutable base, then adds definitions-free,
+locus-bearing query types, the approved mapping, the approval package, and
+fresh admission/preflight output locations. Evaluation retains
 `f1r`, `f1v`, `f2r`, `f2v`; the unopened holdout retains `f3r`, `f3v`, `f4r`,
 `f4v`. Each query has `query_id`, `locus`, `symbols`, and positive
 `token_frequency`. Duplicate IDs or symbol sequences, holdout/out-of-partition
@@ -40,7 +43,7 @@ loci, missing loci, unmapped symbols, and extra fields including definitions
 are rejected. Mapping vectors must match the pinned feature dimensions and
 allowed feature values.
 
-The M4 mapping decision is prepared separately by
+The M4 mapping decision was prepared separately by
 `mapping-preregistration.v1.json`. `mapping-preregister` validates the frozen
 partition boundary, pinned feature space, evaluation-only inventory, one
 unscored proposal, complete symbol coverage, segmentation and ambiguity
@@ -48,15 +51,29 @@ declarations, and an explicit researcher decision. It deterministically
 materializes the proposal through the pinned IPA encoding, requires one feature
 vector per evaluation symbol, and records the exact checksum to be approved.
 Pending and incomplete packages remain blocked; an explicit decline is recorded
-without producing a confirmatory mapping.
+without producing a confirmatory mapping. Confirmatory preflight additionally
+requires the pinned approval package to name the same mapping path and checksum.
 
-The measured pending package binds the 18-symbol evaluation inventory to
+The approved package binds the 18-symbol evaluation inventory to
 `vogt-basic-eva-complete-v1`, a character-level, one-segment completion of the
 legacy exploratory values. It explicitly adds `i` -> `/i/` and `q` -> `/q/`,
 reduces the legacy multi-phone `o` value to `/æ/`, disables legacy multigraph
-patterns, and records the materialized mapping SHA-256. These are unscored
-scientific assumptions awaiting explicit researcher approval or decline, not
-validated decipherment claims.
+patterns, and records the materialized mapping SHA-256. These remain unscored
+scientific assumptions, not validated decipherment claims.
+
+The query materializer aggregates 452 accepted evaluation-token occurrences
+into 284 exact normalized types. Frequencies are summed across loci. A
+deterministic constrained assignment chooses one representative locus per type
+while maximizing source-locus frequency, using frozen locus order for ties and
+requiring every evaluation locus to remain represented. The JSON audit retains
+all source-locus memberships and frequencies; the scoring JSONL has no
+definitions or semantic fields.
+
+The published #49 preflight is intentionally blocked only by the unchanged
+required-anchor decisions: Hindi, Sanskrit, Turkish, and Hungarian are not all
+admitted, and the required primary comparison therefore has no admitted pair.
+Query, mapping, approval, partition, and pin validation complete successfully.
+No confirmatory manuscript scoring has run.
 
 ## Source and pronunciation admission
 

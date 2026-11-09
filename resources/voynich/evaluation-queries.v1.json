@@ -1,0 +1,35 @@
+{
+  "$schema": "../../experiments/schemas/voynich-query-materialization.schema.json",
+  "schema_version": "1.0.0",
+  "materialization_id": "voynich-evaluation-queries-v1",
+  "materializer_version": "voynich-evaluation-queries-v1",
+  "frozen": true,
+  "inventory_plan": {
+    "path": "resources/voynich/evaluation-inventory.v1.json",
+    "sha256": "74d2fd646a2ab0a568090da76cc2428c4e3ee996e7e5ac07e422400fda6e55ab"
+  },
+  "inventory": {
+    "path": "resources/voynich/evaluation-symbol-inventory.v1.json",
+    "sha256": "d6bb73fa6fe2f897a890a6568d33a83cd43a67675cbd2652d10b0408dae55ac9"
+  },
+  "mapping_preregistration": {
+    "path": "reports/mapping-preregistration/v1/decision-package.json",
+    "sha256": "b1e0789280e0847781464eada1a862444299e3b4f891995bb992ce3b65111610"
+  },
+  "mapping": {
+    "path": "experiments/mappings/vogt-basic-eva-complete.v1.json",
+    "sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e"
+  },
+  "evaluation_loci": ["f1r", "f1v", "f2r", "f2v"],
+  "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+  "aggregation": {
+    "type_identity": "exact-normalized-symbol-sequence",
+    "frequency": "sum-accepted-token-occurrences-across-evaluation-loci",
+    "representative_locus": "maximize-source-frequency-then-frozen-locus-order-subject-to-all-loci-represented"
+  },
+  "outputs": {
+    "queries": "resources/voynich/evaluation-queries.v1.jsonl",
+    "report_json": "reports/voynich-queries/v1/materialization.json",
+    "report_markdown": "reports/voynich-queries/v1/materialization.md"
+  }
+}

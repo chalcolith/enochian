@@ -73,6 +73,7 @@
     "holdout_loci": { "$ref": "#/$defs/strings" },
     "queries": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
     "mapping": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+    "mapping_approval": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
     "astronomy": {
       "type": "object", "additionalProperties": false,
       "required": ["registration", "policy", "manifest", "status", "minimum_shared_objects", "balancing", "contexts", "nulls", "multiplicity"],
@@ -89,7 +90,8 @@
       }
     },
     "output_directory": { "$ref": "#/$defs/path" },
-    "admission_report": { "$ref": "#/$defs/path" }
+    "admission_report": { "$ref": "#/$defs/path" },
+    "preflight_report": { "$ref": "#/$defs/path" }
   },
   "allOf": [
     {

@@ -1,0 +1,295 @@
+{
+  "schema_version": "1.0.0",
+  "issue": 47,
+  "defect_confirmed": true,
+  "retrieval_runner": "masked-query-distance-v2",
+  "retrieval_policy": {
+    "path": "experiments/retrieval-benchmark.v2.protocol.json",
+    "sha256": "ec6a141b9a3c3ee6c715992602f4fa8164fcf497d82b3e2f704748dc44b3c86a"
+  },
+  "masking_profile": {
+    "path": "experiments/degradation-profiles/feature-masking.v2.json",
+    "sha256": "a18933696b4e566b5df0e638ae17e8db92178b48fbbfc6a35b2075735ba73c28"
+  },
+  "semantics": {
+    "explicit_mask_only": true,
+    "masked_query_dimensions": "excluded_from_local_euclidean_cost",
+    "genuine_unset_dimensions": "retained_as_numeric_zero_unless_explicitly_masked",
+    "candidate_vectors": "unchanged",
+    "local_cost": "euclidean_over_remaining_dimensions",
+    "normalization": "total_cost_divided_by_dtw_path_length",
+    "alternative_aggregation": "candidate_reading_weighted_expectation"
+  },
+  "realistic_example": {
+    "ipa": "p",
+    "masked_features": [
+      "Voice",
+      "SpreadGlottis",
+      "ConstrictedGlottis"
+    ],
+    "old_mean_path_distance": 1.7320508075688772,
+    "corrected_mean_path_distance": 0,
+    "threshold": 0.35,
+    "old_exceeds_threshold": true,
+    "corrected_passes_threshold": true
+  },
+  "required_sources": [
+    {
+      "language": "hin",
+      "pronunciation_gate": "failed",
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "supported_lexical_units": 1,
+      "unique_phonological_units": 1,
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "language": "hun",
+      "pronunciation_gate": "failed",
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "language": "san",
+      "pronunciation_gate": "failed",
+      "retrieval_gate": "not_run_pronunciation_or_coverage_gate_failed",
+      "supported_lexical_units": 0,
+      "unique_phonological_units": 0,
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "language": "tur",
+      "pronunciation_gate": "passed",
+      "retrieval_gate": "failed",
+      "supported_lexical_units": 122,
+      "unique_phonological_units": 122,
+      "blockers": [
+        "retrieval_threshold_failed"
+      ]
+    }
+  ],
+  "turkish_source_included_cells": [
+    {
+      "degradation_id": "delete-every-fourth",
+      "length_band": "03-05",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.9625278198009954
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    },
+    {
+      "degradation_id": "delete-every-fourth",
+      "length_band": "06-09",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 0.96,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 0.98,
+        "mean_normalized_distance": 0.8276430402659287
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    },
+    {
+      "degradation_id": "delete-every-fourth",
+      "length_band": "10-20",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.8379263571728508
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    },
+    {
+      "degradation_id": "identity",
+      "length_band": "03-05",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.03771236166328254
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "identity",
+      "length_band": "06-09",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.006666666666666666
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "identity",
+      "length_band": "10-20",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "mask-laryngeal",
+      "length_band": "03-05",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.035276684147527874
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "mask-laryngeal",
+      "length_band": "06-09",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0.006666666666666666
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "mask-laryngeal",
+      "length_band": "10-20",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 0
+      },
+      "passed": true,
+      "blockers": []
+    },
+    {
+      "degradation_id": "merge-height",
+      "length_band": "03-05",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 1.345073972540408
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    },
+    {
+      "degradation_id": "merge-height",
+      "length_band": "06-09",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 1.2961921979793878
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    },
+    {
+      "degradation_id": "merge-height",
+      "length_band": "10-20",
+      "candidate_mode": "source-included",
+      "lexical_queries": 25,
+      "metrics": {
+        "query_count": 25,
+        "recall_at1": 1,
+        "recall_at5": 1,
+        "recall_at20": 1,
+        "mean_reciprocal_rank": 1,
+        "mean_normalized_distance": 1.3842273927674524
+      },
+      "passed": false,
+      "blockers": [
+        "mean_normalized_distance"
+      ]
+    }
+  ],
+  "overall_ready": false,
+  "conclusion": "masking_defect_corrected_but_required_retrieval_admission_remains_blocked"
+}

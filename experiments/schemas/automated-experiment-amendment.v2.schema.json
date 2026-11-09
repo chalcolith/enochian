@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/automated-experiment-amendment-2.json",
+  "title": "Pinned query and mapping amendment for automated experiment v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "amendment_id", "config_id", "frozen", "base_protocol", "queries", "mapping", "mapping_approval", "output_directory", "admission_report", "preflight_report"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "2.0.0" },
+    "amendment_id": { "type": "string", "minLength": 1 },
+    "config_id": { "type": "string", "minLength": 1 },
+    "frozen": { "const": true },
+    "base_protocol": { "$ref": "#/$defs/pin" },
+    "queries": { "$ref": "#/$defs/pin" },
+    "mapping": { "$ref": "#/$defs/pin" },
+    "mapping_approval": { "$ref": "#/$defs/pin" },
+    "output_directory": { "$ref": "#/$defs/path" },
+    "admission_report": { "$ref": "#/$defs/path" },
+    "preflight_report": { "$ref": "#/$defs/path" }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

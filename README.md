@@ -92,7 +92,7 @@ without review sheets; its artificial phonology is not linguistic evidence.
 See the [migration guide](experiments/protocol-v2.md#compatibility-reproducibility-and-migration)
 for checkpoints, frozen contrasts, balanced quotas, and separate astronomy.
 
-M4 mapping approval is a separate scientific preregistration. The pending
+M4 mapping approval is a separate scientific preregistration. The approved
 [decision package](experiments/mapping-preregistration.v1.json) records the
 legacy exploratory candidate, one complete unscored proposal, the frozen
 evaluation/holdout boundary, and the pinned phonological space without
@@ -102,24 +102,29 @@ inspecting comparative results. Run its deterministic validator from `source/`:
 dotnet run --project Enochian.Benchmark -- mapping-preregister ..\experiments\mapping-preregistration.v1.json
 ```
 
-The preliminary #49 inventory step extracts only the frozen evaluation folios
-from the pinned Reeds/Landini/Stolfi 1.6e6 snapshot and Takeshi Takahashi `H`
-layer:
+The #49 materialization extracts only the frozen evaluation folios from the
+pinned Reeds/Landini/Stolfi 1.6e6 snapshot and Takeshi Takahashi `H` layer,
+then builds definitions-free query types:
 
 ```powershell
 cd source
 dotnet run --project Enochian.Provenance -- voynich-inventory
+dotnet run --project Enochian.Provenance -- voynich-queries
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.v1.json
 ```
 
-It publishes an 18-symbol basic-EVA inventory for #46, records all uncertain
-token exclusions, and does not tokenize or report holdout content. This
-preliminary artifact does not materialize queries, approve a mapping, run
-comparative matching, or close #49.
+The inventory contains 18 basic-EVA symbols. The query materializer aggregates
+452 accepted token occurrences into 284 unique types, preserves reconciled
+source-locus memberships and frequencies, represents all four evaluation
+loci, and never tokenizes or reports holdout content. The readiness amendment
+pins those queries, the approved mapping and decision package, and the complete
+M3-06 protocol without copying or changing its seeds, quotas, contrasts, or
+retrieval policy.
 
-The mapping command binds that inventory to one complete unscored proposal and
-returns exit code 1 until the researcher explicitly approves its exact
-assumptions and checksum or declines the confirmatory hypothesis. It never
-opens holdout loci or chooses a mapping from favorable language rankings.
+The exact preflight remains blocked by the unchanged required-anchor gates:
+Hindi, Sanskrit, Turkish, and Hungarian are not all admitted, so the primary
+comparison is unavailable. Query, mapping, approval, partition, and pin checks
+pass; no comparative manuscript scoring has run.
 
 M2-10 (#45) recovers per-reading source proof for the required Hindi, Sanskrit,
 Turkish, and Hungarian anchors. See the

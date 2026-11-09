@@ -13,6 +13,37 @@ public sealed class AutomatedExperimentTests
     private static readonly string RepositoryRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
 
     [TestMethod]
+    public void ReadinessAmendmentPreservesFrozenRetrievalProtocol()
+    {
+        var baseline = AutomatedProtocol.Load(
+            Path.Combine(RepositoryRoot, "experiments", "confirmatory.retrieval.v1.json"),
+            RepositoryRoot);
+        var amendment = AutomatedProtocol.Load(
+            Path.Combine(RepositoryRoot, "experiments", "confirmatory.readiness.v1.json"),
+            RepositoryRoot);
+
+        Assert.IsNotNull(amendment.BaseProtocol);
+        Assert.IsNotNull(amendment.Queries);
+        Assert.IsNotNull(amendment.Mapping);
+        Assert.IsNotNull(amendment.MappingApproval);
+        Assert.AreEqual(baseline.SamplingSeed, amendment.SamplingSeed);
+        Assert.AreEqual(baseline.NullSeed, amendment.NullSeed);
+        Assert.AreEqual(baseline.PermutationSeed, amendment.PermutationSeed);
+        Assert.AreEqual(baseline.Repetitions, amendment.Repetitions);
+        Assert.AreEqual(baseline.NullRepetitions, amendment.NullRepetitions);
+        Assert.AreEqual(baseline.PermutationCount, amendment.PermutationCount);
+        Assert.AreEqual(baseline.BootstrapCount, amendment.BootstrapCount);
+        CollectionAssert.AreEqual(baseline.EvaluationLoci, amendment.EvaluationLoci);
+        CollectionAssert.AreEqual(baseline.HoldoutLoci, amendment.HoldoutLoci);
+        CollectionAssert.AreEqual(
+            baseline.Contrasts.Select(contrast => contrast.Id).ToArray(),
+            amendment.Contrasts.Select(contrast => contrast.Id).ToArray());
+        CollectionAssert.AreEqual(
+            baseline.LengthQuotas.ToArray(),
+            amendment.LengthQuotas.ToArray());
+    }
+
+    [TestMethod]
     public void SyntheticRunNeedsNoHumanFilesAndPreservesEveryRetrievalThreshold()
     {
         using var fixture = new Fixture();
@@ -340,6 +371,18 @@ public sealed class AutomatedExperimentTests
     }
 
     [TestMethod]
+    public void PublishedPreflightCannotOverwriteFrozenInputs()
+    {
+        using var fixture = new Fixture();
+        var hash = PronunciationAudit.Hash(fixture.Path("panel.json"));
+        fixture.Mutate("run.json", value =>
+            value["preflight_report"] = "experiments/automated-smoke/panel.json");
+
+        _ = Assert.ThrowsExactly<InvalidDataException>(() => fixture.Run("preflight"));
+        Assert.AreEqual(hash, PronunciationAudit.Hash(fixture.Path("panel.json")));
+    }
+
+    [TestMethod]
     [DataRow("profile-hash")]
     [DataRow("profile-version")]
     [DataRow("panel-hash")]
@@ -362,6 +405,17 @@ public sealed class AutomatedExperimentTests
         Assert.AreEqual(1, fixture.Run());
         Assert.AreEqual("excluded", fixture.Report().Sources.Single(source => source.Language == "tar").Status);
         Assert.AreEqual(id, fixture.RunId());
+        Assert.IsFalse(JsonNode.Parse(File.ReadAllText(fixture.Output("preflight.json")))!["ready"]!.GetValue<bool>());
+    }
+
+    [TestMethod]
+    public void EveryRegisteredEvaluationLocusMustBeRepresented()
+    {
+        using var fixture = new Fixture();
+        fixture.Mutate("run.json", value =>
+            value["evaluation_loci"]!.AsArray().Add("unrepresented-evaluation"));
+
+        Assert.AreEqual(1, fixture.Run("preflight"));
         Assert.IsFalse(JsonNode.Parse(File.ReadAllText(fixture.Output("preflight.json")))!["ready"]!.GetValue<bool>());
     }
 

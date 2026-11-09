@@ -173,7 +173,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
         return report;
     }
 
-    private VoynichInventoryPlan LoadPlan(string path)
+    internal VoynichInventoryPlan LoadPlan(string path)
     {
         using var document = JsonDocument.Parse(File.ReadAllText(path, new UTF8Encoding(false, true)));
         var schemaPath = Path.Combine(
@@ -187,7 +187,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
             ?? throw new InvalidDataException("Empty Voynich inventory extraction plan.");
     }
 
-    private void ValidatePlan(string planPath, VoynichInventoryPlan plan)
+    internal void ValidatePlan(string planPath, VoynichInventoryPlan plan)
     {
         Require(plan.EvaluationLoci.SequenceEqual(EvaluationLoci, StringComparer.Ordinal),
             "Evaluation loci must remain f1r/f1v/f2r/f2v.");
@@ -267,7 +267,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
         }
     }
 
-    private static bool TryReadLocator(
+    internal static bool TryReadLocator(
         string line,
         out string locator,
         out string locus,
@@ -303,7 +303,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
         return true;
     }
 
-    private static string NormalizeSelectedText(string text, int lineNumber)
+    internal static string NormalizeSelectedText(string text, int lineNumber)
     {
         var normalized = text.Normalize(NormalizationForm.FormC);
         var result = new StringBuilder(normalized.Length);
@@ -340,7 +340,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
         return value;
     }
 
-    private static IEnumerable<string> Tokenize(
+    internal static IEnumerable<string> Tokenize(
         string text,
         VoynichInventoryNormalization normalization)
     {
@@ -385,7 +385,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
             "Generated mapping symbol inventory does not conform to its schema.");
     }
 
-    private string Resolve(string relativePath)
+    internal string Resolve(string relativePath)
     {
         Require(!Path.IsPathRooted(relativePath), "Voynich inventory paths must be repository-relative.");
         var path = Path.GetFullPath(Path.Combine(
@@ -447,7 +447,7 @@ public sealed class VoynichEvaluationInventory(string repositoryRoot)
         WriteBytes(path, Encoding.UTF8.GetBytes(string.Join("\n", lines) + "\n"));
     }
 
-    private static void WriteBytes(string path, byte[] bytes)
+    internal static void WriteBytes(string path, byte[] bytes)
     {
         _ = Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         var temporary = path + "." + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture) + ".tmp";
