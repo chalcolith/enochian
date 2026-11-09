@@ -1,0 +1,54 @@
+{
+  "$schema": "schemas/mapping-preregistration.schema.json",
+  "schema_version": "1.0.0",
+  "preregistration_id": "voynich-mapping-preregistration-v1",
+  "status": "pending",
+  "comparative_results_inspected": false,
+  "partitions": {
+    "evaluation_loci": ["f1r", "f1v", "f2r", "f2v"],
+    "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+    "holdout_opened": false
+  },
+  "features": {
+    "path": "resources/encodings/features.json",
+    "sha256": "121964dcbdcfb7e5aff61c3a135495ba9d10e4b9404ff5bf916cd3d4648c910c"
+  },
+  "ipa_encoding": {
+    "path": "resources/encodings/ipa.json",
+    "sha256": "fd39e5987ba284e6ff43323f42d3eabf7caebf0c654f2224e19e8c1b60542587"
+  },
+  "inventory": null,
+  "candidates": [
+    {
+      "id": "vogt-legacy-exploratory",
+      "version": "1.0.0",
+      "kind": "legacy",
+      "description": "Historical exploratory EVA encoding retained only for an explicit before/after comparison.",
+      "source": {
+        "path": "resources/encodings/vogt.json",
+        "sha256": "d08b88f5c7ad0f87c67cbc94c5715a548086d2c9becf507f70c8fd9794da7b55"
+      },
+      "linguistic_rationale": "This records the repository's existing Derek Vogt-derived exploratory hypothesis; it is not automatically nominated for confirmatory approval.",
+      "differences_from_legacy": [],
+      "normalization": {
+        "unicode_normalization": "NFC",
+        "case_treatment": "legacy case-sensitive patterns",
+        "uncertain_symbols": "legacy flow behavior; not approved for confirmatory use"
+      },
+      "segmentation": {
+        "method": "legacy encoding-pattern precedence",
+        "multigraphs": ["ch", "ee", "eo", "cfh", "fch", "cFh", "cKh", "ckh", "kch", "cPh", "cph", "pch", "Sh", "sh", "cTh", "cth", "tch"],
+        "overlap_resolution": "legacy encoder longest-input ordering"
+      },
+      "transcription_ambiguities": [],
+      "symbol_to_ipa": null,
+      "materialized_mapping": null
+    }
+  ],
+  "proposal_candidate_id": null,
+  "decision": null,
+  "outputs": {
+    "report_json": "reports/mapping-preregistration/v1/decision-package.json",
+    "report_markdown": "reports/mapping-preregistration/v1/decision-package.md"
+  }
+}

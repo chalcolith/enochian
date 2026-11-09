@@ -15,6 +15,8 @@ public class SchemaTests
         LoadSchema("experiments/schemas/retrieval-benchmark.schema.json");
     private static readonly JsonSchema DegradationProfileSchema =
         LoadSchema("experiments/schemas/degradation-profile.schema.json");
+    private static readonly JsonSchema MappingPreregistrationSchema =
+        LoadSchema("experiments/schemas/mapping-preregistration.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -44,6 +46,7 @@ public class SchemaTests
         }
         AssertValid(DegradationProfileSchema, "experiments/degradation-profiles/feature-masking.v2.json");
         AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v2.protocol.json");
+        AssertValid(MappingPreregistrationSchema, "experiments/mapping-preregistration.v1.json");
 
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");

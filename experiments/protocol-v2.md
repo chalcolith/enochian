@@ -40,6 +40,16 @@ loci, missing loci, unmapped symbols, and extra fields including definitions
 are rejected. Mapping vectors must match the pinned feature dimensions and
 allowed feature values.
 
+The M4 mapping decision is prepared separately by
+`mapping-preregistration.v1.json`. `mapping-preregister` validates the frozen
+partition boundary, pinned feature space, evaluation-only inventory, one
+unscored proposal, complete symbol coverage, segmentation and ambiguity
+declarations, and an explicit researcher decision. It deterministically
+materializes the proposal through the pinned IPA encoding, requires one feature
+vector per evaluation symbol, and records the exact checksum to be approved.
+Pending and incomplete packages remain blocked; an explicit decline is recorded
+without producing a confirmatory mapping.
+
 ## Source and pronunciation admission
 
 - Freeze the complete M2-08 panel, profile versions/fingerprints, generated

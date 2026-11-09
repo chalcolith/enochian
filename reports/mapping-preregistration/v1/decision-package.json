@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "preregistration_id": "voynich-mapping-preregistration-v1",
+  "status": "pending",
+  "preregistration_sha256": "908d161968f224ccf65b9643d87cc48382fca8e5c8971b1bcf90d380f396f5c0",
+  "comparative_results_inspected": false,
+  "partitions": {
+    "evaluation_loci": [
+      "f1r",
+      "f1v",
+      "f2r",
+      "f2v"
+    ],
+    "holdout_loci": [
+      "f3r",
+      "f3v",
+      "f4r",
+      "f4v"
+    ],
+    "holdout_opened": false
+  },
+  "feature_dimensions": [
+    "AdvancedTongueRoot,ATR",
+    "Anterior,Ant",
+    "Approximant",
+    "Back",
+    "Close",
+    "Consonantal,Cons",
+    "ConstrictedGlottis,CG",
+    "Continuant,Cont",
+    "Coronal,Cor",
+    "DelayedRelease,DelRel",
+    "Distributed,Dist",
+    "Dorsal",
+    "Front",
+    "Glottal",
+    "High",
+    "Labial,Lab",
+    "Lateral",
+    "Low",
+    "Nasal",
+    "Pharyngeal,Phar",
+    "Raised",
+    "Retracted",
+    "RetractedTongueRoot,RTR",
+    "Round",
+    "Sonorant,Son",
+    "SpreadGlottis,SG",
+    "Strident",
+    "Syllabic,Syll",
+    "Tense",
+    "Voice"
+  ],
+  "allowed_feature_values": [
+    -1,
+    0,
+    1
+  ],
+  "inventory_id": null,
+  "evaluation_symbols": [],
+  "candidates": [
+    {
+      "id": "vogt-legacy-exploratory",
+      "version": "1.0.0",
+      "kind": "legacy",
+      "description": "Historical exploratory EVA encoding retained only for an explicit before/after comparison.",
+      "source": {
+        "path": "resources/encodings/vogt.json",
+        "sha256": "d08b88f5c7ad0f87c67cbc94c5715a548086d2c9becf507f70c8fd9794da7b55"
+      },
+      "linguistic_rationale": "This records the repository\u0027s existing Derek Vogt-derived exploratory hypothesis; it is not automatically nominated for confirmatory approval.",
+      "differences_from_legacy": [],
+      "normalization": {
+        "unicode_normalization": "NFC",
+        "case_treatment": "legacy case-sensitive patterns",
+        "uncertain_symbols": "legacy flow behavior; not approved for confirmatory use"
+      },
+      "segmentation": {
+        "method": "legacy encoding-pattern precedence",
+        "multigraphs": [
+          "ch",
+          "ee",
+          "eo",
+          "cfh",
+          "fch",
+          "cFh",
+          "cKh",
+          "ckh",
+          "kch",
+          "cPh",
+          "cph",
+          "pch",
+          "Sh",
+          "sh",
+          "cTh",
+          "cth",
+          "tch"
+        ],
+        "overlap_resolution": "legacy encoder longest-input ordering"
+      },
+      "transcription_ambiguities": [],
+      "mapped_symbols": 0,
+      "materialized_mapping": null,
+      "mapping_sha256": null
+    }
+  ],
+  "proposal_candidate_id": null,
+  "decision": null,
+  "ready_for_confirmatory": false,
+  "blockers": [
+    "evaluation_symbol_inventory_required",
+    "explicit_researcher_decision_required",
+    "single_unscored_proposal_required"
+  ]
+}
