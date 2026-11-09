@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/pronunciation-panel-amendment-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "policy_id", "frozen", "base_panel", "profile"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "policy_id": { "const": "pronunciation-anchor-panel-m3-07" },
+    "frozen": { "const": true },
+    "base_panel": { "$ref": "#/$defs/pin" },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "language", "convention", "required_labels", "rejected_labels", "fallback", "rules"],
+      "properties": {
+        "id": { "const": "san-dictionary" },
+        "version": { "const": "2.0.0" },
+        "language": { "const": "san" },
+        "convention": { "const": "sanskrit-slp1-shs" },
+        "required_labels": { "const": [] },
+        "rejected_labels": { "const": [] },
+        "fallback": { "const": "none" },
+        "rules": {
+          "const": {
+            "selection": "Pinned CDSL Shabda-Sagara SLP1 headwords converted by the repository's pinned SLP1-to-IPA feature mapping; no definitions or unconverted fallback readings."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

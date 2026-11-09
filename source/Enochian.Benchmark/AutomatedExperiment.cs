@@ -472,6 +472,7 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
 
     private void ValidateAstronomy(AutomatedProtocol protocol)
     {
+        var panel = PronunciationPanel.Load(files.Resolve(protocol.Panel.Path), repositoryRoot);
         using var registration = files.Read(protocol.Astronomy.Registration);
         using var policy = files.Read(protocol.Astronomy.Policy);
         var manifestPath = files.Pin(protocol.Astronomy.Manifest);
@@ -490,7 +491,9 @@ public sealed class AutomatedExperiment(string repositoryRoot, FeatureSet featur
             policy.RootElement.GetProperty("manifest").GetString() != protocol.Astronomy.Manifest.Path ||
             policy.RootElement.GetProperty("report_path").GetString() != protocol.Astronomy.Registration.Path ||
             (protocol.Phase == "confirmatory" &&
-                registration.RootElement.GetProperty("pronunciation_panel_sha256").GetString() != protocol.Panel.Sha256))
+                !panel.AcceptedPanelHashes.Contains(
+                    registration.RootElement.GetProperty("pronunciation_panel_sha256").GetString(),
+                    StringComparer.Ordinal)))
         {
             throw new InvalidDataException("Unlicensed or inconsistent frozen astronomical registration.");
         }

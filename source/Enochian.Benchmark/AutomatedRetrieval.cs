@@ -39,7 +39,9 @@ public static class AutomatedRetrieval
                         total == 0 ? 0 : values.Sum(value => value.Weight * value.Metrics.ReciprocalRank) / total,
                         total == 0 || values.Any(value => value.Metrics.RelevantNormalizedDistance == null) ? null
                             : values.Sum(value => value.Weight * value.Metrics.RelevantNormalizedDistance!.Value) / total);
-                    var decision = ThresholdEvaluator.Evaluate(summary, retrieval.Thresholds);
+                    var requireDistance = retrieval.DistanceThresholdDegradations.Count == 0 ||
+                        retrieval.DistanceThresholdDegradations.Contains(degradation.Id, StringComparer.Ordinal);
+                    var decision = ThresholdEvaluator.Evaluate(summary, retrieval.Thresholds, requireDistance);
                     var blockers = decision.Blockers.ToList();
                     if (sample.Length < retrieval.SamplesPerStratum)
                     {

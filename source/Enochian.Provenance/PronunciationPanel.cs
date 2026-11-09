@@ -35,10 +35,17 @@ public sealed record PronunciationPanel
     public required string ReportDirectory { get; init; }
     public required string[] FallbackSourceManifests { get; init; }
     public required PronunciationProfile[] Profiles { get; init; }
+    [JsonIgnore]
+    public string[] AcceptedPanelHashes { get; init; } = [];
 
     public static PronunciationPanel Load(string path, string repositoryRoot)
     {
         using var document = JsonDocument.Parse(File.ReadAllText(path, new UTF8Encoding(false, true)));
+        if (document.RootElement.TryGetProperty("base_panel", out _))
+        {
+            return LoadAmendment(path, repositoryRoot, document.RootElement);
+        }
+
         var schema = JsonSchema.FromText(File.ReadAllText(Path.Combine(
             repositoryRoot, "resources", "lexicons", "schemas", "pronunciation-panel.schema.json")),
             new BuildOptions { SchemaRegistry = new SchemaRegistry() });
@@ -66,10 +73,67 @@ public sealed record PronunciationPanel
 
         return panel with
         {
+            AcceptedPanelHashes = [PronunciationAudit.HashConfiguration(path)],
             Profiles = [.. panel.Profiles.Select(profile => profile with
             {
                 Rules = new SortedDictionary<string, string>(profile.Rules, StringComparer.Ordinal),
             })],
         };
     }
+
+    private static PronunciationPanel LoadAmendment(
+        string path,
+        string repositoryRoot,
+        JsonElement root)
+    {
+        var schema = JsonSchema.FromText(File.ReadAllText(Path.Combine(
+            repositoryRoot, "resources", "lexicons", "schemas", "pronunciation-panel-amendment.schema.json")),
+            new BuildOptions { SchemaRegistry = new SchemaRegistry() });
+        if (!schema.Evaluate(root).IsValid)
+        {
+            throw new InvalidDataException($"{path}: invalid pronunciation panel amendment.");
+        }
+
+        var amendment = JsonSerializer.Deserialize<PronunciationPanelAmendment>(
+            root, PronunciationAudit.JsonOptions)
+            ?? throw new InvalidDataException($"{path}: empty pronunciation panel amendment.");
+        var basePath = Path.GetFullPath(Path.Combine(
+            repositoryRoot, amendment.BasePanel.Path.Replace('/', Path.DirectorySeparatorChar)));
+        if (!basePath.StartsWith(Path.GetFullPath(repositoryRoot) + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase) ||
+            PronunciationAudit.HashConfiguration(basePath) != amendment.BasePanel.Sha256)
+        {
+            throw new InvalidDataException($"{path}: invalid or modified base pronunciation panel.");
+        }
+
+        var panel = Load(basePath, repositoryRoot);
+        var profiles = panel.Profiles
+            .Select(profile => profile.Id == amendment.Profile.Id ? amendment.Profile : profile)
+            .ToArray();
+        if (!profiles.Contains(amendment.Profile))
+        {
+            throw new InvalidDataException($"{path}: amended profile does not exist in the base panel.");
+        }
+
+        return panel with
+        {
+            PolicyId = amendment.PolicyId,
+            AcceptedPanelHashes =
+                [.. panel.AcceptedPanelHashes.Append(PronunciationAudit.HashConfiguration(path))],
+            Profiles = profiles,
+        };
+    }
 }
+
+public sealed record PronunciationPanelAmendment
+{
+    [JsonPropertyName("$schema")]
+    public required string Schema { get; init; }
+    public required string SchemaVersion { get; init; }
+    public required string PolicyId { get; init; }
+    public required bool Frozen { get; init; }
+    public required PronunciationPanelPin BasePanel { get; init; }
+    public required PronunciationProfile Profile { get; init; }
+}
+
+public sealed record PronunciationPanelPin(string Path, string Sha256);

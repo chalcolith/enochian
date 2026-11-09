@@ -1,0 +1,60 @@
+{
+  "$schema": "https://chalcolith.github.io/enochian/schemas/automated-experiment-amendment-2.json",
+  "schema_version": "2.0.0",
+  "amendment_id": "automation-first-anchor-readiness-m3-07",
+  "config_id": "dictionary-first-evaluation-readiness-m3-07",
+  "frozen": true,
+  "base_protocol": {
+    "path": "experiments/confirmatory.retrieval.v1.json",
+    "sha256": "b04c5edc965c9e44caa52650f08f07341d9de621c813217db12386710ce5d008"
+  },
+  "queries": {
+    "path": "resources/voynich/evaluation-queries.v1.jsonl",
+    "sha256": "b48f63126ba788b98d78878b3b248bd518564873dc18504e35718242a6c2089a"
+  },
+  "mapping": {
+    "path": "experiments/mappings/vogt-basic-eva-complete.v1.json",
+    "sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e"
+  },
+  "mapping_approval": {
+    "path": "reports/mapping-preregistration/v1/decision-package.json",
+    "sha256": "b1e0789280e0847781464eada1a862444299e3b4f891995bb992ce3b65111610"
+  },
+  "panel": {
+    "path": "resources/lexicons/pronunciation-panel.m3-07.json",
+    "sha256": "1606c7c2f5d56a28650d0d1d194379dd147d43c6e23e910118ae9e3516f8b7ec"
+  },
+  "retrieval_policy": {
+    "path": "experiments/retrieval-benchmark.v3.protocol.json",
+    "sha256": "98413ea6939eaaa012dc2f8e798a0d1edec839ed30986ea17e6d3da58af34318"
+  },
+  "retrieval_runner": "degradation-aware-retrieval-v3",
+  "source_overrides": [
+    {
+      "profile_id": "san-dictionary",
+      "required": true,
+      "confirmatory_eligible": true,
+      "profile_manifest": {
+        "path": ".enoch/pronunciation-profiles/m3-07/san-dictionary-v2.0.0.manifest.json",
+        "sha256": "61f09bb46ce1789554cbc57c889768eb8a8480ceedaf217ee0781a553d4a3c49"
+      },
+      "generator_approval": {
+        "path": "resources/lexicons/approvals/san-cdsl-shs-slp1-v1.approval.json",
+        "sha256": "b480f0d81ac7b744cf1dc3ff78b2b44b01a447c5d721194ed047e3d517dff317"
+      }
+    },
+    {
+      "profile_id": "hin-dictionary",
+      "required": false,
+      "confirmatory_eligible": false
+    },
+    {
+      "profile_id": "hun-dictionary",
+      "required": false,
+      "confirmatory_eligible": false
+    }
+  ],
+  "output_directory": ".enoch/experiments/evaluation-readiness-m3-07",
+  "admission_report": "reports/evaluation-readiness/m3-07/admission.json",
+  "preflight_report": "reports/evaluation-readiness/m3-07/preflight.json"
+}

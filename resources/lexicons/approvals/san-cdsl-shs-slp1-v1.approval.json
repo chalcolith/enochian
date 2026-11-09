@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/deterministic-generator-approval.schema.json",
+  "schema_version": "1.0.0",
+  "approval_id": "san-cdsl-shs-slp1-v1",
+  "status": "approved",
+  "profile_id": "san-dictionary",
+  "language": "san",
+  "source_id": "cdsl-shs",
+  "source_revision": "b7297b97cf9f7112277ea98f7969291eb1d5f495",
+  "generator": "enochian-slp1-to-ipa-v1",
+  "generator_revision": "2745da974b9c9b56f5bb7a88ed6c844d18d6f10ee8fa349b567a1e751fa2a162",
+  "source_manifest": {
+    "path": "resources/lexicons/manifests/cdsl-shs.manifest.json",
+    "sha256": "27c99080571fceef171e2e64d2171cc649bd3b7829be5a752c48c17c3369d502"
+  },
+  "mapping": {
+    "path": "resources/encodings/slp1.json",
+    "sha256": "2745da974b9c9b56f5bb7a88ed6c844d18d6f10ee8fa349b567a1e751fa2a162"
+  },
+  "feature_space": {
+    "path": "resources/encodings/features.json",
+    "sha256": "121964dcbdcfb7e5aff61c3a135495ba9d10e4b9404ff5bf916cd3d4648c910c"
+  },
+  "scope": "cdsl-shs-slp1-headwords-only",
+  "decision": "Use the repository's original deterministic Sanskrit dictionary mapping; Hindi and Hungarian are excluded from this panel revision.",
+  "researcher": "chalcolith",
+  "approved_on": "2026-11-09"
+}

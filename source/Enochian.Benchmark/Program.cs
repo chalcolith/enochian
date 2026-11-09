@@ -2,6 +2,12 @@ using Enochian.Flow;
 
 try
 {
+    if (args.Length is 1 or 2 && args[0] == "sanskrit-profile")
+    {
+        var sanskritRoot = args.Length == 2 ? Path.GetFullPath(args[1]) : FindRepositoryRoot();
+        return new Enochian.Benchmark.SanskritProfileMaterializer(sanskritRoot).Run();
+    }
+
     if (args.Length is 2 or 3 && args[0] == "mapping-preregister")
     {
         var mappingRoot = args.Length == 3 ? Path.GetFullPath(args[2]) : FindRepositoryRoot();
@@ -96,6 +102,7 @@ catch (Exception exception)
 
 static int ShowUsage()
 {
+    Console.Error.WriteLine("Usage: Enochian.Benchmark sanskrit-profile [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark statistics <statistics-protocol-json> [repository-root]");

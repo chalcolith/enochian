@@ -44,6 +44,41 @@ public sealed class AutomatedExperimentTests
     }
 
     [TestMethod]
+    public void AnchorRevisionOverridesOnlyDeclaredReadinessInputs()
+    {
+        var baseline = AutomatedProtocol.Load(
+            Path.Combine(RepositoryRoot, "experiments", "confirmatory.retrieval.v1.json"),
+            RepositoryRoot);
+        var amendment = AutomatedProtocol.Load(
+            Path.Combine(RepositoryRoot, "experiments", "confirmatory.readiness.m3-07.json"),
+            RepositoryRoot);
+
+        Assert.AreEqual("degradation-aware-retrieval-v3", amendment.RetrievalRunner);
+        Assert.AreEqual(
+            "resources/lexicons/pronunciation-panel.m3-07.json",
+            amendment.Panel.Path);
+        Assert.AreEqual(
+            "experiments/retrieval-benchmark.v3.protocol.json",
+            amendment.RetrievalPolicy.Path);
+        var sanskrit = amendment.Sources.Single(source => source.ProfileId == "san-dictionary");
+        Assert.IsTrue(sanskrit.Required);
+        Assert.IsTrue(sanskrit.ConfirmatoryEligible);
+        Assert.IsNotNull(sanskrit.GeneratorApproval);
+        foreach (var id in new[] { "hin-dictionary", "hun-dictionary" })
+        {
+            var source = amendment.Sources.Single(value => value.ProfileId == id);
+            Assert.IsFalse(source.Required);
+            Assert.IsFalse(source.ConfirmatoryEligible);
+        }
+
+        Assert.AreEqual(baseline.SamplingSeed, amendment.SamplingSeed);
+        Assert.AreEqual(baseline.NullSeed, amendment.NullSeed);
+        Assert.AreEqual(baseline.PermutationSeed, amendment.PermutationSeed);
+        CollectionAssert.AreEqual(baseline.EvaluationLoci, amendment.EvaluationLoci);
+        CollectionAssert.AreEqual(baseline.HoldoutLoci, amendment.HoldoutLoci);
+    }
+
+    [TestMethod]
     public void SyntheticRunNeedsNoHumanFilesAndPreservesEveryRetrievalThreshold()
     {
         using var fixture = new Fixture();

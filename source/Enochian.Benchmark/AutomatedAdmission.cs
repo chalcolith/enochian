@@ -19,7 +19,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
     {
         var protocol = AutomatedProtocol.Load(protocolPath, repositoryRoot);
         files.Track(protocolPath);
-        foreach (var pin in protocol.Sources.SelectMany(source => new[] { source.ProfileManifest, source.References })
+        foreach (var pin in protocol.Sources.SelectMany(
+                source => new[] { source.ProfileManifest, source.References, source.GeneratorApproval })
             .Concat([protocol.BaseProtocol, protocol.Queries, protocol.Mapping, protocol.MappingApproval,
                 protocol.Astronomy.Registration, protocol.Astronomy.Policy, protocol.Astronomy.Manifest])
             .OfType<PinnedInput>())
@@ -48,17 +49,25 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             dictionary.Policy.RequiredBands.Order(StringComparer.Ordinal).SequenceEqual(protocol.LengthQuotas.Keys) &&
             dictionary.Policy.AdmittedOrigins.SequenceEqual(["dictionary-supplied"]), "modified_evidence_policy");
         var retrieval = BenchmarkProtocol.Load(files.Pin(protocol.RetrievalPolicy));
-        var revisedRetrieval = protocol.RetrievalRunner == "masked-query-distance-v2";
-        if (protocol.RetrievalRunner is not (null or "masked-query-distance-v2") ||
-            retrieval.SchemaVersion != (revisedRetrieval ? "2.0.0" : "1.0.0") ||
+        var revisedRetrieval = protocol.RetrievalRunner is
+            "masked-query-distance-v2" or "degradation-aware-retrieval-v3";
+        var degradationAwareRetrieval = protocol.RetrievalRunner == "degradation-aware-retrieval-v3";
+        var expectedRetrievalVersion = degradationAwareRetrieval ? "3.0.0" :
+            revisedRetrieval ? "2.0.0" : "1.0.0";
+        if (protocol.RetrievalRunner is not
+                (null or "masked-query-distance-v2" or "degradation-aware-retrieval-v3") ||
+            retrieval.SchemaVersion != expectedRetrievalVersion ||
             retrieval.DistanceSemantics != (revisedRetrieval
                 ? "explicit-query-mask-ignored-euclidean-path-mean-v1" : null) ||
+            !retrieval.DistanceThresholdDegradations.SequenceEqual(
+                degradationAwareRetrieval ? ["identity", "mask-laryngeal"] : []) ||
             retrieval.RequiredLengthBands.Count != 3 ||
             !retrieval.RequiredLengthBands.ToHashSet(StringComparer.Ordinal).SetEquals(protocol.LengthQuotas.Keys) ||
             retrieval.Thresholds != new BenchmarkThresholds(100, 0.95, 0.8, 0.95, 0.99, 0.85, 0.35) ||
             retrieval.SamplesPerStratum != 25 || protocol.Degradations.Length != retrieval.DegradationProfiles.Count)
         {
-            throw new InvalidDataException("V2 must retain the frozen retrieval thresholds, bands and degradation inventory.");
+            throw new InvalidDataException(
+                "The protocol must retain the frozen retrieval thresholds, bands and degradation inventory.");
         }
 
         var profiles = panel.Profiles.ToDictionary(profile => profile.Id, StringComparer.Ordinal);
@@ -102,7 +111,7 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
             try
             {
                 var (decision, units) = EvaluateSource(source, profiles[source.ProfileId], dictionary.Policy,
-                    protocol, retrieval, degradations);
+                    protocol, retrieval, degradations, panel.AcceptedPanelHashes);
                 decisions.Add(decision);
                 if (decision.Status == "admitted")
                 {
@@ -160,7 +169,8 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         PronunciationPolicy policy,
         AutomatedProtocol protocol,
         BenchmarkProtocol retrieval,
-        DegradationProfile[] degradations)
+        DegradationProfile[] degradations,
+        string[] acceptedPanelHashes)
     {
         Require(source.Language == profile.Language, "profile_language_mismatch");
         using var manifest = files.Read(source.ProfileManifest);
@@ -186,7 +196,9 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         var recordedProfile = JsonSerializer.Deserialize<PronunciationProfile>(root.GetProperty("profile"), PronunciationAudit.JsonOptions);
         Require(recordedProfile?.Fingerprint == profile.Fingerprint &&
             root.GetProperty("profile_sha256").GetString() == profile.Fingerprint &&
-            root.GetProperty("panel_sha256").GetString() == protocol.Panel.Sha256, "profile_or_panel_hash_mismatch");
+            acceptedPanelHashes.Contains(
+                root.GetProperty("panel_sha256").GetString(), StringComparer.Ordinal),
+            "profile_or_panel_hash_mismatch");
         Require(root.GetProperty("feature_sha256").GetString() == PronunciationAudit.Hash(files.Resolve(protocol.Phonology.Features.Path)) &&
             root.GetProperty("encoding_sha256").GetString() == PronunciationAudit.Hash(files.Resolve(protocol.Phonology.Encoding.Path)),
             "phonological_space_hash_mismatch");
@@ -250,12 +262,17 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         }
 
         Require(entries.Count == rows.Count, "missing_entry_evidence");
+        var generatorApproval = ValidateGeneratorApproval(source, profile, protocol, upstream);
         var grouped = rows.Values.GroupBy(row => row.Source + "\u001f" + row.LexicalIdentity, StringComparer.Ordinal).ToArray();
         var compatible = grouped.Select(group => CreateUnit(profile, [.. group])).ToArray();
         var agreement = source.References == null ? null : EvaluateReferences(source.References, profile, rows.Values, policy, upstream, replayed);
         var supportedIds = grouped.Where(group => group.All(row => row.Origin == "dictionary-supplied" ||
             (row.Origin is "converter-generated" or "template-generated" && agreement?.Status == "pass" &&
-                !string.IsNullOrWhiteSpace(row.Generator) && !string.IsNullOrWhiteSpace(row.GeneratorRevision))))
+                !string.IsNullOrWhiteSpace(row.Generator) && !string.IsNullOrWhiteSpace(row.GeneratorRevision)) ||
+            (row.Origin == "converter-generated" && generatorApproval != null &&
+                row.Source == generatorApproval.SourceId &&
+                row.Generator == generatorApproval.Generator &&
+                row.GeneratorRevision == generatorApproval.GeneratorRevision)))
             .Select(group => UnitId(profile, group.Key)).ToHashSet(StringComparer.Ordinal);
         var supported = compatible.Where(unit => supportedIds.Contains(unit.Id)).ToArray();
         var units = supported.GroupBy(DistributionKey, StringComparer.Ordinal)
@@ -324,6 +341,43 @@ public sealed class AutomatedAdmission(string repositoryRoot, FeatureSet feature
         Require(unknown.Count == 0 && phones.Count >= 3 && phones.Count <= 20 &&
             row.PhonemeLength == phones.Count && row.LengthBand == BenchmarkSampling.GetLengthBand(phones.Count),
             "unsupported_or_inconsistent_phonology");
+    }
+
+    private DeterministicGeneratorApproval? ValidateGeneratorApproval(
+        AutomatedSource source,
+        PronunciationProfile profile,
+        AutomatedProtocol protocol,
+        IReadOnlyDictionary<string, SourceMetadata> upstream)
+    {
+        if (source.GeneratorApproval == null)
+        {
+            return null;
+        }
+
+        using var document = files.Read(source.GeneratorApproval);
+        Require(LoadSchema("deterministic-generator-approval.schema.json")
+            .Evaluate(document.RootElement).IsValid, "invalid_generator_approval");
+        var approval = JsonSerializer.Deserialize<DeterministicGeneratorApproval>(
+            document.RootElement, AutomatedProtocol.JsonOptions)
+            ?? throw new InvalidDataException("Empty deterministic generator approval.");
+        var sourceManifestPath = files.Pin(approval.SourceManifest, configuration: false);
+        var metadata = ValidateSourceManifest(sourceManifestPath);
+        Require(
+            approval.Status == "approved" &&
+            approval.ProfileId == source.ProfileId &&
+            approval.Language == source.Language &&
+            approval.SourceId == "cdsl-shs" &&
+            approval.SourceRevision == metadata.Revision &&
+            upstream.TryGetValue(approval.SourceId, out var recordedMetadata) &&
+            recordedMetadata == metadata &&
+            approval.Generator == "enochian-slp1-to-ipa-v1" &&
+            approval.GeneratorRevision == approval.Mapping.Sha256 &&
+            files.Pin(approval.Mapping) == files.Resolve("resources/encodings/slp1.json") &&
+            files.Pin(approval.FeatureSpace) == files.Resolve(protocol.Phonology.Features.Path) &&
+            approval.Scope == "cdsl-shs-slp1-headwords-only" &&
+            profile.Convention == "sanskrit-slp1-shs",
+            "generator_approval_scope_or_pin_mismatch");
+        return approval;
     }
 
     private EvidenceUnit CreateUnit(PronunciationProfile profile, PronunciationEvidence[] rows)

@@ -11,6 +11,8 @@ public sealed class BenchmarkProtocol
 
     public string? DistanceSemantics { get; init; }
 
+    public IReadOnlyList<string> DistanceThresholdDegradations { get; init; } = [];
+
     public int SamplingSeed { get; init; }
 
     public int SamplesPerStratum { get; init; }

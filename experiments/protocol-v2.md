@@ -21,6 +21,9 @@ dotnet run --project Enochian.Benchmark -- admit ..\experiments\confirmatory.v2.
 dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.v2.json
 dotnet run --project Enochian.Provenance -- voynich-queries
 dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.v1.json
+dotnet run --project Enochian.Cdsl -- acquire-normalize
+dotnet run --project Enochian.Benchmark -- sanskrit-profile
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.m3-07.json
 dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.v2.json
 ```
 
@@ -75,6 +78,18 @@ admitted, and the required primary comparison therefore has no admitted pair.
 Query, mapping, approval, partition, and pin validation complete successfully.
 No confirmatory manuscript scoring has run.
 
+The separate M3-07 amendment resolves that prerequisite without changing the
+published #49 result. Hindi and Hungarian remain inventoried but are neither
+required nor confirmatory. Sanskrit uses 120 definitions-free headwords from
+the pinned CDSL Shabda-Sagara snapshot, sampled deterministically across the
+complete usable snapshot with 40 distinct phonological distributions per
+length band. The repository's pinned SLP1 mapping supplies Devanagari display
+forms and IPA vectors. A source-specific approval binds the SHS revision,
+source manifest, SLP1 mapping, feature space, generator identity, and scope;
+it does not authorize any other generated source. Sanskrit and Turkish are the
+two required anchors. The M3-07 admission and preflight reports are ready with
+no blockers. This preflight does not score Voynich queries.
+
 ## Source and pronunciation admission
 
 - Freeze the complete M2-08 panel, profile versions/fingerprints, generated
@@ -97,6 +112,11 @@ No confirmatory manuscript scoring has run.
   not bound to actual generated outputs, tuning examples, and unvalidated
   reference origins. Renaming a shared-source reference does not establish
   independence.
+- M3-07 adds one narrow alternative to independent-reference validation: an
+  explicit researcher approval may admit the exact pinned CDSL SHS plus SLP1
+  converter. The approval is valid only for that Sanskrit profile, source
+  revision, mapping, feature space, generator revision, and definitions-free
+  headword scope.
 - Retain homograph identities. Alternatives receive the frozen equal-reading
   weights; all alternatives of a lexical unit must have supported evidence.
   Deduplicate complete weighted **phone-vector distributions**, preserving
@@ -121,6 +141,15 @@ Genuine unset zeros outside the explicit mask remain numeric; candidates,
 path-mean normalization, weights, ranks, ties, sampling, and the identity,
 deletion, and merger operations are unchanged. The v1 profile and reports
 remain frozen.
+
+M3-07 versions degradation-aware threshold semantics. Recall@1, Recall@5,
+Recall@20, and MRR remain pass/fail gates for every degradation. The unchanged
+0.35 mean normalized-distance gate remains pass/fail for identity and explicit
+laryngeal masking. Distance remains reported but is diagnostic for deletion
+and vowel-height merger, because those operations deliberately alter the
+sequence or feature representation. No replacement distance threshold was
+selected from Turkish results. The v1/v2 evaluator behavior and reports remain
+unchanged.
 
 Self-retrieval establishes robustness under these degradations, not correct
 pronunciation. A passing retrieval cell cannot rescue unknown derivation,

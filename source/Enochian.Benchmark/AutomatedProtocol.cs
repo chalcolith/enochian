@@ -19,6 +19,7 @@ public sealed record AutomatedSource
     public required bool ConfirmatoryEligible { get; init; }
     public required PinnedInput ProfileManifest { get; init; }
     public PinnedInput? References { get; init; }
+    public PinnedInput? GeneratorApproval { get; init; }
 }
 
 public sealed record AutomatedContrast(
@@ -49,9 +50,22 @@ public sealed record AutomatedProtocolAmendment
     public required PinnedInput Queries { get; init; }
     public required PinnedInput Mapping { get; init; }
     public required PinnedInput MappingApproval { get; init; }
+    public PinnedInput? Panel { get; init; }
+    public PinnedInput? RetrievalPolicy { get; init; }
+    public string? RetrievalRunner { get; init; }
+    public AutomatedSourceOverride[] SourceOverrides { get; init; } = [];
     public required string OutputDirectory { get; init; }
     public required string AdmissionReport { get; init; }
     public required string PreflightReport { get; init; }
+}
+
+public sealed record AutomatedSourceOverride
+{
+    public required string ProfileId { get; init; }
+    public required bool Required { get; init; }
+    public required bool ConfirmatoryEligible { get; init; }
+    public PinnedInput? ProfileManifest { get; init; }
+    public PinnedInput? GeneratorApproval { get; init; }
 }
 
 public sealed record AutomatedProtocol
@@ -169,6 +183,10 @@ public sealed record AutomatedProtocol
         return protocol with
         {
             ConfigId = amendment.ConfigId,
+            Panel = amendment.Panel ?? protocol.Panel,
+            RetrievalPolicy = amendment.RetrievalPolicy ?? protocol.RetrievalPolicy,
+            RetrievalRunner = amendment.RetrievalRunner ?? protocol.RetrievalRunner,
+            Sources = ApplySourceOverrides(protocol.Sources, amendment.SourceOverrides),
             Queries = amendment.Queries,
             Mapping = amendment.Mapping,
             MappingApproval = amendment.MappingApproval,
@@ -177,6 +195,28 @@ public sealed record AutomatedProtocol
             PreflightReport = amendment.PreflightReport,
             BaseProtocol = amendment.BaseProtocol,
         };
+    }
+
+    private static AutomatedSource[] ApplySourceOverrides(
+        AutomatedSource[] sources,
+        AutomatedSourceOverride[] overrides)
+    {
+        var byId = overrides.ToDictionary(value => value.ProfileId, StringComparer.Ordinal);
+        if (byId.Count != overrides.Length ||
+            byId.Keys.Except(sources.Select(value => value.ProfileId), StringComparer.Ordinal).Any())
+        {
+            throw new InvalidDataException("Source overrides must be unique and identify base protocol sources.");
+        }
+
+        return [.. sources.Select(source => byId.TryGetValue(source.ProfileId, out var value)
+            ? source with
+            {
+                Required = value.Required,
+                ConfirmatoryEligible = value.ConfirmatoryEligible,
+                ProfileManifest = value.ProfileManifest ?? source.ProfileManifest,
+                GeneratorApproval = value.GeneratorApproval ?? source.GeneratorApproval,
+            }
+            : source)];
     }
 
     private static string Resolve(string path, string repositoryRoot)
@@ -217,6 +257,28 @@ public sealed record AutomatedProtocol
 }
 
 public sealed record AutomatedReferenceSource(PinnedInput Manifest, string[] Dependencies);
+
+public sealed record DeterministicGeneratorApproval
+{
+    [JsonPropertyName("$schema")]
+    public required string Schema { get; init; }
+    public required string SchemaVersion { get; init; }
+    public required string ApprovalId { get; init; }
+    public required string Status { get; init; }
+    public required string ProfileId { get; init; }
+    public required string Language { get; init; }
+    public required string SourceId { get; init; }
+    public required string SourceRevision { get; init; }
+    public required string Generator { get; init; }
+    public required string GeneratorRevision { get; init; }
+    public required PinnedInput SourceManifest { get; init; }
+    public required PinnedInput Mapping { get; init; }
+    public required PinnedInput FeatureSpace { get; init; }
+    public required string Scope { get; init; }
+    public required string Decision { get; init; }
+    public required string Researcher { get; init; }
+    public required string ApprovedOn { get; init; }
+}
 
 public sealed record AutomatedReferenceSet
 {

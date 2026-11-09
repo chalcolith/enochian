@@ -41,15 +41,19 @@ public static class ThresholdEvaluator
                 .Average() is var mean && !double.IsNaN(mean) ? mean : null);
     }
 
-    public static ThresholdDecision Evaluate(MetricSummary summary, BenchmarkThresholds thresholds)
+    public static ThresholdDecision Evaluate(
+        MetricSummary summary,
+        BenchmarkThresholds thresholds,
+        bool requireDistance = true)
     {
         var blockers = new List<string>();
         AddBelow(blockers, "recall_at_1", summary.RecallAt1, thresholds.MinimumRecallAt1);
         AddBelow(blockers, "recall_at_5", summary.RecallAt5, thresholds.MinimumRecallAt5);
         AddBelow(blockers, "recall_at_20", summary.RecallAt20, thresholds.MinimumRecallAt20);
         AddBelow(blockers, "mean_reciprocal_rank", summary.MeanReciprocalRank, thresholds.MinimumMeanReciprocalRank);
-        if (summary.MeanNormalizedDistance == null ||
+        if (requireDistance && (summary.MeanNormalizedDistance == null ||
             summary.MeanNormalizedDistance > thresholds.MaximumMeanNormalizedDistance)
+        )
         {
             blockers.Add("mean_normalized_distance");
         }
