@@ -1,0 +1,39 @@
+{
+  "$schema": "../../experiments/schemas/voynich-inventory-extraction.schema.json",
+  "schema_version": "1.0.0",
+  "extraction_id": "voynich-evaluation-symbol-inventory-v1",
+  "extractor_version": "voynich-evaluation-inventory-v1",
+  "frozen": true,
+  "transcription": {
+    "id": "reeds-landini-stolfi-interlinear",
+    "release": "1.6e6",
+    "transcriber_code": "H",
+    "convention": "basic EVA, uncapitalized",
+    "character_encoding": "ISO-8859-1",
+    "snapshot": {
+      "path": "resources/voynich/interlinear_text16e6.evt",
+      "sha256": "f764f41d02b47810bdbb48946fc24b88e85746ee7fe5f229957770e7c781e319"
+    },
+    "release_url": "https://web.archive.org/web/20030911021322id_/http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/",
+    "permission_url": "https://web.archive.org/web/20030911021322id_/http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/#Permissions",
+    "license": "LicenseRef-Stolfi-Attribution-NoAdditionalRestrictions",
+    "attribution": "Reeds/Landini interlinear release 1.6e6 edited by Jorge Stolfi; evaluation inventory uses Takeshi Takahashi's H transcription layer."
+  },
+  "evaluation_loci": ["f1r", "f1v", "f2r", "f2v"],
+  "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+  "normalization": {
+    "unicode_normalization": "NFC",
+    "case_treatment": "preserve frozen uncapitalized H layer",
+    "break_characters": [".", ",", "-", "="],
+    "alignment_fillers": ["!", "%"],
+    "inline_comments": "remove brace-delimited transcription metadata after locus selection",
+    "accepted_symbols": "ASCII lowercase basic EVA a-z",
+    "uncertain_token_policy": "exclude whole token and report source line, locator, token, and reason"
+  },
+  "outputs": {
+    "inventory": "resources/voynich/evaluation-symbol-inventory.v1.json",
+    "exclusions": "reports/voynich-inventory/v1/exclusions.jsonl",
+    "report_json": "reports/voynich-inventory/v1/coverage.json",
+    "report_markdown": "reports/voynich-inventory/v1/coverage.md"
+  }
+}
