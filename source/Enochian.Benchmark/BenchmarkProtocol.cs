@@ -9,6 +9,8 @@ public sealed class BenchmarkProtocol
 
     public string BenchmarkId { get; init; } = string.Empty;
 
+    public string? DistanceSemantics { get; init; }
+
     public int SamplingSeed { get; init; }
 
     public int SamplesPerStratum { get; init; }

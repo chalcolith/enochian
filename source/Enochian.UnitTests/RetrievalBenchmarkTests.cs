@@ -140,6 +140,66 @@ public sealed class RetrievalBenchmarkTests
     }
 
     [TestMethod]
+    public void ExplicitQueryMaskRemovesTheRealIpaDistanceFloorWithoutHidingOtherDifferences()
+    {
+        var flow = new FlowConfiguration(GetPath("samples/ipatransducer.json"));
+        AssertUtils.NoErrors(flow);
+        var features = flow.FeatureSets.Single(featureSet => featureSet.Id == "Default");
+        var encoder = new Enochian.Text.Encoder(
+            features, flow.Encodings.Single(encoding => encoding.Id == "IPA"));
+        var (_, _, voicelessPhones) = encoder.GetTextAndPhones("p");
+        var (_, _, voicedPhones) = encoder.GetTextAndPhones("b");
+        var (_, _, coronalPhones) = encoder.GetTextAndPhones("t");
+        var voiceless = voicelessPhones.ToArray();
+        var voiced = voicedPhones.ToArray();
+        var coronal = coronalPhones.ToArray();
+        var profile = new DegradationProfile(
+            "mask-laryngeal", "2.0.0", true,
+            [new("feature_masking", Features: ["Voice", "SpreadGlottis", "ConstrictedGlottis"],
+                DistanceSemantics: "ignore-query-masked-dimensions")]);
+        var query = BenchmarkDegrader.ApplyWithSemantics(voiceless, profile, features);
+
+        var oldSelfDistance = BenchmarkDtw.Measure(query.Phones, voiceless).MeanPathCost;
+        var correctedSelfDistance = BenchmarkDtw.Measure(
+            query.Phones, voiceless, query.IgnoredQueryFeatureIndices).MeanPathCost;
+        var correctedVoicingDistance = BenchmarkDtw.Measure(
+            query.Phones, voiced, query.IgnoredQueryFeatureIndices).MeanPathCost;
+        var correctedPlaceDistance = BenchmarkDtw.Measure(
+            query.Phones, coronal, query.IgnoredQueryFeatureIndices).MeanPathCost;
+
+        Assert.AreEqual(System.Math.Sqrt(3), oldSelfDistance, 1e-12);
+        Assert.IsGreaterThan(0.35, oldSelfDistance);
+        Assert.AreEqual(0, correctedSelfDistance);
+        Assert.AreEqual(0, correctedVoicingDistance);
+        Assert.IsGreaterThan(0, correctedPlaceDistance);
+        Assert.IsFalse(ThresholdEvaluator.Evaluate(
+            new(1, 1, 1, 1, 1, oldSelfDistance), Thresholds()).Passed);
+        Assert.IsTrue(ThresholdEvaluator.Evaluate(
+            new(1, 1, 1, 1, 1, correctedSelfDistance), Thresholds()).Passed);
+    }
+
+    [TestMethod]
+    public void MaskedDistancePreservesUnsetValuesWeightsPathNormalizationAndInvalidInputChecks()
+    {
+        var ignored = new HashSet<int> { 0 };
+        Assert.AreEqual(1, BenchmarkDtw.EuclideanDistance([0, 0], [1, 1], ignored));
+        var measurement = BenchmarkDtw.Measure([[0, 0], [0, 0]], [[1, 1], [1, 1]], ignored);
+        Assert.AreEqual(2, measurement.Cost);
+        Assert.AreEqual(2, measurement.PathLength);
+        Assert.AreEqual(1, measurement.MeanPathCost);
+        Assert.AreEqual(0, BenchmarkDtw.Measure([], [], ignored).MeanPathCost);
+        Assert.IsTrue(double.IsPositiveInfinity(BenchmarkDtw.Measure([], [[0, 0]], ignored).Cost));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            BenchmarkDtw.EuclideanDistance([0], [0], new HashSet<int> { 0 }));
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+            BenchmarkDtw.EuclideanDistance([double.NaN, 0], [0, 0], ignored));
+
+        var unit = new EvidenceUnit("unit", "tar", "homograph", "03-05",
+            [new("one", "p", 0.25, [[1, 0]]), new("two", "t", 0.75, [[1, 2]])], []);
+        Assert.AreEqual(1.5, AutomatedRetrieval.Distance([[0, 0]], unit, ignored));
+    }
+
+    [TestMethod]
     public void CompletedReviewComputesAccuracyAndErrorCategories()
     {
         using var fixture = new TemporaryDirectory();

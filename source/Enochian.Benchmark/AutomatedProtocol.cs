@@ -48,6 +48,8 @@ public sealed record AutomatedProtocol
     public required AutomatedPhonology Phonology { get; init; }
     public required PinnedInput Panel { get; init; }
     public required PinnedInput RetrievalPolicy { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? RetrievalRunner { get; init; }
     public required PinnedInput[] Degradations { get; init; }
     public required AutomatedSource[] Sources { get; init; }
     public required SortedDictionary<string, string[]> Groups { get; init; }

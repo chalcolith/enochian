@@ -132,6 +132,16 @@ validation. The separate [admission report](reports/pronunciation-anchors/v1/adm
 confirms those counts and records Turkish retrieval failure for #47 without
 reclassifying it as a pronunciation-capacity failure.
 
+M3-06 (#47) confirms that the v1 laryngeal mask created a real-IPA distance
+floor by comparing masked query zeros with candidate feature values. The
+[versioned investigation](reports/retrieval-validation/v1/investigation.md)
+excludes only explicitly masked query dimensions and preserves all other
+distance, weighting, ranking, sampling, and threshold rules. Turkish identity
+and corrected masking cells pass; deletion and height-merger cells fail the
+unchanged mean-distance threshold. Hindi, Sanskrit, and Hungarian remain
+unavailable because their pronunciation-capacity gates fail, so M4-01 remains
+blocked.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

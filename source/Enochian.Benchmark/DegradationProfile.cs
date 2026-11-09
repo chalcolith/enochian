@@ -12,11 +12,21 @@ public sealed record DegradationOperation(
     string Kind,
     int? Every = null,
     int Offset = 0,
-    IReadOnlyList<string>? Features = null);
+    IReadOnlyList<string>? Features = null,
+    string? DistanceSemantics = null);
+
+public sealed record DegradedSequence(
+    IReadOnlyList<double[]> Phones,
+    IReadOnlySet<int> IgnoredQueryFeatureIndices);
 
 public static class BenchmarkDegrader
 {
     public static IReadOnlyList<double[]> Apply(
+        IReadOnlyList<double[]> phones,
+        DegradationProfile profile,
+        FeatureSet featureSet) => ApplyWithSemantics(phones, profile, featureSet).Phones;
+
+    public static DegradedSequence ApplyWithSemantics(
         IReadOnlyList<double[]> phones,
         DegradationProfile profile,
         FeatureSet featureSet)
@@ -27,6 +37,7 @@ public static class BenchmarkDegrader
         }
 
         IReadOnlyList<double[]> current = [.. phones.Select(phone => phone.ToArray())];
+        var ignored = new HashSet<int>();
         foreach (var operation in profile.Operations)
         {
             current = operation.Kind switch
@@ -36,9 +47,27 @@ public static class BenchmarkDegrader
                 "feature_masking" => Mask(current, operation, featureSet),
                 _ => throw new InvalidDataException($"Unknown degradation operation '{operation.Kind}'."),
             };
+            if (operation.Kind == "feature_masking")
+            {
+                if (operation.DistanceSemantics is not (null or "ignore-query-masked-dimensions"))
+                {
+                    throw new InvalidDataException(
+                        $"Unknown feature-masking distance semantics '{operation.DistanceSemantics}'.");
+                }
+
+                if (operation.DistanceSemantics == "ignore-query-masked-dimensions")
+                {
+                    ignored.UnionWith(GetFeatureIndices(operation, featureSet));
+                }
+            }
         }
 
-        return current;
+        if (ignored.Count == featureSet.NumDimensions)
+        {
+            throw new InvalidDataException("Feature masking cannot remove every distance dimension.");
+        }
+
+        return new(current, ignored);
     }
 
     private static IReadOnlyList<double[]> Delete(

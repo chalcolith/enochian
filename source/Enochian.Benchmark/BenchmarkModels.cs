@@ -18,7 +18,8 @@ public sealed record BenchmarkQuery(
     IReadOnlyList<double[]> Phones,
     IReadOnlySet<string> RelevantEntryIds,
     string LengthBand,
-    string UnusualCategory);
+    string UnusualCategory,
+    IReadOnlySet<int>? IgnoredQueryFeatureIndices = null);
 
 public sealed record RankedCandidate(
     string EntryId,

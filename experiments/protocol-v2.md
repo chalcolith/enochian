@@ -70,14 +70,22 @@ allowed feature values.
 ### Separate retrieval gate
 
 After pronunciation and balanced-capacity gates pass, sample 25 lexical queries
-per length band and evaluate **all four unchanged frozen degradation profiles**.
+per length band and evaluate all four preregistered degradation profiles.
 Every required source-included cell must meet Recall@1 >= 0.80, Recall@5 >= 0.95,
 Recall@20 >= 0.99, MRR >= 0.85, and mean normalized DTW distance <= 0.35.
 Source-excluded results remain separate diagnostics, not substitutes for these
 cells. Rankings use expected candidate distance over pronunciation weights;
 query-reading metrics are also weighted rather than selecting a favorable
-reading. Ties resolve by stable unit ID. The existing DTW/degradation semantics
-and numerical thresholds are not weakened.
+reading. Ties resolve by stable unit ID. Numerical thresholds are not weakened.
+
+M3-06 versions only the masking-distance defect. The v1 mask wrote unset zero
+into Voice, SpreadGlottis, and ConstrictedGlottis and ordinary Euclidean cost
+then penalized those dimensions against candidate values. The v2 profile
+excludes only those explicitly masked query dimensions from local cost.
+Genuine unset zeros outside the explicit mask remain numeric; candidates,
+path-mean normalization, weights, ranks, ties, sampling, and the identity,
+deletion, and merger operations are unchanged. The v1 profile and reports
+remain frozen.
 
 Self-retrieval establishes robustness under these degradations, not correct
 pronunciation. A passing retrieval cell cannot rescue unknown derivation,
