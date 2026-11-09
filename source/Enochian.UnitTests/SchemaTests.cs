@@ -21,6 +21,12 @@ public class SchemaTests
         LoadSchema("experiments/schemas/voynich-inventory-extraction.schema.json");
     private static readonly JsonSchema MappingSymbolInventorySchema =
         LoadSchema("experiments/schemas/mapping-symbol-inventory.schema.json");
+    private static readonly JsonSchema VoynichQueryMaterializationSchema =
+        LoadSchema("experiments/schemas/voynich-query-materialization.schema.json");
+    private static readonly JsonSchema VoynichEvaluationQuerySchema =
+        LoadSchema("experiments/schemas/voynich-evaluation-query.schema.json");
+    private static readonly JsonSchema AutomatedExperimentAmendmentSchema =
+        LoadSchema("experiments/schemas/automated-experiment-amendment.v2.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -53,6 +59,15 @@ public class SchemaTests
         AssertValid(MappingPreregistrationSchema, "experiments/mapping-preregistration.v1.json");
         AssertValid(VoynichInventoryExtractionSchema, "resources/voynich/evaluation-inventory.v1.json");
         AssertValid(MappingSymbolInventorySchema, "resources/voynich/evaluation-symbol-inventory.v1.json");
+        AssertValid(VoynichQueryMaterializationSchema, "resources/voynich/evaluation-queries.v1.json");
+        AssertValid(AutomatedExperimentAmendmentSchema, "experiments/confirmatory.readiness.v1.json");
+        foreach (var line in File.ReadLines(
+            Path.Combine(RepositoryRoot, "resources/voynich/evaluation-queries.v1.jsonl"),
+            new UTF8Encoding(false, true)))
+        {
+            using var query = JsonDocument.Parse(line);
+            Assert.IsTrue(VoynichEvaluationQuerySchema.Evaluate(query.RootElement).IsValid);
+        }
 
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");
         AssertValid(NormalizedEntrySchema, "resources/lexicons/examples/normalized-entry.example.json");

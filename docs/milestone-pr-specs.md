@@ -1228,22 +1228,31 @@ materialization are tracked separately in #49.
 - No comparative score, language ranking, pronunciation label, or semantic
   annotation participates in the decision.
 
-The preliminary #49 extraction pins Reeds/Landini/Stolfi interlinear release
+The #49 extraction pins Reeds/Landini/Stolfi interlinear release
 1.6e6, Takeshi Takahashi's complete `H` layer, the archived attribution and
 permission statement, and the evaluation-only normalization policy. It reads
 only `f1r`/`f1v`/`f2r`/`f2v` text, publishes a deterministic 18-symbol basic-EVA
 inventory for #46, and reports ten uncertain `f1r` tokens excluded under the
-frozen uncertain-token rule. Holdout text is not tokenized. Query
-materialization, mapping pinning, the readiness amendment, and final preflight
-remain in #49 after the manual mapping decision.
+frozen uncertain-token rule. Holdout text is not tokenized.
 
-The pending #46 package now binds that inventory to the single unscored
+The completed query materialization aggregates 452 accepted token occurrences
+into 284 unique definitions-free types. It sums frequencies across evaluation
+loci, records every source-locus membership, and assigns one representative
+locus per type by a frozen maximum-source-frequency rule constrained to
+represent all four evaluation loci. Duplicate types are not fabricated.
+
+The approved #46 package binds that inventory to the single unscored
 `vogt-basic-eva-complete-v1` proposal. It preserves available
 single-character legacy values, explicitly completes `i` and `q`, reduces the
 legacy multi-phone `o` value to one segment, disables multigraph replacement,
-and materializes all 18 schema-valid vectors. The sole remaining #46 blocker is
-the researcher's explicit approval of the exact proposal/checksum or an
-explicit decision not to run the confirmatory hypothesis.
+and materializes all 18 schema-valid vectors.
+
+The fresh #49 readiness amendment pins the complete M3-06 protocol as its base,
+the query artifact, mapping, and exact approval package. Its published preflight
+passes query/mapping/approval checks but remains blocked by the unchanged
+required-anchor admissions and unavailable primary comparison. It does not run
+confirmatory manuscript scoring; M4-01 still owns the immutable run bundle and
+once-only evaluation.
 
 ### M4-01: Freeze inputs and execute the evaluation partition
 

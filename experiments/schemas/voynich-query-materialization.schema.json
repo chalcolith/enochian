@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/voynich-query-materialization-1.json",
+  "title": "Voynich evaluation query materialization plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "materialization_id", "materializer_version", "frozen", "inventory_plan", "inventory", "mapping_preregistration", "mapping", "evaluation_loci", "holdout_loci", "aggregation", "outputs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "materialization_id": { "type": "string", "minLength": 1 },
+    "materializer_version": { "const": "voynich-evaluation-queries-v1" },
+    "frozen": { "const": true },
+    "inventory_plan": { "$ref": "#/$defs/pin" },
+    "inventory": { "$ref": "#/$defs/pin" },
+    "mapping_preregistration": { "$ref": "#/$defs/pin" },
+    "mapping": { "$ref": "#/$defs/pin" },
+    "evaluation_loci": { "const": ["f1r", "f1v", "f2r", "f2v"] },
+    "holdout_loci": { "const": ["f3r", "f3v", "f4r", "f4v"] },
+    "aggregation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type_identity", "frequency", "representative_locus"],
+      "properties": {
+        "type_identity": { "const": "exact-normalized-symbol-sequence" },
+        "frequency": { "const": "sum-accepted-token-occurrences-across-evaluation-loci" },
+        "representative_locus": { "const": "maximize-source-frequency-then-frozen-locus-order-subject-to-all-loci-represented" }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["queries", "report_json", "report_markdown"],
+      "properties": {
+        "queries": { "$ref": "#/$defs/path" },
+        "report_json": { "$ref": "#/$defs/path" },
+        "report_markdown": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

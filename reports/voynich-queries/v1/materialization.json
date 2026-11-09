@@ -1,0 +1,3724 @@
+{
+  "schema_version": "1.0.0",
+  "materialization_id": "voynich-evaluation-queries-v1",
+  "materializer_version": "voynich-evaluation-queries-v1",
+  "software_sha256": "b0ead2ddf1b04cc71ca0f3ae5e5940fb22e930c99244ab8e10ae928cc155b0fb",
+  "plan_sha256": "792d4134b9cf70109d78ce52ab74b8b95f378dc6e06333ec325bc3e7ade5fd41",
+  "transcription": {
+    "path": "resources/voynich/interlinear_text16e6.evt",
+    "sha256": "f764f41d02b47810bdbb48946fc24b88e85746ee7fe5f229957770e7c781e319"
+  },
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_loci": [
+    "f3r",
+    "f3v",
+    "f4r",
+    "f4v"
+  ],
+  "holdout_opened": false,
+  "aggregation": {
+    "type_identity": "exact-normalized-symbol-sequence",
+    "frequency": "sum-accepted-token-occurrences-across-evaluation-loci",
+    "representative_locus": "maximize-source-frequency-then-frozen-locus-order-subject-to-all-loci-represented"
+  },
+  "accepted_tokens": 452,
+  "unique_types": 284,
+  "loci": [
+    {
+      "locus": "f1r",
+      "accepted_tokens": 202,
+      "source_types": 155,
+      "representative_types": 144
+    },
+    {
+      "locus": "f1v",
+      "accepted_tokens": 90,
+      "source_types": 65,
+      "representative_types": 53
+    },
+    {
+      "locus": "f2r",
+      "accepted_tokens": 99,
+      "source_types": 80,
+      "representative_types": 62
+    },
+    {
+      "locus": "f2v",
+      "accepted_tokens": 61,
+      "source_types": 47,
+      "representative_types": 25
+    }
+  ],
+  "queries": [
+    {
+      "query_id": "eva-type-0001",
+      "type": "al",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0002",
+      "type": "am",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0003",
+      "type": "an",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0004",
+      "type": "ar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0005",
+      "type": "are",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0006",
+      "type": "ataiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0007",
+      "type": "cfhaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0008",
+      "type": "cfhar",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0009",
+      "type": "cfhoaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0010",
+      "type": "cfhol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0011",
+      "type": "chadaiin",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0012",
+      "type": "chaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0013",
+      "type": "chaindy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0014",
+      "type": "chal",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0015",
+      "type": "chan",
+      "representative_locus": "f2r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0016",
+      "type": "char",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0017",
+      "type": "chckhoy",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0018",
+      "type": "chcthy",
+      "representative_locus": "f2r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0019",
+      "type": "chdy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0020",
+      "type": "cheaiin",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0021",
+      "type": "chear",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0022",
+      "type": "chees",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0023",
+      "type": "cheo",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0024",
+      "type": "cheol",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0025",
+      "type": "cheor",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0026",
+      "type": "chety",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0027",
+      "type": "chey",
+      "representative_locus": "f1r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0028",
+      "type": "chkar",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0029",
+      "type": "chocthy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0030",
+      "type": "chodaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0031",
+      "type": "chodain",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0032",
+      "type": "chodar",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0033",
+      "type": "chodo",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0034",
+      "type": "chody",
+      "representative_locus": "f1v",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0035",
+      "type": "choeee",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0036",
+      "type": "chok",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0037",
+      "type": "chokaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0038",
+      "type": "chokain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0039",
+      "type": "chokeo",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0040",
+      "type": "chokeos",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0041",
+      "type": "chokody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0042",
+      "type": "chokoishe",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0043",
+      "type": "choky",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0044",
+      "type": "chol",
+      "representative_locus": "f1r",
+      "token_frequency": 20,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 7
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 5
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 5
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0045",
+      "type": "cholaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0046",
+      "type": "cholo",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0047",
+      "type": "chor",
+      "representative_locus": "f2v",
+      "token_frequency": 10,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 5
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0048",
+      "type": "chotchey",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0049",
+      "type": "chotey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0050",
+      "type": "choty",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0051",
+      "type": "chr",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0052",
+      "type": "chtaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0053",
+      "type": "chtod",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0054",
+      "type": "chtor",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0055",
+      "type": "chty",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0056",
+      "type": "chy",
+      "representative_locus": "f2r",
+      "token_frequency": 6,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0057",
+      "type": "chyky",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0058",
+      "type": "ckeor",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0059",
+      "type": "ckhar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0060",
+      "type": "ckhey",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0061",
+      "type": "ckho",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0062",
+      "type": "ckholsy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0063",
+      "type": "ckhor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0064",
+      "type": "ckhy",
+      "representative_locus": "f1v",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0065",
+      "type": "ckhyds",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0066",
+      "type": "cphar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0067",
+      "type": "cphealy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0068",
+      "type": "cphesaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0069",
+      "type": "cphey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0070",
+      "type": "cpho",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0071",
+      "type": "cphoal",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0072",
+      "type": "cphodaiils",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0073",
+      "type": "cphodales",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0074",
+      "type": "cphoy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0075",
+      "type": "cphy",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0076",
+      "type": "cth",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0077",
+      "type": "cthaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0078",
+      "type": "cthal",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0079",
+      "type": "cthar",
+      "representative_locus": "f1r",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0080",
+      "type": "cthes",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0081",
+      "type": "cthey",
+      "representative_locus": "f2r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0082",
+      "type": "cthoary",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0083",
+      "type": "cthol",
+      "representative_locus": "f1v",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0084",
+      "type": "ctholdar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0085",
+      "type": "cthols",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0086",
+      "type": "cthor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0087",
+      "type": "cthres",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0088",
+      "type": "cthy",
+      "representative_locus": "f1r",
+      "token_frequency": 7,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0089",
+      "type": "d",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0090",
+      "type": "daicthy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0091",
+      "type": "daiiin",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0092",
+      "type": "daiildy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0093",
+      "type": "daiin",
+      "representative_locus": "f1r",
+      "token_frequency": 16,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 7
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 5
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0094",
+      "type": "daiiny",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0095",
+      "type": "daiirol",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0096",
+      "type": "dain",
+      "representative_locus": "f1r",
+      "token_frequency": 8,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 6
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0097",
+      "type": "daind",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0098",
+      "type": "dair",
+      "representative_locus": "f1v",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0099",
+      "type": "dal",
+      "representative_locus": "f1r",
+      "token_frequency": 5,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0100",
+      "type": "dalor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0101",
+      "type": "dals",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0102",
+      "type": "dam",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0103",
+      "type": "dan",
+      "representative_locus": "f2r",
+      "token_frequency": 6,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 4
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0104",
+      "type": "dar",
+      "representative_locus": "f1v",
+      "token_frequency": 5,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 3
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0105",
+      "type": "daraiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0106",
+      "type": "dasain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0107",
+      "type": "dchaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0108",
+      "type": "dchar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0109",
+      "type": "dcho",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0110",
+      "type": "dchol",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0111",
+      "type": "dchor",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0112",
+      "type": "dchy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0113",
+      "type": "dkol",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0114",
+      "type": "dksheey",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0115",
+      "type": "dlocta",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0116",
+      "type": "dlssho",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0117",
+      "type": "do",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0118",
+      "type": "dol",
+      "representative_locus": "f1v",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 4
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0119",
+      "type": "dolchey",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0120",
+      "type": "dolo",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0121",
+      "type": "dolody",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0122",
+      "type": "dor",
+      "representative_locus": "f2v",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0123",
+      "type": "dorchory",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0124",
+      "type": "dy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0125",
+      "type": "dydyd",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0126",
+      "type": "fachys",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0127",
+      "type": "far",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0128",
+      "type": "fodan",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0129",
+      "type": "kaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0130",
+      "type": "kair",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0131",
+      "type": "kcho",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0132",
+      "type": "kchom",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0133",
+      "type": "kchor",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0134",
+      "type": "kchsy",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0135",
+      "type": "kchy",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0136",
+      "type": "kechy",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0137",
+      "type": "keey",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0138",
+      "type": "keol",
+      "representative_locus": "f2r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0139",
+      "type": "kod",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0140",
+      "type": "kodaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0141",
+      "type": "kodshey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0142",
+      "type": "kokaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0143",
+      "type": "kol",
+      "representative_locus": "f1r",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0144",
+      "type": "kooiin",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0145",
+      "type": "kor",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0146",
+      "type": "kos",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0147",
+      "type": "koshey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0148",
+      "type": "kotchody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0149",
+      "type": "kshoy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0150",
+      "type": "kshy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0151",
+      "type": "ky",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0152",
+      "type": "kydain",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0153",
+      "type": "kydainy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0154",
+      "type": "lchody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0155",
+      "type": "lkody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0156",
+      "type": "loeees",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0157",
+      "type": "lol",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0158",
+      "type": "lshy",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0159",
+      "type": "o",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0160",
+      "type": "ochy",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0161",
+      "type": "odaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0162",
+      "type": "odar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0163",
+      "type": "oiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0164",
+      "type": "okaiir",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0165",
+      "type": "okain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0166",
+      "type": "okal",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0167",
+      "type": "okan",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0168",
+      "type": "okay",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0169",
+      "type": "okchey",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0170",
+      "type": "okchoy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0171",
+      "type": "okodar",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0172",
+      "type": "okol",
+      "representative_locus": "f1v",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0173",
+      "type": "oksho",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0174",
+      "type": "oky",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0175",
+      "type": "ol",
+      "representative_locus": "f1v",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0176",
+      "type": "oldain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0177",
+      "type": "olsaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0178",
+      "type": "olsheey",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0179",
+      "type": "oltchey",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0180",
+      "type": "ooiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0181",
+      "type": "or",
+      "representative_locus": "f1r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0182",
+      "type": "os",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0183",
+      "type": "oschy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0184",
+      "type": "otaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0185",
+      "type": "otairin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0186",
+      "type": "otchal",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0187",
+      "type": "otcho",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0188",
+      "type": "otchol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0189",
+      "type": "otchor",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0190",
+      "type": "otchy",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0191",
+      "type": "oteey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0192",
+      "type": "oteol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0193",
+      "type": "oteos",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0194",
+      "type": "otoaiin",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0195",
+      "type": "otochor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0196",
+      "type": "otol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0197",
+      "type": "oydar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0198",
+      "type": "pchor",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0199",
+      "type": "pol",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0200",
+      "type": "potol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0201",
+      "type": "potoy",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0202",
+      "type": "pshol",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0203",
+      "type": "pydeey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0204",
+      "type": "qo",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0205",
+      "type": "qokey",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0206",
+      "type": "qoky",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0207",
+      "type": "qotaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0208",
+      "type": "qotcho",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0209",
+      "type": "qoteeey",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0210",
+      "type": "qoty",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0211",
+      "type": "qoy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0212",
+      "type": "rchy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0213",
+      "type": "ro",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0214",
+      "type": "roloty",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0215",
+      "type": "s",
+      "representative_locus": "f1r",
+      "token_frequency": 5,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0216",
+      "type": "sa",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0217",
+      "type": "saiin",
+      "representative_locus": "f2r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 4
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0218",
+      "type": "sal",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0219",
+      "type": "schody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0220",
+      "type": "sckhey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0221",
+      "type": "sh",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0222",
+      "type": "shaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0223",
+      "type": "shan",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0224",
+      "type": "shar",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0225",
+      "type": "shckhey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0226",
+      "type": "shcthaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0227",
+      "type": "she",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0228",
+      "type": "shear",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0229",
+      "type": "sheey",
+      "representative_locus": "f2r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0230",
+      "type": "sheky",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0231",
+      "type": "sheo",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0232",
+      "type": "shey",
+      "representative_locus": "f1r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0233",
+      "type": "sho",
+      "representative_locus": "f1r",
+      "token_frequency": 5,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0234",
+      "type": "shoaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0235",
+      "type": "shod",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0236",
+      "type": "shodaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0237",
+      "type": "shodain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0238",
+      "type": "shodan",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0239",
+      "type": "shodary",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0240",
+      "type": "shody",
+      "representative_locus": "f1r",
+      "token_frequency": 4,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0241",
+      "type": "shok",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0242",
+      "type": "shokcheey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0243",
+      "type": "shol",
+      "representative_locus": "f1v",
+      "token_frequency": 10,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 3
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 4
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0244",
+      "type": "sholdy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0245",
+      "type": "shor",
+      "representative_locus": "f2r",
+      "token_frequency": 3,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0246",
+      "type": "shory",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0247",
+      "type": "shos",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0248",
+      "type": "shoshy",
+      "representative_locus": "f1r",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0249",
+      "type": "shoy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0250",
+      "type": "shty",
+      "representative_locus": "f2v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0251",
+      "type": "shy",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        },
+        {
+          "locus": "f2v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0252",
+      "type": "so",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0253",
+      "type": "sochey",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0254",
+      "type": "sor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0255",
+      "type": "sory",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0256",
+      "type": "syaiir",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0257",
+      "type": "taor",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0258",
+      "type": "tchey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0259",
+      "type": "teody",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0260",
+      "type": "tody",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0261",
+      "type": "tshodeesy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0262",
+      "type": "y",
+      "representative_locus": "f1r",
+      "token_frequency": 5,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 4
+        },
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0263",
+      "type": "ychain",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0264",
+      "type": "ycheey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0265",
+      "type": "ycho",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0266",
+      "type": "ydain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0267",
+      "type": "ydaraishy",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0268",
+      "type": "ydy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0269",
+      "type": "ykaiin",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0270",
+      "type": "ykal",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0271",
+      "type": "ykeey",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0272",
+      "type": "ykody",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0273",
+      "type": "ykol",
+      "representative_locus": "f1v",
+      "token_frequency": 2,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 2
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0274",
+      "type": "yksh",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0275",
+      "type": "yky",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0276",
+      "type": "yor",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0277",
+      "type": "ypchaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0278",
+      "type": "ypchol",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0279",
+      "type": "yshey",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0280",
+      "type": "ytain",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0281",
+      "type": "ytchaiin",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0282",
+      "type": "yteeay",
+      "representative_locus": "f1v",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1v",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0283",
+      "type": "yto",
+      "representative_locus": "f1r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f1r",
+          "token_frequency": 1
+        }
+      ]
+    },
+    {
+      "query_id": "eva-type-0284",
+      "type": "ytoldy",
+      "representative_locus": "f2r",
+      "token_frequency": 1,
+      "sources": [
+        {
+          "locus": "f2r",
+          "token_frequency": 1
+        }
+      ]
+    }
+  ],
+  "queries_sha256": "b48f63126ba788b98d78878b3b248bd518564873dc18504e35718242a6c2089a",
+  "mapping_sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e",
+  "mapping_approved": true,
+  "ready_for_preflight": true,
+  "blockers": []
+}

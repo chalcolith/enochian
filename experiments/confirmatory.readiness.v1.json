@@ -1,0 +1,26 @@
+{
+  "$schema": "https://chalcolith.github.io/enochian/schemas/automated-experiment-amendment-2.json",
+  "schema_version": "2.0.0",
+  "amendment_id": "voynich-evaluation-readiness-v1",
+  "config_id": "dictionary-first-evaluation-readiness-v1",
+  "frozen": true,
+  "base_protocol": {
+    "path": "experiments/confirmatory.retrieval.v1.json",
+    "sha256": "b04c5edc965c9e44caa52650f08f07341d9de621c813217db12386710ce5d008"
+  },
+  "queries": {
+    "path": "resources/voynich/evaluation-queries.v1.jsonl",
+    "sha256": "b48f63126ba788b98d78878b3b248bd518564873dc18504e35718242a6c2089a"
+  },
+  "mapping": {
+    "path": "experiments/mappings/vogt-basic-eva-complete.v1.json",
+    "sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e"
+  },
+  "mapping_approval": {
+    "path": "reports/mapping-preregistration/v1/decision-package.json",
+    "sha256": "b1e0789280e0847781464eada1a862444299e3b4f891995bb992ce3b65111610"
+  },
+  "output_directory": ".enoch/experiments/evaluation-readiness-v1",
+  "admission_report": "reports/evaluation-readiness/v1/admission.json",
+  "preflight_report": "reports/evaluation-readiness/v1/preflight.json"
+}
