@@ -118,6 +118,20 @@ audio corpora, generated pronunciations, WikiPron/Wiktionary derivatives,
 unlicensed services, and unsupported languages remain explicit exclusions.
 All four generated profiles therefore remain exploratory under unchanged gates.
 
+M2-13 (#51) expands the frozen direct-evidence search to 75 units per length
+band and required language. Run `pronunciation-provenance-acquire` and then
+`pronunciation-provenance` with
+`..\resources\lexicons\pronunciation-provenance.v2.json`. Matching M2-10 source
+pins are reused; only the deterministic page delta is acquired. The separate
+[capacity report](reports/pronunciation-anchors/v1/coverage.json) applies the
+unchanged 100-unit and deduplicated 34/33/33 quotas. It does not execute
+retrieval or use manuscript results. Turkish passes pronunciation capacity
+with 122 unique distributions (40/37/45); Hindi, Sanskrit, and Hungarian remain
+blocked at 1, 0, and 0 because generated readings lack qualifying independent
+validation. The separate [admission report](reports/pronunciation-anchors/v1/admission.md)
+confirms those counts and records Turkish retrieval failure for #47 without
+reclassifying it as a pronunciation-capacity failure.
+
 The versioned experiment and lexicon interchange contracts live under
 `experiments/schemas/` and `resources/lexicons/schemas/`. See the
 [frozen research protocol](experiments/protocol.md) for field definitions,

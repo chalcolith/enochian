@@ -1,0 +1,197 @@
+{
+  "schema_version": "2.0.0",
+  "plan": {
+    "path": "resources/lexicons/pronunciation-provenance.v2.json",
+    "sha256": "6bd99fe0d036e10cf0a0b4c191dd9f51da9283e3e953b9aa7dcb1a6dcccbd284"
+  },
+  "snapshot": {
+    "path": ".enoch/pronunciation-provenance/v2/snapshot.json",
+    "sha256": "1f14898926376ba12043af7e4a80fe64e614a8f3785babfb06943788c324a154"
+  },
+  "parent_snapshot": {
+    "path": ".enoch/pronunciation-provenance/v1/snapshot.json",
+    "sha256": "697d681b0ff6db4a10b827c259e0f74af0ad94d770554171450f663247827be6"
+  },
+  "reference_audit": {
+    "path": ".enoch/pronunciation-references/v1/audit.json",
+    "sha256": "9769f3e0daf56844b39ffbe69fd8d69f82bd6f395d4671e1e6055446d09af6db"
+  },
+  "license": "CC-BY-SA-4.0",
+  "pages": 875,
+  "generator_source_revisions": [
+    {
+      "title": "Template:hi-IPA",
+      "revision": 90143779,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/807139984dd7f594b138ea2c42213206640e6f11589fd3d153829a8396e776d5.json",
+        "sha256": "807139984dd7f594b138ea2c42213206640e6f11589fd3d153829a8396e776d5"
+      }
+    },
+    {
+      "title": "Module:hi-IPA",
+      "revision": 92750173,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/475b1f704c3c17c4a3470abefa1d064cd6df3d4e47c18d8b753e19f13dd84140.json",
+        "sha256": "475b1f704c3c17c4a3470abefa1d064cd6df3d4e47c18d8b753e19f13dd84140"
+      }
+    },
+    {
+      "title": "Template:sa-IPA",
+      "revision": 79053902,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/20c1ead566d672f0d6f8cc7fd60b9b11a046d31d0ffe31cc1895ec4258b99cfc.json",
+        "sha256": "20c1ead566d672f0d6f8cc7fd60b9b11a046d31d0ffe31cc1895ec4258b99cfc"
+      }
+    },
+    {
+      "title": "Module:sa-pronunc",
+      "revision": 91804574,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/b9a16f9f0601cb5c58dbe95f207feaea2930a9a04fd46ce6b9df6f4e0743277c.json",
+        "sha256": "b9a16f9f0601cb5c58dbe95f207feaea2930a9a04fd46ce6b9df6f4e0743277c"
+      }
+    },
+    {
+      "title": "Template:tr-IPA",
+      "revision": 85778185,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/5a336c7c9b2584603e75ca4aef8d1b082547ff7b1d5b5abf29d3ad7abd3b67ec.json",
+        "sha256": "5a336c7c9b2584603e75ca4aef8d1b082547ff7b1d5b5abf29d3ad7abd3b67ec"
+      }
+    },
+    {
+      "title": "Module:tr-IPA",
+      "revision": 88556184,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/b25cd4c3663b6d5488507b87cb2762f68402d028f7c8c901ad53d05d34696962.json",
+        "sha256": "b25cd4c3663b6d5488507b87cb2762f68402d028f7c8c901ad53d05d34696962"
+      }
+    },
+    {
+      "title": "Template:hu-IPA",
+      "revision": 79053032,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/7bd30f03f64037df39f1d97711e891bd4ea2ab7448213c4f9f8ba25b743e56bd.json",
+        "sha256": "7bd30f03f64037df39f1d97711e891bd4ea2ab7448213c4f9f8ba25b743e56bd"
+      }
+    },
+    {
+      "title": "Module:hu-pron",
+      "revision": 88547149,
+      "api": {
+        "path": ".enoch/pronunciation-provenance/v1/raw/8a4e5976a4809581f3f653049c458d08b54ea2eae0131e43d3639b7f292a8a75.json",
+        "sha256": "8a4e5976a4809581f3f653049c458d08b54ea2eae0131e43d3639b7f292a8a75"
+      }
+    }
+  ],
+  "generator_revision_policy": "Historical root revisions are diagnostics, not the rendered transitive dependency closure.",
+  "sources": [
+    {
+      "language": "hin",
+      "selected_units": 225,
+      "selected_readings": 318,
+      "origins": {
+        "dictionary-supplied": 2,
+        "template-generated": 307,
+        "unknown": 9
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 9
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 1,
+      "generated_validation": "not_established",
+      "supported_bands": {
+        "03-05": 1
+      },
+      "unique_supported_units": 1,
+      "unique_supported_bands": {
+        "03-05": 1
+      },
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "language": "san",
+      "selected_units": 225,
+      "selected_readings": 296,
+      "origins": {
+        "template-generated": 257,
+        "unknown": 39
+      },
+      "exclusions": {
+        "ambiguous_transclusion": 1,
+        "no_matching_scoped_reading": 38
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 0,
+      "generated_validation": "not_established",
+      "supported_bands": {},
+      "unique_supported_units": 0,
+      "unique_supported_bands": {},
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    },
+    {
+      "language": "tur",
+      "selected_units": 225,
+      "selected_readings": 236,
+      "origins": {
+        "dictionary-supplied": 125,
+        "template-generated": 100,
+        "unknown": 11
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 6,
+        "template_semantics_unresolved": 5
+      },
+      "supported_units_before": 85,
+      "supported_units_after": 122,
+      "generated_validation": "not_established",
+      "supported_bands": {
+        "03-05": 40,
+        "06-09": 37,
+        "10-20": 45
+      },
+      "unique_supported_units": 122,
+      "unique_supported_bands": {
+        "03-05": 40,
+        "06-09": 37,
+        "10-20": 45
+      },
+      "blockers": []
+    },
+    {
+      "language": "hun",
+      "selected_units": 225,
+      "selected_readings": 229,
+      "origins": {
+        "template-generated": 216,
+        "unknown": 13
+      },
+      "exclusions": {
+        "no_matching_scoped_reading": 13
+      },
+      "supported_units_before": 0,
+      "supported_units_after": 0,
+      "generated_validation": "not_established",
+      "supported_bands": {},
+      "unique_supported_units": 0,
+      "unique_supported_bands": {},
+      "blockers": [
+        "insufficient_balanced_units:03-05",
+        "insufficient_balanced_units:06-09",
+        "insufficient_balanced_units:10-20",
+        "insufficient_supported_pronunciation_evidence"
+      ]
+    }
+  ]
+}

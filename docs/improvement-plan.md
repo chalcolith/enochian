@@ -84,6 +84,17 @@ catalog/service candidates lack direct reusable pronunciation records. The
 result is an explicit infeasibility finding, not permission to substitute
 generated transcriptions or relax held-out agreement gates.
 
+M2-13 (#51) freezes a larger direct-evidence acquisition before results. It
+selects 75 compatible units per required language and length band by the same
+stable identity hash, reuses the sealed M2-10 snapshot, and pins the M2-12
+infeasibility result. Its separate pronunciation/capacity report deduplicates
+complete weighted phone distributions before applying the unchanged 34/33/33
+quotas. It does not inspect or run manuscript retrieval. Any language still
+below 100 supported units remains an explicit blocker rather than receiving
+generated, related-language, or human-labeled substitutes. The measured result
+admits Turkish pronunciation capacity at 122 unique distributions (40/37/45);
+Hindi, Sanskrit, and Hungarian remain blocked at 1, 0, and 0.
+
 ## Goal
 
 The next stage of Enochian should test a predeclared claim rather than only

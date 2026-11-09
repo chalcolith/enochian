@@ -4,12 +4,14 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
+using IpaEncoder = Enochian.Text.Encoder;
 
 namespace Enochian.Provenance;
 
 public sealed class PronunciationRecovery(string repositoryRoot)
 {
-    private const string OutputPrefix = ".enoch/pronunciation-provenance/v1";
+    private const string V1OutputPrefix = ".enoch/pronunciation-provenance/v1";
     private const string License = "CC-BY-SA-4.0";
     private static readonly JsonSerializerOptions Indented = new(PronunciationAudit.JsonOptions) { WriteIndented = true };
     private static readonly string[] Languages = ["hin", "san", "tur", "hun"];
@@ -31,7 +33,7 @@ public sealed class PronunciationRecovery(string repositoryRoot)
         var inputs = ParentInputs(protocol, plan).ToArray();
         var selection = inputs.ToDictionary(input => input.Language,
             input => Select(ReadRows<PronunciationEvidence>(input.EvidencePath), plan.UnitsPerBand), StringComparer.Ordinal);
-        var packagePath = Resolve(OutputPrefix + "/snapshot.json");
+        var packagePath = Resolve(plan.OutputDirectory + "/snapshot.json");
         RecoveryPackage package;
         if (File.Exists(packagePath))
         {
@@ -48,26 +50,40 @@ public sealed class PronunciationRecovery(string repositoryRoot)
                 throw new FileNotFoundException("Run pronunciation-provenance-acquire to create the sealed snapshot.", packagePath);
             }
 
+            RecoveryPackage? parent = null;
+            if (plan.ParentSnapshot != null)
+            {
+                VerifyPin(plan.ParentSnapshot);
+                parent = Read<RecoveryPackage>(Resolve(plan.ParentSnapshot.Path));
+            }
+
             using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
             client.DefaultRequestHeaders.UserAgent.ParseAdd(
                 "EnochianPronunciationProvenance/1.0 (https://github.com/chalcolith/enochian)");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
-            var rights = await FetchAsync(client,
+            var rights = parent?.RightsInfo ?? await FetchAsync(client,
                 "https://en.wiktionary.org/w/api.php?action=query&meta=siteinfo&siprop=rightsinfo&format=json&formatversion=2",
-                ".json", cancellationToken);
+                ".json", plan.OutputDirectory, cancellationToken);
             VerifyRights(rights);
+            var parentPages = parent?.Pages.ToDictionary(page => page.Title, StringComparer.Ordinal) ?? [];
             var pages = new List<RecoveryPage>();
             foreach (var title in selection.Values.SelectMany(rows => rows).Select(row => row.Lemma)
                 .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal))
             {
-                pages.Add(await AcquirePageAsync(client, title, plan.PageCutoff, render: true, cancellationToken));
+                pages.Add(parentPages.TryGetValue(title, out var existing)
+                    ? existing
+                    : await AcquirePageAsync(client, title, plan.PageCutoff, render: true, plan.OutputDirectory, cancellationToken));
                 Console.WriteLine(FormattableString.Invariant($"Recovered page {pages.Count}: revision {pages[^1].Revision}."));
             }
 
-            var generators = new List<RecoveryPage>();
-            foreach (var title in GeneratorTitles)
+            var generators = parent?.GeneratorSources.ToList() ?? [];
+            if (generators.Count == 0)
             {
-                generators.Add(await AcquirePageAsync(client, title, plan.PageCutoff, render: false, cancellationToken));
+                foreach (var title in GeneratorTitles)
+                {
+                    generators.Add(await AcquirePageAsync(
+                        client, title, plan.PageCutoff, render: false, plan.OutputDirectory, cancellationToken));
+                }
             }
 
             package = new("1.0.0", planPin, License, rights, [.. pages], [.. generators]);
@@ -77,6 +93,7 @@ public sealed class PronunciationRecovery(string repositoryRoot)
         VerifyPackage(package, plan, selection.Values.SelectMany(rows => rows).Select(row => row.Lemma));
         var packagePin = Pin(packagePath);
         var decisions = new List<RecoveryCoverage>();
+        var encoder = plan.SchemaVersion == "2.0.0" ? CreateEncoder() : null;
         foreach (var input in inputs)
         {
             var proofs = BuildProofs(selection[input.Language], package).OrderBy(proof => proof.EntryId, StringComparer.Ordinal).ToArray();
@@ -86,7 +103,7 @@ public sealed class PronunciationRecovery(string repositoryRoot)
                 .Select(entry => entry.EntryId).ToHashSet(StringComparer.Ordinal);
             var enriched = parentRows.Select(row => proofById.TryGetValue(row.EntryId, out var proof)
                 ? PronunciationOriginProofBuilder.Apply(row, proof) : row).ToArray();
-            var stem = OutputPrefix + "/profiles/" + input.Stem;
+            var stem = plan.OutputDirectory + "/profiles/" + input.Stem;
             var entryPath = Resolve(stem + ".jsonl");
             WriteSealedBytes(entryPath, File.ReadAllBytes(input.EntryPath));
             var evidencePath = Resolve(stem + ".evidence.jsonl");
@@ -111,29 +128,59 @@ public sealed class PronunciationRecovery(string repositoryRoot)
             WriteSealed(manifestPath, envelope);
             var source = protocol["sources"]!.AsArray().Single(source => source!["language"]!.GetValue<string>() == input.Language)!;
             source["profile_manifest"] = JsonSerializer.SerializeToNode(ConfigurationPin(manifestPath), PronunciationAudit.JsonOptions);
+            var supportedRows = enriched.Where(row => compatibleIds.Contains(row.EntryId)).ToArray();
+            var rowCapacity = encoder == null ? null : Capacity(supportedRows, encoder);
             decisions.Add(new(input.Language,
                 selection[input.Language].Select(row => row.LexicalIdentity).Distinct(StringComparer.Ordinal).Count(),
                 proofs.Length, PronunciationPolicyEvaluator.Counts(proofs.Select(proof => proof.Origin)),
                 PronunciationPolicyEvaluator.Counts(proofs.Where(proof => proof.Origin == "unknown").Select(proof => proof.Status)),
                 Supported(parentRows.Where(row => compatibleIds.Contains(row.EntryId))),
-                Supported(enriched.Where(row => compatibleIds.Contains(row.EntryId))), "not_established"));
+                Supported(supportedRows), "not_established", rowCapacity?.SupportedBands,
+                rowCapacity?.UniqueUnits, rowCapacity?.UniqueBands, rowCapacity?.Blockers));
         }
 
-        protocol["config_id"] = "dictionary-first-provenance-v1";
-        protocol["output_directory"] = ".enoch/experiments/provenance-v1";
-        protocol["admission_report"] = "reports/pronunciation-provenance/v1/admission.json";
+        protocol["config_id"] = plan.ConfigId ?? "dictionary-first-provenance-v1";
+        protocol["output_directory"] = plan.ExperimentOutputDirectory ?? ".enoch/experiments/provenance-v1";
+        protocol["admission_report"] = plan.AdmissionReport ?? "reports/pronunciation-provenance/v1/admission.json";
         WriteSealed(Resolve(plan.AmendmentPath), protocol);
-        WriteSealed(Resolve(plan.ReportPath), new
+        if (plan.SchemaVersion == "1.0.0")
         {
-            schema_version = "1.0.0",
-            plan = planPin,
-            snapshot = packagePin,
-            license = License,
-            pages = package.Pages.Length,
-            generator_source_revisions = package.GeneratorSources.Select(page => new { page.Title, page.Revision, page.Api }),
-            generator_revision_policy = "Historical root revisions are diagnostics, not the rendered transitive dependency closure.",
-            sources = decisions,
-        });
+            WriteSealed(Resolve(plan.ReportPath), new
+            {
+                schema_version = "1.0.0",
+                plan = planPin,
+                snapshot = packagePin,
+                license = License,
+                pages = package.Pages.Length,
+                generator_source_revisions = package.GeneratorSources.Select(page => new { page.Title, page.Revision, page.Api }),
+                generator_revision_policy = "Historical root revisions are diagnostics, not the rendered transitive dependency closure.",
+                sources = decisions,
+            });
+        }
+        else
+        {
+            WriteSealed(Resolve(plan.ReportPath), new
+            {
+                schema_version = plan.SchemaVersion,
+                plan = planPin,
+                snapshot = packagePin,
+                parent_snapshot = plan.ParentSnapshot,
+                reference_audit = plan.ReferenceAudit,
+                license = License,
+                pages = package.Pages.Length,
+                generator_source_revisions = package.GeneratorSources.Select(page => new { page.Title, page.Revision, page.Api }),
+                generator_revision_policy = "Historical root revisions are diagnostics, not the rendered transitive dependency closure.",
+                sources = decisions,
+            });
+        }
+
+        var capacitySection = plan.SchemaVersion == "2.0.0"
+            ? "\nDeduplicated supported capacity uses complete weighted phone distributions.\n\n" +
+                "| Language | 03-05 | 06-09 | 10-20 | Unique supported | Capacity blockers |\n" +
+                "| --- | ---: | ---: | ---: | ---: | --- |\n" +
+                string.Join("\n", decisions.Select(row => FormattableString.Invariant(
+                    $"| {row.Language} | {row.UniqueSupportedBands?.GetValueOrDefault("03-05")} | {row.UniqueSupportedBands?.GetValueOrDefault("06-09")} | {row.UniqueSupportedBands?.GetValueOrDefault("10-20")} | {row.UniqueSupportedUnits} | {string.Join("; ", row.Blockers ?? [])} |"))) + "\n"
+            : string.Empty;
         WriteSealedBytes(Path.ChangeExtension(Resolve(plan.ReportPath), ".md"), Encoding.UTF8.GetBytes(
             "# Per-reading pronunciation provenance\n\n" +
             "| Language | Selected units | Literal readings | Generated readings | Unknown readings | Supported units |\n" +
@@ -141,7 +188,8 @@ public sealed class PronunciationRecovery(string repositoryRoot)
             string.Join("\n", decisions.Select(row => FormattableString.Invariant(
                 $"| {row.Language} | {row.SelectedUnits} | {row.Origins.GetValueOrDefault("dictionary-supplied")} | {row.Origins.GetValueOrDefault("template-generated")} | {row.Origins.GetValueOrDefault("unknown")} | {row.SupportedUnitsAfter} |"))) + "\n\n" +
             "The JSON report records measured, deterministically selected anchor coverage. " +
-            "Every selected unit retains all compatible reading alternatives and original memberships.\n\n" +
+            "Every selected unit retains all compatible reading alternatives and original memberships.\n" +
+            capacitySection + "\n" +
             "Exact language/etymology/POS-scoped Parsoid transclusions bind individual original IPA strings. " +
             "Generic IPA templates qualify only with matching literal arguments and language codes. " +
             "Other-language, ambiguous, nested, and unresolved template semantics are excluded.\n\n" +
@@ -233,6 +281,8 @@ public sealed class PronunciationRecovery(string repositoryRoot)
         }
 
         return [.. new[] { parentPin, packagePin, proofsPin, package.Plan, package.RightsInfo, plan.ParentProtocol }
+            .Concat(plan.ParentSnapshot == null ? [] : [plan.ParentSnapshot])
+            .Concat(plan.ReferenceAudit == null ? [] : [plan.ReferenceAudit])
             .Concat(package.Pages.Concat(package.GeneratorSources).SelectMany(page =>
                 page.Html is { } html ? new[] { page.Api, html } : [page.Api]))
             .Concat(inputs.Select(input => Pin(input.ManifestPath)))
@@ -341,9 +391,9 @@ public sealed class PronunciationRecovery(string repositoryRoot)
     }
 
     private async Task<RecoveryPage> AcquirePageAsync(
-        HttpClient client, string title, string cutoff, bool render, CancellationToken cancellationToken)
+        HttpClient client, string title, string cutoff, bool render, string outputPrefix, CancellationToken cancellationToken)
     {
-        var cachePath = Resolve(OutputPrefix + "/cache/" +
+        var cachePath = Resolve(outputPrefix + "/cache/" +
             PronunciationPolicyEvaluator.StableId(title + "\u001f" + cutoff) + ".json");
         RecoveryPage page;
         if (File.Exists(cachePath))
@@ -360,7 +410,7 @@ public sealed class PronunciationRecovery(string repositoryRoot)
             var uri = "https://en.wiktionary.org/w/api.php?action=query&prop=revisions&rvprop=ids%7Ctimestamp%7Ccontent" +
                 "&rvslots=main&rvlimit=1&rvdir=older&format=json&formatversion=2&rvstart=" +
                 Uri.EscapeDataString(cutoff) + "&titles=" + Uri.EscapeDataString(title);
-            var api = await FetchAsync(client, uri, ".json", cancellationToken);
+            var api = await FetchAsync(client, uri, ".json", outputPrefix, cancellationToken);
             using var response = JsonDocument.Parse(File.ReadAllText(Resolve(api.Path)));
             if (response.RootElement.TryGetProperty("error", out var error))
             {
@@ -384,7 +434,7 @@ public sealed class PronunciationRecovery(string repositoryRoot)
         {
             var html = await FetchAsync(client,
                 "https://en.wiktionary.org/api/rest_v1/page/html/" + Uri.EscapeDataString(title) + "/" +
-                    page.Revision.ToString(CultureInfo.InvariantCulture), ".html", cancellationToken);
+                    page.Revision.ToString(CultureInfo.InvariantCulture), ".html", outputPrefix, cancellationToken);
             page = page with { Html = html };
             WriteAtomic(cachePath, Serialize(page));
         }
@@ -397,12 +447,13 @@ public sealed class PronunciationRecovery(string repositoryRoot)
         return page;
     }
 
-    private async Task<RecoveryPin> FetchAsync(HttpClient client, string uri, string extension, CancellationToken cancellationToken)
+    private async Task<RecoveryPin> FetchAsync(
+        HttpClient client, string uri, string extension, string outputPrefix, CancellationToken cancellationToken)
     {
         await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
         var bytes = await client.GetByteArrayAsync(uri, cancellationToken);
         var hash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(bytes));
-        var path = Resolve(OutputPrefix + "/raw/" + hash + extension);
+        var path = Resolve(outputPrefix + "/raw/" + hash + extension);
         WriteSealedBytes(path, bytes);
         return Pin(path);
     }
@@ -422,13 +473,35 @@ public sealed class PronunciationRecovery(string repositoryRoot)
     private RecoveryPlan ReadPlan(string path)
     {
         var plan = Read<RecoveryPlan>(path);
-        if (plan.SchemaVersion != "1.0.0" || plan.UnitsPerBand != 50 ||
-            !plan.Languages.SequenceEqual(Languages) ||
-            plan.PageCutoff != "2026-10-01T00:00:00Z" || plan.OutputDirectory != OutputPrefix ||
-            plan.ReportPath != "reports/pronunciation-provenance/v1/coverage.json" ||
-            plan.AmendmentPath != "experiments/confirmatory.provenance.v1.json")
+        var common = plan.Languages.SequenceEqual(Languages) && plan.PageCutoff == "2026-10-01T00:00:00Z";
+        var v1 = plan.SchemaVersion == "1.0.0" && plan.UnitsPerBand == 50 &&
+            plan.OutputDirectory == V1OutputPrefix &&
+            plan.ReportPath == "reports/pronunciation-provenance/v1/coverage.json" &&
+            plan.AmendmentPath == "experiments/confirmatory.provenance.v1.json" &&
+            plan.ParentSnapshot == null && plan.ReferenceAudit == null && plan.ConfigId == null &&
+            plan.ExperimentOutputDirectory == null && plan.AdmissionReport == null;
+        var v2 = plan.SchemaVersion == "2.0.0" && plan.UnitsPerBand == 75 &&
+            plan.OutputDirectory == ".enoch/pronunciation-provenance/v2" &&
+            plan.ReportPath == "reports/pronunciation-anchors/v1/coverage.json" &&
+            plan.AmendmentPath == "experiments/confirmatory.anchors.v1.json" &&
+            plan.ParentSnapshot?.Path == ".enoch/pronunciation-provenance/v1/snapshot.json" &&
+            plan.ReferenceAudit?.Path == ".enoch/pronunciation-references/v1/audit.json" &&
+            plan.ConfigId == "dictionary-first-balanced-anchors-v1" &&
+            plan.ExperimentOutputDirectory == ".enoch/experiments/anchors-v1" &&
+            plan.AdmissionReport == "reports/pronunciation-anchors/v1/admission.json";
+        if (!common || (!v1 && !v2))
         {
             throw new InvalidDataException("Unsupported recovery plan; selection and output policy must be explicitly versioned.");
+        }
+
+        if (plan.ParentSnapshot != null)
+        {
+            VerifyPin(plan.ParentSnapshot);
+        }
+
+        if (plan.ReferenceAudit != null)
+        {
+            VerifyPin(plan.ReferenceAudit);
         }
 
         return plan;
@@ -469,6 +542,70 @@ public sealed class PronunciationRecovery(string repositoryRoot)
     private static int Supported(IEnumerable<PronunciationEvidence> rows) => rows
         .GroupBy(row => row.Source + "\u001f" + row.LexicalIdentity, StringComparer.Ordinal)
         .Count(group => group.All(row => row.Origin == "dictionary-supplied"));
+
+    private static RecoveryCapacity Capacity(IEnumerable<PronunciationEvidence> rows, IpaEncoder encoder)
+    {
+        var units = rows.GroupBy(row => row.Source + "\u001f" + row.LexicalIdentity, StringComparer.Ordinal)
+            .Where(group => group.All(row => row.Origin == "dictionary-supplied"))
+            .Select(group =>
+            {
+                var variants = group.GroupBy(row => row.NormalizedIpa, StringComparer.Ordinal)
+                    .OrderBy(variant => variant.Key, StringComparer.Ordinal)
+                    .Select(variant =>
+                    {
+                        var row = variant.OrderBy(value => value.EntryId, StringComparer.Ordinal).First();
+                        var (_, _, phones) = encoder.GetTextAndPhones(
+                            row.NormalizedIpa.Normalize(NormalizationForm.FormD));
+                        return (row.LengthBand, Phones: (IReadOnlyList<double[]>)phones,
+                            Weight: variant.Sum(value => value.AlternativeWeight));
+                    }).ToArray();
+                return new
+                {
+                    Key = PronunciationPolicyEvaluator.WeightedDistributionKey(
+                        variants.Select(variant => (variant.Phones, variant.Weight))),
+                    Band = variants[0].LengthBand,
+                    Identity = group.Key,
+                };
+            }).ToArray();
+        var unique = units.GroupBy(unit => unit.Key, StringComparer.Ordinal)
+            .Select(group => group.OrderBy(unit => unit.Identity, StringComparer.Ordinal).First()).ToArray();
+        var supportedBands = PronunciationPolicyEvaluator.Counts(units.Select(unit => unit.Band));
+        var uniqueBands = PronunciationPolicyEvaluator.Counts(unique.Select(unit => unit.Band));
+        var blockers = new List<string>();
+        if (units.Length < 100)
+        {
+            blockers.Add("insufficient_supported_pronunciation_evidence");
+        }
+
+        foreach (var band in new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["03-05"] = 34,
+            ["06-09"] = 33,
+            ["10-20"] = 33,
+        })
+        {
+            if (uniqueBands.GetValueOrDefault(band.Key) < band.Value)
+            {
+                blockers.Add("insufficient_balanced_units:" + band.Key);
+            }
+        }
+
+        return new(supportedBands, unique.Length, uniqueBands, [.. blockers.Order(StringComparer.Ordinal)]);
+    }
+
+    private IpaEncoder CreateEncoder()
+    {
+        var flow = new Enochian.Flow.Flow(Resolve("samples/ipatransducer.json"));
+        var errors = flow.Errors.Select(error => error.Message).ToArray();
+        if (errors.Length != 0)
+        {
+            throw new InvalidDataException(string.Join(Environment.NewLine, errors));
+        }
+
+        return new IpaEncoder(
+            flow.FeatureSets.Single(features => features.Id == "Default"),
+            flow.Encodings.Single(encoding => string.Equals(encoding.Id, "IPA", StringComparison.OrdinalIgnoreCase)));
+    }
 
     private T Read<T>(string path)
     {
@@ -544,5 +681,17 @@ public sealed class PronunciationRecovery(string repositoryRoot)
     private sealed record RecoveryCoverage(
         string Language, int SelectedUnits, int SelectedReadings,
         IReadOnlyDictionary<string, int> Origins, IReadOnlyDictionary<string, int> Exclusions,
-        int SupportedUnitsBefore, int SupportedUnitsAfter, string GeneratedValidation);
+        int SupportedUnitsBefore, int SupportedUnitsAfter, string GeneratedValidation,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        IReadOnlyDictionary<string, int>? SupportedBands = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        int? UniqueSupportedUnits = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        IReadOnlyDictionary<string, int>? UniqueSupportedBands = null,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        string[]? Blockers = null);
+
+    private sealed record RecoveryCapacity(
+        IReadOnlyDictionary<string, int> SupportedBands, int UniqueUnits,
+        IReadOnlyDictionary<string, int> UniqueBands, string[] Blockers);
 }

@@ -95,7 +95,8 @@ flowchart TD
     M209 --> M210[M2-10 Per-reading source provenance]
     M210 --> M211[M2-11 Pinned offline generator replay]
     M211 --> M212[M2-12 Independent pronunciation references]
-    M212 --> M401
+    M212 --> M213[M2-13 Balanced supported anchor lexicons]
+    M213 --> M401
     M209 --> M401
     M305 --> M401[M4-01 Frozen evaluation run]
     M401 --> M402[M4-02 Comparative report]
@@ -921,6 +922,46 @@ and [measured report](../reports/pronunciation-references/v1/coverage.json)
 cover 16 candidates. No candidate satisfies the independent direct-pronunciation
 contract, so no reference envelope is emitted and all four profiles remain
 exploratory.
+
+### M2-13: Populate balanced supported pronunciation lexicons
+
+**Depends on:** M2-10; M2-12 for generated evidence. **Blocks:** M4-01 and the
+separate retrieval/mapping prerequisites. Tracked in #51.
+
+**Scope**
+
+- Freeze a new plan before acquisition. Select 75 compatible units per
+  03-05/06-09/10-20 phone-length band and required language by the existing
+  source/lexical-identity hash order, without definitions, glosses, manuscript
+  matches, or comparative scores.
+- Reuse the sealed M2-10 snapshot and exact cutoff; acquire only the
+  deterministic page delta. Pin the M2-12 audit result so generated readings
+  cannot be promoted in the absence of an eligible independent reference.
+- Preserve every compatible alternative, equal-reading weight, homograph
+  identity, membership, convention, source license, revision, and checksum.
+- Count support only when every reading of a lexical unit is dictionary-supplied
+  or meets the unchanged reproduced-generator and independent-reference gates.
+- Apply the same complete weighted-phone-distribution key as automated
+  admission before evaluating the 34/33/33 capacity quotas. Publish
+  pronunciation/capacity decisions separately from retrieval.
+
+**Tests and acceptance**
+
+- Offline reruns reproduce identical profiles, proofs, amendment, coverage, and
+  capacity decisions from sealed inputs.
+- Selection is order-independent; partial support, changed weights,
+  alternatives, pins, conventions, or parent evidence fail explicitly.
+- Each required language needs at least 100 supported lexical units and
+  deduplicated 34/33/33 band capacity. Insufficient valid data remains a
+  blocker; quotas and evidence thresholds are unchanged.
+- The new amendment is an input for later retrieval and ready-to-run protocol
+  work. This milestone does not execute or interpret manuscript retrieval.
+
+The [measured capacity report](../reports/pronunciation-anchors/v1/coverage.json)
+finds 122 unique supported Turkish distributions (40/37/45), so Turkish passes
+the unchanged pronunciation/capacity gates. Hindi, Sanskrit, and Hungarian
+remain blocked at 1, 0, and 0 supported distributions because the pinned
+independent-reference audit supplies no valid generated-evidence route.
 
 ## Milestone 3: Scored comparative runner
 

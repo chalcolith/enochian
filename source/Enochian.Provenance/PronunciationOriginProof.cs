@@ -3,6 +3,8 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
+using System.Text.Json.Serialization;
+
 namespace Enochian.Provenance;
 
 public sealed record RecoveryPin(string Path, string Sha256);
@@ -10,7 +12,17 @@ public sealed record RecoveryPin(string Path, string Sha256);
 public sealed record RecoveryPlan(
     string SchemaVersion, RecoveryPin ParentProtocol, string PageCutoff,
     int UnitsPerBand, string[] Languages, string OutputDirectory,
-    string ReportPath, string AmendmentPath);
+    string ReportPath, string AmendmentPath,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    RecoveryPin? ParentSnapshot = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    RecoveryPin? ReferenceAudit = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? ConfigId = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? ExperimentOutputDirectory = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? AdmissionReport = null);
 
 public sealed record RecoveryPage(
     string Title, long Revision, string? Timestamp, RecoveryPin Api, RecoveryPin? Html);

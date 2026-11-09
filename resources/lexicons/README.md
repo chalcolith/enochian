@@ -47,6 +47,35 @@ catalog/service/audio candidates do not provide reusable direct pronunciation
 records. No empty or generated substitute envelope is published; all four
 profiles remain exploratory and admission remains blocked.
 
+## Balanced required-anchor expansion (M2-13)
+
+The [frozen v2 plan](pronunciation-provenance.v2.json) extends the M2-10
+selection from 50 to 75 compatible units per phone-length band for Hindi,
+Sanskrit, Turkish, and Hungarian. The ordering is still the stable
+source/lexical-identity hash and cannot inspect definitions, glosses,
+manuscript matches, or comparative scores. The plan pins both the sealed M2-10
+snapshot and the M2-12 reference audit.
+
+Run from `source/`:
+
+```powershell
+dotnet run --project Enochian.Provenance -- pronunciation-provenance-acquire ..\resources\lexicons\pronunciation-provenance.v2.json
+dotnet run --project Enochian.Provenance -- pronunciation-provenance ..\resources\lexicons\pronunciation-provenance.v2.json
+```
+
+The acquisition reuses matching v1 page, generator, and rights pins, then
+fetches only the deterministic delta at the unchanged cutoff. The offline
+command reproduces new definitions-free profiles, evidence, proofs, the
+[anchor amendment](../../experiments/confirmatory.anchors.v1.json), and the
+[separate pronunciation/capacity report](../../reports/pronunciation-anchors/v1/coverage.json).
+Capacity is measured after complete weighted-phone-distribution deduplication
+with unchanged 100-unit and 34/33/33 quotas. Generated readings remain
+unsupported because the pinned M2-12 audit emitted no eligible independent
+reference envelope. Retrieval and manuscript mapping remain separate later
+gates. The measured result is Turkish 122 unique distributions (40/37/45),
+Hindi 1 (1/0/0), Sanskrit 0, and Hungarian 0. Turkish passes capacity; the
+other required anchors remain explicit blockers.
+
 ## Per-reading provenance recovery (M2-10)
 
 M2-11 adds the separate [offline generator replay tool](../../tools/wiktionary/README.md)
