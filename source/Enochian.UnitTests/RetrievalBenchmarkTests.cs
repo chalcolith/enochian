@@ -259,6 +259,19 @@ public sealed class RetrievalBenchmarkTests
     }
 
     [TestMethod]
+    public void DiagnosticDistanceDoesNotWeakenRankThresholds()
+    {
+        var highDistance = new MetricSummary(25, 1, 1, 1, 1, 1.2);
+        Assert.IsFalse(ThresholdEvaluator.Evaluate(highDistance, Thresholds()).Passed);
+        Assert.IsTrue(ThresholdEvaluator.Evaluate(highDistance, Thresholds(), requireDistance: false).Passed);
+
+        var weakRanks = new MetricSummary(25, 0.7, 1, 1, 0.8, 1.2);
+        var decision = ThresholdEvaluator.Evaluate(weakRanks, Thresholds(), requireDistance: false);
+        Assert.IsFalse(decision.Passed);
+        AssertUtils.SequenceEquals(["recall_at_1", "mean_reciprocal_rank"], decision.Blockers);
+    }
+
+    [TestMethod]
     public void RunnerEmitsDeterministicSchemaValidTidyOutputs()
     {
         using var fixture = new TemporaryDirectory();

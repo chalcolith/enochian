@@ -15,6 +15,26 @@
     "queries": { "$ref": "#/$defs/pin" },
     "mapping": { "$ref": "#/$defs/pin" },
     "mapping_approval": { "$ref": "#/$defs/pin" },
+    "panel": { "$ref": "#/$defs/pin" },
+    "retrieval_policy": { "$ref": "#/$defs/pin" },
+    "retrieval_runner": { "const": "degradation-aware-retrieval-v3" },
+    "source_overrides": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["profile_id", "required", "confirmatory_eligible"],
+        "properties": {
+          "profile_id": { "enum": ["san-dictionary", "hin-dictionary", "hun-dictionary"] },
+          "required": { "type": "boolean" },
+          "confirmatory_eligible": { "type": "boolean" },
+          "profile_manifest": { "$ref": "#/$defs/pin" },
+          "generator_approval": { "$ref": "#/$defs/pin" }
+        }
+      }
+    },
     "output_directory": { "$ref": "#/$defs/path" },
     "admission_report": { "$ref": "#/$defs/path" },
     "preflight_report": { "$ref": "#/$defs/path" }

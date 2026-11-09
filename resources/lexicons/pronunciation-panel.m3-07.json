@@ -1,0 +1,22 @@
+{
+  "$schema": "schemas/pronunciation-panel-amendment.schema.json",
+  "schema_version": "1.0.0",
+  "policy_id": "pronunciation-anchor-panel-m3-07",
+  "frozen": true,
+  "base_panel": {
+    "path": "resources/lexicons/pronunciation-panel.v1.json",
+    "sha256": "6a646913242084a7be3ddd10c650769b083d01a1d5bce53959f12da2d5f1da90"
+  },
+  "profile": {
+    "id": "san-dictionary",
+    "version": "2.0.0",
+    "language": "san",
+    "convention": "sanskrit-slp1-shs",
+    "required_labels": [],
+    "rejected_labels": [],
+    "fallback": "none",
+    "rules": {
+      "selection": "Pinned CDSL Shabda-Sagara SLP1 headwords converted by the repository's pinned SLP1-to-IPA feature mapping; no definitions or unconverted fallback readings."
+    }
+  }
+}

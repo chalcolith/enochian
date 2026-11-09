@@ -294,6 +294,24 @@ public sealed class PronunciationProfileTests
     private static PronunciationPanel LoadPanel() =>
         PronunciationPanel.Load(GetPath("resources/lexicons/pronunciation-panel.v1.json"), RepositoryRoot);
 
+    [TestMethod]
+    public void PanelAmendmentChangesOnlyTheApprovedSanskritProfile()
+    {
+        var baseline = LoadPanel();
+        var amended = PronunciationPanel.Load(
+            GetPath("resources/lexicons/pronunciation-panel.m3-07.json"), RepositoryRoot);
+
+        Assert.HasCount(2, amended.AcceptedPanelHashes);
+        Assert.AreEqual("sanskrit-slp1-shs",
+            amended.Profiles.Single(profile => profile.Id == "san-dictionary").Convention);
+        var unchanged = baseline.Profiles.Where(profile => profile.Id != "san-dictionary")
+            .Select(profile => profile.Fingerprint).ToArray();
+        CollectionAssert.AreEqual(
+            unchanged,
+            amended.Profiles.Where(profile => profile.Id != "san-dictionary")
+                .Select(profile => profile.Fingerprint).ToArray());
+    }
+
     private static PronunciationReading Reading(PronunciationProfile profile, string ipa, string[] labels) =>
         new("fixture", "pinned", "https://example.invalid/lemma", profile.Language, "lemma", "noun", "lemma-1",
             ipa, labels, "unknown", null, ["unknown-upstream"], "MIT");

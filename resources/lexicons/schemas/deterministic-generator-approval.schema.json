@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/deterministic-generator-approval-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "approval_id",
+    "status",
+    "profile_id",
+    "language",
+    "source_id",
+    "source_revision",
+    "generator",
+    "generator_revision",
+    "source_manifest",
+    "mapping",
+    "feature_space",
+    "scope",
+    "decision",
+    "researcher",
+    "approved_on"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "approval_id": { "const": "san-cdsl-shs-slp1-v1" },
+    "status": { "const": "approved" },
+    "profile_id": { "const": "san-dictionary" },
+    "language": { "const": "san" },
+    "source_id": { "const": "cdsl-shs" },
+    "source_revision": { "const": "b7297b97cf9f7112277ea98f7969291eb1d5f495" },
+    "generator": { "const": "enochian-slp1-to-ipa-v1" },
+    "generator_revision": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "source_manifest": { "$ref": "#/$defs/pin" },
+    "mapping": { "$ref": "#/$defs/pin" },
+    "feature_space": { "$ref": "#/$defs/pin" },
+    "scope": { "const": "cdsl-shs-slp1-headwords-only" },
+    "decision": { "type": "string", "minLength": 1 },
+    "researcher": { "type": "string", "minLength": 1 },
+    "approved_on": { "type": "string", "format": "date" }
+  },
+  "$defs": {
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

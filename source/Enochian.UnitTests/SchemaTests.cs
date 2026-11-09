@@ -56,11 +56,13 @@ public class SchemaTests
         }
         AssertValid(DegradationProfileSchema, "experiments/degradation-profiles/feature-masking.v2.json");
         AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v2.protocol.json");
+        AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v3.protocol.json");
         AssertValid(MappingPreregistrationSchema, "experiments/mapping-preregistration.v1.json");
         AssertValid(VoynichInventoryExtractionSchema, "resources/voynich/evaluation-inventory.v1.json");
         AssertValid(MappingSymbolInventorySchema, "resources/voynich/evaluation-symbol-inventory.v1.json");
         AssertValid(VoynichQueryMaterializationSchema, "resources/voynich/evaluation-queries.v1.json");
         AssertValid(AutomatedExperimentAmendmentSchema, "experiments/confirmatory.readiness.v1.json");
+        AssertValid(AutomatedExperimentAmendmentSchema, "experiments/confirmatory.readiness.m3-07.json");
         foreach (var line in File.ReadLines(
             Path.Combine(RepositoryRoot, "resources/voynich/evaluation-queries.v1.jsonl"),
             new UTF8Encoding(false, true)))
