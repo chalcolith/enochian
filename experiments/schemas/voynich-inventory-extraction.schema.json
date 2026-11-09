@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/voynich-inventory-extraction-1.json",
+  "title": "Evaluation-only Voynich inventory extraction plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema_version", "extraction_id", "extractor_version", "frozen", "transcription", "evaluation_loci", "holdout_loci", "normalization", "outputs"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "extraction_id": { "type": "string", "minLength": 1 },
+    "extractor_version": { "const": "voynich-evaluation-inventory-v1" },
+    "frozen": { "const": true },
+    "transcription": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "release", "transcriber_code", "convention", "character_encoding", "snapshot", "release_url", "permission_url", "license", "attribution"],
+      "properties": {
+        "id": { "const": "reeds-landini-stolfi-interlinear" },
+        "release": { "const": "1.6e6" },
+        "transcriber_code": { "const": "H" },
+        "convention": { "const": "basic EVA, uncapitalized" },
+        "character_encoding": { "const": "ISO-8859-1" },
+        "snapshot": { "$ref": "#/$defs/pin" },
+        "release_url": { "type": "string", "format": "uri" },
+        "permission_url": { "type": "string", "format": "uri" },
+        "license": { "const": "LicenseRef-Stolfi-Attribution-NoAdditionalRestrictions" },
+        "attribution": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evaluation_loci": { "const": ["f1r", "f1v", "f2r", "f2v"] },
+    "holdout_loci": { "const": ["f3r", "f3v", "f4r", "f4v"] },
+    "normalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unicode_normalization", "case_treatment", "break_characters", "alignment_fillers", "inline_comments", "accepted_symbols", "uncertain_token_policy"],
+      "properties": {
+        "unicode_normalization": { "const": "NFC" },
+        "case_treatment": { "const": "preserve frozen uncapitalized H layer" },
+        "break_characters": { "const": [".", ",", "-", "="] },
+        "alignment_fillers": { "const": ["!", "%"] },
+        "inline_comments": { "const": "remove brace-delimited transcription metadata after locus selection" },
+        "accepted_symbols": { "const": "ASCII lowercase basic EVA a-z" },
+        "uncertain_token_policy": { "const": "exclude whole token and report source line, locator, token, and reason" }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inventory", "exclusions", "report_json", "report_markdown"],
+      "properties": {
+        "inventory": { "$ref": "#/$defs/path" },
+        "exclusions": { "$ref": "#/$defs/path" },
+        "report_json": { "$ref": "#/$defs/path" },
+        "report_markdown": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

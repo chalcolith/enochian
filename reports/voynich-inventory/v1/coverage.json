@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_id": "voynich-evaluation-symbol-inventory-v1",
+  "extractor_version": "voynich-evaluation-inventory-v1",
+  "plan_sha256": "74d2fd646a2ab0a568090da76cc2428c4e3ee996e7e5ac07e422400fda6e55ab",
+  "transcription": {
+    "id": "reeds-landini-stolfi-interlinear",
+    "release": "1.6e6",
+    "transcriber_code": "H",
+    "convention": "basic EVA, uncapitalized",
+    "character_encoding": "ISO-8859-1",
+    "snapshot": {
+      "path": "resources/voynich/interlinear_text16e6.evt",
+      "sha256": "f764f41d02b47810bdbb48946fc24b88e85746ee7fe5f229957770e7c781e319"
+    },
+    "release_url": "https://web.archive.org/web/20030911021322id_/http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/",
+    "permission_url": "https://web.archive.org/web/20030911021322id_/http://www.ic.unicamp.br/~stolfi/voynich/98-12-28-interln16e6/#Permissions",
+    "license": "LicenseRef-Stolfi-Attribution-NoAdditionalRestrictions",
+    "attribution": "Reeds/Landini interlinear release 1.6e6 edited by Jorge Stolfi; evaluation inventory uses Takeshi Takahashi\u0027s H transcription layer."
+  },
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_loci": [
+    "f3r",
+    "f3v",
+    "f4r",
+    "f4v"
+  ],
+  "holdout_opened": false,
+  "normalization": {
+    "unicode_normalization": "NFC",
+    "case_treatment": "preserve frozen uncapitalized H layer",
+    "break_characters": [
+      ".",
+      ",",
+      "-",
+      "="
+    ],
+    "alignment_fillers": [
+      "!",
+      "%"
+    ],
+    "inline_comments": "remove brace-delimited transcription metadata after locus selection",
+    "accepted_symbols": "ASCII lowercase basic EVA a-z",
+    "uncertain_token_policy": "exclude whole token and report source line, locator, token, and reason"
+  },
+  "loci": [
+    {
+      "locus": "f1r",
+      "source_lines": 28,
+      "accepted_tokens": 202,
+      "excluded_tokens": 10,
+      "symbol_occurrences": 958
+    },
+    {
+      "locus": "f1v",
+      "source_lines": 10,
+      "accepted_tokens": 90,
+      "excluded_tokens": 0,
+      "symbol_occurrences": 392
+    },
+    {
+      "locus": "f2r",
+      "source_lines": 13,
+      "accepted_tokens": 99,
+      "excluded_tokens": 0,
+      "symbol_occurrences": 455
+    },
+    {
+      "locus": "f2v",
+      "source_lines": 8,
+      "accepted_tokens": 61,
+      "excluded_tokens": 0,
+      "symbol_occurrences": 288
+    }
+  ],
+  "accepted_tokens": 452,
+  "excluded_tokens": 10,
+  "symbol_occurrences": 2093,
+  "unique_symbols": 18,
+  "symbols": [
+    "a",
+    "c",
+    "d",
+    "e",
+    "f",
+    "h",
+    "i",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "y"
+  ],
+  "inventory_sha256": "d6bb73fa6fe2f897a890a6568d33a83cd43a67675cbd2652d10b0408dae55ac9",
+  "ready_for_mapping_decision": true,
+  "blockers": []
+}

@@ -92,6 +92,20 @@ without review sheets; its artificial phonology is not linguistic evidence.
 See the [migration guide](experiments/protocol-v2.md#compatibility-reproducibility-and-migration)
 for checkpoints, frozen contrasts, balanced quotas, and separate astronomy.
 
+The preliminary #49 inventory step extracts only the frozen evaluation folios
+from the pinned Reeds/Landini/Stolfi 1.6e6 snapshot and Takeshi Takahashi `H`
+layer:
+
+```powershell
+cd source
+dotnet run --project Enochian.Provenance -- voynich-inventory
+```
+
+It publishes an 18-symbol basic-EVA inventory for #46, records all uncertain
+token exclusions, and does not tokenize or report holdout content. This
+preliminary artifact does not materialize queries, approve a mapping, run
+comparative matching, or close #49.
+
 M2-10 (#45) recovers per-reading source proof for the required Hindi, Sanskrit,
 Turkish, and Hungarian anchors. See the
 [recovery guide](resources/lexicons/README.md#per-reading-provenance-recovery-m2-10).
