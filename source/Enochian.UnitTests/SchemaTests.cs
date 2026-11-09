@@ -15,6 +15,8 @@ public class SchemaTests
         LoadSchema("experiments/schemas/retrieval-benchmark.schema.json");
     private static readonly JsonSchema DegradationProfileSchema =
         LoadSchema("experiments/schemas/degradation-profile.schema.json");
+    private static readonly JsonSchema MappingPreregistrationSchema =
+        LoadSchema("experiments/schemas/mapping-preregistration.schema.json");
     private static readonly JsonSchema VoynichInventoryExtractionSchema =
         LoadSchema("experiments/schemas/voynich-inventory-extraction.schema.json");
     private static readonly JsonSchema MappingSymbolInventorySchema =
@@ -48,6 +50,7 @@ public class SchemaTests
         }
         AssertValid(DegradationProfileSchema, "experiments/degradation-profiles/feature-masking.v2.json");
         AssertValid(RetrievalBenchmarkSchema, "experiments/retrieval-benchmark.v2.protocol.json");
+        AssertValid(MappingPreregistrationSchema, "experiments/mapping-preregistration.v1.json");
         AssertValid(VoynichInventoryExtractionSchema, "resources/voynich/evaluation-inventory.v1.json");
         AssertValid(MappingSymbolInventorySchema, "resources/voynich/evaluation-symbol-inventory.v1.json");
 

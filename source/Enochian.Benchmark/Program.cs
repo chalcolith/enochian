@@ -2,6 +2,22 @@ using Enochian.Flow;
 
 try
 {
+    if (args.Length is 2 or 3 && args[0] == "mapping-preregister")
+    {
+        var mappingRoot = args.Length == 3 ? Path.GetFullPath(args[2]) : FindRepositoryRoot();
+        var mappingFlow = new Flow(Path.Combine(mappingRoot, "samples", "ipatransducer.json"));
+        var mappingErrors = mappingFlow.Errors.Select(error => error.Message).ToArray();
+        if (mappingErrors.Length != 0)
+        {
+            throw new InvalidDataException(string.Join(Environment.NewLine, mappingErrors));
+        }
+
+        var mappingFeatures = mappingFlow.FeatureSets.Single(featureSet => featureSet.Id == "Default");
+        var mappingEncoding = mappingFlow.Encodings.Single(candidate => candidate.Id == "IPA");
+        return new Enochian.Benchmark.MappingPreregistration(mappingRoot, mappingFeatures, mappingEncoding)
+            .Run(Path.GetFullPath(args[1]));
+    }
+
     if (args.Length == 2 && args[0] == "register-v2")
     {
         Enochian.Benchmark.AutomatedRegistration.Freeze(Path.GetFullPath(args[1]));
@@ -85,6 +101,7 @@ static int ShowUsage()
     Console.Error.WriteLine("       Enochian.Benchmark statistics <statistics-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark experiment <run-protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark admit|preflight <automated-v2-protocol-json> [repository-root]");
+    Console.Error.WriteLine("       Enochian.Benchmark mapping-preregister <preregistration-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark synthetic-v2 <fixture-directory> <repository-root>");
     Console.Error.WriteLine("       Enochian.Benchmark register-v2 <repository-root>");
     return 1;

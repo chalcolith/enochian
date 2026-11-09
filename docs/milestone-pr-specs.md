@@ -1198,6 +1198,36 @@ Milestone 4 PRs are data/research releases. They must not introduce unreviewed
 algorithmic changes. Any bug discovered here is fixed in a separate PR with a
 new runner version; affected runs are invalidated and repeated from the start.
 
+### M4-00: Approve and preregister one Voynich mapping
+
+**Blocks:** M4-01. Tracked in #46. Evaluation inventory and query
+materialization are tracked separately in #49.
+
+**Scope**
+
+- Publish a deterministic decision package that pins the phonological feature
+  space, retains the legacy exploratory mapping for comparison, and accepts one
+  complete unscored proposal over the canonical evaluation-only symbol
+  inventory.
+- Record normalization, segmentation/multigraph handling, transcription
+  ambiguities, linguistic rationale, and differences from the legacy mapping.
+- Reject missing or extra symbols, unknown IPA, multi-phone symbol values,
+  incompatible feature vectors, holdout access, and any indication that
+  comparative results were inspected before approval.
+- Materialize the proposed mapping deterministically and require the researcher
+  to approve its exact version and SHA-256, with date and rationale, or
+  explicitly decline the confirmatory hypothesis.
+
+**Acceptance criteria**
+
+- Evaluation remains `f1r`/`f1v`/`f2r`/`f2v`; holdout
+  `f3r`/`f3v`/`f4r`/`f4v` remains unopened.
+- Pending or implicit choices cannot become confirmatory mappings.
+- Approval names exactly one proposal and its materialized checksum. A decline
+  produces no confirmatory mapping.
+- No comparative score, language ranking, pronunciation label, or semantic
+  annotation participates in the decision.
+
 The preliminary #49 extraction pins Reeds/Landini/Stolfi interlinear release
 1.6e6, Takeshi Takahashi's complete `H` layer, the archived attribution and
 permission statement, and the evaluation-only normalization policy. It reads
@@ -1207,9 +1237,17 @@ frozen uncertain-token rule. Holdout text is not tokenized. Query
 materialization, mapping pinning, the readiness amendment, and final preflight
 remain in #49 after the manual mapping decision.
 
+The pending #46 package now binds that inventory to the single unscored
+`vogt-basic-eva-complete-v1` proposal. It preserves available
+single-character legacy values, explicitly completes `i` and `q`, reduces the
+legacy multi-phone `o` value to one segment, disables multigraph replacement,
+and materializes all 18 schema-valid vectors. The sole remaining #46 blocker is
+the researcher's explicit approval of the exact proposal/checksum or an
+explicit decision not to run the confirmatory hypothesis.
+
 ### M4-01: Freeze inputs and execute the evaluation partition
 
-**Depends on:** M3-06 and the frozen automated quality decisions.
+**Depends on:** M3-06, M4-00, and the frozen automated quality decisions.
 
 **Purpose:** create the immutable run bundle for the non-holdout Voynich data
 without inspecting semantic definitions.

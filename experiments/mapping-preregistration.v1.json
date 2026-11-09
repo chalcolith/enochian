@@ -1,0 +1,144 @@
+{
+  "$schema": "schemas/mapping-preregistration.schema.json",
+  "schema_version": "1.0.0",
+  "preregistration_id": "voynich-mapping-preregistration-v1",
+  "status": "approved",
+  "comparative_results_inspected": false,
+  "partitions": {
+    "evaluation_loci": ["f1r", "f1v", "f2r", "f2v"],
+    "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+    "holdout_opened": false
+  },
+  "features": {
+    "path": "resources/encodings/features.json",
+    "sha256": "121964dcbdcfb7e5aff61c3a135495ba9d10e4b9404ff5bf916cd3d4648c910c"
+  },
+  "ipa_encoding": {
+    "path": "resources/encodings/ipa.json",
+    "sha256": "fd39e5987ba284e6ff43323f42d3eabf7caebf0c654f2224e19e8c1b60542587"
+  },
+  "inventory": {
+    "path": "resources/voynich/evaluation-symbol-inventory.v1.json",
+    "sha256": "d6bb73fa6fe2f897a890a6568d33a83cd43a67675cbd2652d10b0408dae55ac9"
+  },
+  "candidates": [
+    {
+      "id": "vogt-legacy-exploratory",
+      "version": "1.0.0",
+      "kind": "legacy",
+      "description": "Historical exploratory EVA encoding retained only for an explicit before/after comparison.",
+      "source": {
+        "path": "resources/encodings/vogt.json",
+        "sha256": "d08b88f5c7ad0f87c67cbc94c5715a548086d2c9becf507f70c8fd9794da7b55"
+      },
+      "linguistic_rationale": "This records the repository's existing Derek Vogt-derived exploratory hypothesis; it is not automatically nominated for confirmatory approval.",
+      "differences_from_legacy": [],
+      "normalization": {
+        "unicode_normalization": "NFC",
+        "case_treatment": "legacy case-sensitive patterns",
+        "uncertain_symbols": "legacy flow behavior; not approved for confirmatory use"
+      },
+      "segmentation": {
+        "method": "legacy encoding-pattern precedence",
+        "multigraphs": ["ch", "ee", "eo", "cfh", "fch", "cFh", "cKh", "ckh", "kch", "cPh", "cph", "pch", "Sh", "sh", "cTh", "cth", "tch"],
+        "overlap_resolution": "legacy encoder longest-input ordering"
+      },
+      "transcription_ambiguities": [],
+      "symbol_to_ipa": null,
+      "materialized_mapping": null
+    },
+    {
+      "id": "vogt-basic-eva-complete-v1",
+      "version": "1.0.0",
+      "kind": "proposal",
+      "description": "A complete, character-level, single-segment operationalization of the repository's existing Vogt-derived exploratory hypothesis for the frozen 18-symbol evaluation inventory.",
+      "source": {
+        "path": "resources/encodings/vogt.json",
+        "sha256": "d08b88f5c7ad0f87c67cbc94c5715a548086d2c9becf507f70c8fd9794da7b55"
+      },
+      "linguistic_rationale": "Preserve each legacy single-character, single-segment Vogt value where available; make the previously missing EVA i and q assumptions explicit as /i/ and /q/; and reduce legacy multi-phone EVA o to its initial vowel /ae/ so every frozen basic-EVA character has exactly one auditable vector. This is an unscored completion hypothesis, not evidence that the assignments are correct.",
+      "differences_from_legacy": [
+        "Uses deterministic one-character-to-one-segment parsing and disables all legacy multigraph/context patterns.",
+        "Adds explicit i to /i/ and q to /q/ assumptions because the legacy encoding has no values for those evaluation symbols.",
+        "Maps o to the legacy initial vowel /ae/ represented by IPA ae ligature, omitting the legacy following rhotic segment.",
+        "Uses canonical IPA symbols rather than legacy display aliases S, N, and superscript-t s."
+      ],
+      "normalization": {
+        "unicode_normalization": "NFC",
+        "case_treatment": "preserve frozen uncapitalized Takeshi Takahashi H layer",
+        "uncertain_symbols": "exclude whole tokens containing star, question-mark, extended, or non-basic EVA forms under the pinned evaluation-inventory policy"
+      },
+      "segmentation": {
+        "method": "consume one accepted basic-EVA character as one phonological segment",
+        "multigraphs": [],
+        "overlap_resolution": "not applicable; characters are consumed left-to-right without multigraph replacement"
+      },
+      "transcription_ambiguities": [
+        {
+          "input": "i",
+          "treatment": "map to /i/",
+          "rationale": "The legacy Vogt encoding has no i rule; this transparent completion is explicit and requires researcher approval."
+        },
+        {
+          "input": "q",
+          "treatment": "map to /q/",
+          "rationale": "The legacy Vogt encoding has no q rule; this transparent completion is explicit and requires researcher approval."
+        },
+        {
+          "input": "o",
+          "treatment": "map to /ae/ represented by IPA ae ligature",
+          "rationale": "The legacy o rule emits a vowel followed by a rhotic vector; the proposal retains only its initial vowel to satisfy the frozen one-vector-per-symbol contract."
+        },
+        {
+          "input": "c and h",
+          "treatment": "both map to /h/",
+          "rationale": "This preserves the legacy single-character values while making their phonological merger explicit."
+        },
+        {
+          "input": "m, n, and r",
+          "treatment": "all map to /r/",
+          "rationale": "This preserves the legacy single-character values while making their phonological merger explicit."
+        },
+        {
+          "input": "uncertain or non-basic EVA token",
+          "treatment": "exclude the complete token before mapping",
+          "rationale": "The frozen evaluation inventory reports ten such tokens and does not silently map or drop individual unknown characters."
+        }
+      ],
+      "symbol_to_ipa": {
+        "a": "w",
+        "c": "h",
+        "d": "t",
+        "e": "o",
+        "f": "p",
+        "h": "h",
+        "i": "i",
+        "k": "k",
+        "l": "ʃ",
+        "m": "r",
+        "n": "r",
+        "o": "æ",
+        "p": "b",
+        "q": "q",
+        "r": "r",
+        "s": "t͡s",
+        "t": "g",
+        "y": "ŋ"
+      },
+      "materialized_mapping": "experiments/mappings/vogt-basic-eva-complete.v1.json"
+    }
+  ],
+  "proposal_candidate_id": "vogt-basic-eva-complete-v1",
+  "decision": {
+    "status": "approved",
+    "researcher": "chalcolith",
+    "decided_on": "2026-11-09",
+    "rationale": "The purpose of this project is to evaluate the proposed Voynich phonology.",
+    "candidate_id": "vogt-basic-eva-complete-v1",
+    "mapping_sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e"
+  },
+  "outputs": {
+    "report_json": "reports/mapping-preregistration/v1/decision-package.json",
+    "report_markdown": "reports/mapping-preregistration/v1/decision-package.md"
+  }
+}

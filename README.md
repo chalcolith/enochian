@@ -92,6 +92,16 @@ without review sheets; its artificial phonology is not linguistic evidence.
 See the [migration guide](experiments/protocol-v2.md#compatibility-reproducibility-and-migration)
 for checkpoints, frozen contrasts, balanced quotas, and separate astronomy.
 
+M4 mapping approval is a separate scientific preregistration. The pending
+[decision package](experiments/mapping-preregistration.v1.json) records the
+legacy exploratory candidate, one complete unscored proposal, the frozen
+evaluation/holdout boundary, and the pinned phonological space without
+inspecting comparative results. Run its deterministic validator from `source/`:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- mapping-preregister ..\experiments\mapping-preregistration.v1.json
+```
+
 The preliminary #49 inventory step extracts only the frozen evaluation folios
 from the pinned Reeds/Landini/Stolfi 1.6e6 snapshot and Takeshi Takahashi `H`
 layer:
@@ -105,6 +115,11 @@ It publishes an 18-symbol basic-EVA inventory for #46, records all uncertain
 token exclusions, and does not tokenize or report holdout content. This
 preliminary artifact does not materialize queries, approve a mapping, run
 comparative matching, or close #49.
+
+The mapping command binds that inventory to one complete unscored proposal and
+returns exit code 1 until the researcher explicitly approves its exact
+assumptions and checksum or declines the confirmatory hypothesis. It never
+opens holdout loci or chooses a mapping from favorable language rankings.
 
 M2-10 (#45) recovers per-reading source proof for the required Hindi, Sanskrit,
 Turkish, and Hungarian anchors. See the
