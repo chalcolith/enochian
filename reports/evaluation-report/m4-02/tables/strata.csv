@@ -1,0 +1,9 @@
+dimension,stratum,query_count,comparison_count,median_difference,sanskrit_wins,turkish_wins,ties,run_id,source_artifact
+length,01-02,19,380,0.000000,0,4,376,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+length,03-05,158,3160,0.000000,0,0,3160,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+length,06-09,106,2120,0.000000,0,0,2120,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+length,10-20,1,20,0.000000,0,0,20,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+section,f1r,144,2880,0.000000,0,4,2876,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+section,f1v,53,1060,0.000000,0,0,1060,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+section,f2r,62,1240,0.000000,0,0,1240,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+section,f2v,25,500,0.000000,0,0,500,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz

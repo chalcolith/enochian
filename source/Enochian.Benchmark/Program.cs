@@ -2,6 +2,14 @@ using Enochian.Flow;
 
 try
 {
+    if (args.Length is 2 or 3 && args[0] == "report-m4")
+    {
+        var reportRoot = FindRepositoryRoot();
+        return new Enochian.Benchmark.M4ReportGenerator(reportRoot).Run(
+            Path.GetFullPath(args[1]),
+            args.Length == 3 ? args[2] : "reports/evaluation-report/m4-02");
+    }
+
     if (args.Length is 3 or 4 && args[0] == "publish-m4")
     {
         var publicationRoot = args.Length == 4 ? Path.GetFullPath(args[3]) : FindRepositoryRoot();
@@ -109,6 +117,7 @@ catch (Exception exception)
 
 static int ShowUsage()
 {
+    Console.Error.WriteLine("Usage: Enochian.Benchmark report-m4 <m4-run-manifest> [output-directory]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark publish-m4 <protocol-json> <runner-commit> [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark sanskrit-profile [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");

@@ -33,6 +33,10 @@ public class SchemaTests
         LoadSchema("experiments/schemas/m4-run-verification.schema.json");
     private static readonly JsonSchema M4ExecutionLogSchema =
         LoadSchema("experiments/schemas/m4-execution-log.schema.json");
+    private static readonly JsonSchema M4ReportManifestSchema =
+        LoadSchema("experiments/schemas/m4-report-manifest.schema.json");
+    private static readonly JsonSchema M4FigureMetadataSchema =
+        LoadSchema("experiments/schemas/m4-figure-metadata.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -72,6 +76,8 @@ public class SchemaTests
         AssertValid(M4RunPublicationSchema, "reports/evaluation-run/m4-01/manifest.json");
         AssertValid(M4RunVerificationSchema, "reports/evaluation-run/m4-01/verification.json");
         AssertValid(M4ExecutionLogSchema, "reports/evaluation-run/m4-01/execution-log.json");
+        AssertValid(M4ReportManifestSchema, "reports/evaluation-report/m4-02/manifest.json");
+        AssertValid(M4FigureMetadataSchema, "reports/evaluation-report/m4-02/figure-metadata.json");
         foreach (var line in File.ReadLines(
             Path.Combine(RepositoryRoot, "resources/voynich/evaluation-queries.v1.jsonl"),
             new UTF8Encoding(false, true)))

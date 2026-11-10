@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "report_id": "m4-02-comparative-quantitative-report-v1",
+  "run_id": "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1",
+  "status": "completed",
+  "source_run_manifest": {
+    "path": "reports/evaluation-run/m4-01/manifest.json",
+    "sha256": "4cf9b8644cca920ef24612e0b78fcfcce28d07f84dec7508ae5e53ed8e196906",
+    "bytes": 4026
+  },
+  "source_artifacts": [
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz",
+      "sha256": "cbf182c1cee5cd8a8c2fb5270a0f40cefba74140d644bc1ba6c7105731acbb6f",
+      "bytes": 515562
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/statistics.jsonl.gz",
+      "sha256": "4213100dd36b980a37e85eff360c3fbcad673fc3e23f4f9afc9bf2348b6c9ff3",
+      "bytes": 413
+    },
+    {
+      "path": "reports/evaluation-readiness/m3-07/admission.json",
+      "sha256": "b9308d1185c8390fa04b19bd8e84b419560ca5a3666993d074970e6a3ead1a51",
+      "bytes": 39587
+    },
+    {
+      "path": "resources/voynich/evaluation-queries.v1.jsonl",
+      "sha256": "b48f63126ba788b98d78878b3b248bd518564873dc18504e35718242a6c2089a",
+      "bytes": 27056
+    }
+  ],
+  "report_artifacts": [
+    {
+      "path": "reports/evaluation-report/m4-02/figure-metadata.json",
+      "sha256": "0f9f7b8eab3c27ef06ea0af02b5fd6d0e9265fb91bfe46e41b5ada33e501b78f",
+      "bytes": 2078
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/figures/language-distributions.svg",
+      "sha256": "a8959d7e24bfe21e9c89e119f0eae5c6f02ff2e09e50656cdf4502252fde89ba",
+      "bytes": 1146
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/figures/primary-effect.svg",
+      "sha256": "ddc06c0f32d3e86b23d9df7ab78efb0dfaa2321cba448238709249927b3c102f",
+      "bytes": 1151
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/figures/subsample-stability.svg",
+      "sha256": "867ab35100e9710bdd9ba05eefa8c2a883d52c3616de3641a77b4fbe2bc09374",
+      "bytes": 3437
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/report.md",
+      "sha256": "cf76f153a213ee2fc20a4c407dffe6012aa9642473c27b62d315de801cca9f55",
+      "bytes": 11554
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/contrasts.csv",
+      "sha256": "c25aff3d7c9abda0b7bf6361015cf2c4fdbe631ac2b635edd6ea1642121f13e5",
+      "bytes": 2541
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/exclusions.csv",
+      "sha256": "aac19d498f9b4b88de5734d6e5b56c12872fe42430519fd40b686f5972e2c11f",
+      "bytes": 4504
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/language-distributions.csv",
+      "sha256": "4e0cd4b80f1c4b5a41f3da32e3600441662f9bf874f5a6055458f3ced520a7e1",
+      "bytes": 637
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/null-summary.csv",
+      "sha256": "ba585595c06142d327b10a4301d4de2d0925c557145ba6820ca6887d178c4d6e",
+      "bytes": 560
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/quality-summary.csv",
+      "sha256": "c674a7bc0e1161362adfc6e91e3e497cea92c3e275f27c3301054e70f135ebc4",
+      "bytes": 906
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/retrieval.csv",
+      "sha256": "f218198470e8d889fdf95508990bd7f76f222d834d1984342f2c91cc3ae1de2d",
+      "bytes": 4768
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/stability.csv",
+      "sha256": "49070794970fa4fb5ba672e39f57ed2681c08250de9401435235e209a864391b",
+      "bytes": 4137
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/strata.csv",
+      "sha256": "1c458741b9398d67996b789fa4cd01f8b4e937d8e2ca2fb0dfb9dec42498d541",
+      "bytes": 1422
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/tables/winner-proportions.csv",
+      "sha256": "1c43b7ebf1d684dc4b16d5fa0b07de06b2ad46bd60953b50f001c042a0f924f6",
+      "bytes": 488
+    }
+  ],
+  "decision_rule_outcome": "not_met",
+  "matching_or_statistics_rerun": false,
+  "definitions_present": false,
+  "holdout_present": false
+}
