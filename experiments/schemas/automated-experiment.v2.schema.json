@@ -36,7 +36,8 @@
           "required": { "type": "boolean" },
           "confirmatory_eligible": { "type": "boolean" },
           "profile_manifest": { "$ref": "#/$defs/pin" },
-          "references": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] }
+          "references": { "oneOf": [{ "$ref": "#/$defs/pin" }, { "type": "null" }] },
+          "generator_approval": { "$ref": "#/$defs/pin" }
         }
       }
     },

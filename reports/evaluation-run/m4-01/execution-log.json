@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1",
+  "command": "dotnet run --project Enochian.Benchmark --no-build -- experiment ../experiments/confirmatory.readiness.m3-07.json",
+  "exit_code": 0,
+  "runner_commit": "cc89ae52efd142d83b2ceb2f70886477dab02762",
+  "runner_version": "automated-experiment-v2",
+  "completed_at_utc": "2026-11-10T01:31:13.9604167Z",
+  "smoke_status": "passed_fresh_synthetic_fixture",
+  "preflight_status": "passed",
+  "rerun_policy": "Never patch or overwrite this run. Any input or software defect invalidates the run; version the fix and execute a fresh output directory."
+}

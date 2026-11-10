@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-execution-log-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "command",
+    "exit_code",
+    "runner_commit",
+    "runner_version",
+    "completed_at_utc",
+    "smoke_status",
+    "preflight_status",
+    "rerun_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "run_id": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "command": { "type": "string", "minLength": 1 },
+    "exit_code": { "const": 0 },
+    "runner_commit": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+    "runner_version": { "const": "automated-experiment-v2" },
+    "completed_at_utc": { "type": "string", "format": "date-time" },
+    "smoke_status": { "const": "passed_fresh_synthetic_fixture" },
+    "preflight_status": { "const": "passed" },
+    "rerun_policy": { "type": "string", "minLength": 1 }
+  }
+}

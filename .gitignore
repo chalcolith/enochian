@@ -50,6 +50,8 @@ dlldata.c
 # DNX
 project.lock.json
 artifacts/
+!reports/evaluation-run/m4-01/artifacts/
+!reports/evaluation-run/m4-01/artifacts/*.gz
 
 *_i.c
 *_p.c

@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1",
+  "status": "passed",
+  "output_hashes_verified": true,
+  "schemas_verified": true,
+  "definitions_absent": true,
+  "holdout_absent": true,
+  "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+  "row_counts": {
+    "calibration": 11360,
+    "matching": 4555360,
+    "sampling": 4000,
+    "statistics": 8
+  },
+  "score_checks": [
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "out-of-range",
+      "query_id": "eva-type-0001",
+      "language": "san",
+      "recorded_distance": 5.150526617025308,
+      "reproduced_distance": 5.150526617025308,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "out-of-range",
+      "query_id": "eva-type-0001",
+      "language": "tur",
+      "recorded_distance": 5.053080427242765,
+      "reproduced_distance": 5.053080427242765,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "03-05",
+      "query_id": "eva-type-0005",
+      "language": "san",
+      "recorded_distance": 4.6959108359362665,
+      "reproduced_distance": 4.6959108359362665,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "03-05",
+      "query_id": "eva-type-0005",
+      "language": "tur",
+      "recorded_distance": 5.144988569103129,
+      "reproduced_distance": 5.144988569103129,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "06-09",
+      "query_id": "eva-type-0006",
+      "language": "san",
+      "recorded_distance": 4.948102175020732,
+      "reproduced_distance": 4.948102175020732,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "06-09",
+      "query_id": "eva-type-0006",
+      "language": "tur",
+      "recorded_distance": 4.9764267091541,
+      "reproduced_distance": 4.9764267091541,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "10-20",
+      "query_id": "eva-type-0072",
+      "language": "san",
+      "recorded_distance": 4.804209069169334,
+      "reproduced_distance": 4.804209069169334,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-evaluation-readiness-m3-07.rep-0001",
+      "length_band": "10-20",
+      "query_id": "eva-type-0072",
+      "language": "tur",
+      "recorded_distance": 4.812188340257694,
+      "reproduced_distance": 4.812188340257694,
+      "absolute_difference": 0
+    }
+  ],
+  "blockers": []
+}

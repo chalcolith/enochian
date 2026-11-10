@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "publication_id": "m4-01-evaluation-partition-v1",
+  "run_id": "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1",
+  "status": "completed",
+  "runner_commit": "cc89ae52efd142d83b2ceb2f70886477dab02762",
+  "runner_version": "automated-experiment-v2",
+  "protocol": {
+    "path": "experiments/confirmatory.readiness.m3-07.json",
+    "sha256": "bda39d72a33b086689a080d316a301e6739cd83da764695aeaeb50df6ec00429"
+  },
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_loci": [
+    "f3r",
+    "f3v",
+    "f4r",
+    "f4v"
+  ],
+  "admission_report": {
+    "path": "reports/evaluation-readiness/m3-07/admission.json",
+    "sha256": "b9308d1185c8390fa04b19bd8e84b419560ca5a3666993d074970e6a3ead1a51",
+    "bytes": 39587
+  },
+  "preflight_report": {
+    "path": "reports/evaluation-readiness/m3-07/preflight.json",
+    "sha256": "5c7b553205c257cdf9c2f316bc29b115d1c74abf6fc7ef2fc751edb5eea2c1d3",
+    "bytes": 456065
+  },
+  "execution_log": {
+    "path": "reports/evaluation-run/m4-01/execution-log.json",
+    "sha256": "287668430bb1f05dc7eb6c8a0eff7353b8d75cbe8aff76136ac04c49f719ed69",
+    "bytes": 668
+  },
+  "verification_report": {
+    "path": "reports/evaluation-run/m4-01/verification.json",
+    "sha256": "0f65a4e65042cde5e9adea084dc67fb405f0f6f734417e1353fb0ae63c73e9c3",
+    "bytes": 2917
+  },
+  "raw_artifacts": [
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/sampling.jsonl",
+      "sha256": "c45164ff5c59d6e3228f1d781b32aa4d3f1335dcf244bcad68cd81a01ecd8872",
+      "bytes": 4788857
+    },
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/matching.jsonl",
+      "sha256": "78dabf37b69079ea5ac45101a34399a3a288aab801185ba927f9543c7f540cba",
+      "bytes": 1333113582
+    },
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/calibration.jsonl",
+      "sha256": "4ae513455a0a78fa90cb6313fe68148ba48fd15a41688f358df4dda36405a9b5",
+      "bytes": 4907023
+    },
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/statistics.jsonl",
+      "sha256": "ab15b12c95798902b2d00da7a2e64495b54c7de6a89c0a4e25abb1cc5194c88e",
+      "bytes": 2969
+    },
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/report-inputs.json",
+      "sha256": "e88c54bb4c08d1c3d2795402bf6daa91e95085dbb872267bdbe50c7ee2889fe8",
+      "bytes": 2522
+    },
+    {
+      "path": ".enoch/experiments/evaluation-readiness-m3-07/run-manifest.json",
+      "sha256": "7919f4e17aec32d35b3a47bf0b07e528c7e52d2c37be356238e89be52d323303",
+      "bytes": 457999
+    }
+  ],
+  "packaged_artifacts": [
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/sampling.jsonl.gz",
+      "sha256": "4a80af9c476c6b16ff5bc4572e84cd65ba30dcec820f908f169ab36631c74406",
+      "bytes": 543610
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/matching.jsonl.gz",
+      "sha256": "b798c2f141839d4fe0905963b5fe4367fa0b979827f2b859578439573269c163",
+      "bytes": 63607238
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz",
+      "sha256": "cbf182c1cee5cd8a8c2fb5270a0f40cefba74140d644bc1ba6c7105731acbb6f",
+      "bytes": 515562
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/statistics.jsonl.gz",
+      "sha256": "4213100dd36b980a37e85eff360c3fbcad673fc3e23f4f9afc9bf2348b6c9ff3",
+      "bytes": 413
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/report-inputs.json.gz",
+      "sha256": "8eec3219385b49c97425db8c51086403d1da2561f1e7f0e1a259215e522301a9",
+      "bytes": 1184
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/run-manifest.json.gz",
+      "sha256": "6a0676259a51fee8a22e9fd81c49e453c3365ee98da43535dea5796686d16709",
+      "bytes": 89304
+    }
+  ],
+  "definitions_present": false,
+  "holdout_present": false,
+  "failure_policy": "Defective runs are labelled invalid and retained unchanged. Fixes require a versioned runner or input, a new output directory, and a complete restart."
+}
