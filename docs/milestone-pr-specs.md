@@ -1254,6 +1254,11 @@ required-anchor admissions and unavailable primary comparison. It does not run
 confirmatory manuscript scoring; M4-01 still owns the immutable run bundle and
 once-only evaluation.
 
+The M3-07 prerequisite subsequently versions the Sanskrit/Turkish anchor panel
+and degradation-aware retrieval policy. Its preflight admits both required
+anchors and passes without blockers. The original #49 report remains unchanged
+as the historical blocked readiness decision.
+
 ### M4-01: Freeze inputs and execute the evaluation partition
 
 **Depends on:** M3-06, M4-00, and the frozen automated quality decisions.
@@ -1289,6 +1294,16 @@ without inspecting semantic definitions.
 - Every exclusion follows a rule recorded before the run.
 - The run is labelled failed/invalid rather than patched if an input or software
   defect is found.
+
+**Implemented run:** `m4-01-evaluation-partition-v1`, run ID
+`73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1`.
+The runner is fixed at commit
+`cc89ae52efd142d83b2ceb2f70886477dab02762`. The checksummed bundle under
+`reports/evaluation-run/m4-01/` contains all compressed stage outputs,
+execution metadata, the frozen input/output manifest, and an independent
+eight-cell score reproduction spanning every observed query-length stratum and
+both admitted languages. Verification found no definitions or holdout loci.
+Interpretation remains deferred to M4-02.
 
 ### M4-02: Publish the comparative quantitative report
 

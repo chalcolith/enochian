@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-run-verification-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "status",
+    "output_hashes_verified",
+    "schemas_verified",
+    "definitions_absent",
+    "holdout_absent",
+    "sample_id",
+    "row_counts",
+    "score_checks",
+    "blockers"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "run_id": { "$ref": "#/$defs/hash" },
+    "status": { "const": "passed" },
+    "output_hashes_verified": { "const": true },
+    "schemas_verified": { "const": true },
+    "definitions_absent": { "const": true },
+    "holdout_absent": { "const": true },
+    "sample_id": { "type": "string", "minLength": 1 },
+    "row_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calibration", "matching", "sampling", "statistics"],
+      "properties": {
+        "calibration": { "type": "integer", "minimum": 1 },
+        "matching": { "type": "integer", "minimum": 1 },
+        "sampling": { "type": "integer", "minimum": 1 },
+        "statistics": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "score_checks": {
+      "type": "array",
+      "minItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sample_id",
+          "length_band",
+          "query_id",
+          "language",
+          "recorded_distance",
+          "reproduced_distance",
+          "absolute_difference"
+        ],
+        "properties": {
+          "sample_id": { "type": "string", "minLength": 1 },
+          "length_band": { "enum": ["out-of-range", "03-05", "06-09", "10-20"] },
+          "query_id": { "type": "string", "minLength": 1 },
+          "language": { "enum": ["san", "tur"] },
+          "recorded_distance": { "type": "number", "minimum": 0 },
+          "reproduced_distance": { "type": "number", "minimum": 0 },
+          "absolute_difference": { "type": "number", "minimum": 0, "maximum": 1e-12 }
+        }
+      }
+    },
+    "blockers": { "const": [] }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

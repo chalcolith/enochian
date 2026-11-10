@@ -24,7 +24,8 @@ dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory
 dotnet run --project Enochian.Cdsl -- acquire-normalize
 dotnet run --project Enochian.Benchmark -- sanskrit-profile
 dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.m3-07.json
-dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.v2.json
+dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.readiness.m3-07.json
+dotnet run --project Enochian.Benchmark -- publish-m4 ..\experiments\confirmatory.readiness.m3-07.json <runner-commit>
 ```
 
 `admit` writes JSON/Markdown source decisions without manuscript scoring.
@@ -150,6 +151,16 @@ and vowel-height merger, because those operations deliberately alter the
 sequence or feature representation. No replacement distance threshold was
 selected from Turkish results. The v1/v2 evaluator behavior and reports remain
 unchanged.
+
+M4-01 executed the readiness amendment once against the evaluation partition.
+Run `73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1`
+is published under `reports/evaluation-run/m4-01/`. The publication command
+strictly deserializes every stage row, verifies raw output hashes, rejects
+semantic-definition fields and holdout-locus values, independently reproduces
+observed DTW scores across each query-length stratum for Sanskrit and Turkish,
+and packages every stage as a checksummed gzip artifact. It never reruns the
+experiment. Any discovered defect invalidates the run and requires a versioned
+restart in a new output directory.
 
 Self-retrieval establishes robustness under these degradations, not correct
 pronunciation. A passing retrieval cell cannot rescue unknown derivation,

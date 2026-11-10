@@ -19,6 +19,7 @@ public sealed record AutomatedSource
     public required bool ConfirmatoryEligible { get; init; }
     public required PinnedInput ProfileManifest { get; init; }
     public PinnedInput? References { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PinnedInput? GeneratorApproval { get; init; }
 }
 
@@ -100,10 +101,12 @@ public sealed record AutomatedProtocol
     public required string[] HoldoutLoci { get; init; }
     public required PinnedInput? Queries { get; init; }
     public required PinnedInput? Mapping { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public PinnedInput? MappingApproval { get; init; }
     public required AutomatedAstronomy Astronomy { get; init; }
     public required string OutputDirectory { get; init; }
     public required string AdmissionReport { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? PreflightReport { get; init; }
     [JsonIgnore]
     public PinnedInput? BaseProtocol { get; init; }

@@ -79,6 +79,30 @@ public sealed class AutomatedExperimentTests
     }
 
     [TestMethod]
+    public void FreshSyntheticRegistrationConformsToTheFrozenProtocolSchema()
+    {
+        var relative = ".enoch/unit-tests/synthetic-" + Guid.NewGuid().ToString("N");
+        var directory = Path.Combine(
+            RepositoryRoot, relative.Replace('/', Path.DirectorySeparatorChar));
+        try
+        {
+            var path = AutomatedRegistration.CreateSynthetic(RepositoryRoot, relative);
+            var protocol = AutomatedProtocol.Load(path, RepositoryRoot);
+            Assert.AreEqual("synthetic", protocol.Phase);
+            Assert.IsNull(protocol.MappingApproval);
+            Assert.IsNull(protocol.PreflightReport);
+            Assert.IsTrue(protocol.Sources.All(source => source.GeneratorApproval == null));
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public void SyntheticRunNeedsNoHumanFilesAndPreservesEveryRetrievalThreshold()
     {
         using var fixture = new Fixture();
