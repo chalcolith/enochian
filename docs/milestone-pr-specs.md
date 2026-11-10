@@ -1392,6 +1392,17 @@ truth. This appendix is optional and does not block M4-04.
 - Contextual results are secondary; automated semantic scoring, if any, is
   exploratory and is never represented as validated human judgment.
 
+**Implemented appendix:** `m4-03-automated-contextual-appendix-v1` joins all
+242 unique frozen Sanskrit/Turkish sample candidates to pinned dictionary
+contexts by stable candidate and source-record identifiers. It retains all 305
+available definition/gloss rows without selecting senses or associating them
+with Voynich query scores. The separate M2-08 exact-name astronomy registry
+finds no eligible links in any of the 17 frozen profiles, so all 16
+Arabic-versus-panel-language pairs remain `not_estimable` and no unmatched
+object is scored as zero. The appendix uses no annotators or automated semantic
+judgments, reads no holdout-derived data, and verifies that M4-01/M4-02
+artifacts remain byte-identical.
+
 ### M4-04: Execute the holdout once and publish the final report
 
 **Depends on:** M4-02. M4-03 is optional and is not a prerequisite.

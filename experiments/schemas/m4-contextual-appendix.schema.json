@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-contextual-appendix-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "appendix_id",
+    "frozen",
+    "source_run_manifest",
+    "quantitative_report_manifest",
+    "sampling_artifact",
+    "dictionary_sources",
+    "astronomy",
+    "output_directory",
+    "holdout_loci",
+    "rules"
+  ],
+  "properties": {
+    "$schema": { "const": "schemas/m4-contextual-appendix.schema.json" },
+    "schema_version": { "const": "1.0.0" },
+    "appendix_id": { "const": "m4-03-automated-contextual-appendix-v1" },
+    "frozen": { "const": true },
+    "source_run_manifest": { "$ref": "#/$defs/configurationPin" },
+    "quantitative_report_manifest": { "$ref": "#/$defs/configurationPin" },
+    "sampling_artifact": { "$ref": "#/$defs/artifactPin" },
+    "dictionary_sources": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_id", "manifest", "join", "dictionary_language_code"],
+        "properties": {
+          "source_id": { "enum": ["cdsl-shs", "kaikki-raw"] },
+          "manifest": { "$ref": "#/$defs/configurationPin" },
+          "join": { "enum": ["cdsl-record-and-headword", "wiktextract-lexical-identity"] },
+          "dictionary_language_code": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "astronomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol",
+        "registration",
+        "catalog",
+        "pronunciation_panel",
+        "minimum_shared_catalog_ids"
+      ],
+      "properties": {
+        "protocol": { "$ref": "#/$defs/configurationPin" },
+        "registration": { "$ref": "#/$defs/configurationPin" },
+        "catalog": { "$ref": "#/$defs/artifactPin" },
+        "pronunciation_panel": { "$ref": "#/$defs/configurationPin" },
+        "minimum_shared_catalog_ids": { "const": 25 }
+      }
+    },
+    "output_directory": { "const": "reports/contextual-appendix/m4-03" },
+    "holdout_loci": {
+      "const": ["f3r", "f3v", "f4r", "f4v"]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "timing:context-joins-after-m4-02-freeze",
+          "join:stable-candidate-and-source-record-identifiers-only",
+          "dictionary:retain-all-source-glosses-and-labels-no-selection",
+          "astronomy:use-m2-08-exact-case-sensitive-links-only",
+          "astronomy:minimum-25-shared-catalog-ids-or-not-estimable",
+          "separation:no-context-or-proper-name-input-to-primary-scores",
+          "holdout:no-holdout-derived-inputs",
+          "interpretation:secondary-exploratory-metadata-not-ground-truth"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "configurationPin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "artifactPin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "bytes": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

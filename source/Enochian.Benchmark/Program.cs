@@ -2,6 +2,14 @@ using Enochian.Flow;
 
 try
 {
+    if (args.Length is 2 or 3 && args[0] == "context-m4")
+    {
+        var contextRoot = FindRepositoryRoot();
+        return new Enochian.Benchmark.M4ContextualAppendixGenerator(contextRoot).Run(
+            Path.GetFullPath(args[1]),
+            args.Length == 3 ? args[2] : null);
+    }
+
     if (args.Length is 2 or 3 && args[0] == "report-m4")
     {
         var reportRoot = FindRepositoryRoot();
@@ -117,6 +125,7 @@ catch (Exception exception)
 
 static int ShowUsage()
 {
+    Console.Error.WriteLine("Usage: Enochian.Benchmark context-m4 <config-json> [output-directory]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark report-m4 <m4-run-manifest> [output-directory]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark publish-m4 <protocol-json> <runner-commit> [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark sanskrit-profile [repository-root]");

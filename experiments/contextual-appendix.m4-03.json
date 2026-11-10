@@ -1,0 +1,71 @@
+{
+  "$schema": "schemas/m4-contextual-appendix.schema.json",
+  "schema_version": "1.0.0",
+  "appendix_id": "m4-03-automated-contextual-appendix-v1",
+  "frozen": true,
+  "source_run_manifest": {
+    "path": "reports/evaluation-run/m4-01/manifest.json",
+    "sha256": "4cf9b8644cca920ef24612e0b78fcfcce28d07f84dec7508ae5e53ed8e196906"
+  },
+  "quantitative_report_manifest": {
+    "path": "reports/evaluation-report/m4-02/manifest.json",
+    "sha256": "979c3f5fe50e0dee6330db42220dbed24b41f101337d6a9bbc175a0351d61541"
+  },
+  "sampling_artifact": {
+    "path": "reports/evaluation-run/m4-01/artifacts/sampling.jsonl.gz",
+    "sha256": "4a80af9c476c6b16ff5bc4572e84cd65ba30dcec820f908f169ab36631c74406",
+    "bytes": 543610
+  },
+  "dictionary_sources": [
+    {
+      "source_id": "cdsl-shs",
+      "manifest": {
+        "path": "resources/lexicons/manifests/cdsl-shs.manifest.json",
+        "sha256": "2b3ed12136f0b64cb1faf08274d4d40a162a110eacea0d4cebc278809bc9d2c5"
+      },
+      "join": "cdsl-record-and-headword",
+      "dictionary_language_code": null
+    },
+    {
+      "source_id": "kaikki-raw",
+      "manifest": {
+        "path": "resources/lexicons/manifests/kaikki-raw.manifest.json",
+        "sha256": "32683a26fd3731b7b40eb4f1cbad2f8fadda8b5d5253d1befa31182188d35189"
+      },
+      "join": "wiktextract-lexical-identity",
+      "dictionary_language_code": "tr"
+    }
+  ],
+  "astronomy": {
+    "protocol": {
+      "path": "experiments/astronomical-names.v1.json",
+      "sha256": "86d955ba17c3842d9806f2511ee5e912e687b8b79cc1eb13ba5f78518836783e"
+    },
+    "registration": {
+      "path": "reports/pronunciation-profiles/v1/astronomy-registration.json",
+      "sha256": "18845a93cd2b3698e77132689cfd86738968d6aa45dedb92f6fb96bf132ebe8a"
+    },
+    "catalog": {
+      "path": ".enoch/astronomy/v1/catalog-names.jsonl",
+      "sha256": "603c2310468435a8ca2360abc6b9da5288b73248904cf45961bfbf3408ae9e7a",
+      "bytes": 41833
+    },
+    "pronunciation_panel": {
+      "path": "resources/lexicons/pronunciation-panel.v1.json",
+      "sha256": "6a646913242084a7be3ddd10c650769b083d01a1d5bce53959f12da2d5f1da90"
+    },
+    "minimum_shared_catalog_ids": 25
+  },
+  "output_directory": "reports/contextual-appendix/m4-03",
+  "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+  "rules": [
+    "timing:context-joins-after-m4-02-freeze",
+    "join:stable-candidate-and-source-record-identifiers-only",
+    "dictionary:retain-all-source-glosses-and-labels-no-selection",
+    "astronomy:use-m2-08-exact-case-sensitive-links-only",
+    "astronomy:minimum-25-shared-catalog-ids-or-not-estimable",
+    "separation:no-context-or-proper-name-input-to-primary-scores",
+    "holdout:no-holdout-derived-inputs",
+    "interpretation:secondary-exploratory-metadata-not-ground-truth"
+  ]
+}
