@@ -1343,6 +1343,15 @@ Interpretation remains deferred to M4-02.
 - Definitions and semantic judgments remain absent.
 - The report can be rebuilt without rerunning matching or statistics.
 
+**Implemented report:** `m4-02-comparative-quantitative-report-v1` renders run
+`73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1`
+under `reports/evaluation-report/m4-02/`. The primary Sanskrit-minus-Turkish
+effect is 0.000 with interval [0.000, 0.000] and Holm-adjusted p = 1.000, so the
+decision rule was not met. The report preserves all six non-estimable
+exploratory slots, explains the biphone-null percentile ceiling, includes Stage
+A quality and exclusion evidence, and can be rebuilt solely from the frozen
+M4-01 bundle.
+
 ### M4-03: Publish an optional automated contextual appendix
 
 **Depends on:** M4-02.

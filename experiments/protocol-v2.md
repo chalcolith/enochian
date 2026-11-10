@@ -7,12 +7,13 @@ No comparative manuscript results were inspected to select this design.
 
 ## Status and commands
 
-The [admission table](../reports/automated-admission/v2/coverage.md) and its
-[machine-readable report](../reports/automated-admission/v2/coverage.json) cover
-all 17 profiles. Every real profile currently has zero supported-origin lexical
-units. Arabic and Bhojpuri are excluded; the other profiles are exploratory.
-These are evidence exclusions, not measured null effects. Retrieval is **not
-run** for unsupported profiles. M4-01 remains blocked.
+The original [admission table](../reports/automated-admission/v2/coverage.md)
+and its [machine-readable report](../reports/automated-admission/v2/coverage.json)
+remain the frozen M2-09 baseline. The M3-07 amendment subsequently admitted
+Sanskrit and Turkish, M4-01 executed the evaluation partition once, and the
+[M4-02 report](../reports/evaluation-report/m4-02/report.md) now renders that
+frozen run. Unsupported profiles remain exclusions or exploratory absences, not
+measured null effects.
 
 Run from `source/`, after retaining the pinned profile artifacts:
 
@@ -26,6 +27,7 @@ dotnet run --project Enochian.Benchmark -- sanskrit-profile
 dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.readiness.m3-07.json
 dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.readiness.m3-07.json
 dotnet run --project Enochian.Benchmark -- publish-m4 ..\experiments\confirmatory.readiness.m3-07.json <runner-commit>
+dotnet run --project Enochian.Benchmark -- report-m4 ..\reports\evaluation-run\m4-01\manifest.json
 ```
 
 `admit` writes JSON/Markdown source decisions without manuscript scoring.
@@ -162,6 +164,13 @@ and packages every stage as a checksummed gzip artifact. It never reruns the
 experiment. Any discovered defect invalidates the run and requires a versioned
 restart in a new output directory.
 
+M4-02 reads the checksummed calibration and statistics tidy artifacts from that
+publication, plus frozen query metadata and the Stage A admission report. It
+does not invoke matching, calibration, resampling, permutation, or bootstrap
+code. Its CSV outputs retain six decimal places and the static report displays
+three. Rebuilding verifies the source bundle and rewrites only
+`reports/evaluation-report/m4-02/`.
+
 Self-retrieval establishes robustness under these degradations, not correct
 pronunciation. A passing retrieval cell cannot rescue unknown derivation,
 wrong conventions, missing independent references, or an ineligible license.
@@ -172,9 +181,12 @@ Use 100 unique supported lexical units per admitted language, with fixed quotas
 **34 / 33 / 33** for **03-05 / 06-09 / 10-20** phones. The lexicographically
 first normalized IPA determines the unit's band, as in M2-07. Draw 20
 deterministic lexicon samples; do not reduce size/quotas after exclusions.
-Hindi, Sanskrit, Turkish, and Hungarian are required anchors. Other profiles
-can enter only through the same predeclared gates. Unspecified-dialect Romani
-is permanently exploratory in this version. Hebrew is descriptive-only.
+The original registration named Hindi, Sanskrit, Turkish, and Hungarian as
+required anchors. The M3-07 amendment, frozen before evaluation, makes Sanskrit
+and Turkish the required confirmatory pair and leaves Hindi and Hungarian
+non-required and exploratory. Other profiles can enter only through the same
+predeclared gates. Unspecified-dialect Romani is permanently exploratory in
+this version. Hebrew is descriptive-only.
 
 | Contrast | Target | Comparison | Status |
 | --- | --- | --- | --- |
@@ -249,6 +261,12 @@ The [combined protocol schema](schemas/automated-experiment.v2.schema.json),
 are new contracts. They consume M2-08 normalized/evidence artifacts without
 changing those v1 interchange formats. Do not copy automated decisions into
 old review sheets or label agreement as human judgment.
+
+The M4-02 [report manifest schema](schemas/m4-report-manifest.schema.json) and
+[figure metadata schema](schemas/m4-figure-metadata.schema.json) validate the
+publication index and accessible static figures. The report manifest hashes
+every rendered artifact and records that matching/statistics were not rerun and
+that definitions and holdout data are absent.
 
 All v2 paths are repository-relative and must remain inside the repository.
 Configuration pins hash canonical UTF-8/LF text; generated JSONL/source data and

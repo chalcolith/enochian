@@ -1,0 +1,3 @@
+language,record_count,percentile_minimum,percentile_q1,percentile_median,percentile_q3,percentile_maximum,standardized_q1,standardized_median,standardized_q3,raw_distance_median,run_id,source_artifact
+san,5680,1.000000,1.000000,1.000000,1.000000,1.000000,-7.196591,-6.528476,-5.760902,4.962446,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz
+tur,5680,0.980000,1.000000,1.000000,1.000000,1.000000,-7.913095,-7.278176,-6.616492,4.943669,73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1,reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz

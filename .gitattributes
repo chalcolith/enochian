@@ -4,3 +4,6 @@ resources/lexicons/schemas/pronunciation-recovery.schema.json text eol=lf
 resources/lexicons/schemas/profile-artifact-manifest.v1.1.schema.json text eol=lf
 experiments/confirmatory.provenance.v1.json text eol=lf
 reports/pronunciation-provenance/v1/** text eol=lf
+reports/evaluation-report/m4-02/** text eol=lf
+reports/evaluation-readiness/m3-07/** text eol=lf
+resources/voynich/evaluation-queries.v1.jsonl text eol=lf
