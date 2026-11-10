@@ -1,0 +1,286 @@
+{
+  "schema_version": "1.0.0",
+  "appendix_id": "m4-03-automated-contextual-appendix-v1",
+  "run_id": "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1",
+  "status": "completed",
+  "secondary_evidence": true,
+  "human_annotation": false,
+  "automated_semantic_scoring": false,
+  "definitions_present": true,
+  "primary_artifacts_modified": false,
+  "holdout_present": false,
+  "source_artifacts": [
+    {
+      "path": ".enoch/astronomy/v1/catalog-names.jsonl",
+      "sha256": "603c2310468435a8ca2360abc6b9da5288b73248904cf45961bfbf3408ae9e7a",
+      "bytes": 41833
+    },
+    {
+      "path": ".enoch/csl-orig-b7297b97cf9f7112277ea98f7969291eb1d5f495/v02/shs/shs.txt",
+      "sha256": "c13eb915a510e377884b1ffd3472088dfa509cc4b1067abd8c247bfb80481af5",
+      "bytes": 9245879
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/ara-classical-citation-v1.0.0.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/ara-classical-citation-v1.0.0.manifest.json",
+      "sha256": "873b6f5fe615b043e017f1269449630fabd4629a1a24163bc5f3ed5c87d9f996",
+      "bytes": 4125
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/asm-dictionary-v1.0.0.jsonl",
+      "sha256": "bc41818b97dc02a11a0db7bd810ced09a08ff8d3ab9cb938b9aabbef39720b59",
+      "bytes": 2214764
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/asm-dictionary-v1.0.0.manifest.json",
+      "sha256": "05d5747a9d20dbc1427a99928aecc5c63c91d54f5c2bce34fc3f62680f1a2b43",
+      "bytes": 2211
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/ben-dictionary-v1.0.0.jsonl",
+      "sha256": "0b8fcf1ad7a7dfeafd250f37cc6e56ba539121b05278b30e563664c5bb6eb733",
+      "bytes": 7940134
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/ben-dictionary-v1.0.0.manifest.json",
+      "sha256": "dee43ea8e65b547c6adb57b1ed1ebdeb2ca4287e1a33404cb2e69fd9ea4f4f01",
+      "bytes": 2210
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/bho-dictionary-v1.0.0.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/bho-dictionary-v1.0.0.manifest.json",
+      "sha256": "f4539067c437cc09270edf88942c335d9f7622232156b090a9b4be71c5528f23",
+      "bytes": 2295
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/fas-dictionary-v1.0.0.jsonl",
+      "sha256": "0a40e63fe794584f8c3534a8f1d1b677cc3f4744f5069b9dffb0b0b644cf815f",
+      "bytes": 6417238
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/fas-dictionary-v1.0.0.manifest.json",
+      "sha256": "ffd198d8ec6f5a1ce7b196c37c0fa7f753f47c397acae85fb16d76348b52c496",
+      "bytes": 2287
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.jsonl",
+      "sha256": "ad88a771a5d277a114073777d41644fe52ff3676bea2a661439c19bf6d5fc1fc",
+      "bytes": 11904472
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/grc-koine-4c-v1.0.0.manifest.json",
+      "sha256": "b98986640ef965584461f19ce97a76087b64891a88a80c5c7d2252681512572b",
+      "bytes": 3468
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/guj-dictionary-v1.0.0.jsonl",
+      "sha256": "bdb8b93b724822919f21807a6e2f7059c43960c8ee1ba9d29b1ab73efd74682a",
+      "bytes": 2456004
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/guj-dictionary-v1.0.0.manifest.json",
+      "sha256": "416487e629d6252ce35c527ebe24856273195a18acf27d9f33a8a2cbac6873b8",
+      "bytes": 2200
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.jsonl",
+      "sha256": "bdc16b1b3b8d406ff5c40c760963677dc5a13a3a43095e0496de0e7bb46248ca",
+      "bytes": 513795
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hbo-tiberian-v1.0.0.manifest.json",
+      "sha256": "bf3e98afd9cd1196f390ff0b29a927fa3abd777bac1ca133bcb6685470afa469",
+      "bytes": 3639
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hin-dictionary-v1.0.0.jsonl",
+      "sha256": "6cb702fbceda0ab9b413b7c05494448bc325a0a9ef8797ba3e76c80125f22b92",
+      "bytes": 17433565
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hin-dictionary-v1.0.0.manifest.json",
+      "sha256": "ef48732fe45f3ded3c2ace2f3ff9b9f33eb4ba4e7faafbde45bf74febd6b1078",
+      "bytes": 2180
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hun-dictionary-v1.0.0.jsonl",
+      "sha256": "a6f6fe86e98c1cfddd6d94f73b553f63e32c88bf9917be3cf4d0162549e93d86",
+      "bytes": 22345032
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/hun-dictionary-v1.0.0.manifest.json",
+      "sha256": "aa98bc10189feb46cfed1a75a487cf2aaa062ab638c83bed8ef1451097b5eadf",
+      "bytes": 2193
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/lat-ecclesiastical-italianate-v1.0.0.jsonl",
+      "sha256": "48a30d0343ffa6633a35c159a9fef566cfa46ea0c6eb55eb19f6a1cfa8b4eccd",
+      "bytes": 16614509
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/lat-ecclesiastical-italianate-v1.0.0.manifest.json",
+      "sha256": "473a82d67a26a523a017b6ff0b037ce5aac5b09469de3bf109d88e50d82fd4b1",
+      "bytes": 3071
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/mar-dictionary-v1.0.0.jsonl",
+      "sha256": "2c6918d1809e0bcf780d2c231040a10b5777be6ddafe002e28a12c204fa641f0",
+      "bytes": 2840507
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/mar-dictionary-v1.0.0.manifest.json",
+      "sha256": "00c067c512289fb46d7ac322f5e5dc205bfce8d1c88553c323dc4a0e51eae29a",
+      "bytes": 2135
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/pan-dictionary-v1.0.0.jsonl",
+      "sha256": "d00394c9006b94224f86f963f6d9d246449c8d16a0e2f632bafff849ddbcf7d1",
+      "bytes": 840542
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/pan-dictionary-v1.0.0.manifest.json",
+      "sha256": "4d147ace85bd50ef07b845691c872f6a7df2f724010cb4c6036ad1446d2baac6",
+      "bytes": 2225
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/pus-dictionary-v1.0.0.jsonl",
+      "sha256": "eadd2b9e367d99c804c266b374c39f41f66306c1d0dc9b35ed507d911b4ef31c",
+      "bytes": 724942
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/pus-dictionary-v1.0.0.manifest.json",
+      "sha256": "2b3836060928e3d2fafe398d6b416f65b0e6ed6e35266e0bd09ff27db5717a5c",
+      "bytes": 2222
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/rom-dictionary-v1.0.0.jsonl",
+      "sha256": "b0feb9698f33b0c6a7f9e74e15a93298ba9aea2f991f35c5cf6d80be1479016a",
+      "bytes": 26548
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/rom-dictionary-v1.0.0.manifest.json",
+      "sha256": "3268ef230f0ac245d13379940c2824029e2eda870d103654ee63f4f9684b8dc4",
+      "bytes": 2312
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/san-dictionary-v1.0.0.jsonl",
+      "sha256": "c819395012f75cbb8350cd1e143a677690937597caf8c0bfea666a68d7d9c79c",
+      "bytes": 6265690
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/san-dictionary-v1.0.0.manifest.json",
+      "sha256": "d1bf4354a84b8e3ca01b3449b08fb33596267f580d23d3158e5d6da6c3dfdba5",
+      "bytes": 2206
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/tur-dictionary-v1.0.0.jsonl",
+      "sha256": "b1d730aae628d6dbbcf13f819c9122fa083b034d3a4417b80ab2e4009297c867",
+      "bytes": 6716412
+    },
+    {
+      "path": ".enoch/pronunciation-profiles/v1/tur-dictionary-v1.0.0.manifest.json",
+      "sha256": "20cd73fde6afe5dcacdee1b7cceeaf59cbfcf53f18d0b694ba24ae95f77fec04",
+      "bytes": 2176
+    },
+    {
+      "path": ".enoch/pronunciation/raw/enwiktionary-20261001.jsonl.gz",
+      "sha256": "5ff2c072f8099f2d2ce484bd6957bf179f046d2ad37bc36555edf8bb84cb5291",
+      "bytes": 3082476978
+    },
+    {
+      "path": "experiments/astronomical-names.v1.json",
+      "sha256": "86d955ba17c3842d9806f2511ee5e912e687b8b79cc1eb13ba5f78518836783e",
+      "bytes": 1200
+    },
+    {
+      "path": "experiments/contextual-appendix.m4-03.json",
+      "sha256": "be96593d73bed3b6fd00318898f32ab88972a4f6e5502d5d68cb93e4195c578a",
+      "bytes": 2772
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/manifest.json",
+      "sha256": "979c3f5fe50e0dee6330db42220dbed24b41f101337d6a9bbc175a0351d61541",
+      "bytes": 3999
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/sampling.jsonl.gz",
+      "sha256": "4a80af9c476c6b16ff5bc4572e84cd65ba30dcec820f908f169ab36631c74406",
+      "bytes": 543610
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/manifest.json",
+      "sha256": "4cf9b8644cca920ef24612e0b78fcfcce28d07f84dec7508ae5e53ed8e196906",
+      "bytes": 4026
+    },
+    {
+      "path": "reports/pronunciation-profiles/v1/astronomy-registration.json",
+      "sha256": "18845a93cd2b3698e77132689cfd86738968d6aa45dedb92f6fb96bf132ebe8a",
+      "bytes": 4833
+    },
+    {
+      "path": "resources/lexicons/manifests/cdsl-shs.manifest.json",
+      "sha256": "2b3ed12136f0b64cb1faf08274d4d40a162a110eacea0d4cebc278809bc9d2c5",
+      "bytes": 1237
+    },
+    {
+      "path": "resources/lexicons/manifests/kaikki-raw.manifest.json",
+      "sha256": "32683a26fd3731b7b40eb4f1cbad2f8fadda8b5d5253d1befa31182188d35189",
+      "bytes": 1806
+    },
+    {
+      "path": "resources/lexicons/pronunciation-panel.v1.json",
+      "sha256": "6a646913242084a7be3ddd10c650769b083d01a1d5bce53959f12da2d5f1da90",
+      "bytes": 11901
+    },
+    {
+      "path": "source/Enochian.Benchmark/M4ContextualAppendixGenerator.cs",
+      "sha256": "386c186efb6a17ca4270f061a708783eeede767bede55652c723ee8a8412b274",
+      "bytes": 40165
+    },
+    {
+      "path": "source/Enochian.Cdsl/CdslOrigAdapter.cs",
+      "sha256": "ea7763bab430895039ad4bd7654e9c53b300294a92e6ff84bbd0602363d9c5e1",
+      "bytes": 17034
+    },
+    {
+      "path": "source/Enochian.Provenance/AstronomicalNameRegistry.cs",
+      "sha256": "5c14b4b9d81989454342d6c7fea70c36225c4c6596cdcab90d40e520ed8c73c4",
+      "bytes": 6925
+    },
+    {
+      "path": "source/Enochian.Provenance/PronunciationDictionaryAdapter.cs",
+      "sha256": "0b1fb4a3f4311a38af17abb4ed7961dbbeb66c7eb0a339506b4cd9d0b65427e2",
+      "bytes": 5780
+    }
+  ],
+  "appendix_artifacts": [
+    {
+      "path": "reports/contextual-appendix/m4-03/astronomy-languages.csv",
+      "sha256": "d2fb074a88d9826b0f9dde79754c9eff415fdc302b39e6660fb13558d2cc0d0d",
+      "bytes": 2864
+    },
+    {
+      "path": "reports/contextual-appendix/m4-03/astronomy-pairs.csv",
+      "sha256": "b41d2bd9b79042d4059e436a77c0ec4fef17b094e9c6ec3f55453e38d0246ea9",
+      "bytes": 2786
+    },
+    {
+      "path": "reports/contextual-appendix/m4-03/candidate-contexts.csv",
+      "sha256": "753ee2a7166752fa118bcd492df255ef886b3f82d95c25503d9fa76e678b5195",
+      "bytes": 197573
+    },
+    {
+      "path": "reports/contextual-appendix/m4-03/report.md",
+      "sha256": "d7ba1d84bdec46293c74d4cdc8f7fbca4a48779e355810b2023e300a25e086c4",
+      "bytes": 3681
+    }
+  ]
+}

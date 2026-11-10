@@ -37,6 +37,10 @@ public class SchemaTests
         LoadSchema("experiments/schemas/m4-report-manifest.schema.json");
     private static readonly JsonSchema M4FigureMetadataSchema =
         LoadSchema("experiments/schemas/m4-figure-metadata.schema.json");
+    private static readonly JsonSchema M4ContextualAppendixSchema =
+        LoadSchema("experiments/schemas/m4-contextual-appendix.schema.json");
+    private static readonly JsonSchema M4ContextualManifestSchema =
+        LoadSchema("experiments/schemas/m4-contextual-manifest.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -78,6 +82,8 @@ public class SchemaTests
         AssertValid(M4ExecutionLogSchema, "reports/evaluation-run/m4-01/execution-log.json");
         AssertValid(M4ReportManifestSchema, "reports/evaluation-report/m4-02/manifest.json");
         AssertValid(M4FigureMetadataSchema, "reports/evaluation-report/m4-02/figure-metadata.json");
+        AssertValid(M4ContextualAppendixSchema, "experiments/contextual-appendix.m4-03.json");
+        AssertValid(M4ContextualManifestSchema, "reports/contextual-appendix/m4-03/manifest.json");
         foreach (var line in File.ReadLines(
             Path.Combine(RepositoryRoot, "resources/voynich/evaluation-queries.v1.jsonl"),
             new UTF8Encoding(false, true)))

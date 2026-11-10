@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-contextual-manifest-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "appendix_id",
+    "run_id",
+    "status",
+    "secondary_evidence",
+    "human_annotation",
+    "automated_semantic_scoring",
+    "definitions_present",
+    "primary_artifacts_modified",
+    "holdout_present",
+    "source_artifacts",
+    "appendix_artifacts"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "appendix_id": { "const": "m4-03-automated-contextual-appendix-v1" },
+    "run_id": { "$ref": "#/$defs/hash" },
+    "status": { "const": "completed" },
+    "secondary_evidence": { "const": true },
+    "human_annotation": { "const": false },
+    "automated_semantic_scoring": { "const": false },
+    "definitions_present": { "const": true },
+    "primary_artifacts_modified": { "const": false },
+    "holdout_present": { "const": false },
+    "source_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "appendix_artifacts": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/artifact" }
+    }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "bytes": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -243,6 +243,17 @@ HYG constellation identifiers are descriptive external catalog context only;
 no manuscript semantic labels or proposed Voynich star identifications are
 ground truth.
 
+M4-03 executes this registration only after M4-02 is frozen. Exact ordinal,
+case-sensitive comparison against all 17 frozen profile artifacts produces no
+eligible catalog links, including none for Arabic. Every one of the 16
+Arabic-versus-panel-language pairs is therefore `not_estimable`; no balanced
+sample, null draw, p-value, or zero score is fabricated. Separately, the
+appendix joins the 242 unique M4-01 sample candidates to pinned CDSL and
+Wiktionary/Kaikki contexts by stable source identifiers. It retains every
+available source gloss and label but cannot connect those contexts to Voynich
+query scores because the frozen tidy outputs do not retain nearest-candidate
+identities. The contextual appendix is never consumed by M4-02 or M4-04.
+
 Predeclare catalog-name-to-object label permutations within each language and
 the three pronunciation-length bands, plus within-query phone shuffles.
 Catalog contexts are not inferred or used to select favorable subsets.

@@ -446,6 +446,24 @@ one minute with less than 512 MiB of memory on a development machine. It writes
 about 13 MiB, dominated by the roughly 11 MiB candidate-level match export;
 reruns normally complete by hash-verifying and reusing those artifacts.
 
+## Frozen M4 publications
+
+The M4-01 evaluation run and M4-02 quantitative report are frozen under
+`reports/evaluation-run/m4-01/` and `reports/evaluation-report/m4-02/`.
+The optional [M4-03 contextual appendix](reports/contextual-appendix/m4-03/report.md)
+joins the 242 sampled Sanskrit/Turkish candidates to pinned source contexts
+only after those outputs froze. It reports every source gloss and all negative
+astronomy-link results, performs no semantic scoring, uses no annotators, and
+does not feed definitions, proper names, or holdout data into matching,
+statistics, or replication.
+
+Rebuild it from `source/` after retaining the pinned dictionary and HYG
+snapshots:
+
+```powershell
+dotnet run --project Enochian.Benchmark -- context-m4 ..\experiments\contextual-appendix.m4-03.json
+```
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to
