@@ -118,13 +118,18 @@ public sealed record M4ReportManifest(
 
 public sealed class M4ReportGenerator(string repositoryRoot)
 {
-    private const string RunId = "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1";
-    private const string CalibrationArtifact =
+    private const string EvaluationRunId = "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1";
+    private const string EvaluationCalibrationArtifact =
         "reports/evaluation-run/m4-01/artifacts/calibration.jsonl.gz";
-    private const string StatisticsArtifact =
+    private const string EvaluationStatisticsArtifact =
         "reports/evaluation-run/m4-01/artifacts/statistics.jsonl.gz";
-    private const string AdmissionArtifact = "reports/evaluation-readiness/m3-07/admission.json";
+    private const string EvaluationAdmissionArtifact = "reports/evaluation-readiness/m3-07/admission.json";
     private readonly AutomatedFiles files = new(repositoryRoot);
+    private string runId = EvaluationRunId;
+    private string calibrationArtifact = EvaluationCalibrationArtifact;
+    private string statisticsArtifact = EvaluationStatisticsArtifact;
+    private string admissionArtifact = EvaluationAdmissionArtifact;
+    private bool holdoutReport;
 
     public int Run(string publicationManifestPath, string outputDirectory)
     {
@@ -132,13 +137,18 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             File.ReadAllText(publicationManifestPath, new UTF8Encoding(false, true)),
             AutomatedProtocol.JsonOptions)
             ?? throw new InvalidDataException("Empty M4-01 publication manifest.");
-        if (publication.RunId != RunId || publication.Status != "completed" ||
-            publication.DefinitionsPresent || publication.HoldoutPresent)
+        if (publication.Status != "completed" || publication.DefinitionsPresent ||
+            (!publication.HoldoutPresent && publication.RunId != EvaluationRunId))
         {
-            throw new InvalidDataException("M4-02 requires the completed, definition-free M4-01 run.");
+            throw new InvalidDataException("M4 reporting requires a completed, definition-free M4 run.");
         }
 
         VerifyPublication(publication);
+        holdoutReport = publication.HoldoutPresent;
+        runId = publication.RunId;
+        calibrationArtifact = FindPackaged(publication, "calibration.jsonl.gz");
+        statisticsArtifact = FindPackaged(publication, "statistics.jsonl.gz");
+        admissionArtifact = publication.AdmissionReport.Path;
         var protocolPath = files.Resolve(publication.Protocol.Path);
         if (PronunciationAudit.HashConfiguration(protocolPath) != publication.Protocol.Sha256)
         {
@@ -151,10 +161,10 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 ?? throw new InvalidDataException("Empty evaluation query."))
             .ToDictionary(query => query.QueryId, StringComparer.Ordinal);
         var calibration = ReadGzipLines<AutomatedCalibration>(
-            files.Resolve(CalibrationArtifact)).ToArray();
-        var tests = ReadGzipLines<AutomatedTest>(files.Resolve(StatisticsArtifact)).ToArray();
+            files.Resolve(calibrationArtifact)).ToArray();
+        var tests = ReadGzipLines<AutomatedTest>(files.Resolve(statisticsArtifact)).ToArray();
         var admission = JsonSerializer.Deserialize<AutomatedAdmissionReport>(
-            File.ReadAllText(files.Resolve(AdmissionArtifact), new UTF8Encoding(false, true)),
+            File.ReadAllText(files.Resolve(admissionArtifact), new UTF8Encoding(false, true)),
             AutomatedProtocol.JsonOptions)
             ?? throw new InvalidDataException("Empty Stage A admission report.");
         if (calibration.Any(row => !queries.ContainsKey(row.QueryId)) ||
@@ -183,45 +193,125 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         var figureMetadataPath = Path.Combine(outputPath, "figure-metadata.json");
         AutomatedFiles.Write(figureMetadataPath, figures);
         var reportPath = Path.Combine(outputPath, "report.md");
-        WriteReport(
-            reportPath,
-            outputPath,
-            publicationManifestPath,
-            primary,
-            tests,
-            distributions,
-            winners,
-            strata,
-            stability,
-            nulls,
-            quality,
-            exclusions,
-            figures);
+        if (holdoutReport)
+        {
+            WriteHoldoutReport(
+                reportPath,
+                outputPath,
+                publicationManifestPath,
+                primary,
+                tests,
+                distributions,
+                winners,
+                strata,
+                stability,
+                nulls,
+                quality,
+                exclusions,
+                figures);
+        }
+        else
+        {
+            WriteReport(
+                reportPath,
+                outputPath,
+                publicationManifestPath,
+                primary,
+                tests,
+                distributions,
+                winners,
+                strata,
+                stability,
+                nulls,
+                quality,
+                exclusions,
+                figures);
+        }
         var sourceArtifacts = new[]
         {
-            ExperimentHashing.Artifact(files.Resolve(CalibrationArtifact), repositoryRoot),
-            ExperimentHashing.Artifact(files.Resolve(StatisticsArtifact), repositoryRoot),
-            ExperimentHashing.Artifact(files.Resolve(AdmissionArtifact), repositoryRoot),
+            ExperimentHashing.Artifact(files.Resolve(calibrationArtifact), repositoryRoot),
+            ExperimentHashing.Artifact(files.Resolve(statisticsArtifact), repositoryRoot),
+            ExperimentHashing.Artifact(files.Resolve(admissionArtifact), repositoryRoot),
             ExperimentHashing.Artifact(files.Resolve(protocol.Queries!.Path), repositoryRoot),
-        };
+        }.Concat(holdoutReport
+            ? new[]
+            {
+                ExperimentHashing.Artifact(
+                    files.Resolve("reports/evaluation-run/m4-01/manifest.json"), repositoryRoot),
+                ExperimentHashing.Artifact(
+                    files.Resolve(EvaluationStatisticsArtifact), repositoryRoot),
+                ExperimentHashing.Artifact(
+                    files.Resolve("reports/evaluation-report/m4-02/manifest.json"), repositoryRoot),
+                ExperimentHashing.Artifact(
+                    files.Resolve("reports/contextual-appendix/m4-03/manifest.json"), repositoryRoot),
+                ExperimentHashing.Artifact(
+                    files.Resolve("reports/holdout-materialization/m4-04/materialization.json"),
+                    repositoryRoot),
+                ExperimentHashing.Artifact(
+                    files.Resolve("reports/holdout-materialization/m4-04/leakage-audit.json"),
+                    repositoryRoot),
+            }
+            : []).ToArray();
         var reportArtifacts = Directory.EnumerateFiles(outputPath, "*", SearchOption.AllDirectories)
             .Where(path => Path.GetFileName(path) != "manifest.json")
             .Order(StringComparer.Ordinal)
             .Select(path => ExperimentHashing.Artifact(path, repositoryRoot)).ToArray();
         AutomatedFiles.Write(Path.Combine(outputPath, "manifest.json"), new M4ReportManifest(
             "1.0.0",
-            "m4-02-comparative-quantitative-report-v1",
+            holdoutReport
+                ? "m4-04-final-holdout-report-v1"
+                : "m4-02-comparative-quantitative-report-v1",
             publication.RunId,
             "completed",
             ExperimentHashing.Artifact(publicationManifestPath, repositoryRoot),
             sourceArtifacts,
             reportArtifacts,
-            "not_met",
+            OverallDecision(primary, stability) ? "met" : "not_met",
             false,
             false,
-            false));
-        Console.WriteLine($"Rendered M4-02 report for run {publication.RunId}.");
+            holdoutReport));
+        Console.WriteLine(
+            $"Rendered {(holdoutReport ? "M4-04 final" : "M4-02 quantitative")} report for run {publication.RunId}.");
         return 0;
+    }
+
+    private static string FindPackaged(M4RunPublicationManifest publication, string fileName) =>
+        publication.PackagedArtifacts.Single(artifact =>
+            Path.GetFileName(artifact.Path) == fileName).Path;
+
+    private static bool PartitionDecision(
+        AutomatedTest primary,
+        M4StabilitySummary[] stability) =>
+        primary.Status == "estimated" &&
+        primary.Estimate < 0 &&
+        primary.Interval?.Upper < 0 &&
+        primary.AdjustedPValue <= 0.05 &&
+        stability.All(row => row.MedianDifference < 0);
+
+    private bool OverallDecision(
+        AutomatedTest primary,
+        M4StabilitySummary[] stability)
+    {
+        if (!holdoutReport || !PartitionDecision(primary, stability))
+        {
+            return !holdoutReport && PartitionDecision(primary, stability);
+        }
+
+        var evaluationPrimary = ReadGzipLines<AutomatedTest>(
+            files.Resolve(EvaluationStatisticsArtifact)).Single(test => test.Primary);
+        var evaluationQueries = File.ReadLines(
+                files.Resolve("resources/voynich/evaluation-queries.v1.jsonl"))
+            .Select(line => JsonSerializer.Deserialize<AutomatedQuery>(
+                line, AutomatedProtocol.JsonOptions)
+                ?? throw new InvalidDataException("Empty evaluation query."))
+            .ToDictionary(query => query.QueryId, StringComparer.Ordinal);
+        var evaluationStability = BuildStability(BuildPairs(
+            [.. ReadGzipLines<AutomatedCalibration>(
+                files.Resolve(EvaluationCalibrationArtifact))],
+            evaluationQueries));
+        return PartitionDecision(evaluationPrimary, evaluationStability) &&
+            System.Math.Sign(evaluationPrimary.Estimate ?? 0) ==
+            System.Math.Sign(primary.Estimate ?? 0);
     }
 
     private void VerifyPublication(M4RunPublicationManifest publication)
@@ -423,7 +513,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         return (quality, retrieval, exclusions);
     }
 
-    private static void WriteTables(
+    private void WriteTables(
         string path,
         AutomatedTest[] tests,
         M4LanguageDistribution[] distributions,
@@ -444,7 +534,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 test.Id, test.ContrastId, test.AnalysisMode, Bool(test.Primary), Bool(test.Required),
                 test.Status, Integer(test.QueryCount), Number(test.Estimate), Number(test.Interval?.Lower),
                 Number(test.Interval?.Upper), Number(test.PValue), Number(test.AdjustedPValue),
-                Integer(test.CorrectionFamilySize), test.Diagnostic ?? string.Empty, RunId, StatisticsArtifact,
+                Integer(test.CorrectionFamilySize), test.Diagnostic ?? string.Empty, runId, statisticsArtifact,
             }));
         WriteCsv(Path.Combine(path, "language-distributions.csv"),
             ["language", "record_count", "percentile_minimum", "percentile_q1", "percentile_median",
@@ -455,7 +545,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 row.Language, Integer(row.RecordCount), Number(row.PercentileMinimum), Number(row.PercentileQ1),
                 Number(row.PercentileMedian), Number(row.PercentileQ3), Number(row.PercentileMaximum),
                 Number(row.StandardizedQ1), Number(row.StandardizedMedian), Number(row.StandardizedQ3),
-                Number(row.RawDistanceMedian), RunId, CalibrationArtifact,
+                Number(row.RawDistanceMedian), runId, calibrationArtifact,
             }));
         WriteCsv(Path.Combine(path, "winner-proportions.csv"),
             ["level", "comparison_count", "sanskrit_wins", "turkish_wins", "ties",
@@ -464,7 +554,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             {
                 row.Level, Integer(row.ComparisonCount), Integer(row.SanskritWins), Integer(row.TurkishWins),
                 Integer(row.Ties), Number(row.SanskritProportion), Number(row.TurkishProportion),
-                Number(row.TieProportion), RunId, CalibrationArtifact,
+                Number(row.TieProportion), runId, calibrationArtifact,
             }));
         WriteCsv(Path.Combine(path, "strata.csv"),
             ["dimension", "stratum", "query_count", "comparison_count", "median_difference",
@@ -473,7 +563,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             {
                 row.Dimension, row.Stratum, Integer(row.QueryCount), Integer(row.ComparisonCount),
                 Number(row.MedianDifference), Integer(row.SanskritWins), Integer(row.TurkishWins),
-                Integer(row.Ties), RunId, CalibrationArtifact,
+                Integer(row.Ties), runId, calibrationArtifact,
             }));
         WriteCsv(Path.Combine(path, "stability.csv"),
             ["repetition", "sample_id", "query_count", "median_difference", "sanskrit_wins",
@@ -481,7 +571,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             stability.Select(row => new[]
             {
                 Integer(row.Repetition), row.SampleId, Integer(row.QueryCount), Number(row.MedianDifference),
-                Integer(row.SanskritWins), Integer(row.TurkishWins), Integer(row.Ties), RunId, CalibrationArtifact,
+                Integer(row.SanskritWins), Integer(row.TurkishWins), Integer(row.Ties), runId, calibrationArtifact,
             }));
         WriteCsv(Path.Combine(path, "null-summary.csv"),
             ["language", "record_count", "null_count_per_cell", "observed_distance_median",
@@ -492,7 +582,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 row.Language, Integer(row.RecordCount), Integer(row.NullCountPerCell),
                 Number(row.ObservedDistanceMedian), Number(row.NullMeanMedian),
                 Number(row.NullStandardDeviationMedian), Number(row.StandardizedScoreMedian),
-                Number(row.EmpiricalPercentileMedian), RunId, CalibrationArtifact,
+                Number(row.EmpiricalPercentileMedian), runId, calibrationArtifact,
             }));
         WriteCsv(Path.Combine(path, "quality-summary.csv"),
             ["language", "profile_id", "convention", "evidence_origin", "dependencies",
@@ -503,7 +593,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 row.Language, row.ProfileId, row.Convention, row.EvidenceOrigin, row.Dependencies,
                 Integer(row.CompatibleUnits), Integer(row.SupportedUnits), Integer(row.UniqueUnits),
                 Integer(row.Band0305), Integer(row.Band0609), Integer(row.Band1020),
-                row.PronunciationGate, row.RetrievalGate, row.Status, RunId, AdmissionArtifact,
+                row.PronunciationGate, row.RetrievalGate, row.Status, runId, admissionArtifact,
             }));
         WriteCsv(Path.Combine(path, "retrieval.csv"),
             ["language", "degradation", "length_band", "queries", "recall_at_1", "recall_at_5",
@@ -513,14 +603,14 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             {
                 row.Language, row.Degradation, row.LengthBand, Integer(row.Queries), Number(row.RecallAt1),
                 Number(row.RecallAt5), Number(row.RecallAt20), Number(row.MeanReciprocalRank),
-                Number(row.MeanNormalizedDistance), Bool(row.Passed), RunId, AdmissionArtifact,
+                Number(row.MeanNormalizedDistance), Bool(row.Passed), runId, admissionArtifact,
             }));
         WriteCsv(Path.Combine(path, "exclusions.csv"),
             ["language", "required", "status", "supported_units", "blockers", "run_id", "source_artifact"],
             exclusions.Select(row => new[]
             {
                 row.Language, Bool(row.Required), row.Status, Integer(row.SupportedUnits), row.Blockers,
-                RunId, AdmissionArtifact,
+                runId, admissionArtifact,
             }));
     }
 
@@ -531,8 +621,15 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         M4StabilitySummary[] stability)
     {
         var primaryPath = Path.Combine(path, "primary-effect.svg");
-        var primaryAlt = "Primary Sanskrit minus Turkish calibrated-percentile effect is 0.000; " +
-            "the 95 percent interval is also 0.000 to 0.000 and crosses the no-effect line.";
+        var intervalAlso = primary.Estimate == primary.Interval?.Lower &&
+            primary.Estimate == primary.Interval?.Upper ? "also " : string.Empty;
+        var intervalCrosses = primary.Interval?.Lower <= 0 && primary.Interval?.Upper >= 0
+            ? "crosses"
+            : "does not cross";
+        var primaryAlt = $"Primary Sanskrit minus Turkish calibrated-percentile effect is " +
+            $"{Format(primary.Estimate)}; the 95 percent interval is {intervalAlso}" +
+            $"{Format(primary.Interval?.Lower)} to {Format(primary.Interval?.Upper)} and " +
+            $"{intervalCrosses} the no-effect line.";
         WritePrimaryFigure(primaryPath, primary, primaryAlt);
         var distributionPath = Path.Combine(path, "language-distributions.svg");
         var distributionAlt = "Box-and-whisker summaries of standardized scores. " +
@@ -541,19 +638,22 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             "; more negative is farther above the biphone-null distance.";
         WriteDistributionFigure(distributionPath, distributions, distributionAlt);
         var stabilityPath = Path.Combine(path, "subsample-stability.svg");
-        var stabilityAlt = "All 20 lexicon subsamples have median Sanskrit minus Turkish calibrated-percentile " +
-            "difference 0.000, so every point lies on the no-effect line.";
+        var stabilityAlt = stability.All(row => row.MedianDifference == 0)
+            ? $"All {stability.Length} lexicon subsamples have median Sanskrit minus Turkish calibrated-percentile " +
+                "difference 0.000, so every point lies on the no-effect line."
+            : $"{stability.Count(row => row.MedianDifference < 0)} of {stability.Length} lexicon subsamples " +
+                "have a negative median Sanskrit minus Turkish calibrated-percentile difference.";
         WriteStabilityFigure(stabilityPath, stability, stabilityAlt);
         return
         [
             Metadata("primary-effect", primaryPath, "Primary calibrated effect", primaryAlt,
-                "Black diamond and horizontal interval against a dashed zero line.", [StatisticsArtifact]),
+                "Black diamond and horizontal interval against a dashed zero line.", [statisticsArtifact]),
             Metadata("language-distributions", distributionPath, "Language score distributions", distributionAlt,
                 "Outlined box plots with circle and square median markers; no color distinction.",
-                [CalibrationArtifact]),
+                [calibrationArtifact]),
             Metadata("subsample-stability", stabilityPath, "Lexicon-subsample stability", stabilityAlt,
                 "Numbered black circles connected by a solid line against a dashed zero line.",
-                [CalibrationArtifact]),
+                [calibrationArtifact]),
         ];
     }
 
@@ -570,7 +670,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             title,
             alt,
             encoding,
-            RunId,
+            runId,
             sources,
             ExperimentHashing.HashFile(path));
 
@@ -694,7 +794,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         {
             "# M4-02 comparative quantitative report",
             string.Empty,
-            $"Run ID: `{RunId}`. Frozen source bundle: [M4-01 manifest]({sourceManifestLink}).",
+            $"Run ID: `{runId}`. Frozen source bundle: [M4-01 manifest]({sourceManifestLink}).",
             "This report renders committed tidy outputs only. It did not rerun matching or statistics.",
             string.Empty,
             "## Primary confirmatory result",
@@ -711,8 +811,8 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 $"{Format(primary.Interval?.Upper)}] | {Format(primary.PValue)} | " +
                 $"{Format(primary.AdjustedPValue)} | {primary.QueryCount} | Not met |",
             string.Empty,
-            $"Source: [contrasts.csv](tables/contrasts.csv), run `{RunId}`, derived from " +
-                $"[{StatisticsArtifact}]({Link(outputPath, StatisticsArtifact)}).",
+            $"Source: [contrasts.csv](tables/contrasts.csv), run `{runId}`, derived from " +
+                $"[{statisticsArtifact}]({Link(outputPath, statisticsArtifact)}).",
             string.Empty,
             $"![{figures[0].AltText}](figures/primary-effect.svg)",
             string.Empty,
@@ -752,8 +852,8 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 $"all {queryWinners.ComparisonCount} query types tied.",
             string.Empty,
             $"Sources: [language-distributions.csv](tables/language-distributions.csv) and " +
-                $"[winner-proportions.csv](tables/winner-proportions.csv), run `{RunId}`, from " +
-                $"[{CalibrationArtifact}]({Link(outputPath, CalibrationArtifact)}).",
+                $"[winner-proportions.csv](tables/winner-proportions.csv), run `{runId}`, from " +
+                $"[{calibrationArtifact}]({Link(outputPath, calibrationArtifact)}).",
             string.Empty,
             $"![{figures[1].AltText}](figures/language-distributions.svg)",
             string.Empty,
@@ -768,7 +868,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         lines.AddRange(
         [
             string.Empty,
-            $"Source: [strata.csv](tables/strata.csv), run `{RunId}`, from calibrated tidy rows joined only " +
+            $"Source: [strata.csv](tables/strata.csv), run `{runId}`, from calibrated tidy rows joined only " +
                 "to frozen query length and locus metadata.",
             string.Empty,
             "## Lexicon-subsample stability",
@@ -776,8 +876,8 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             $"All {stability.Length} preregistered lexicon repetitions had median effect 0.000. " +
                 "The result is stable, but stably null rather than supportive.",
             string.Empty,
-            $"Source: [stability.csv](tables/stability.csv), run `{RunId}`, from " +
-                $"[{CalibrationArtifact}]({Link(outputPath, CalibrationArtifact)}).",
+            $"Source: [stability.csv](tables/stability.csv), run `{runId}`, from " +
+                $"[{calibrationArtifact}]({Link(outputPath, calibrationArtifact)}).",
             string.Empty,
             $"![{figures[2].AltText}](figures/subsample-stability.svg)",
             string.Empty,
@@ -798,8 +898,8 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 "cell at the upper empirical-percentile boundary. This ceiling produced the widespread ties; " +
                 "it was not adjusted after inspection.",
             string.Empty,
-            $"Source: [null-summary.csv](tables/null-summary.csv), run `{RunId}`, from " +
-                $"[{CalibrationArtifact}]({Link(outputPath, CalibrationArtifact)}).",
+            $"Source: [null-summary.csv](tables/null-summary.csv), run `{runId}`, from " +
+                $"[{calibrationArtifact}]({Link(outputPath, calibrationArtifact)}).",
             string.Empty,
             "## Stage A pronunciation and retrieval quality",
             string.Empty,
@@ -820,8 +920,8 @@ public sealed class M4ReportGenerator(string repositoryRoot)
                 "every required source-included retrieval cell.",
             string.Empty,
             $"Sources: [quality-summary.csv](tables/quality-summary.csv) and " +
-                $"[retrieval.csv](tables/retrieval.csv), run `{RunId}`, from " +
-                $"[{AdmissionArtifact}]({Link(outputPath, AdmissionArtifact)}).",
+                $"[retrieval.csv](tables/retrieval.csv), run `{runId}`, from " +
+                $"[{admissionArtifact}]({Link(outputPath, admissionArtifact)}).",
             string.Empty,
             "## Exclusions and missing comparisons",
             string.Empty,
@@ -834,7 +934,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         lines.AddRange(
         [
             string.Empty,
-            $"Source: [exclusions.csv](tables/exclusions.csv), run `{RunId}`.",
+            $"Source: [exclusions.csv](tables/exclusions.csv), run `{runId}`.",
             string.Empty,
             "Only Sanskrit and Turkish were admitted. The three optional exploratory contrasts that require " +
                 "Arabic, Latin/Greek, or Persian were `not_estimable`; they are reported below rather than omitted.",
@@ -849,7 +949,7 @@ public sealed class M4ReportGenerator(string repositoryRoot)
         lines.AddRange(
         [
             string.Empty,
-            $"Source: [contrasts.csv](tables/contrasts.csv), run `{RunId}`. These contrasts are separate " +
+            $"Source: [contrasts.csv](tables/contrasts.csv), run `{runId}`. These contrasts are separate " +
                 "from the primary confirmatory claim and supply no effect estimate.",
             string.Empty,
             "## Multiplicity, precision, and provenance",
@@ -859,13 +959,211 @@ public sealed class M4ReportGenerator(string repositoryRoot)
             "- Replication unit: query type. Languages are not treated as independent replicates.",
             "- Holdout loci `f3r`, `f3v`, `f4r`, and `f4v` remain unopened.",
             "- Definitions and semantic judgments are absent.",
-            $"- Figure metadata: [figure-metadata.json](figure-metadata.json), run `{RunId}`.",
+            $"- Figure metadata: [figure-metadata.json](figure-metadata.json), run `{runId}`.",
             string.Empty,
             "Rebuild from the frozen bundle without rerunning matching or statistics:",
             string.Empty,
             "```powershell",
             "dotnet run --project Enochian.Benchmark -- report-m4 ..\\reports\\evaluation-run\\m4-01\\manifest.json",
             "```",
+        ]);
+        WriteText(path, string.Join("\n", lines) + "\n");
+    }
+
+    private void WriteHoldoutReport(
+        string path,
+        string outputPath,
+        string publicationManifestPath,
+        AutomatedTest primary,
+        AutomatedTest[] tests,
+        M4LanguageDistribution[] distributions,
+        M4WinnerSummary[] winners,
+        M4StratumSummary[] strata,
+        M4StabilitySummary[] stability,
+        M4NullSummary[] nulls,
+        M4QualitySummary[] quality,
+        M4ExclusionSummary[] exclusions,
+        M4FigureMetadata[] figures)
+    {
+        var evaluationPrimary = ReadGzipLines<AutomatedTest>(
+            files.Resolve(EvaluationStatisticsArtifact)).Single(test => test.Primary);
+        var evaluationQueries = File.ReadLines(
+                files.Resolve("resources/voynich/evaluation-queries.v1.jsonl"))
+            .Select(line => JsonSerializer.Deserialize<AutomatedQuery>(
+                line, AutomatedProtocol.JsonOptions)
+                ?? throw new InvalidDataException("Empty evaluation query."))
+            .ToDictionary(query => query.QueryId, StringComparer.Ordinal);
+        var evaluationStability = BuildStability(BuildPairs(
+            [.. ReadGzipLines<AutomatedCalibration>(
+                files.Resolve(EvaluationCalibrationArtifact))],
+            evaluationQueries));
+        var evaluationMet = PartitionDecision(evaluationPrimary, evaluationStability);
+        var holdoutMet = PartitionDecision(primary, stability);
+        var replicationMet = evaluationMet && holdoutMet &&
+            System.Math.Sign(evaluationPrimary.Estimate ?? 0) == System.Math.Sign(primary.Estimate ?? 0);
+        var token = tests.Single(test =>
+            test.ContrastId == primary.ContrastId && test.AnalysisMode == "token-weighted");
+        var sampleWinners = winners.Single(row => row.Level == "sample-query");
+        var queryWinners = winners.Single(row => row.Level == "query-median");
+        var lines = new List<string>
+        {
+            "# M4-04 holdout replication and final report",
+            string.Empty,
+            $"Holdout run ID: `{runId}`. Frozen source bundle: " +
+                $"[M4-04 manifest]({Link(outputPath, publicationManifestPath)}).",
+            "The preregistered holdout was opened once after the automated leakage audit passed. " +
+                "The unchanged M4-01 runner, mapping, contrast family, seeds, thresholds, and statistics were used.",
+            string.Empty,
+            "## Replication decision",
+            string.Empty,
+            "| Partition | Effect | 95% CI | Holm p | Partition rule |",
+            "| --- | ---: | --- | ---: | --- |",
+            $"| Evaluation | {Format(evaluationPrimary.Estimate)} | " +
+                $"[{Format(evaluationPrimary.Interval?.Lower)}, {Format(evaluationPrimary.Interval?.Upper)}] | " +
+                $"{Format(evaluationPrimary.AdjustedPValue)} | {(evaluationMet ? "Met" : "Not met")} |",
+            $"| Holdout | {Format(primary.Estimate)} | " +
+                $"[{Format(primary.Interval?.Lower)}, {Format(primary.Interval?.Upper)}] | " +
+                $"{Format(primary.AdjustedPValue)} | {(holdoutMet ? "Met" : "Not met")} |",
+            string.Empty,
+            $"**The frozen replication rule was {(replicationMet ? "met" : "not met")}.** " +
+                "Support required a negative effect, an interval excluding zero, Holm-adjusted p <= 0.05, " +
+                "negative effects in every lexicon subsample, and the same result in both partitions. " +
+                "A negative replication is reported without changing the mapping or analysis.",
+            string.Empty,
+            $"Sources: [holdout contrasts](tables/contrasts.csv), " +
+                $"[{statisticsArtifact}]({Link(outputPath, statisticsArtifact)}), and " +
+                $"[{EvaluationStatisticsArtifact}]({Link(outputPath, EvaluationStatisticsArtifact)}).",
+            string.Empty,
+            $"![{figures[0].AltText}](figures/primary-effect.svg)",
+            string.Empty,
+            "## Holdout primary and planned sensitivity",
+            string.Empty,
+            "| Analysis | Effect | 95% CI | p | Holm p | Queries | Status |",
+            "| --- | ---: | --- | ---: | ---: | ---: | --- |",
+            $"| Type-primary | {Format(primary.Estimate)} | [{Format(primary.Interval?.Lower)}, " +
+                $"{Format(primary.Interval?.Upper)}] | {Format(primary.PValue)} | " +
+                $"{Format(primary.AdjustedPValue)} | {primary.QueryCount} | {primary.Status} |",
+            $"| Token-frequency weighted | {Format(token.Estimate)} | [{Format(token.Interval?.Lower)}, " +
+                $"{Format(token.Interval?.Upper)}] | {Format(token.PValue)} | " +
+                $"{Format(token.AdjustedPValue)} | {token.QueryCount} | {token.Status} |",
+            string.Empty,
+            "## Holdout distributions and winners",
+            string.Empty,
+            "| Language | N | Percentile min / median / max | Standardized median | Raw distance median |",
+            "| --- | ---: | --- | ---: | ---: |",
+        };
+        lines.AddRange(distributions.Select(row =>
+            $"| {LanguageName(row.Language)} | {row.RecordCount} | {Format(row.PercentileMinimum)} / " +
+            $"{Format(row.PercentileMedian)} / {Format(row.PercentileMaximum)} | " +
+            $"{Format(row.StandardizedMedian)} | {Format(row.RawDistanceMedian)} |"));
+        lines.AddRange(
+        [
+            string.Empty,
+            $"Sanskrit won {sampleWinners.SanskritWins} of {sampleWinners.ComparisonCount} sample-query " +
+                $"comparisons; Turkish won {sampleWinners.TurkishWins}; {sampleWinners.Ties} tied. " +
+                $"After collapsing repetitions, {queryWinners.Ties} of {queryWinners.ComparisonCount} query types tied.",
+            string.Empty,
+            $"![{figures[1].AltText}](figures/language-distributions.svg)",
+            string.Empty,
+            "## Holdout length and locus strata",
+            string.Empty,
+            "| Dimension | Stratum | Queries | Comparisons | Median effect | Sanskrit wins | Turkish wins | Ties |",
+            "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]);
+        lines.AddRange(strata.Select(row =>
+            $"| {row.Dimension} | {row.Stratum} | {row.QueryCount} | {row.ComparisonCount} | " +
+            $"{Format(row.MedianDifference)} | {row.SanskritWins} | {row.TurkishWins} | {row.Ties} |"));
+        lines.AddRange(
+        [
+            string.Empty,
+            "## Stability and null calibration",
+            string.Empty,
+            $"{stability.Count(row => row.MedianDifference < 0)} of {stability.Length} frozen repetitions " +
+                "had an effect in the expected negative direction.",
+            string.Empty,
+            $"![{figures[2].AltText}](figures/subsample-stability.svg)",
+            string.Empty,
+            "| Language | Cells | Null draws/cell | Observed median | Null mean median | Percentile median |",
+            "| --- | ---: | ---: | ---: | ---: | ---: |",
+        ]);
+        lines.AddRange(nulls.Select(row =>
+            $"| {LanguageName(row.Language)} | {row.RecordCount} | {row.NullCountPerCell} | " +
+            $"{Format(row.ObservedDistanceMedian)} | {Format(row.NullMeanMedian)} | " +
+            $"{Format(row.EmpiricalPercentileMedian)} |"));
+        lines.AddRange(
+        [
+            string.Empty,
+            "## Stage A quality and exclusions",
+            string.Empty,
+            "| Language | Compatible / supported / unique | Pronunciation | Retrieval |",
+            "| --- | ---: | --- | --- |",
+        ]);
+        lines.AddRange(quality.Select(row =>
+            $"| {LanguageName(row.Language)} | {row.CompatibleUnits} / {row.SupportedUnits} / " +
+            $"{row.UniqueUnits} | {row.PronunciationGate} | {row.RetrievalGate} |"));
+        lines.AddRange(
+        [
+            string.Empty,
+            $"{exclusions.Count(row => row.Status != "admitted")} profiles remained excluded; " +
+                "the holdout did not change admission.",
+            string.Empty,
+            "## Final research bundle",
+            string.Empty,
+            "| Component | Frozen artifact |",
+            "| --- | --- |",
+            $"| Protocol and decision rule | [protocol-v2]({Link(outputPath, "experiments/protocol-v2.md")}) |",
+            $"| Holdout protocol | [confirmatory.holdout.m4-04.json]({Link(outputPath, "experiments/confirmatory.holdout.m4-04.json")}) |",
+            $"| Mapping approval | [decision package]({Link(outputPath, "reports/mapping-preregistration/v1/decision-package.json")}) |",
+            $"| Pre-open leakage audit | [leakage audit]({Link(outputPath, "reports/holdout-materialization/m4-04/leakage-audit.json")}) |",
+            $"| Holdout query provenance | [materialization]({Link(outputPath, "reports/holdout-materialization/m4-04/materialization.md")}) |",
+            $"| Evaluation run and report | [M4-01]({Link(outputPath, "reports/evaluation-run/m4-01/README.md")}); " +
+                $"[M4-02]({Link(outputPath, "reports/evaluation-report/m4-02/report.md")}) |",
+            $"| Holdout run | [M4-04 bundle]({Link(outputPath, "reports/holdout-run/m4-04/README.md")}) |",
+            $"| Optional context | [M4-03]({Link(outputPath, "reports/contextual-appendix/m4-03/report.md")}) |",
+            $"| Licenses and acquisition | [lexicons]({Link(outputPath, "resources/lexicons/README.md")}); " +
+                $"[Voynich transcription]({Link(outputPath, "resources/voynich/links.md")}) |",
+            string.Empty,
+            "Every displayed holdout number is present in the CSV tables and traces to the holdout run ID. " +
+                "Definitions and glosses were absent from both primary partitions. The optional contextual appendix " +
+                "was never consumed by this analysis.",
+            string.Empty,
+            "## Reproduction",
+            string.Empty,
+            "From `source/` with the pinned SDK and retained licensed snapshots:",
+            string.Empty,
+            "```powershell",
+            "dotnet run --project Enochian.Provenance -- voynich-holdout ..\\experiments\\holdout-materialization.m4-04.json",
+            "dotnet run --project Enochian.Benchmark -- preflight ..\\experiments\\confirmatory.holdout.m4-04.json",
+            "dotnet run --project Enochian.Benchmark -- experiment ..\\experiments\\confirmatory.holdout.m4-04.json",
+            "dotnet run --project Enochian.Benchmark -- publish-holdout-m4 ..\\experiments\\confirmatory.holdout.m4-04.json c8b258128eb161ff5ef0d82551bc15460f69af65",
+            "dotnet run --project Enochian.Benchmark -- report-m4 ..\\reports\\holdout-run\\m4-04\\manifest.json reports/final-report/m4-04",
+            "```",
+            string.Empty,
+            "The materializer refuses a second write after publication; reproduce in a fresh checkout/output path. " +
+                "The unrestricted experiment does not require BHSA. BHSA is optional only for rebuilding the " +
+                "separate Tiberian Hebrew source; the lexicon guide documents its authorized acquisition.",
+            string.Empty,
+            "## Limitations",
+            string.Empty,
+            "- The fixed Vogt-derived mapping remains speculative.",
+            "- Calibrated-percentile ceiling effects can create extensive ties.",
+            "- The holdout has no scorable 10-20-symbol query type; no long-band result was imputed.",
+            "- Language profiles differ in source coverage; languages are not independent replicates.",
+            "- The holdout result is final under this preregistration; no mapping or threshold was refit.",
+            "- Semantic context and astronomy remain secondary and cannot rescue failed phonological replication.",
+            string.Empty,
+            "## Artifact inventory",
+            string.Empty,
+            "- [contrasts.csv](tables/contrasts.csv)",
+            "- [language-distributions.csv](tables/language-distributions.csv)",
+            "- [winner-proportions.csv](tables/winner-proportions.csv)",
+            "- [strata.csv](tables/strata.csv)",
+            "- [stability.csv](tables/stability.csv)",
+            "- [null-summary.csv](tables/null-summary.csv)",
+            "- [quality-summary.csv](tables/quality-summary.csv)",
+            "- [retrieval.csv](tables/retrieval.csv)",
+            "- [exclusions.csv](tables/exclusions.csv)",
+            "- [figure-metadata.json](figure-metadata.json)",
         ]);
         WriteText(path, string.Join("\n", lines) + "\n");
     }

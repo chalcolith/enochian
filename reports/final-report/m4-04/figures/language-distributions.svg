@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300"
+     role="img" aria-labelledby="distribution-title distribution-desc">
+  <title id="distribution-title">Language score distributions</title>
+  <desc id="distribution-desc">Box-and-whisker summaries of standardized scores. Sanskrit median is -6.679 and Turkish median is -7.301; more negative is farther above the biphone-null distance.</desc>
+  <rect width="760" height="300" fill="white" />  <line x1="100" y1="220" x2="680" y2="220" stroke="black" />
+  <rect x="370" y="70" width="82" height="40" fill="white" stroke="black" stroke-width="2" />
+  <circle cx="409" cy="90" r="8" fill="black" />
+  <text x="25" y="96" font-size="18">SAN</text>
+  <rect x="335" y="150" width="76" height="40" fill="white" stroke="black" stroke-width="2" />
+  <rect x="366" y="163" width="14" height="14" fill="black" />
+  <text x="25" y="176" font-size="18">TUR</text>
+  <text x="90" y="245" font-size="15">-12</text>
+  <text x="655" y="245" font-size="15">-2</text>
+  <text x="210" y="275" font-size="16">Standardized score (more negative = farther above null)</text>
+</svg>

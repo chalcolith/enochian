@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "publication_id": "m4-04-holdout-partition-v1",
+  "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+  "status": "completed",
+  "runner_commit": "c8b258128eb161ff5ef0d82551bc15460f69af65",
+  "runner_version": "automated-experiment-v2",
+  "protocol": {
+    "path": "experiments/confirmatory.holdout.m4-04.json",
+    "sha256": "ad23460b2e4346be7b3db136f146e5034ebc19a164da36c1ac05cd8d207b7096"
+  },
+  "evaluation_loci": [
+    "f1r",
+    "f1v",
+    "f2r",
+    "f2v"
+  ],
+  "holdout_loci": [
+    "f3r",
+    "f3v",
+    "f4r",
+    "f4v"
+  ],
+  "admission_report": {
+    "path": "reports/holdout-run/m4-04/admission.json",
+    "sha256": "87fac004a2571080d9fef39be3630995131d4174a5648b2a9bd14bced79c1bcc",
+    "bytes": 39577
+  },
+  "preflight_report": {
+    "path": "reports/holdout-run/m4-04/preflight.json",
+    "sha256": "8eeb6163cd78ea45c59137f04bb60eb7c08a2763fbd683706e194b20f6493734",
+    "bytes": 456216
+  },
+  "execution_log": {
+    "path": "reports/holdout-run/m4-04/execution-log.json",
+    "sha256": "3fab4d226bc706189c2bf719b2416ad1baf3e64fddf2fd61c57492e20a262029",
+    "bytes": 666
+  },
+  "verification_report": {
+    "path": "reports/holdout-run/m4-04/verification.json",
+    "sha256": "1c66e34b09ee54e634172bd8b917574e6a05b679af97186b7d39b544e8ef4e2d",
+    "bytes": 2289
+  },
+  "raw_artifacts": [
+    {
+      "path": ".enoch/experiments/holdout-m4-04/sampling.jsonl",
+      "sha256": "54d4b2671b24b1c94266ab882a7d177a09d8231818af0f8e590d3a8175cae3fb",
+      "bytes": 4746310
+    },
+    {
+      "path": ".enoch/experiments/holdout-m4-04/matching.jsonl",
+      "sha256": "620cb25d7abe985df003ce73a289837b10f173346790ff13212cb0494276fa67",
+      "bytes": 1058324514
+    },
+    {
+      "path": ".enoch/experiments/holdout-m4-04/calibration.jsonl",
+      "sha256": "c2555b3f6dd40655e31e9d3dbffcfd0ae171b355b85d100e9ca7558479a6ac43",
+      "bytes": 3904035
+    },
+    {
+      "path": ".enoch/experiments/holdout-m4-04/statistics.jsonl",
+      "sha256": "c4e9f534eb0f38bfb38e52b5918bcae98a93b68656f3214dcb1b1371913c3abd",
+      "bytes": 2969
+    },
+    {
+      "path": ".enoch/experiments/holdout-m4-04/report-inputs.json",
+      "sha256": "078d639f585473ec5d12bd15f7d9a3a2e2d8d7ab5bc482281548b61fb8a46493",
+      "bytes": 2461
+    },
+    {
+      "path": ".enoch/experiments/holdout-m4-04/run-manifest.json",
+      "sha256": "5085e4dad5c1359ead4d0cd030bce087dbb87ae26035f3773497b2b8df7f8f4a",
+      "bytes": 458095
+    }
+  ],
+  "packaged_artifacts": [
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/sampling.jsonl.gz",
+      "sha256": "a1b6bfc4f93af5082584f51333913449b4b9da1826507c7a2bb5af93e82574f4",
+      "bytes": 543820
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/matching.jsonl.gz",
+      "sha256": "3fb4552d92bceac964373fb3b75e154a28ca687569bd096b066bb4285434db2e",
+      "bytes": 50949807
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz",
+      "sha256": "196e591e22343a654b45fdb654086bd2d5c8aec4d7128cf0be264337374ea511",
+      "bytes": 411005
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/statistics.jsonl.gz",
+      "sha256": "84978ccc0f9e194c88ba5bab788ecad8ec56bcdc09515e27eae3c9dde707c3d6",
+      "bytes": 413
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/report-inputs.json.gz",
+      "sha256": "c9fcf5cce85313930be7ce1af712c5a6129f5e3b74b0b3230a6a10c85feea46a",
+      "bytes": 1182
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/run-manifest.json.gz",
+      "sha256": "960f5bbe008debadeb896fb7969038354adfbd8abdee38cb09d86dbc156fc242",
+      "bytes": 89358
+    }
+  ],
+  "definitions_present": false,
+  "holdout_present": true,
+  "failure_policy": "Defective runs are labelled invalid and retained unchanged. Fixes require a versioned runner or input, a new output directory, and a complete restart."
+}

@@ -27,6 +27,8 @@ public class SchemaTests
         LoadSchema("experiments/schemas/voynich-evaluation-query.schema.json");
     private static readonly JsonSchema AutomatedExperimentAmendmentSchema =
         LoadSchema("experiments/schemas/automated-experiment-amendment.v2.schema.json");
+    private static readonly JsonSchema AutomatedExperimentV2Schema =
+        LoadSchema("experiments/schemas/automated-experiment.v2.schema.json");
     private static readonly JsonSchema M4RunPublicationSchema =
         LoadSchema("experiments/schemas/m4-run-publication.schema.json");
     private static readonly JsonSchema M4RunVerificationSchema =
@@ -41,6 +43,16 @@ public class SchemaTests
         LoadSchema("experiments/schemas/m4-contextual-appendix.schema.json");
     private static readonly JsonSchema M4ContextualManifestSchema =
         LoadSchema("experiments/schemas/m4-contextual-manifest.schema.json");
+    private static readonly JsonSchema M4HoldoutMaterializationSchema =
+        LoadSchema("experiments/schemas/m4-holdout-materialization.schema.json");
+    private static readonly JsonSchema VoynichHoldoutQuerySchema =
+        LoadSchema("experiments/schemas/voynich-holdout-query.schema.json");
+    private static readonly JsonSchema M4HoldoutRunPublicationSchema =
+        LoadSchema("experiments/schemas/m4-holdout-run-publication.schema.json");
+    private static readonly JsonSchema M4HoldoutRunVerificationSchema =
+        LoadSchema("experiments/schemas/m4-holdout-run-verification.schema.json");
+    private static readonly JsonSchema M4FinalReportManifestSchema =
+        LoadSchema("experiments/schemas/m4-final-report-manifest.schema.json");
     private static readonly JsonSchema SourceManifestSchema =
         LoadSchema("resources/lexicons/schemas/source-manifest.schema.json");
     private static readonly JsonSchema NormalizedEntrySchema =
@@ -84,12 +96,26 @@ public class SchemaTests
         AssertValid(M4FigureMetadataSchema, "reports/evaluation-report/m4-02/figure-metadata.json");
         AssertValid(M4ContextualAppendixSchema, "experiments/contextual-appendix.m4-03.json");
         AssertValid(M4ContextualManifestSchema, "reports/contextual-appendix/m4-03/manifest.json");
+        AssertValid(M4HoldoutMaterializationSchema, "experiments/holdout-materialization.m4-04.json");
+        AssertValid(AutomatedExperimentV2Schema, "experiments/confirmatory.holdout.m4-04.json");
+        AssertValid(M4HoldoutRunPublicationSchema, "reports/holdout-run/m4-04/manifest.json");
+        AssertValid(M4HoldoutRunVerificationSchema, "reports/holdout-run/m4-04/verification.json");
+        AssertValid(M4ExecutionLogSchema, "reports/holdout-run/m4-04/execution-log.json");
+        AssertValid(M4FinalReportManifestSchema, "reports/final-report/m4-04/manifest.json");
+        AssertValid(M4FigureMetadataSchema, "reports/final-report/m4-04/figure-metadata.json");
         foreach (var line in File.ReadLines(
             Path.Combine(RepositoryRoot, "resources/voynich/evaluation-queries.v1.jsonl"),
             new UTF8Encoding(false, true)))
         {
             using var query = JsonDocument.Parse(line);
             Assert.IsTrue(VoynichEvaluationQuerySchema.Evaluate(query.RootElement).IsValid);
+        }
+        foreach (var line in File.ReadLines(
+            Path.Combine(RepositoryRoot, "resources/voynich/holdout-queries.m4-04.jsonl"),
+            new UTF8Encoding(false, true)))
+        {
+            using var query = JsonDocument.Parse(line);
+            Assert.IsTrue(VoynichHoldoutQuerySchema.Evaluate(query.RootElement).IsValid);
         }
 
         AssertValid(SourceManifestSchema, "resources/lexicons/examples/source-manifest.example.json");

@@ -17,6 +17,7 @@ try
         "pronunciation-references" => AuditPronunciationReferences(repositoryRoot, args),
         "voynich-inventory" => BuildVoynichInventory(repositoryRoot, args),
         "voynich-queries" => BuildVoynichQueries(repositoryRoot, args),
+        "voynich-holdout" => BuildVoynichHoldout(repositoryRoot, args),
         _ => ShowUsage(),
     };
 }
@@ -142,7 +143,24 @@ static int ShowUsage()
     Console.Error.WriteLine("  Enochian.Provenance pronunciation-references [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance voynich-inventory [plan-json]");
     Console.Error.WriteLine("  Enochian.Provenance voynich-queries [plan-json]");
+    Console.Error.WriteLine("  Enochian.Provenance voynich-holdout [plan-json]");
     return 1;
+}
+
+static int BuildVoynichHoldout(string repositoryRoot, string[] arguments)
+{
+    if (arguments.Length > 2)
+    {
+        return ShowUsage();
+    }
+
+    var plan = arguments.Length == 2 ? Path.GetFullPath(arguments[1])
+        : Path.Combine(repositoryRoot, "experiments", "holdout-materialization.m4-04.json");
+    var report = new VoynichHoldoutQueries(repositoryRoot).Run(plan);
+    Console.WriteLine(
+        $"Materialized {report.UniqueTypes} holdout query types from {report.AcceptedTokens} token occurrences " +
+        $"after a {report.LeakageAudit.Status} leakage audit.");
+    return report.Status == "completed" ? 0 : 1;
 }
 
 static int BuildVoynichQueries(string repositoryRoot, string[] arguments)

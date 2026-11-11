@@ -254,6 +254,36 @@ available source gloss and label but cannot connect those contexts to Voynich
 query scores because the frozen tidy outputs do not retain nearest-candidate
 identities. The contextual appendix is never consumed by M4-02 or M4-04.
 
+## One-time holdout execution
+
+M4-04 first scans every checked-in experiment JSON document and published run
+manifest for prior `holdout_opened`, `holdout_present`, or holdout-query
+references. The resulting pre-open file inventory and hashes are frozen in
+`reports/holdout-materialization/m4-04/leakage-audit.json`. Only after that
+audit passes may the materializer read `f3r`, `f3v`, `f4r`, and `f4v`.
+
+Holdout query materialization reuses the M4-01 transcription snapshot,
+normalization, exact-type aggregation, representative-locus rule, and approved
+18-symbol mapping. A complete token containing a symbol absent from that frozen
+mapping is excluded and reported; the mapping is never expanded from holdout
+data. The derived full holdout protocol swaps only the active and excluded
+partitions, query pin, output paths, and run identity. Panel membership,
+pronunciation evidence, retrieval policy, sampling and null seeds, repetitions,
+contrasts, multiplicity, confidence level, alpha, and mapping remain identical.
+
+The statistical run uses committed runner `c8b2581` (`automated-experiment-v2`)
+and is immutable after publication. Evaluation loci are forbidden from all
+holdout tidy outputs. The final report applies the original decision rule to
+both partitions and reports failure as final rather than refitting the mapping,
+thresholds, or null model.
+
+The measured holdout materialization contains 343 accepted occurrences, two
+reported exclusions, and 227 unique types. No scorable type falls in the
+10-20-symbol band, so the final report exposes that missing query stratum and
+does not synthesize a long-band result. The primary holdout effect is 0.000
+with interval [0.000, 0.000] and Holm-adjusted p = 1.000; neither partition
+meets the frozen rule.
+
 Predeclare catalog-name-to-object label permutations within each language and
 the three pronunciation-length bands, plus within-query phone shuffles.
 Catalog contexts are not inferred or used to select favorable subsets.
@@ -278,6 +308,12 @@ The M4-02 [report manifest schema](schemas/m4-report-manifest.schema.json) and
 publication index and accessible static figures. The report manifest hashes
 every rendered artifact and records that matching/statistics were not rerun and
 that definitions and holdout data are absent.
+
+M4-04 adds separate schemas for the pre-open materialization, definitions-free
+holdout queries, holdout run publication/verification, and final report
+manifest. The final manifest records `holdout_present: true`, hashes both
+partition evidence, and records that report generation did not rerun matching
+or statistics.
 
 All v2 paths are repository-relative and must remain inside the repository.
 Configuration pins hash canonical UTF-8/LF text; generated JSONL/source data and

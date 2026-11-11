@@ -227,13 +227,13 @@
     },
     {
       "path": "resources/lexicons/manifests/cdsl-shs.manifest.json",
-      "sha256": "2b3ed12136f0b64cb1faf08274d4d40a162a110eacea0d4cebc278809bc9d2c5",
-      "bytes": 1237
+      "sha256": "27c99080571fceef171e2e64d2171cc649bd3b7829be5a752c48c17c3369d502",
+      "bytes": 1264
     },
     {
       "path": "resources/lexicons/manifests/kaikki-raw.manifest.json",
-      "sha256": "32683a26fd3731b7b40eb4f1cbad2f8fadda8b5d5253d1befa31182188d35189",
-      "bytes": 1806
+      "sha256": "1c95675c72c4dcd88aec277637e7d537b95e49ce7f3af0aba0823e3d4b0d32f0",
+      "bytes": 1833
     },
     {
       "path": "resources/lexicons/pronunciation-panel.v1.json",

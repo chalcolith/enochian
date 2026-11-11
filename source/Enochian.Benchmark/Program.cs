@@ -25,6 +25,13 @@ try
             Path.GetFullPath(args[1]), args[2]);
     }
 
+    if (args.Length is 3 or 4 && args[0] == "publish-holdout-m4")
+    {
+        var publicationRoot = args.Length == 4 ? Path.GetFullPath(args[3]) : FindRepositoryRoot();
+        return new Enochian.Benchmark.M4RunPublication(publicationRoot).RunHoldout(
+            Path.GetFullPath(args[1]), args[2]);
+    }
+
     if (args.Length is 1 or 2 && args[0] == "sanskrit-profile")
     {
         var sanskritRoot = args.Length == 2 ? Path.GetFullPath(args[1]) : FindRepositoryRoot();
@@ -128,6 +135,8 @@ static int ShowUsage()
     Console.Error.WriteLine("Usage: Enochian.Benchmark context-m4 <config-json> [output-directory]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark report-m4 <m4-run-manifest> [output-directory]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark publish-m4 <protocol-json> <runner-commit> [repository-root]");
+    Console.Error.WriteLine(
+        "Usage: Enochian.Benchmark publish-holdout-m4 <protocol-json> <runner-commit> [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark sanskrit-profile [repository-root]");
     Console.Error.WriteLine("Usage: Enochian.Benchmark <protocol-json> [repository-root]");
     Console.Error.WriteLine("       Enochian.Benchmark sample <sampling-protocol-json> [repository-root]");

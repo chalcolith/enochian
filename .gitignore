@@ -52,6 +52,8 @@ project.lock.json
 artifacts/
 !reports/evaluation-run/m4-01/artifacts/
 !reports/evaluation-run/m4-01/artifacts/*.gz
+!reports/holdout-run/m4-04/artifacts/
+!reports/holdout-run/m4-04/artifacts/*.gz
 
 *_i.c
 *_p.c

@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+  "status": "passed",
+  "output_hashes_verified": true,
+  "schemas_verified": true,
+  "definitions_absent": true,
+  "holdout_absent": false,
+  "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+  "row_counts": {
+    "calibration": 9080,
+    "matching": 3641080,
+    "sampling": 4000,
+    "statistics": 8
+  },
+  "score_checks": [
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "03-05",
+      "query_id": "holdout-eva-type-0001",
+      "language": "san",
+      "recorded_distance": 4.768741192880341,
+      "reproduced_distance": 4.768741192880341,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "03-05",
+      "query_id": "holdout-eva-type-0001",
+      "language": "tur",
+      "recorded_distance": 4.725220303901372,
+      "reproduced_distance": 4.725220303901372,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "out-of-range",
+      "query_id": "holdout-eva-type-0002",
+      "language": "san",
+      "recorded_distance": 5.090883401805499,
+      "reproduced_distance": 5.090883401805499,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "out-of-range",
+      "query_id": "holdout-eva-type-0002",
+      "language": "tur",
+      "recorded_distance": 5.152381277545358,
+      "reproduced_distance": 5.152381277545358,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "06-09",
+      "query_id": "holdout-eva-type-0005",
+      "language": "san",
+      "recorded_distance": 4.89436233582196,
+      "reproduced_distance": 4.89436233582196,
+      "absolute_difference": 0
+    },
+    {
+      "sample_id": "dictionary-first-holdout-m4-04-v1.rep-0001",
+      "length_band": "06-09",
+      "query_id": "holdout-eva-type-0005",
+      "language": "tur",
+      "recorded_distance": 4.763360708454108,
+      "reproduced_distance": 4.763360708454108,
+      "absolute_difference": 0
+    }
+  ],
+  "blockers": []
+}

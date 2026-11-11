@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-holdout-run-publication-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "publication_id", "run_id", "status", "runner_commit",
+    "runner_version", "protocol", "evaluation_loci", "holdout_loci",
+    "admission_report", "preflight_report", "execution_log", "verification_report",
+    "raw_artifacts", "packaged_artifacts", "definitions_present", "holdout_present",
+    "failure_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "publication_id": { "const": "m4-04-holdout-partition-v1" },
+    "run_id": { "$ref": "#/$defs/hash" },
+    "status": { "const": "completed" },
+    "runner_commit": { "const": "c8b258128eb161ff5ef0d82551bc15460f69af65" },
+    "runner_version": { "const": "automated-experiment-v2" },
+    "protocol": { "$ref": "#/$defs/pin" },
+    "evaluation_loci": { "const": ["f1r", "f1v", "f2r", "f2v"] },
+    "holdout_loci": { "const": ["f3r", "f3v", "f4r", "f4v"] },
+    "admission_report": { "$ref": "#/$defs/artifact" },
+    "preflight_report": { "$ref": "#/$defs/artifact" },
+    "execution_log": { "$ref": "#/$defs/artifact" },
+    "verification_report": { "$ref": "#/$defs/artifact" },
+    "raw_artifacts": {
+      "type": "array", "minItems": 6, "maxItems": 6,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "packaged_artifacts": {
+      "type": "array", "minItems": 6, "maxItems": 6,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "definitions_present": { "const": false },
+    "holdout_present": { "const": true },
+    "failure_policy": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "pin": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" },
+        "bytes": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

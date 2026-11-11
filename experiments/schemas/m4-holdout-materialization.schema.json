@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/m4-holdout-materialization-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "materialization_id",
+    "frozen",
+    "source_plan",
+    "mapping",
+    "mapping_approval",
+    "protected_artifacts",
+    "evaluation_loci",
+    "holdout_loci",
+    "outputs"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "1.0.0" },
+    "materialization_id": { "const": "voynich-holdout-queries-m4-04-v1" },
+    "frozen": { "const": true },
+    "source_plan": { "$ref": "#/$defs/pin" },
+    "mapping": { "$ref": "#/$defs/pin" },
+    "mapping_approval": { "$ref": "#/$defs/pin" },
+    "protected_artifacts": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/pin" }
+    },
+    "evaluation_loci": { "const": ["f1r", "f1v", "f2r", "f2v"] },
+    "holdout_loci": { "const": ["f3r", "f3v", "f4r", "f4v"] },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["queries", "exclusions", "leakage_audit", "report_json", "report_markdown"],
+      "properties": {
+        "queries": { "$ref": "#/$defs/path" },
+        "exclusions": { "$ref": "#/$defs/path" },
+        "leakage_audit": { "$ref": "#/$defs/path" },
+        "report_json": { "$ref": "#/$defs/path" },
+        "report_markdown": { "$ref": "#/$defs/path" }
+      }
+    }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:|/|\\\\)" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "sha256": { "$ref": "#/$defs/hash" }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300"
+     role="img" aria-labelledby="primary-title primary-desc">
+  <title id="primary-title">Primary calibrated effect</title>
+  <desc id="primary-desc">Primary Sanskrit minus Turkish calibrated-percentile effect is 0.000; the 95 percent interval is also 0.000 to 0.000 and crosses the no-effect line.</desc>
+  <rect width="760" height="300" fill="white" />  <line x1="80" y1="170" x2="680" y2="170" stroke="black" />
+  <line x1="380" y1="70" x2="380" y2="210" stroke="black" stroke-dasharray="8 6" />
+  <line x1="380" y1="130" x2="380" y2="130" stroke="black" stroke-width="4" />
+  <polygon points="380,118 392,130 380,142 368,130" fill="white" stroke="black" stroke-width="3" />
+  <text x="80" y="195" font-size="16">-0.020</text>
+  <text x="360" y="195" font-size="16">0</text>
+  <text x="635" y="195" font-size="16">0.020</text>
+  <text x="185" y="35" font-size="18">Sanskrit closer</text>
+  <text x="445" y="35" font-size="18">Turkish closer</text>
+  <text x="80" y="235" font-size="16">Sanskrit minus Turkish empirical percentile (lower is better)</text>
+</svg>

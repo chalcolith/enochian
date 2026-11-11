@@ -1,0 +1,8 @@
+dimension,stratum,query_count,comparison_count,median_difference,sanskrit_wins,turkish_wins,ties,run_id,source_artifact
+length,01-02,9,180,0.000000,0,2,178,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+length,03-05,112,2240,0.000000,0,0,2240,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+length,06-09,106,2120,0.000000,0,0,2120,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+section,f3r,79,1580,0.000000,0,0,1580,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+section,f3v,63,1260,0.000000,0,0,1260,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+section,f4r,35,700,0.000000,0,0,700,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+section,f4v,50,1000,0.000000,0,2,998,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz

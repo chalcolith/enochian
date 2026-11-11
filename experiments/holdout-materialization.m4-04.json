@@ -1,0 +1,37 @@
+{
+  "$schema": "https://chalcolith.github.io/enochian/schemas/m4-holdout-materialization-1.json",
+  "schema_version": "1.0.0",
+  "materialization_id": "voynich-holdout-queries-m4-04-v1",
+  "frozen": true,
+  "source_plan": {
+    "path": "resources/voynich/evaluation-inventory.v1.json",
+    "sha256": "74d2fd646a2ab0a568090da76cc2428c4e3ee996e7e5ac07e422400fda6e55ab"
+  },
+  "mapping": {
+    "path": "experiments/mappings/vogt-basic-eva-complete.v1.json",
+    "sha256": "4bc43e1e9d0fd2f29a6f4e8de804fe460f367f75bc3f796af5e7e48a7ecfb16e"
+  },
+  "mapping_approval": {
+    "path": "reports/mapping-preregistration/v1/decision-package.json",
+    "sha256": "b1e0789280e0847781464eada1a862444299e3b4f891995bb992ce3b65111610"
+  },
+  "protected_artifacts": [
+    {
+      "path": "reports/evaluation-run/m4-01/manifest.json",
+      "sha256": "4cf9b8644cca920ef24612e0b78fcfcce28d07f84dec7508ae5e53ed8e196906"
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/manifest.json",
+      "sha256": "979c3f5fe50e0dee6330db42220dbed24b41f101337d6a9bbc175a0351d61541"
+    }
+  ],
+  "evaluation_loci": ["f1r", "f1v", "f2r", "f2v"],
+  "holdout_loci": ["f3r", "f3v", "f4r", "f4v"],
+  "outputs": {
+    "queries": "resources/voynich/holdout-queries.m4-04.jsonl",
+    "exclusions": "reports/holdout-materialization/m4-04/exclusions.jsonl",
+    "leakage_audit": "reports/holdout-materialization/m4-04/leakage-audit.json",
+    "report_json": "reports/holdout-materialization/m4-04/materialization.json",
+    "report_markdown": "reports/holdout-materialization/m4-04/materialization.md"
+  }
+}

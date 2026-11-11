@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+  "command": "dotnet run --project Enochian.Benchmark --no-build -- experiment ../experiments/confirmatory.holdout.m4-04.json",
+  "exit_code": 0,
+  "runner_commit": "c8b258128eb161ff5ef0d82551bc15460f69af65",
+  "runner_version": "automated-experiment-v2",
+  "completed_at_utc": "2026-11-11T01:47:20.1167578Z",
+  "smoke_status": "passed_fresh_synthetic_fixture",
+  "preflight_status": "passed",
+  "rerun_policy": "Never patch or overwrite this run. Any input or software defect invalidates the run; version the fix and execute a fresh output directory."
+}
