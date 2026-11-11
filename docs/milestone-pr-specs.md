@@ -1443,6 +1443,22 @@ bundle.
 - A researcher without BHSA can reproduce all unrestricted stages and receives
   exact instructions for the optional restricted stage.
 
+**Implemented holdout and final bundle:** the pre-open audit checks 83
+experiment documents and three prior publication manifests with no leakage
+blocker. The one-time materializer opens the four frozen holdout loci, retains
+343 scorable token occurrences as 227 unique definitions-free query types, and
+reports two complete-token exclusions. The unchanged `automated-experiment-v2`
+runner at commit `c8b2581` produces holdout run
+`2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56`.
+The primary Sanskrit-minus-Turkish effect is 0.000 with interval
+[0.000, 0.000] and Holm-adjusted p = 1.000. All 20 subsample medians are zero,
+so both evaluation and holdout fail the frozen decision rule. No scorable
+holdout type occupies the 10-20-symbol band; the final report exposes that
+coverage limitation and does not impute a result. The final manifest hashes
+the evaluation, holdout, optional context, tidy tables, and figures, while the
+report indexes licenses and reproduction steps without rerunning matching or
+statistics.
+
 **Milestone 4 exit:** the complete evaluation and holdout evidence is published
 with provenance, uncertainty, nulls, any optional contextual results, and enough
 information for independent reproduction. No human annotation is required.

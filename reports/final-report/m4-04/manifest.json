@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "report_id": "m4-04-final-holdout-report-v1",
+  "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+  "status": "completed",
+  "source_run_manifest": {
+    "path": "reports/holdout-run/m4-04/manifest.json",
+    "sha256": "ad1849e8837156ffbe47d81e22cc54c8b180f907b12f0f1fe05c17556ee66a2e",
+    "bytes": 3900
+  },
+  "source_artifacts": [
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz",
+      "sha256": "196e591e22343a654b45fdb654086bd2d5c8aec4d7128cf0be264337374ea511",
+      "bytes": 411005
+    },
+    {
+      "path": "reports/holdout-run/m4-04/artifacts/statistics.jsonl.gz",
+      "sha256": "84978ccc0f9e194c88ba5bab788ecad8ec56bcdc09515e27eae3c9dde707c3d6",
+      "bytes": 413
+    },
+    {
+      "path": "reports/holdout-run/m4-04/admission.json",
+      "sha256": "87fac004a2571080d9fef39be3630995131d4174a5648b2a9bd14bced79c1bcc",
+      "bytes": 39577
+    },
+    {
+      "path": "resources/voynich/holdout-queries.m4-04.jsonl",
+      "sha256": "d7d116ac9f13c4c87b35744bc65345b9bc054434ad51c45e6005f3d691d8a9ff",
+      "bytes": 23895
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/manifest.json",
+      "sha256": "4cf9b8644cca920ef24612e0b78fcfcce28d07f84dec7508ae5e53ed8e196906",
+      "bytes": 4026
+    },
+    {
+      "path": "reports/evaluation-run/m4-01/artifacts/statistics.jsonl.gz",
+      "sha256": "4213100dd36b980a37e85eff360c3fbcad673fc3e23f4f9afc9bf2348b6c9ff3",
+      "bytes": 413
+    },
+    {
+      "path": "reports/evaluation-report/m4-02/manifest.json",
+      "sha256": "979c3f5fe50e0dee6330db42220dbed24b41f101337d6a9bbc175a0351d61541",
+      "bytes": 3999
+    },
+    {
+      "path": "reports/contextual-appendix/m4-03/manifest.json",
+      "sha256": "4d47e22aa928aa076bceff76646b86bb03ae08610bd5886ce912c9c66fcf381c",
+      "bytes": 11029
+    },
+    {
+      "path": "reports/holdout-materialization/m4-04/materialization.json",
+      "sha256": "0c40db0bfdc61af0f2db2f9a06d7f1626f5e906921aa6065488657c435d8b308",
+      "bytes": 16174
+    },
+    {
+      "path": "reports/holdout-materialization/m4-04/leakage-audit.json",
+      "sha256": "5b8640c2f9bbfa277f3cbcd53ed6b13b019866984ba9160a6e18121243e41a52",
+      "bytes": 14142
+    }
+  ],
+  "report_artifacts": [
+    {
+      "path": "reports/final-report/m4-04/figure-metadata.json",
+      "sha256": "e728e4d8a6ce35e7199b305ba771ecf924fe038fbed79bde27434308431e021d",
+      "bytes": 2054
+    },
+    {
+      "path": "reports/final-report/m4-04/figures/language-distributions.svg",
+      "sha256": "aba2b0e2ebe19065590e9fdab8307134b3741fa3b0b15e82297e29ec1f458457",
+      "bytes": 1146
+    },
+    {
+      "path": "reports/final-report/m4-04/figures/primary-effect.svg",
+      "sha256": "ddc06c0f32d3e86b23d9df7ab78efb0dfaa2321cba448238709249927b3c102f",
+      "bytes": 1151
+    },
+    {
+      "path": "reports/final-report/m4-04/figures/subsample-stability.svg",
+      "sha256": "867ab35100e9710bdd9ba05eefa8c2a883d52c3616de3641a77b4fbe2bc09374",
+      "bytes": 3437
+    },
+    {
+      "path": "reports/final-report/m4-04/report.md",
+      "sha256": "febc99d8e950448c173b217de2f7c71cbd61ddeb7db656ac75df2384c8d7635a",
+      "bytes": 6931
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/contrasts.csv",
+      "sha256": "395aac7bab557cd7c5e02da934acb63d3a736d6b4fe7a495ba07c8be007ae3f3",
+      "bytes": 2517
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/exclusions.csv",
+      "sha256": "d688ec73de4a2faaaa254555a278633f427c8ac4abcf7b0b60ce5283aa0014c0",
+      "bytes": 4369
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/language-distributions.csv",
+      "sha256": "31d2e85998e1accc8c7092b178c304f55f5a3b2d2ac4715b0654619958c6ddcc",
+      "bytes": 631
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/null-summary.csv",
+      "sha256": "aa4316a0b88c85c6dd114d11619e6d7662a8215ad1eaf300f47f07832b832e69",
+      "bytes": 554
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/quality-summary.csv",
+      "sha256": "bed6bf351a2afdf599369ee808fa71d1a8874c09a8d156fe32c0434e98f8aacb",
+      "bytes": 888
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/retrieval.csv",
+      "sha256": "802c7eeba1ab73dfe76677f386e54f0a2259b895d7e50bd53de2eb2f079c687e",
+      "bytes": 4552
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/stability.csv",
+      "sha256": "d1a65c95fed5fb813dd5e499351678b9b882a7a15db19f0b90338d49c87fc26e",
+      "bytes": 3877
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/strata.csv",
+      "sha256": "bdc32188039af0f4b0acbf512600e8e850a1af5c044f97b88be4b8dc5d8bcfa8",
+      "bytes": 1239
+    },
+    {
+      "path": "reports/final-report/m4-04/tables/winner-proportions.csv",
+      "sha256": "ed7e4d710b894b0279867120a2635a1e8d712fe43a3017f370819d1d790f9a2e",
+      "bytes": 482
+    }
+  ],
+  "decision_rule_outcome": "not_met",
+  "matching_or_statistics_rerun": false,
+  "definitions_present": false,
+  "holdout_present": true
+}

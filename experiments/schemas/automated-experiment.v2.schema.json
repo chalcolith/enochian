@@ -22,7 +22,9 @@
     },
     "panel": { "$ref": "#/$defs/pin" },
     "retrieval_policy": { "$ref": "#/$defs/pin" },
-    "retrieval_runner": { "const": "masked-query-distance-v2" },
+    "retrieval_runner": {
+      "enum": ["masked-query-distance-v2", "degradation-aware-retrieval-v3"]
+    },
     "degradations": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/pin" } },
     "sources": {
       "type": "array", "minItems": 2,

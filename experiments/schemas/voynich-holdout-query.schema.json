@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chalcolith.github.io/enochian/schemas/voynich-holdout-query-1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["query_id", "locus", "symbols", "token_frequency"],
+  "properties": {
+    "query_id": { "type": "string", "pattern": "^holdout-eva-type-[0-9]{4}$" },
+    "locus": { "enum": ["f3r", "f3v", "f4r", "f4v"] },
+    "symbols": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[a-z]$" }
+    },
+    "token_frequency": { "type": "integer", "minimum": 1 }
+  }
+}

@@ -464,6 +464,32 @@ snapshots:
 dotnet run --project Enochian.Benchmark -- context-m4 ..\experiments\contextual-appendix.m4-03.json
 ```
 
+M4-04 opens the preregistered `f3r`/`f3v`/`f4r`/`f4v` holdout once, after a
+checked-in leakage audit verifies that no prior experiment configuration or run
+manifest consumed it. The holdout uses the same mapping, panel, sampling,
+nulls, contrasts, correction family, and statistical thresholds as M4-01:
+
+```powershell
+dotnet run --project Enochian.Provenance -- voynich-holdout ..\experiments\holdout-materialization.m4-04.json
+dotnet run --project Enochian.Benchmark -- preflight ..\experiments\confirmatory.holdout.m4-04.json
+dotnet run --project Enochian.Benchmark -- experiment ..\experiments\confirmatory.holdout.m4-04.json
+dotnet run --project Enochian.Benchmark -- publish-holdout-m4 ..\experiments\confirmatory.holdout.m4-04.json c8b258128eb161ff5ef0d82551bc15460f69af65
+dotnet run --project Enochian.Benchmark -- report-m4 ..\reports\holdout-run\m4-04\manifest.json reports/final-report/m4-04
+```
+
+The materializer refuses to overwrite an existing holdout publication.
+Independent reproduction must use a fresh checkout or output location.
+The [final report](reports/final-report/m4-04/report.md) indexes the protocol,
+provenance, evaluation and holdout runs, optional context, limitations,
+licenses, and reproduction steps.
+
+The measured holdout contains 343 accepted token occurrences and 227 unique
+query types. Its Sanskrit-minus-Turkish effect is `0.000`, interval
+`[0.000, 0.000]`, and Holm-adjusted p-value `1.000`, matching the null
+evaluation result; the frozen replication rule is therefore not met. The
+holdout contains no scorable 10-20-symbol query type, which is reported as a
+coverage limitation rather than imputed.
+
 ## Linguistic Resources
 
 In order to do phonological analysis, the Enochian library provides a way to

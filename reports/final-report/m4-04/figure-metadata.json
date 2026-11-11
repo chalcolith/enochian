@@ -1,0 +1,38 @@
+[
+  {
+    "id": "primary-effect",
+    "path": "reports/final-report/m4-04/figures/primary-effect.svg",
+    "title": "Primary calibrated effect",
+    "alt_text": "Primary Sanskrit minus Turkish calibrated-percentile effect is 0.000; the 95 percent interval is also 0.000 to 0.000 and crosses the no-effect line.",
+    "encoding": "Black diamond and horizontal interval against a dashed zero line.",
+    "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+    "source_artifacts": [
+      "reports/holdout-run/m4-04/artifacts/statistics.jsonl.gz"
+    ],
+    "sha256": "ddc06c0f32d3e86b23d9df7ab78efb0dfaa2321cba448238709249927b3c102f"
+  },
+  {
+    "id": "language-distributions",
+    "path": "reports/final-report/m4-04/figures/language-distributions.svg",
+    "title": "Language score distributions",
+    "alt_text": "Box-and-whisker summaries of standardized scores. Sanskrit median is -6.679 and Turkish median is -7.301; more negative is farther above the biphone-null distance.",
+    "encoding": "Outlined box plots with circle and square median markers; no color distinction.",
+    "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+    "source_artifacts": [
+      "reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz"
+    ],
+    "sha256": "aba2b0e2ebe19065590e9fdab8307134b3741fa3b0b15e82297e29ec1f458457"
+  },
+  {
+    "id": "subsample-stability",
+    "path": "reports/final-report/m4-04/figures/subsample-stability.svg",
+    "title": "Lexicon-subsample stability",
+    "alt_text": "All 20 lexicon subsamples have median Sanskrit minus Turkish calibrated-percentile difference 0.000, so every point lies on the no-effect line.",
+    "encoding": "Numbered black circles connected by a solid line against a dashed zero line.",
+    "run_id": "2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56",
+    "source_artifacts": [
+      "reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz"
+    ],
+    "sha256": "867ab35100e9710bdd9ba05eefa8c2a883d52c3616de3641a77b4fbe2bc09374"
+  }
+]

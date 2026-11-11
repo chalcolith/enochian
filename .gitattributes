@@ -12,10 +12,28 @@ experiments/schemas/m4-contextual-*.schema.json text eol=lf
 reports/contextual-appendix/m4-03/** text eol=lf
 experiments/astronomical-names.v1.json text eol=lf
 reports/pronunciation-profiles/v1/astronomy-registration.json text eol=lf
-resources/lexicons/manifests/cdsl-shs.manifest.json text eol=lf
-resources/lexicons/manifests/kaikki-raw.manifest.json text eol=lf
+resources/lexicons/manifests/cdsl-shs.manifest.json binary
+resources/lexicons/manifests/kaikki-raw.manifest.json binary
 resources/lexicons/pronunciation-panel.v1.json text eol=lf
 source/Enochian.Benchmark/M4ContextualAppendixGenerator.cs text eol=lf
 source/Enochian.Cdsl/CdslOrigAdapter.cs text eol=lf
 source/Enochian.Provenance/AstronomicalNameRegistry.cs text eol=lf
 source/Enochian.Provenance/PronunciationDictionaryAdapter.cs text eol=lf
+experiments/holdout-materialization.m4-04.json text eol=lf
+experiments/confirmatory.holdout.m4-04.json text eol=lf
+experiments/schemas/m4-holdout-materialization.schema.json text eol=lf
+experiments/schemas/voynich-holdout-query.schema.json text eol=lf
+resources/voynich/holdout-queries.m4-04.jsonl binary
+reports/holdout-materialization/m4-04/** text eol=lf
+reports/holdout-materialization/m4-04/exclusions.jsonl binary
+experiments/schemas/m4-holdout-run-*.schema.json text eol=lf
+experiments/schemas/m4-final-report-manifest.schema.json text eol=lf
+reports/holdout-run/m4-04/** text eol=lf
+reports/holdout-run/m4-04/artifacts/*.gz -text
+reports/final-report/m4-04/** text eol=lf
+reports/evaluation-run/m4-01/** text eol=lf
+reports/evaluation-run/m4-01/artifacts/*.gz -text
+source/Enochian.Provenance/VoynichHoldoutQueries.cs text eol=lf
+source/Enochian.Benchmark/M4RunPublication.cs text eol=lf
+source/Enochian.Benchmark/M4ReportGenerator.cs text eol=lf
+source/Enochian.UnitTests/M4HoldoutTests.cs text eol=lf

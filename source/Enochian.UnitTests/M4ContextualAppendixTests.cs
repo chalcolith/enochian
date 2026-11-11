@@ -11,7 +11,7 @@ public sealed class M4ContextualAppendixTests
 {
     private const string RunId = "73939edd1372a103413470388d725eef1764e82e09e732a40b9c4d424fa09fb1";
     private const string ManifestSnapshot =
-        "da297bd9f874e937bd51dd468d65ea35f2b1526063d80c8e81b2041fcda154f7";
+        "4d47e22aa928aa076bceff76646b86bb03ae08610bd5886ce912c9c66fcf381c";
     private static readonly string RepositoryRoot = Path.GetFullPath(
         Path.Combine(AppContext.BaseDirectory, "../../../../.."));
     private static readonly string AppendixRoot = Path.Combine(

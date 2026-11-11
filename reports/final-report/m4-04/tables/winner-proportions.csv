@@ -1,0 +1,3 @@
+level,comparison_count,sanskrit_wins,turkish_wins,ties,sanskrit_proportion,turkish_proportion,tie_proportion,run_id,source_artifact
+sample-query,4540,0,2,4538,0.000000,0.000441,0.999559,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz
+query-median,227,0,0,227,0.000000,0.000000,1.000000,2e43f73d6937971522280b92af80ee1ddf6215df05284b5d0653747abec2cc56,reports/holdout-run/m4-04/artifacts/calibration.jsonl.gz

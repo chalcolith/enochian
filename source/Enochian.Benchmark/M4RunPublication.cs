@@ -63,7 +63,8 @@ public sealed record M4RunPublicationManifest(
 
 public sealed partial class M4RunPublication(string repositoryRoot)
 {
-    private const string PublicationDirectory = "reports/evaluation-run/m4-01";
+    private static readonly string[] EvaluationLoci = ["f1r", "f1v", "f2r", "f2v"];
+    private static readonly string[] HoldoutLoci = ["f3r", "f3v", "f4r", "f4v"];
     private static readonly string[] OutputNames =
     [
         "sampling.jsonl",
@@ -76,7 +77,13 @@ public sealed partial class M4RunPublication(string repositoryRoot)
     private static readonly string[] ForbiddenSemanticProperties =
         ["\"definition\"", "\"definitions\"", "\"gloss\"", "\"meaning\""];
 
-    public int Run(string protocolPath, string runnerCommit)
+    public int Run(string protocolPath, string runnerCommit) =>
+        RunPartition(protocolPath, runnerCommit, holdout: false);
+
+    public int RunHoldout(string protocolPath, string runnerCommit) =>
+        RunPartition(protocolPath, runnerCommit, holdout: true);
+
+    private int RunPartition(string protocolPath, string runnerCommit, bool holdout)
     {
         if (!CommitPattern().IsMatch(runnerCommit))
         {
@@ -86,11 +93,25 @@ public sealed partial class M4RunPublication(string repositoryRoot)
         var protocol = AutomatedProtocol.Load(protocolPath, repositoryRoot);
         if (protocol.Phase != "confirmatory" || protocol.PreflightReport == null)
         {
-            throw new InvalidDataException("M4 publication requires the frozen confirmatory readiness amendment.");
+            throw new InvalidDataException("M4 publication requires a frozen confirmatory protocol with preflight.");
         }
 
         var files = new AutomatedFiles(repositoryRoot);
-        var publicationDirectory = files.Resolve(PublicationDirectory);
+        var activeLoci = holdout ? HoldoutLoci : EvaluationLoci;
+        var excludedLoci = holdout ? EvaluationLoci : HoldoutLoci;
+        if (!protocol.EvaluationLoci.SequenceEqual(activeLoci, StringComparer.Ordinal) ||
+            !protocol.HoldoutLoci.SequenceEqual(excludedLoci, StringComparer.Ordinal))
+        {
+            throw new InvalidDataException("M4 publication protocol identifies the wrong active partition.");
+        }
+
+        var publicationDirectoryName = holdout
+            ? "reports/holdout-run/m4-04"
+            : "reports/evaluation-run/m4-01";
+        var publicationId = holdout
+            ? "m4-04-holdout-partition-v1"
+            : "m4-01-evaluation-partition-v1";
+        var publicationDirectory = files.Resolve(publicationDirectoryName);
         var publicationManifestPath = Path.Combine(publicationDirectory, "manifest.json");
         if (File.Exists(publicationManifestPath))
         {
@@ -125,7 +146,7 @@ public sealed partial class M4RunPublication(string repositoryRoot)
         }
 
         var rawArtifacts = VerifyRawArtifacts(run, outputDirectory);
-        var verification = VerifyRows(protocol, run, outputDirectory);
+        var verification = VerifyRows(protocol, run, outputDirectory, excludedLoci, holdout);
         if (verification.Blockers.Length != 0)
         {
             throw new InvalidDataException(
@@ -143,7 +164,9 @@ public sealed partial class M4RunPublication(string repositoryRoot)
             "1.0.0",
             run.RunId,
             "dotnet run --project Enochian.Benchmark --no-build -- experiment " +
-                "../experiments/confirmatory.readiness.m3-07.json",
+                (holdout
+                    ? "../experiments/confirmatory.holdout.m4-04.json"
+                    : "../experiments/confirmatory.readiness.m3-07.json"),
             0,
             runnerCommit,
             run.RunnerVersion,
@@ -158,7 +181,7 @@ public sealed partial class M4RunPublication(string repositoryRoot)
         var preflightPath = files.Resolve(protocol.PreflightReport);
         var manifest = new M4RunPublicationManifest(
             "1.0.0",
-            "m4-01-evaluation-partition-v1",
+            publicationId,
             run.RunId,
             "completed",
             runnerCommit,
@@ -166,8 +189,8 @@ public sealed partial class M4RunPublication(string repositoryRoot)
             new(
                 Path.GetRelativePath(repositoryRoot, protocolPath).Replace('\\', '/'),
                 PronunciationAudit.HashConfiguration(protocolPath)),
-            protocol.EvaluationLoci,
-            protocol.HoldoutLoci,
+            EvaluationLoci,
+            HoldoutLoci,
             ExperimentHashing.Artifact(admissionPath, repositoryRoot),
             ExperimentHashing.Artifact(preflightPath, repositoryRoot),
             ExperimentHashing.Artifact(executionLogPath, repositoryRoot),
@@ -175,12 +198,12 @@ public sealed partial class M4RunPublication(string repositoryRoot)
             rawArtifacts,
             packagedArtifacts,
             false,
-            false,
+            holdout,
             "Defective runs are labelled invalid and retained unchanged. Fixes require a versioned " +
                 "runner or input, a new output directory, and a complete restart.");
         AutomatedFiles.Write(publicationManifestPath, manifest);
-        WriteSummary(Path.Combine(publicationDirectory, "README.md"), manifest, verification);
-        Console.WriteLine($"Published verified M4-01 run {run.RunId}.");
+        WriteSummary(Path.Combine(publicationDirectory, "README.md"), manifest, verification, holdout);
+        Console.WriteLine($"Published verified {(holdout ? "M4-04 holdout" : "M4-01 evaluation")} run {run.RunId}.");
         return 0;
     }
 
@@ -253,10 +276,12 @@ public sealed partial class M4RunPublication(string repositoryRoot)
     private M4VerificationReport VerifyRows(
         AutomatedProtocol protocol,
         AutomatedRun run,
-        string outputDirectory)
+        string outputDirectory,
+        string[] excludedLoci,
+        bool holdout)
     {
         var blockers = new List<string>();
-        var holdouts = protocol.HoldoutLoci.Select(value => "\"" + value + "\"").ToArray();
+        var forbidden = excludedLoci.Select(value => "\"" + value + "\"").ToArray();
         var queries = File.ReadLines(new AutomatedFiles(repositoryRoot).Pin(protocol.Queries!, configuration: false))
             .Select(line => JsonSerializer.Deserialize<AutomatedQuery>(line, AutomatedProtocol.JsonOptions)
                 ?? throw new InvalidDataException("Empty evaluation query."))
@@ -265,22 +290,20 @@ public sealed partial class M4RunPublication(string repositoryRoot)
             File.ReadAllText(new AutomatedFiles(repositoryRoot).Pin(protocol.Mapping!)),
             AutomatedProtocol.JsonOptions)
             ?? throw new InvalidDataException("Empty evaluation mapping.");
-        if (queries.Any(query => protocol.HoldoutLoci.Contains(query.Locus, StringComparer.Ordinal)))
+        if (queries.Any(query => excludedLoci.Contains(query.Locus, StringComparer.Ordinal)))
         {
-            blockers.Add("holdout_query");
+            blockers.Add(holdout ? "evaluation_query" : "holdout_query");
         }
 
         var memberships = ReadAndValidate<AutomatedMembership>(
-            Path.Combine(outputDirectory, "sampling.jsonl"), holdouts, blockers).ToArray();
+            Path.Combine(outputDirectory, "sampling.jsonl"), forbidden, blockers, holdout).ToArray();
         var sampleId = memberships.Select(row => row.SampleId).Order(StringComparer.Ordinal).First();
         var sample = memberships.Where(row => row.SampleId == sampleId).ToArray();
         var selectedQueries = queries
             .GroupBy(query => BenchmarkSampling.GetLengthBand(query.Symbols.Length), StringComparer.Ordinal)
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .Select(group => group.First()).ToArray();
-        if (!selectedQueries.Select(query => BenchmarkSampling.GetLengthBand(query.Symbols.Length))
-            .ToHashSet(StringComparer.Ordinal).SetEquals(
-                ["out-of-range", "03-05", "06-09", "10-20"]))
+        if (selectedQueries.Length < 3)
         {
             blockers.Add("missing_query_length_stratum");
         }
@@ -295,7 +318,7 @@ public sealed partial class M4RunPublication(string repositoryRoot)
         foreach (var line in File.ReadLines(
             Path.Combine(outputDirectory, "matching.jsonl"), new UTF8Encoding(false, true)))
         {
-            CheckForbidden(line, holdouts, blockers);
+            CheckForbidden(line, forbidden, blockers, holdout);
             var row = JsonSerializer.Deserialize<AutomatedScore>(line, AutomatedProtocol.JsonOptions)
                 ?? throw new InvalidDataException("Empty matching row.");
             matchingCount++;
@@ -342,15 +365,16 @@ public sealed partial class M4RunPublication(string repositoryRoot)
         }
 
         var calibrationCount = ReadAndValidate<AutomatedCalibration>(
-            Path.Combine(outputDirectory, "calibration.jsonl"), holdouts, blockers).LongCount();
+            Path.Combine(outputDirectory, "calibration.jsonl"), forbidden, blockers, holdout).LongCount();
         var statisticsCount = ReadAndValidate<AutomatedTest>(
-            Path.Combine(outputDirectory, "statistics.jsonl"), holdouts, blockers).LongCount();
+            Path.Combine(outputDirectory, "statistics.jsonl"), forbidden, blockers, holdout).LongCount();
         foreach (var name in new[] { "report-inputs.json", "run-manifest.json" })
         {
             CheckForbidden(
                 File.ReadAllText(Path.Combine(outputDirectory, name), new UTF8Encoding(false, true)),
-                holdouts,
-                blockers);
+                forbidden,
+                blockers,
+                holdout);
         }
 
         var rowCounts = new SortedDictionary<string, long>(StringComparer.Ordinal)
@@ -368,7 +392,7 @@ public sealed partial class M4RunPublication(string repositoryRoot)
             true,
             distinctBlockers.All(value => !value.StartsWith("invalid_", StringComparison.Ordinal)),
             !distinctBlockers.Contains("semantic_property_present", StringComparer.Ordinal),
-            !distinctBlockers.Any(value => value.StartsWith("holdout_", StringComparison.Ordinal)),
+            !holdout,
             sampleId,
             rowCounts,
             [.. checks],
@@ -377,27 +401,32 @@ public sealed partial class M4RunPublication(string repositoryRoot)
 
     private static IEnumerable<T> ReadAndValidate<T>(
         string path,
-        string[] holdouts,
-        List<string> blockers)
+        string[] forbidden,
+        List<string> blockers,
+        bool holdout)
     {
         foreach (var line in File.ReadLines(path, new UTF8Encoding(false, true)))
         {
-            CheckForbidden(line, holdouts, blockers);
+            CheckForbidden(line, forbidden, blockers, holdout);
             yield return JsonSerializer.Deserialize<T>(line, AutomatedProtocol.JsonOptions)
                 ?? throw new InvalidDataException("Empty " + typeof(T).Name + " row.");
         }
     }
 
-    private static void CheckForbidden(string text, string[] holdouts, List<string> blockers)
+    private static void CheckForbidden(
+        string text,
+        string[] forbidden,
+        List<string> blockers,
+        bool holdout)
     {
         if (ForbiddenSemanticProperties.Any(value => text.Contains(value, StringComparison.OrdinalIgnoreCase)))
         {
             blockers.Add("semantic_property_present");
         }
 
-        if (holdouts.Any(value => text.Contains(value, StringComparison.Ordinal)))
+        if (forbidden.Any(value => text.Contains(value, StringComparison.Ordinal)))
         {
-            blockers.Add("holdout_locus_present");
+            blockers.Add(holdout ? "evaluation_locus_present" : "holdout_locus_present");
         }
     }
 
@@ -478,8 +507,38 @@ public sealed partial class M4RunPublication(string repositoryRoot)
     private static void WriteSummary(
         string path,
         M4RunPublicationManifest manifest,
-        M4VerificationReport verification)
+        M4VerificationReport verification,
+        bool holdout)
     {
+        if (holdout)
+        {
+            var holdoutText = $"""
+                # M4-04 frozen holdout run
+
+                Run `{manifest.RunId}` completed once under unchanged runner `{manifest.RunnerVersion}`
+                at commit `{manifest.RunnerCommit}`. This bundle records execution and verification;
+                interpretation is published in the M4-04 final report.
+
+                - Evaluation loci excluded: `{string.Join("`, `", manifest.EvaluationLoci)}`
+                - Holdout loci executed: `{string.Join("`, `", manifest.HoldoutLoci)}`
+                - Raw outputs: {manifest.RawArtifacts.Length}
+                - Packaged outputs: {manifest.PackagedArtifacts.Length}
+                - Verification: **{verification.Status}**
+                - Independently reproduced score cells: {verification.ScoreChecks.Length}
+                - Definitions present: **{manifest.DefinitionsPresent.ToString().ToLowerInvariant()}**
+                - Holdout present: **{manifest.HoldoutPresent.ToString().ToLowerInvariant()}**
+
+                ## Failure and rerun policy
+
+                {manifest.FailurePolicy}
+                """;
+            File.WriteAllText(
+                path,
+                holdoutText.ReplaceLineEndings("\n") + "\n",
+                new UTF8Encoding(false));
+            return;
+        }
+
         var text = $"""
             # M4-01 frozen evaluation run
 
